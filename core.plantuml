@@ -1,0 +1,63 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+enum Card << enumeration >> {
+  + Card(): 
+  + Gioco: 
+  + Cornice: 
+  + Gatto: 
+  + Trofeo: 
+  + Libro: 
+  + Pianta: 
+  + valueOf(String): Card
+  + values(): Card[]
+}
+class CardsDeck {
+  + CardsDeck(): 
+  - cards: ArrayList<Card>
+}
+class CommonObjective {
+  + CommonObjective(): 
+  + isCompleted(Shelf): Optional<Integer>
+}
+class Game {
+  + Game(): 
+  - commonObjectives: CommonObjective[]
+  - tabletop: TableTop
+  - firstToFinish: Optional<Player>
+  - players: ArrayList<Player>
+}
+class Objective {
+  + Objective(): 
+  + isCompleted(Shelf): Optional<Integer>
+}
+class PersonalObjective {
+  + PersonalObjective(): 
+  + isCompleted(Shelf): Optional<Integer>
+}
+class Player {
+  + Player(): 
+  - objectives: Objective[]
+  - shelf: Shelf
+}
+class Shelf {
+  + Shelf(): 
+}
+class TableTop {
+  + TableTop(): 
+  - deck: CardsDeck
+}
+
+CardsDeck         "1" *-[#595959,plain]-> "cards\n*" Card              
+CommonObjective    -[#000082,plain]-^  Objective         
+Game              "1" *-[#595959,plain]-> "commonObjectives\n*" CommonObjective   
+Game              "1" *-[#595959,plain]-> "players\n*" Player            
+Game              "1" *-[#595959,plain]-> "tabletop\n1" TableTop          
+PersonalObjective  -[#000082,plain]-^  Objective         
+Player            "1" *-[#595959,plain]-> "objectives\n*" Objective         
+Player            "1" *-[#595959,plain]-> "shelf\n1" Shelf             
+TableTop          "1" *-[#595959,plain]-> "deck\n1" CardsDeck         
+@enduml
