@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="" />
+    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Core package uml">
+      <change afterPath="$PROJECT_DIR$/src/main/java/core/InvalidMoveException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/core/Trophy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/core/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/core/Card.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/core/CardsDeck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/core/CardsDeck.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/core/CommonObjective.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/core/CommonObjective.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/core/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/core/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/core/Objective.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/core/Objective.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/core/PersonalObjective.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/core/PersonalObjective.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/core/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/core/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/core/Shelf.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/core/Shelf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/core/TableTop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/core/TableTop.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,7 +56,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "last_directory_selection": "/home/pinguinobiricchino/IdeaProjects/ing-sw-2023-Maltagliati-Manfredonia-Meinardi-Merlino/src/main/java/it/polimi/ingsw",
-    "last_opened_file_path": "/home/pinguinobiricchino/IdeaProjects/ing-sw-2023-Maltagliati-Manfredonia-Meinardi-Merlino",
+    "last_opened_file_path": "/home/pinguinobiricchino/IdeaProjects/ing-sw-2023-Maltagliati-Manfredonia-Meinardi-Merlino/core.plantuml",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -62,10 +75,24 @@
       <updated>1678803001733</updated>
       <workItem from="1678803003373" duration="128000" />
       <workItem from="1678806209080" duration="1751000" />
+      <workItem from="1678808022676" duration="168000" />
+      <workItem from="1678873660518" duration="3276000" />
     </task>
+    <task id="LOCAL-00001" summary="Core package uml">
+      <created>1678808138034</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1678808138034</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Core package uml" />
+    <option name="LAST_COMMIT_MESSAGE" value="Core package uml" />
   </component>
 </project>

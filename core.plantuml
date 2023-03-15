@@ -6,58 +6,84 @@ skinparam linetype ortho
 
 enum Card << enumeration >> {
   + Card(): 
-  + Gioco: 
   + Cornice: 
   + Gatto: 
+  + Empty: 
+  + Gioco: 
   + Trofeo: 
-  + Libro: 
   + Pianta: 
+  + Libro: 
   + valueOf(String): Card
   + values(): Card[]
 }
 class CardsDeck {
   + CardsDeck(): 
   - cards: ArrayList<Card>
+  - deck_top: int
+  + draw(): Optional<Card>
+  + CardsDeck(): void
+  + size(): int
 }
 class CommonObjective {
   + CommonObjective(): 
-  + isCompleted(Shelf): Optional<Integer>
+  + isCompleted(Shelf): Optional<Trophy>
 }
 class Game {
   + Game(): 
-  - commonObjectives: CommonObjective[]
   - tabletop: TableTop
-  - firstToFinish: Optional<Player>
   - players: ArrayList<Player>
+  - commonObjectives: CommonObjective[]
+  - firstToFinish: Optional<Player>
+  + getTabletop(): TableTop
+  + getPlayers(): ArrayList<Player>
+  + getCommonObjectives(): CommonObjective[]
+}
+class InvalidMoveException {
+  + InvalidMoveException(String): 
 }
 class Objective {
   + Objective(): 
-  + isCompleted(Shelf): Optional<Integer>
+  + isCompleted(Shelf): Optional<Trophy>
 }
 class PersonalObjective {
   + PersonalObjective(): 
-  + isCompleted(Shelf): Optional<Integer>
+  + isCompleted(Shelf): Optional<Trophy>
 }
 class Player {
   + Player(): 
+  - trophies: ArrayList<Trophy>
   - objectives: Objective[]
   - shelf: Shelf
+  + getShelf(): Shelf
+  + getTrophies(): ArrayList<Trophy>
 }
 class Shelf {
   + Shelf(): 
+  - slots: Card[][]
+  + add(int, Card[]): void
 }
 class TableTop {
   + TableTop(): 
   - deck: CardsDeck
+  + getDeck(): CardsDeck
+}
+class Trophy {
+  + Trophy(String, int): 
+  - points: int
+  - name: String
+  + getName(): String
+  + getPoints(): int
 }
 
-CardsDeck         "1" *-[#595959,plain]-> "cards\n*" Card              
-CommonObjective    -[#000082,plain]-^  Objective         
-Game              "1" *-[#595959,plain]-> "commonObjectives\n*" CommonObjective   
-Game              "1" *-[#595959,plain]-> "players\n*" Player            
-Game              "1" *-[#595959,plain]-> "tabletop\n1" TableTop          
-PersonalObjective  -[#000082,plain]-^  Objective         
-Player            "1" *-[#595959,plain]-> "objectives\n*" Objective         
-Player            "1" *-[#595959,plain]-> "shelf\n1" Shelf             
-TableTop          "1" *-[#595959,plain]-> "deck\n1" CardsDeck         
+CardsDeck            "1" *-[#595959,plain]-> "cards\n*" Card                 
+CommonObjective       -[#000082,plain]-^  Objective            
+Game                 "1" *-[#595959,plain]-> "commonObjectives\n*" CommonObjective      
+Game                 "1" *-[#595959,plain]-> "players\n*" Player               
+Game                 "1" *-[#595959,plain]-> "tabletop\n1" TableTop             
+PersonalObjective     -[#000082,plain]-^  Objective            
+Player               "1" *-[#595959,plain]-> "objectives\n*" Objective            
+Player               "1" *-[#595959,plain]-> "shelf\n1" Shelf                
+Player               "1" *-[#595959,plain]-> "trophies\n*" Trophy               
+Shelf                "1" *-[#595959,plain]-> "slots\n*" Card                 
+TableTop             "1" *-[#595959,plain]-> "deck\n1" CardsDeck            
 @enduml
