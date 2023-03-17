@@ -1,8 +1,8 @@
 package model;
 
 public class Trophy {
-    private String name;
-    private int points;
+    private final String name;
+    private final int points;
 
     public Trophy(String name, int points) {
         this.name = name;
