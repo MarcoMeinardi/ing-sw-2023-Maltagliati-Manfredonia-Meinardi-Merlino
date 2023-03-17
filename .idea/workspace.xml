@@ -6,15 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Core package uml update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Card.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/CardsDeck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/CardsDeck.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/CommonObjective.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/CommonObjective.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/InvalidMoveException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/InvalidMoveException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Objective.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Objective.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/PersonalObjective.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/PersonalObjective.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Shelf.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Shelf.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/TableTop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/TableTop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Cell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Cell.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/model/Trophy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Trophy.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +47,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;last_directory_selection&quot;: &quot;/home/pinguinobiricchino/IdeaProjects/ing-sw-2023-Maltagliati-Manfredonia-Meinardi-Merlino/src/main/java/it/polimi/ingsw&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/pinguinobiricchino/IdeaProjects/ing-sw-2023-Maltagliati-Manfredonia-Meinardi-Merlino/core.plantuml&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/marco/Desktop/ing-sw-2023-Maltagliati-Manfredonia-Meinardi-Merlino/core.plantuml&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -79,7 +71,8 @@
       <workItem from="1679046153561" duration="1076000" />
       <workItem from="1679058266926" duration="444000" />
       <workItem from="1679058983128" duration="771000" />
-      <workItem from="1679059777128" duration="3153000" />
+      <workItem from="1679059777128" duration="3596000" />
+      <workItem from="1679068182763" duration="634000" />
     </task>
     <task id="LOCAL-00001" summary="Core package uml">
       <created>1678808138034</created>
