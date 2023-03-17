@@ -1,9 +1,10 @@
-package core;
+package model;
 
 import java.util.ArrayList;
 
 public class Player {
-    private Objective[] objectives;
+    private PersonalObjective personalObjective;
+    private CommonObjective[] commonObjectives;
     private ArrayList<Trophy> trophies;
     private Shelf shelf;
 

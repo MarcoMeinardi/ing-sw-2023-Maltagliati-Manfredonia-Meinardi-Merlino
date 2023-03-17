@@ -1,4 +1,4 @@
-package core;
+package model;
 
 public enum Card {
 Empty,

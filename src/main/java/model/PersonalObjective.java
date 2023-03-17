@@ -1,8 +1,8 @@
-package core;
+package model;
 
 import java.util.Optional;
 
-public class CommonObjective extends Objective{
+public class PersonalObjective extends Objective{
     @Override
     public Optional<Trophy> isCompleted(Shelf shelf) {
         return Optional.empty();

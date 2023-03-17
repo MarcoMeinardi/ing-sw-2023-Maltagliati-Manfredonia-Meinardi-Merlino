@@ -1,4 +1,4 @@
-package core;
+package model;
 
 public class Shelf {
     //size of the shelf 6(rows)x5(columns)

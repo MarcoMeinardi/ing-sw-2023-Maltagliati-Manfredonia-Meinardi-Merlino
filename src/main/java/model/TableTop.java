@@ -1,4 +1,4 @@
-package core;
+package model;
 
 public class TableTop {
     private CardsDeck deck;
