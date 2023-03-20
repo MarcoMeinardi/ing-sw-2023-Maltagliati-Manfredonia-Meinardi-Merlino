@@ -5,15 +5,13 @@ public class TableTop {
 
     private CardsDeck deck;
 	private Card[][] table;
-	private int[][] requiredPlayers;
+	static private final int[][] requiredPlayers = {};//TODO: hardcode read matrix
 	int nPlayers;
 
 	public TableTop(int nPlayers) {
 		table = new Card[SIZE][SIZE];
-		requiredPlayers = new int[SIZE][SIZE];
 		this.nPlayers = nPlayers;
 		// TODO: load required player matrix
-
 		fillTable();
 	}
 
@@ -29,4 +27,26 @@ public class TableTop {
 		// TODO
 		return false;
 	}
+
+	private Boolean isUsed(int x, int y) throws InvalidMoveException{
+		return nPlayers >= requiredPlayers[x][y];
+	}
+
+	public Card getCard(int x, int y) throws InvalidMoveException {
+		if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) {
+			throw new InvalidMoveException("Invalid position");
+		}
+		return table[x][y];
+	}
+
+	public void setCard(int x, int y, Card card) throws InvalidMoveException {
+		if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) {
+			throw new InvalidMoveException("Invalid position");
+		}
+		if (!isUsed(x, y)) {
+			throw new InvalidMoveException("Card place not used");
+		}
+		table[x][y] = card;
+	}
+
 }
