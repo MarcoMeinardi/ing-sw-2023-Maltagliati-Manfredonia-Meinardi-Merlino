@@ -13,7 +13,7 @@ public class Player {
 		this.personalObjective = personalObjective;
 		shelf = new Shelf();
 		this.trophies = new ArrayList<>();
-	}
+}
 
     public Shelf getShelf() {
         return shelf;
