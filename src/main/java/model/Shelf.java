@@ -24,11 +24,21 @@ public class Shelf {
         if (cards.length == 0 || cards.length > 3) {
             throw new InvalidMoveException("Invalid number of cards");
         }
-        // TODO: check how many places are left in column and add cards
+        int highest = getHighest(column);
+        if(cards.length > ROWS - highest){
+            throw new InvalidMoveException("Not enough space in column");
+        }
+        for(Card card:cards){
+            slots[highest++][column] = card;
+        }
     }
 
 	private int getHighest(int column) {
-		// TODO
-		return -1;
+		for(int i = 0; i < ROWS;i++){
+            if(slots[i][column] == Card.Empty){
+                return i;
+            }
+        }
+		return ROWS;
 	}
 }
