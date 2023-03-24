@@ -29,20 +29,20 @@ public class TableTop {
     }
 
 	private void fillTable() {
-		for (int i = 0; i < SIZE; i++){
-			for (int j = 0; j < SIZE; j++){
-				if (requiredPlayers[i][j] <= nPlayers && table[i][j] == Card.Empty) {
-					table[i][j] = deck.draw().orElse(Card.Empty);
+		for (int y = 0; y < SIZE; y++){
+			for (int x = 0; x < SIZE; x++){
+				if (requiredPlayers[y][x] <= nPlayers && table[y][x] == Card.Empty) {
+					table[y][x] = deck.draw().orElse(Card.Empty);
 				}
 			}
 		}
 	}
 
 	private boolean needRefill() {
-		for (int i = 0; i < SIZE - 1; i++) {
-			for (int j = 0; j < SIZE - 1; j++) {
-				if (table[i][j] != Card.Empty) {
-					if (table[i + 1][j] != Card.Empty || table[i][j + 1] != Card.Empty) {
+		for (int y = 0; y < SIZE - 1; y++) {
+			for (int x = 0; x < SIZE - 1; x++) {
+				if (table[y][x] != Card.Empty) {
+					if (table[y + 1][x] != Card.Empty || table[y][x + 1] != Card.Empty) {
 						return false;
 					}
 				}
