@@ -19,10 +19,10 @@ public class CommonObjective extends Objective {
 	}
 
     @Override
-    public Optional<Trophy> isCompleted(Shelf shelf) {
-		Optional<Trophy> trophy = Optional.empty();
+    public Optional<Cockade> isCompleted(Shelf shelf) {
+		Optional<Cockade> trophy = Optional.empty();
 		if (checkCompleted.apply(shelf)) {
-			trophy = Optional.of(new Trophy(name, value));
+			trophy = Optional.of(new Cockade(name, value));
 			value -= pointDecrement;
 		}
 		return trophy;

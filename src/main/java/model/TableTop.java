@@ -1,7 +1,7 @@
 package model;
 
 public class TableTop {
-	private static final int SIZE = 11;
+	private static final int SIZE = 9;
 
     private CardsDeck deck;
 	private Card[][] table;
@@ -11,7 +11,6 @@ public class TableTop {
 	public TableTop(int nPlayers) {
 		table = new Card[SIZE][SIZE];
 		this.nPlayers = nPlayers;
-		// TODO: load required player matrix
 		fillTable();
 	}
 
@@ -20,12 +19,26 @@ public class TableTop {
     }
 
 	private void fillTable() {
-		// TODO
+		for(int i = 0; i < SIZE; i++){
+			for(int j = 0; j < SIZE; j++){
+				if(requiredPlayers[i][j] <= nPlayers && table[i][j] == Card.Empty){
+					table[i][j] = deck.draw().orElse(Card.Empty);
+				}
+			}
+		}
 	}
 
 	private boolean needRefill() {
-		// TODO
-		return false;
+		for(int i = 0; i < SIZE-1;i++){
+			for(int j = 0; j < SIZE-1;j++){
+				if(table[i][j] != Card.Empty){
+					if(table[i+1][j] != Card.Empty || table[i][j+1] != Card.Empty){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	private Boolean isUsed(int x, int y) throws InvalidMoveException{

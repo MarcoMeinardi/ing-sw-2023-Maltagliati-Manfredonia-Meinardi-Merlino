@@ -10,9 +10,9 @@ public class Shelf {
     // Create a new empty shelf
     public Shelf() {
         slots = new Card[ROWS][COLUMNS];
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLUMNS; j++) {
-                slots[i][j] = Card.Empty;
+        for (int y = 0; y < ROWS; y++) {
+            for (int x = 0; x < COLUMNS; x++) {
+                slots[y][x] = Card.Empty;
             }
         }
     }
@@ -34,11 +34,18 @@ public class Shelf {
     }
 
 	private int getHighest(int column) {
-		for(int i = 0; i < ROWS;i++){
-            if(slots[i][column] == Card.Empty){
-                return i;
+		for(int y = 0; y < ROWS;y++){
+            if(slots[y][column] == Card.Empty){
+                return y;
             }
         }
 		return ROWS;
 	}
+
+    public Card getCard(int y, int x) throws InvalidMoveException{
+        if(y >= ROWS || y < 0 || x < 0 || x >= COLUMNS){
+            throw new InvalidMoveException("Card requested is out of bound");
+        }
+        return slots[y][x];
+    }
 }

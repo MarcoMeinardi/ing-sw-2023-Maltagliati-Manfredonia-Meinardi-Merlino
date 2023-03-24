@@ -6,7 +6,7 @@ public class Player {
 	private final String name;
     private final PersonalObjective personalObjective;
     private final Shelf shelf;
-	private ArrayList<Trophy> trophies;
+	private ArrayList<Cockade> trophies;
 
 	public Player(String name, PersonalObjective personalObjective) {
 		this.name = name;
@@ -19,7 +19,7 @@ public class Player {
         return shelf;
     }
 
-    public ArrayList<Trophy> getTrophies() {
+    public ArrayList<Cockade> getTrophies() {
         return trophies;
     }
 
