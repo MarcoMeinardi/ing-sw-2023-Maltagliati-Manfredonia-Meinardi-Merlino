@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class PersonalObjective extends Objective {
     private final Cell[] cellsCheck;
-    static final int[] points = {1,2,4,6,9,12};
+    static final int[] points = {1, 2, 4, 6, 9, 12};
 
     public PersonalObjective(String name, Cell[] cellscheck) {
         super(name);
@@ -24,7 +24,7 @@ public class PersonalObjective extends Objective {
             // TODO add log
         }
         if (count > 0) {
-            return Optional.of(new Cockade(this.name,points[count-1]));
+            return Optional.of(new Cockade(this.name,points[count - 1]));
         }
         return Optional.empty();
     }
