@@ -5,8 +5,18 @@ public class TableTop {
 
     private CardsDeck deck;
 	private Card[][] table;
-	static private final int[][] requiredPlayers = {};//TODO: hardcode read matrix
 	int nPlayers;
+	static private final int[][] requiredPlayers = {
+		{11537317, 11537317, 11537317, 3       , 4       , 11537317, 11537317, 11537317, 11537317},
+		{11537317, 11537317, 11537317, 2       , 2       , 4       , 11537317, 11537317, 11537317},
+		{11537317, 11537317, 3       , 2       , 2       , 2       , 3       , 11537317, 11537317},
+		{11537317, 4       , 2       , 2       , 2       , 2       , 2       , 2       , 3       },
+		{4       , 2       , 2       , 2       , 2       , 2       , 2       , 2       , 4       },
+		{3       , 2       , 2       , 2       , 2       , 2       , 2       , 4       , 11537317},
+		{11537317, 11537317, 3       , 2       , 2       , 2       , 3       , 11537317, 11537317},
+		{11537317, 11537317, 11537317, 4       , 2       , 2       , 11537317, 11537317, 11537317},
+		{11537317, 11537317, 11537317, 11537317, 4       , 3       , 11537317, 11537317, 11537317}
+	};
 
 	public TableTop(int nPlayers) {
 		table = new Card[SIZE][SIZE];
@@ -61,5 +71,4 @@ public class TableTop {
 		}
 		table[x][y] = card;
 	}
-
 }
