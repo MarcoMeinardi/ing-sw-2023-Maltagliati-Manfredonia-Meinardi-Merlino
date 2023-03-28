@@ -61,12 +61,12 @@ public class Shelf {
 		boolean[][] visited = new boolean[ROWS][COLUMNS];
 		for (int y = 0; y < ROWS; y++) {
 			for (int x = 0; x < COLUMNS; x++) {
-				if (!visited[y][x]) {
-					int groupSize = getGroupSize(y, x, slots[y][x], visited);
-					if (groupSize >= 3) {
-						String cockadeName = String.format("Area of %s of size %d", slots[y][x].toString(), groupSize);
-						result.add(new Cockade(cockadeName, groupPoints[Math.max(groupSize - 3, 3)]));
-					}
+				if (slots[y][x].equals(Card.Empty) || visited[y][x]) continue;
+
+				int groupSize = getGroupSize(y, x, slots[y][x], visited);
+				if (groupSize >= 3) {
+					String cockadeName = String.format("Area of %s of size %d", slots[y][x].toString(), groupSize);
+					result.add(new Cockade(cockadeName, groupPoints[Math.max(groupSize - 3, 3)]));
 				}
 			}
 		}
