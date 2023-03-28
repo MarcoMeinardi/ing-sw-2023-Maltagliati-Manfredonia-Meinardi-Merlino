@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Core package uml update">
+    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Various methods implemented">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/CommonObjective.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/CommonObjective.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Objective.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Objective.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/PersonalObjective.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/PersonalObjective.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Shelf.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Shelf.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/model/TableTop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/TableTop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Trophy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Cockade.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +81,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678876984496</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Various methods implemented">
+      <created>1679665409754</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1679665409754</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -107,6 +108,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Core package uml" />
     <MESSAGE value="Core package uml update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Core package uml update" />
+    <MESSAGE value="Various methods implemented" />
+    <option name="LAST_COMMIT_MESSAGE" value="Various methods implemented" />
   </component>
 </project>
