@@ -7,9 +7,9 @@ public class TableTop {
 	private Card[][] table;
 	int nPlayers;
 
-	private static final int groupPoints[] = {2, 3, 5, 8};
 	private static final int[] dx = {-1, 0, 1, 0};
 	private static final int[] dy = {0, -1, 0, 1};
+
 	static private final int[][] requiredPlayers = {
 		{11537317, 11537317, 11537317, 3       , 4       , 11537317, 11537317, 11537317, 11537317},
 		{11537317, 11537317, 11537317, 2       , 2       , 4       , 11537317, 11537317, 11537317},
