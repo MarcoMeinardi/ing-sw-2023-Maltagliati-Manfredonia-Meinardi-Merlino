@@ -8,6 +8,14 @@ public class Player {
     private final Shelf shelf;
 	private ArrayList<Cockade> trophies;
 
+	/**
+	 * @author Marco, Lorenzo, Ludovico, Riccardo
+	 * Constructor that creates a new player with a specified name and personal objective.
+	 * The player's shelf and trophies list are initialized.
+	 *
+	 * @param name The name of the player
+	 * @param personalObjective The personal objective of the player
+	 */
 	public Player(String name, PersonalObjective personalObjective) {
 		this.name = name;
 		this.personalObjective = personalObjective;

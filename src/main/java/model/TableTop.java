@@ -22,6 +22,14 @@ public class TableTop {
 		{11537317, 11537317, 11537317, 11537317, 4       , 3       , 11537317, 11537317, 11537317}
 	};
 
+	/**
+	 * @author Marco
+	 * Creates a new TableTop object with a specified number of players.
+	 * The size of the table is set to SIZE x SIZE, and it is filled with cards
+	 * according to the rules of the game.
+	 *
+	 * @param nPlayers The number of players in the game.
+	 */
 	public TableTop(int nPlayers) {
 		table = new Card[SIZE][SIZE];
 		this.nPlayers = nPlayers;
@@ -32,6 +40,11 @@ public class TableTop {
         return deck;
     }
 
+	/**
+	 * @author Marco, Ludovico
+	 * Fills any empty spaces on the table with cards drawn from the deck,
+	 * as long as the card meets the requirements for the position.
+	 */
 	private void fillTable() {
 		for (int y = 0; y < SIZE; y++){
 			for (int x = 0; x < SIZE; x++){
@@ -42,6 +55,13 @@ public class TableTop {
 		}
 	}
 
+	/**
+	 * @author Marco, Ludovico
+	 * Determines if the table needs to be refilled based on whether there are any empty spaces
+	 * next to non-empty spaces. Returns true if a refill is needed, false otherwise.
+	 *
+	 * @return True if the table needs to be refilled, false otherwise.
+	 */
 	private boolean needRefill() {
 		for (int y = 0; y < SIZE - 1; y++) {
 			for (int x = 0; x < SIZE - 1; x++) {
@@ -55,6 +75,16 @@ public class TableTop {
 		return true;
 	}
 
+	/**
+	 * @author Lorenzo, Marco, Ludovico, Riccardo
+	 * Determines if a specified position on the table has been used by a player based on the
+	 * required number of players for that position. Throws an InvalidMoveException if the specified position is not valid.
+	 *
+	 * @param x The horizontal index of the specified position.
+	 * @param y The vertical index of the specified position.
+	 * @return True if the specified position has been used, false otherwise.
+	 * @throws InvalidMoveException If the specified position is not valid.
+	 */
 	private Boolean isUsed(int x, int y) throws InvalidMoveException {
 		return nPlayers >= requiredPlayers[x][y];
 	}
@@ -76,6 +106,16 @@ public class TableTop {
 		table[x][y] = card;
 	}
 
+	/**
+	 * @author Ludovico, Lorenzo, Marco, Riccardo
+	 * Determines if a specified position on the table is pickable based on whether it is adjacent to an empty space and has not already been picked.
+	 * Throws an InvalidMoveException if the specified position is not valid or is already empty.
+	 *
+	 * @param y The vertical index of the specified position.
+	 * @param x The horizontal index of the specified position.
+	 * @return True if the specified position is pickable, false otherwise.
+	 * @throws InvalidMoveException If the specified position is not valid or is already empty.
+	 */
 	public boolean isPickable(int y, int x) throws InvalidMoveException {
 		if(y >= SIZE || x >= SIZE || y < 0 || x < 0){
 			throw new InvalidMoveException("Invalid position");
