@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Various methods implemented">
+    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Core package uml update">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/TableTop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/TableTop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/CardsDeck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/CardsDeck.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/polimi/ingsw/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/polimi/ingsw/AppTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,6 +69,9 @@
       <workItem from="1679059777128" duration="3596000" />
       <workItem from="1679068182763" duration="634000" />
       <workItem from="1679307499602" duration="1180000" />
+      <workItem from="1680006690828" duration="441000" />
+      <workItem from="1680007175085" duration="74000" />
+      <workItem from="1680007297620" duration="1506000" />
     </task>
     <task id="LOCAL-00001" summary="Core package uml">
       <created>1678808138034</created>
