@@ -1,9 +1,9 @@
 package model;
 
-import junit.framework.TestCase;
+import static junit.framework.TestCase.assertEquals;
 import org.junit.Test;
 
-public class GameTest extends TestCase {
+public class GameTest {
 
     @Test
     public void testGetTabletop() {

@@ -1,11 +1,9 @@
 package model;
 
-import junit.framework.TestCase;
+import static junit.framework.TestCase.assertEquals;
 import org.junit.Test;
 
-import java.util.Optional;
-
-public class PersonalObjectiveTest extends TestCase {
+public class PersonalObjectiveTest {
 
     @Test
     public void testIsCompleted() {
