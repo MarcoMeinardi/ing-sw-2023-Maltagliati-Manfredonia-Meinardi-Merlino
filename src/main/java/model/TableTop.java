@@ -10,7 +10,7 @@ public class TableTop {
 	private static final int[] dx = {-1, 0, 1, 0};
 	private static final int[] dy = {0, -1, 0, 1};
 
-	static private final int[][] requiredPlayers = {
+	private static final int[][] requiredPlayers = {
 		{11537317, 11537317, 11537317, 3       , 4       , 11537317, 11537317, 11537317, 11537317},
 		{11537317, 11537317, 11537317, 2       , 2       , 4       , 11537317, 11537317, 11537317},
 		{11537317, 11537317, 3       , 2       , 2       , 2       , 3       , 11537317, 11537317},

@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class PersonalObjective extends Objective {
     private final Cell[] cellsCheck;
-    static final int[] points = {1, 2, 4, 6, 9, 12};
+    private static final int[] points = {1, 2, 4, 6, 9, 12};
 
     /**
      * @author Marco, Ludovico, Lorenzo, Riccardo
@@ -19,7 +19,7 @@ public class PersonalObjective extends Objective {
         this.cellsCheck = cellscheck;
     }
 
-   // TODO doc post invalidmoveexception
+    // TODO doc post invalidmoveexception
     @Override
     public Optional<Cockade> isCompleted(Shelf shelf) {
         int count = 0;
