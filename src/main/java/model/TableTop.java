@@ -33,6 +33,7 @@ public class TableTop {
 	public TableTop(int nPlayers) {
 		table = new Card[SIZE][SIZE];
 		this.nPlayers = nPlayers;
+		deck = new CardsDeck();
 		fillTable();
 	}
 

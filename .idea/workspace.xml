@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="JavaDoc 1">
-      <change afterPath="$PROJECT_DIR$/src/test/java/model/CardsDeckTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/model/CommonObjectiveTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/model/GameTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/model/PersonalObjectiveTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="implemented method isPickable">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/TableTop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/TableTop.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,8 +18,6 @@
       <list>
         <option value="Enum" />
         <option value="Class" />
-        <option value="JUnit5 &amp; Mockito" />
-        <option value="JUnit3 Test Class" />
       </list>
     </option>
   </component>
@@ -39,121 +33,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit3",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit3": "junit.framework.TestCase",
-    "last_directory_selection": "/home/pinguinobiricchino/IdeaProjects/ing-sw-2023-Maltagliati-Manfredonia-Meinardi-Merlino/src/main/java/it/polimi/ingsw",
-    "last_opened_file_path": "/home/marco/Desktop/ing-sw-2023-Maltagliati-Manfredonia-Meinardi-Merlino/core.plantuml",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "editor.preferences.tabs",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_directory_selection&quot;: &quot;/home/pinguinobiricchino/IdeaProjects/ing-sw-2023-Maltagliati-Manfredonia-Meinardi-Merlino/src/main/java/it/polimi/ingsw&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/marco/Desktop/ing-sw-2023-Maltagliati-Manfredonia-Meinardi-Merlino/core.plantuml&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
-  <component name="RecentsManager">
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="junit.framework.TestCase" />
-    </key>
-    <key name="CreateTestDialog.RecentsKey">
-      <recent name="model" />
-    </key>
-  </component>
-  <component name="RunManager" selected="JUnit.CardsDeckTest">
-    <configuration name="CardsDeckTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="PSP000" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="model.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="model" />
-      <option name="MAIN_CLASS_NAME" value="model.CardsDeckTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="CardsDeckTest.testDraw" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="PSP000" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="model.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="model" />
-      <option name="MAIN_CLASS_NAME" value="model.CardsDeckTest" />
-      <option name="METHOD_NAME" value="testDraw" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="CommonObjectiveTest.testIsCompleted" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="PSP000" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="model.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="model" />
-      <option name="MAIN_CLASS_NAME" value="model.CommonObjectiveTest" />
-      <option name="METHOD_NAME" value="testIsCompleted" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TableTopTestTest.testTestGetDeck" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="PSP000" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="model.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="model" />
-      <option name="MAIN_CLASS_NAME" value="model.TableTopTestTest" />
-      <option name="METHOD_NAME" value="testTestGetDeck" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TableTopTestTest.testTestIsPickable" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="PSP000" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="model.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="model" />
-      <option name="MAIN_CLASS_NAME" value="model.TableTopTestTest" />
-      <option name="METHOD_NAME" value="testTestIsPickable" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="JUnit.CardsDeckTest" />
-        <item itemvalue="JUnit.CommonObjectiveTest.testIsCompleted" />
-        <item itemvalue="JUnit.CardsDeckTest.testDraw" />
-        <item itemvalue="JUnit.TableTopTestTest.testTestIsPickable" />
-        <item itemvalue="JUnit.TableTopTestTest.testTestGetDeck" />
-      </list>
-    </recent_temporary>
-  </component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -172,21 +66,6 @@
       <workItem from="1679059777128" duration="3596000" />
       <workItem from="1679068182763" duration="634000" />
       <workItem from="1679307499602" duration="1180000" />
-      <workItem from="1680006690828" duration="441000" />
-      <workItem from="1680007175085" duration="74000" />
-      <workItem from="1680007297620" duration="1592000" />
-      <workItem from="1680010752829" duration="3211000" />
-      <workItem from="1680085491189" duration="146000" />
-      <workItem from="1680085670919" duration="394000" />
-      <workItem from="1680086096332" duration="240000" />
-      <workItem from="1680090565450" duration="232000" />
-      <workItem from="1680090840311" duration="139000" />
-      <workItem from="1680091010055" duration="38000" />
-      <workItem from="1680091078230" duration="190000" />
-      <workItem from="1680091300729" duration="58000" />
-      <workItem from="1680091396176" duration="70000" />
-      <workItem from="1680097807160" duration="416000" />
-      <workItem from="1680098275844" duration="1747000" />
     </task>
     <task id="LOCAL-00001" summary="Core package uml">
       <created>1678808138034</created>
@@ -209,21 +88,7 @@
       <option name="project" value="LOCAL" />
       <updated>1679665409754</updated>
     </task>
-    <task id="LOCAL-00004" summary="TODO post 3rd Laboratory">
-      <created>1680008862054</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1680008862054</updated>
-    </task>
-    <task id="LOCAL-00005" summary="JavaDoc 1">
-      <created>1680013792076</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1680013792076</updated>
-    </task>
-    <option name="localTasksCounter" value="6" />
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -244,12 +109,6 @@
     <MESSAGE value="Core package uml" />
     <MESSAGE value="Core package uml update" />
     <MESSAGE value="Various methods implemented" />
-    <MESSAGE value="TODO post 3rd Laboratory" />
-    <MESSAGE value="JavaDoc 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="JavaDoc 1" />
-  </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
+    <option name="LAST_COMMIT_MESSAGE" value="Various methods implemented" />
   </component>
 </project>
