@@ -37,9 +37,6 @@ public class TableTop {
 		fillTable();
 	}
 
-    public CardsDeck getDeck() {
-        return deck;
-    }
 
 	/**
 	 * Fills any empty spaces on the table with cards drawn from the deck,
@@ -90,12 +87,6 @@ public class TableTop {
 		return nPlayers >= requiredPlayers[x][y];
 	}
 
-	public Card getCard(int x, int y) throws InvalidMoveException {
-		if (y < 0 || x < 0 || y >= SIZE || x >= SIZE) {
-			throw new InvalidMoveException("Invalid position");
-		}
-		return table[x][y];
-	}
 
 	public void setCard(int x, int y, Card card) throws InvalidMoveException {
 		if (y < 0 || x < 0 || y >= SIZE || x >= SIZE) {
@@ -127,7 +118,9 @@ public class TableTop {
 			throw new InvalidMoveException("Empty position");
 		}
 		for (int i = 0; i < 4; i++) {
-			if(y + dy[i] >= SIZE || y + dy[i] < 0 || x + dx[i] >= SIZE || x + dx[i] < 0 || table[y + dy[i]][x + dx[i]] == Card.Empty){
+			if(y + dy[i] >= SIZE || y + dy[i] < 0 ||
+					x + dx[i] >= SIZE || x + dx[i] < 0 ||
+						table[y + dy[i]][x + dx[i]] == Card.Empty){
 				return true;
 			}
 		}
@@ -141,7 +134,7 @@ public class TableTop {
 	 * @param y The vertical index of the specified position.
 	 * @param x The horizontal index of the specified position.
 	 * @return The card at the specified position.
-	 * @throws InvalidMoveException If the specified position is already empty.
+	 * @throws InvalidMoveException If the specified position is already empty or not valid.
 	 */
 
 	public Card pickCard(int y, int x) throws InvalidMoveException {
@@ -152,4 +145,17 @@ public class TableTop {
 		table[y][x] = Card.Empty;
 		return card;
 	}
+
+	public CardsDeck getDeck() {
+		return deck;
+	}
+
+	public Card getCard(int x, int y) throws InvalidMoveException {
+		if (y < 0 || x < 0 || y >= SIZE || x >= SIZE) {
+			throw new InvalidMoveException("Invalid position");
+		}
+		return table[x][y];
+	}
+
 }
+

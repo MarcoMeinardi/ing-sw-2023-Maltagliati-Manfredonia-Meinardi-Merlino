@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Added method in TableTop to pick a card and create class to test TableTop">
+    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Converted needRefill and fillTable to public">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/model/TableTop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/TableTop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/model/TableTopTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/model/TableTopTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +103,21 @@
       <option name="project" value="LOCAL" />
       <updated>1680186204260</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Added description to pickCard method and corrected isPickable method description">
+      <created>1680189669040</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1680189669040</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Converted needRefill and fillTable to public">
+      <created>1680189840879</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1680189840879</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -125,6 +140,8 @@
     <MESSAGE value="Various methods implemented" />
     <MESSAGE value="Added missing initialization of cardsDeck in TableTop" />
     <MESSAGE value="Added method in TableTop to pick a card and create class to test TableTop" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added method in TableTop to pick a card and create class to test TableTop" />
+    <MESSAGE value="Added description to pickCard method and corrected isPickable method description" />
+    <MESSAGE value="Converted needRefill and fillTable to public" />
+    <option name="LAST_COMMIT_MESSAGE" value="Converted needRefill and fillTable to public" />
   </component>
 </project>
