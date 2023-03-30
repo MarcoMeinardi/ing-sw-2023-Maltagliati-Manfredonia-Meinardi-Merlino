@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Shelf {
     // Size of the shelf 6(rows)x5(columns)
@@ -47,14 +48,14 @@ public class Shelf {
         if (cards.length == 0 || cards.length > 3) {
             throw new InvalidMoveException("Invalid number of cards");
         }
+		if (Arrays.asList(cards).contains(Card.Empty)) {
+			throw new InvalidMoveException("Cannot insert empty card");
+		}
         int highest = getHighest(column);
         if(cards.length > ROWS - highest) {
             throw new InvalidMoveException("Not enough space in column");
         }
         for(Card card : cards) {
-			if (card.equals(Card.Empty)) {
-				throw new InvalidMoveException("Cannot insert empty card");
-			}
             slots[highest++][column] = card;
         }
     }
