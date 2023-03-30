@@ -46,10 +46,10 @@ public class TableTop {
 	 * as long as the card meets the requirements for the position.
 	 * @author Marco, Ludovico
 	 */
-	private void fillTable() {
+	public void fillTable() {
 		for (int y = 0; y < SIZE; y++){
 			for (int x = 0; x < SIZE; x++){
-				if (requiredPlayers[y][x] <= nPlayers && table[y][x] == Card.Empty) {
+				if (requiredPlayers[y][x] <= nPlayers && table[y][x].equals(Card.Empty)) {
 					table[y][x] = deck.draw().orElse(Card.Empty);
 				}
 			}
@@ -63,7 +63,7 @@ public class TableTop {
 	 *
 	 * @return True if the table needs to be refilled, false otherwise.
 	 */
-	private boolean needRefill() {
+	public boolean needRefill() {
 		for (int y = 0; y < SIZE - 1; y++) {
 			for (int x = 0; x < SIZE - 1; x++) {
 				if (table[y][x] != Card.Empty) {
