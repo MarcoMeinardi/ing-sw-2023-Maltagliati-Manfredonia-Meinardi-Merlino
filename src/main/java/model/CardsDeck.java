@@ -4,6 +4,7 @@ import java.util.*;
 
 public class CardsDeck {
     private Stack<Card> cards;
+	private static final int CARDS_PER_TYPE = 22;
 
     /**
      * @author Lorenzo, Ludovico, Marco, Riccardo
@@ -17,7 +18,7 @@ public class CardsDeck {
             if (c == Card.Empty) {
                 continue;
             }
-            for (int i = 0; i < 22; i++) {
+            for (int i = 0; i < CARDS_PER_TYPE; i++) {
                 cards.push(c);
             }
         }
