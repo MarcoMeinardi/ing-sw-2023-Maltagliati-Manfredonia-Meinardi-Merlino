@@ -134,4 +134,13 @@ public class TableTop {
 		}
 		return false;
 	}
+
+	public Card pickCard(int y, int x) throws InvalidMoveException {
+		Card card = getCard(y, x);
+		if (card == Card.Empty) {
+			throw new InvalidMoveException("No card in this cell");
+		}
+		table[y][x] = Card.Empty;
+		return card;
+	}
 }
