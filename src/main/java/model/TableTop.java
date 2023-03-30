@@ -109,7 +109,6 @@ public class TableTop {
 
 	/**
 	 * Determines if a specified position on the table is pickable based on whether it is adjacent to an empty space and has not already been picked.
-	 * Throws an InvalidMoveException if the specified position is not valid or is already empty.
 	 * @author Ludovico, Lorenzo, Marco, Riccardo
 	 *
 	 * @param y The vertical index of the specified position.
@@ -134,6 +133,16 @@ public class TableTop {
 		}
 		return false;
 	}
+
+	/**
+     * Picks a card from the table and returns it.
+	 * @author Ludovico, Marco
+	 *
+	 * @param y The vertical index of the specified position.
+	 * @param x The horizontal index of the specified position.
+	 * @return The card at the specified position.
+	 * @throws InvalidMoveException If the specified position is already empty.
+	 */
 
 	public Card pickCard(int y, int x) throws InvalidMoveException {
 		Card card = getCard(y, x);

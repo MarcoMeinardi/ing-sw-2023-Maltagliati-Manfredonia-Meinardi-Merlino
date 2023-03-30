@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Added missing initialization of cardsDeck in TableTop">
-      <change afterPath="$PROJECT_DIR$/src/test/java/model/TableTopTest.java" afterDir="false" />
+    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Added method in TableTop to pick a card and create class to test TableTop">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/model/TableTop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/TableTop.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -95,7 +95,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680185577687</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Added method in TableTop to pick a card and create class to test TableTop">
+      <created>1680186204260</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1680186204260</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -117,6 +124,7 @@
     <MESSAGE value="Core package uml update" />
     <MESSAGE value="Various methods implemented" />
     <MESSAGE value="Added missing initialization of cardsDeck in TableTop" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added missing initialization of cardsDeck in TableTop" />
+    <MESSAGE value="Added method in TableTop to pick a card and create class to test TableTop" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added method in TableTop to pick a card and create class to test TableTop" />
   </component>
 </project>
