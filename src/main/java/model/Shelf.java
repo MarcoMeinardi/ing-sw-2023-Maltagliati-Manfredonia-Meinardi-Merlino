@@ -48,10 +48,13 @@ public class Shelf {
             throw new InvalidMoveException("Invalid number of cards");
         }
         int highest = getHighest(column);
-        if(cards.length > ROWS - highest){
+        if(cards.length > ROWS - highest) {
             throw new InvalidMoveException("Not enough space in column");
         }
-        for(Card card:cards){
+        for(Card card : cards) {
+			if (card.equals(Card.Empty)) {
+				throw new InvalidMoveException("Cannot insert empty card");
+			}
             slots[highest++][column] = card;
         }
     }
