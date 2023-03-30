@@ -10,6 +10,10 @@ public class CommonObjective extends Objective {
 	int pointDecrement;
 	Function<Shelf, Boolean> checkCompleted;
 
+	private static final int INITIAL_VALUE = 8;
+	private static final int POINT_DECREMENT = 2;
+	private static final int POINT_DECREMENT_2_PLAYERS = 4;
+
 	/**
 	 * @author Marco, Lorenzo, Ludovico, Riccardo
 	 * Constructor that creates a new common objective with a specified name,
@@ -23,8 +27,8 @@ public class CommonObjective extends Objective {
 	public CommonObjective(String name, int nPlayers, Function<Shelf, Boolean> checkCompleted) {
 		super(name);
 		this.name = name;
-		value = 8;
-		pointDecrement = nPlayers > 2 ? 2 : 4;
+		value = INITIAL_VALUE;
+		pointDecrement = nPlayers > 2 ? POINT_DECREMENT_2_PLAYERS : POINT_DECREMENT;
 		this.checkCompleted = checkCompleted;
 	}
 

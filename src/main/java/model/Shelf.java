@@ -41,7 +41,7 @@ public class Shelf {
      * or there is not enough space in the column.
      */
     public void insert(int column, Card[] cards) throws InvalidMoveException {
-        if (column < 0 || column > 4) {
+        if (column < 0 || column >= COLUMNS) {
             throw new InvalidMoveException("Invalid column");
         }
         if (cards.length == 0 || cards.length > 3) {
