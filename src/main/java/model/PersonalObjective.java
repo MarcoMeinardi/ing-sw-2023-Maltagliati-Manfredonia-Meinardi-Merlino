@@ -24,8 +24,8 @@ public class PersonalObjective extends Objective {
     public Optional<Cockade> isCompleted(Shelf shelf) {
         int count = 0;
         try {
-            for(int i = 0; i < cellsCheck.length; i++) {
-                if (shelf.getCard(cellsCheck[i].y(), cellsCheck[i].x()) == cellsCheck[i].card()) {
+            for (Cell cell : cellsCheck) {
+                if (shelf.getCard(cell.y(), cell.x()) == cell.card()) {
                     count++;
                 }
             }
