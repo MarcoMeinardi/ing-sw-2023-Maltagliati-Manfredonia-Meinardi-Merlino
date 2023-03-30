@@ -8,8 +8,8 @@ public class Game {
     private CommonObjective[] commonObjectives;
 
     /**
-     * @author Lorenzo, Ludovico, Marco, Riccardo
      * Method that returns the current tabletop object.
+     * @author Lorenzo, Ludovico, Marco, Riccardo
      *
      * @return The current TableTop object
      */
@@ -18,8 +18,8 @@ public class Game {
     }
 
     /**
-     * @author Lorenzo, Ludovico, Marco, Riccardo
      * Method that returns the list of players in the game.
+     * @author Lorenzo, Ludovico, Marco, Riccardo
      *
      * @return An ArrayList containing all Player objects in the game
      */
@@ -28,8 +28,8 @@ public class Game {
     }
 
     /**
-     * @author Lorenzo, Ludovico, Marco, Riccardo
      * Method that returns the array of common objectives in the game.
+     * @author Lorenzo, Ludovico, Marco, Riccardo
      *
      * @return An array of all CommonObjective objects in the game
      */

@@ -9,9 +9,9 @@ public class Player {
 	private ArrayList<Cockade> trophies;
 
 	/**
-	 * @author Marco, Lorenzo, Ludovico, Riccardo
 	 * Constructor that creates a new player with a specified name and personal objective.
 	 * The player's shelf and trophies list are initialized.
+	 * @author Marco, Lorenzo, Ludovico, Riccardo
 	 *
 	 * @param name The name of the player
 	 * @param personalObjective The personal objective of the player

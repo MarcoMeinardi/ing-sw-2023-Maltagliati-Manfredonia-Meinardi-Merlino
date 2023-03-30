@@ -7,10 +7,10 @@ public class CardsDeck {
 	private static final int CARDS_PER_TYPE = 22;
 
     /**
-     * @author Lorenzo, Ludovico, Marco, Riccardo
      * Constructor that creates a new deck of cards by initializing a stack of cards
      * with all card values except for empty, and adding 22 instances of each card value
      * to the stack. The stack is then shuffled.
+     * @author Lorenzo, Ludovico, Marco, Riccardo
      */
     public CardsDeck() {
         cards = new Stack<Card>();
@@ -26,10 +26,10 @@ public class CardsDeck {
     }
 
     /**
-     * @author Lorenzo, Ludovico, Marco, Riccardo
      * Method that draws a card from the top of the deck. If the deck is empty,
      * returns an empty Optional object; otherwise, returns an Optional object
      * containing the drawn card.
+     * @author Lorenzo, Ludovico, Marco, Riccardo
      *
      * @return Optional object containing a drawn card,
      * or empty Optional object if the deck is empty.
@@ -45,8 +45,9 @@ public class CardsDeck {
     }
 
     /**
-     * @author Lorenzo, Ludovico, Marco, Riccardo
      * Method that return the number of cards currently in the deck
+     * @author Lorenzo, Ludovico, Marco, Riccardo
+     *
      * @return The size of the deck (number of cards)
      */
     public int size() {

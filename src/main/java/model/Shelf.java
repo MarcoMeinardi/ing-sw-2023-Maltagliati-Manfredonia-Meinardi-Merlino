@@ -15,9 +15,9 @@ public class Shelf {
 	private static final int[] dy = {0, -1, 0, 1};
 
     /**
-     * @author Lorenzo, Marco, Ludovico
      * Constructor that creates a new shelf with a two-dimensional array of empty cards
      * representing each slot on the shelf.
+     * @author Lorenzo, Marco, Ludovico
      */
     public Shelf() {
         slots = new Card[ROWS][COLUMNS];
@@ -29,12 +29,12 @@ public class Shelf {
     }
 
     /**
-     * @author Ludovico, Marco, Lorenzo
      * Method that inserts a specified array of cards into a specified column on the shelf.
      * If the column is invalid (out of range), throws an InvalidMoveException with an appropriate error message.
      * If the number of cards being inserted is less than 1 or greater than 3, also throws an InvalidMoveException.
      * If there is not enough space in the column to insert all the cards, throws an InvalidMoveException.
      * Otherwise, inserts the cards into the column, starting from the bottom slot up to the first empty slot.
+     * @author Ludovico, Marco, Lorenzo
      *
      * @param column The index of the column to insert the cards into
      * @param cards The array of cards to insert
@@ -61,8 +61,8 @@ public class Shelf {
     }
 
     /**
-     * @author Ludovico, Marco
      * Private helper method that returns the index of the highest empty slot in a specified column on the shelf.
+     * @author Ludovico, Marco
      *
      * @param column The index of the column to check
      * @return The index of the highest empty slot in the column
@@ -77,9 +77,9 @@ public class Shelf {
 	}
 
     /**
-     * @author Ludovico
      * Method that returns the card in a specified slot on the shelf.
      * If the specified coordinates are out of bounds, throws an InvalidMoveException with an appropriate error message.
+     * @author Ludovico
      *
      * @param y The row index of the card to retrieve
      * @param x The column index of the card to retrieve
@@ -94,11 +94,11 @@ public class Shelf {
     }
 
     /**
-     * @author Marco
      * Returns an ArrayList of Cockades representing all groups of adjacent
      * non-empty cards on the board with a size of at least 3.
      * A Cockade is added to the resulting ArrayList for each group, with a name indicating the size and
      * color of the group and the associated point value.
+     * @author Marco
      *
      * @return ArrayList of Cockades representing all groups of adjacent non-empty cards on the board
      *         with a size of at least 3.
@@ -123,9 +123,9 @@ public class Shelf {
 	}
 
     /**
-     * @author Marco, Lorenzo, Ludovico, Riccardo
      * Calculates and returns the size of the group of adjacent non-empty cards on the board
      * that includes the card at the specified coordinates and has the same color as the reference card.
+     * @author Marco
      *
      * @param y The vertical index of the card to start the search from.
      * @param x The horizontal index of the card to start the search from.

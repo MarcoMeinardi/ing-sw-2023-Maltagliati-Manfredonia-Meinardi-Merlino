@@ -23,10 +23,10 @@ public class TableTop {
 	};
 
 	/**
-	 * @author Marco
 	 * Creates a new TableTop object with a specified number of players.
 	 * The size of the table is set to SIZE x SIZE, and it is filled with cards
 	 * according to the rules of the game.
+	 * @author Marco
 	 *
 	 * @param nPlayers The number of players in the game.
 	 */
@@ -41,9 +41,9 @@ public class TableTop {
     }
 
 	/**
-	 * @author Marco, Ludovico
 	 * Fills any empty spaces on the table with cards drawn from the deck,
 	 * as long as the card meets the requirements for the position.
+	 * @author Marco, Ludovico
 	 */
 	private void fillTable() {
 		for (int y = 0; y < SIZE; y++){
@@ -56,9 +56,9 @@ public class TableTop {
 	}
 
 	/**
-	 * @author Marco, Ludovico
 	 * Determines if the table needs to be refilled based on whether there are any empty spaces
 	 * next to non-empty spaces. Returns true if a refill is needed, false otherwise.
+	 * @author Marco, Ludovico
 	 *
 	 * @return True if the table needs to be refilled, false otherwise.
 	 */
@@ -76,9 +76,9 @@ public class TableTop {
 	}
 
 	/**
-	 * @author Lorenzo, Marco, Ludovico, Riccardo
 	 * Determines if a specified position on the table has been used by a player based on the
 	 * required number of players for that position. Throws an InvalidMoveException if the specified position is not valid.
+	 * @author Lorenzo, Marco, Ludovico, Riccardo
 	 *
 	 * @param x The horizontal index of the specified position.
 	 * @param y The vertical index of the specified position.
@@ -107,9 +107,9 @@ public class TableTop {
 	}
 
 	/**
-	 * @author Ludovico, Lorenzo, Marco, Riccardo
 	 * Determines if a specified position on the table is pickable based on whether it is adjacent to an empty space and has not already been picked.
 	 * Throws an InvalidMoveException if the specified position is not valid or is already empty.
+	 * @author Ludovico, Lorenzo, Marco, Riccardo
 	 *
 	 * @param y The vertical index of the specified position.
 	 * @param x The horizontal index of the specified position.
