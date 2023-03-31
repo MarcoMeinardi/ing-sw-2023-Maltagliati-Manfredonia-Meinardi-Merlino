@@ -15,9 +15,6 @@ public class CardsDeck {
     public CardsDeck() {
         cards = new Stack<Card>();
         for (Card c:Card.values()) {
-            if (c == Card.Empty) {
-                continue;
-            }
             for (int i = 0; i < CARDS_PER_TYPE; i++) {
                 cards.push(c);
             }

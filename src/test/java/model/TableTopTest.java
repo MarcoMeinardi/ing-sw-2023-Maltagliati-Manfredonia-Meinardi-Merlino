@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
+import java.util.Optional;
+
 public class TableTopTest {
 
     private static final int SIZE = 9;
@@ -28,7 +30,7 @@ public class TableTopTest {
             for (int y = 0; y < SIZE; y++) {
                 for (int x = 0; x < SIZE; x++) {
                     if (requiredPlayers[y][x] <= 3) {
-                        assertNotEquals(table.getCard(y,x), Card.Empty);
+                        assertNotEquals(table.getCard(y,x), Optional.empty());
                     }
                 }
             }
@@ -53,7 +55,7 @@ public class TableTopTest {
         public void testSetCard() throws InvalidMoveException {
             TableTop table = new TableTop(3);
             table.setCard(0, 3, Card.Gatto);
-            assertEquals(table.getCard(0, 3), Card.Gatto);
+            assertEquals(table.getCard(0, 3), Optional.of(Card.Gatto));
         }
 
         @Test
@@ -70,14 +72,14 @@ public class TableTopTest {
             TableTop table = new TableTop(3);
             table.setCard(0, 3, Card.Gatto);
             table.pickCard(0, 3);
-            assertEquals(table.getCard(0, 3), Card.Empty);
+            assertEquals(table.getCard(0, 3), Optional.empty());
         }
 
         @Test
         public void testGetCard() throws InvalidMoveException {
             TableTop table = new TableTop(3);
             table.setCard(0, 3, Card.Gatto);
-            assertEquals(table.getCard(0, 3), Card.Gatto);
+            assertEquals(table.getCard(0, 3), Optional.of(Card.Gatto));
         }
 
 

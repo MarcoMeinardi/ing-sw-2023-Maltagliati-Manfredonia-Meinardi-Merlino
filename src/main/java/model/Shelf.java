@@ -2,10 +2,11 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class Shelf {
     // Size of the shelf 6(rows)x5(columns)
-    private Card[][] slots;
+    private Optional<Card>[][] slots;
 
 	private static final int COLUMNS = 5;
 	private static final int ROWS = 6;
@@ -20,10 +21,10 @@ public class Shelf {
      * @author Lorenzo, Marco, Ludovico
      */
     public Shelf() {
-        slots = new Card[ROWS][COLUMNS];
+        slots = new Optional[ROWS][COLUMNS];
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLUMNS; x++) {
-                slots[y][x] = Card.Empty;
+                slots[y][x] = Optional.empty();
             }
         }
     }
@@ -48,15 +49,12 @@ public class Shelf {
         if (cards.length == 0 || cards.length > 3) {
             throw new InvalidMoveException("Invalid number of cards");
         }
-		if (Arrays.asList(cards).contains(Card.Empty)) {
-			throw new InvalidMoveException("Cannot insert empty card");
-		}
         int highest = getHighest(column);
         if(cards.length > ROWS - highest) {
             throw new InvalidMoveException("Not enough space in column");
         }
         for(Card card : cards) {
-            slots[highest++][column] = card;
+            slots[highest++][column] = Optional.of(card);
         }
     }
 
@@ -69,7 +67,7 @@ public class Shelf {
      */
 	private int getHighest(int column) {
 		for(int y = 0; y < ROWS;y++){
-            if(slots[y][column] == Card.Empty){
+            if(slots[y][column].isEmpty()){
                 return y;
             }
         }
@@ -86,7 +84,7 @@ public class Shelf {
      * @return The card in the specified slot
      * @throws InvalidMoveException if the specified coordinates are out of bounds
      */
-    public Card getCard(int y, int x) throws InvalidMoveException {
+    public Optional<Card> getCard(int y, int x) throws InvalidMoveException {
         if(y >= ROWS || y < 0 || x < 0 || x >= COLUMNS){
             throw new InvalidMoveException("Card requested is out of bound");
         }
@@ -109,9 +107,9 @@ public class Shelf {
 		boolean[][] visited = new boolean[ROWS][COLUMNS];
 		for (int y = 0; y < ROWS; y++) {
 			for (int x = 0; x < COLUMNS; x++) {
-				if (slots[y][x].equals(Card.Empty) || visited[y][x]) continue;
+				if (slots[y][x].isEmpty() || visited[y][x]) continue;
 
-				int groupSize = getGroupSize(y, x, slots[y][x], visited);
+				int groupSize = getGroupSize(y, x, slots[y][x].get(), visited);
 				if (groupSize >= 3) {
 					String cockadeName = String.format("Area of %s of size %d", slots[y][x].toString(), groupSize);
 					result.add(new Cockade(cockadeName, groupPoints[Math.max(groupSize - 3, 3)]));

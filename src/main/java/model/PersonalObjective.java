@@ -25,7 +25,8 @@ public class PersonalObjective extends Objective {
         int count = 0;
         try {
             for (Cell cell : cellsCheck) {
-                if (shelf.getCard(cell.y(), cell.x()) == cell.card()) {
+                Optional<Card> pos = shelf.getCard(cell.y(), cell.x());
+                if (pos.isPresent() && pos.get() == cell.card()) {
                     count++;
                 }
             }

@@ -1,26 +1,42 @@
 package model;
 
+import java.util.Optional;
+
 public class TableTop {
 	private static final int SIZE = 9;
+	private static final int MAX_PLAYERS = 6;
 
     private CardsDeck deck;
-	private Card[][] table;
-	int nPlayers;
+	private Optional<Card>[][] table;
+
+	private final int player_count;
 
 	private static final int[] dx = {-1, 0, 1, 0};
 	private static final int[] dy = {0, -1, 0, 1};
 
-	private static final int[][] requiredPlayers = {
-		{11537317, 11537317, 11537317, 3       , 4       , 11537317, 11537317, 11537317, 11537317},
-		{11537317, 11537317, 11537317, 2       , 2       , 4       , 11537317, 11537317, 11537317},
-		{11537317, 11537317, 3       , 2       , 2       , 2       , 3       , 11537317, 11537317},
-		{11537317, 4       , 2       , 2       , 2       , 2       , 2       , 2       , 3       },
+	private static final int[][] player_number_mask = {
+		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 3       , 4       , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS},
+		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 2       , 2       , 4       , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS},
+		{MAX_PLAYERS, MAX_PLAYERS, 3       , 2       , 2       , 2       , 3       , MAX_PLAYERS, MAX_PLAYERS},
+		{MAX_PLAYERS, 4       , 2       , 2       , 2       , 2       , 2       , 2       , 3       },
 		{4       , 2       , 2       , 2       , 2       , 2       , 2       , 2       , 4       },
-		{3       , 2       , 2       , 2       , 2       , 2       , 2       , 4       , 11537317},
-		{11537317, 11537317, 3       , 2       , 2       , 2       , 3       , 11537317, 11537317},
-		{11537317, 11537317, 11537317, 4       , 2       , 2       , 11537317, 11537317, 11537317},
-		{11537317, 11537317, 11537317, 11537317, 4       , 3       , 11537317, 11537317, 11537317}
+		{3       , 2       , 2       , 2       , 2       , 2       , 2       , 4       , MAX_PLAYERS},
+		{MAX_PLAYERS, MAX_PLAYERS, 3       , 2       , 2       , 2       , 3       , MAX_PLAYERS, MAX_PLAYERS},
+		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 4       , 2       , 2       , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS},
+		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 4       , 3       , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS}
 	};
+
+	/**
+	 * Returns true if the position is used in this tabletop, false otherwise.
+	 * @author Marco
+	 *
+	 * @param y The y coordinate of the position.
+	 * @param x The x coordinate of the position.
+	 * @return The card at the specified position.
+	 */
+	private boolean isUsed(int y, int x) {
+		return player_number_mask[y][x] <= player_count;
+	}
 
 	/**
 	 * Creates a new TableTop object with a specified number of players.
@@ -31,12 +47,16 @@ public class TableTop {
 	 * @param nPlayers The number of players in the game.
 	 */
 	public TableTop(int nPlayers) {
-		table = new Card[SIZE][SIZE];
-		this.nPlayers = nPlayers;
+		table = new Optional[SIZE][SIZE];
+		for (int y = 0; y < SIZE; y++){
+			for (int x = 0; x < SIZE; x++){
+				table[y][x] = Optional.empty();
+			}
+		}
+		this.player_count = nPlayers;
 		deck = new CardsDeck();
 		fillTable();
 	}
-
 
 	/**
 	 * Fills any empty spaces on the table with cards drawn from the deck,
@@ -46,8 +66,8 @@ public class TableTop {
 	public void fillTable() {
 		for (int y = 0; y < SIZE; y++){
 			for (int x = 0; x < SIZE; x++){
-				if (requiredPlayers[y][x] <= nPlayers && table[y][x].equals(Card.Empty)) {
-					table[y][x] = deck.draw().orElse(Card.Empty);
+				if(isUsed(y, x) && table[y][x].isEmpty()){
+					table[y][x] = deck.draw();
 				}
 			}
 		}
@@ -63,28 +83,14 @@ public class TableTop {
 	public boolean needRefill() {
 		for (int y = 0; y < SIZE - 1; y++) {
 			for (int x = 0; x < SIZE - 1; x++) {
-				if (table[y][x] != Card.Empty) {
-					if (table[y + 1][x] != Card.Empty || table[y][x + 1] != Card.Empty) {
+				if (isUsed(y, x) && table[y][x].isPresent()) {
+					if ((isUsed(y + 1, x) && table[y + 1][x].isPresent()) || (isUsed(y, x + 1) && table[y][x + 1].isPresent())) {
 						return false;
 					}
 				}
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * Determines if a specified position on the table has been used by a player based on the
-	 * required number of players for that position. Throws an InvalidMoveException if the specified position is not valid.
-	 * @author Lorenzo, Marco, Ludovico, Riccardo
-	 *
-	 * @param x The horizontal index of the specified position.
-	 * @param y The vertical index of the specified position.
-	 * @return True if the specified position has been used, false otherwise.
-	 * @throws InvalidMoveException If the specified position is not valid.
-	 */
-	private Boolean isUsed(int x, int y) throws InvalidMoveException {
-		return nPlayers >= requiredPlayers[x][y];
 	}
 
 	/**
@@ -100,10 +106,10 @@ public class TableTop {
 		if (y < 0 || x < 0 || y >= SIZE || x >= SIZE) {
 			throw new InvalidMoveException("Invalid position");
 		}
-		if (!isUsed(x, y)) {
+		if (!isUsed(y, x)) {
 			throw new InvalidMoveException("Card place not used");
 		}
-		table[x][y] = card;
+		table[x][y] = Optional.of(card);
 	}
 
 	/**
@@ -119,16 +125,16 @@ public class TableTop {
 		if(y >= SIZE || x >= SIZE || y < 0 || x < 0){
 			throw new InvalidMoveException("Invalid position");
 		}
-		if(nPlayers < requiredPlayers[y][x]){
-			throw new InvalidMoveException("Invalid position");
+		if(isUsed(y, x)){
+			throw new InvalidMoveException("Card place not used");
 		}
-		if(table[y][x] == Card.Empty){
+		if(table[y][x].isEmpty()){
 			throw new InvalidMoveException("Empty position");
 		}
 		for (int i = 0; i < 4; i++) {
 			if(y + dy[i] >= SIZE || y + dy[i] < 0 ||
 					x + dx[i] >= SIZE || x + dx[i] < 0 ||
-						table[y + dy[i]][x + dx[i]] == Card.Empty){
+						table[y + dy[i]][x + dx[i]].isEmpty()){
 				return true;
 			}
 		}
@@ -146,19 +152,19 @@ public class TableTop {
 	 */
 
 	public Card pickCard(int y, int x) throws InvalidMoveException {
-		Card card = getCard(y, x);
-		if (card == Card.Empty) {
-			throw new InvalidMoveException("No card in this cell");
+		Optional<Card> card = getCard(y, x);
+		if (card.isEmpty()) {
+			throw new InvalidMoveException("Empty position");
 		}
-		table[y][x] = Card.Empty;
-		return card;
+		table[y][x] = Optional.empty();
+		return card.get();
 	}
 
 	public CardsDeck getDeck() {
 		return deck;
 	}
 
-	public Card getCard(int x, int y) throws InvalidMoveException {
+	public Optional<Card> getCard(int x, int y) throws InvalidMoveException {
 		if (y < 0 || x < 0 || y >= SIZE || x >= SIZE) {
 			throw new InvalidMoveException("Invalid position");
 		}

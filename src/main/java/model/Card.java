@@ -1,7 +1,6 @@
 package model;
 
 public enum Card {
-	Empty,
     Gatto,
     Libro,
     Gioco,
