@@ -39,7 +39,6 @@ public class TableTopTest {
         @Test
         public void testNeedRefill() throws InvalidMoveException {
             TableTop table = new TableTop(3);
-            table.fillTable();
             assertFalse(table.needRefill());
             for(int y = 0; y < 9; y++) {
                 for(int x = 0; x < 9; x++) {
@@ -61,16 +60,13 @@ public class TableTopTest {
         @Test
         public void testIsPickable() throws InvalidMoveException {
             TableTop table = new TableTop(3);
-            table.setCard(0, 3, Card.Gatto);
             assertEquals(table.isPickable(0, 3), true);
-            table.fillTable();
             assertEquals(table.isPickable(4, 3), false);
         }
 
         @Test
         public void testPickCard() throws InvalidMoveException {
             TableTop table = new TableTop(3);
-            table.setCard(0, 3, Card.Gatto);
             table.pickCard(0, 3);
             assertEquals(table.getCard(0, 3), Optional.empty());
         }
@@ -81,6 +77,5 @@ public class TableTopTest {
             table.setCard(0, 3, Card.Gatto);
             assertEquals(table.getCard(0, 3), Optional.of(Card.Gatto));
         }
-
 
 }
