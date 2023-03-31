@@ -6,20 +6,28 @@ public class Player {
 	private final String name;
     private final PersonalObjective personalObjective;
     private final Shelf shelf;
-	private ArrayList<Trophy> trophies;
+	private ArrayList<Cockade> trophies;
 
+	/**
+	 * Constructor that creates a new player with a specified name and personal objective.
+	 * The player's shelf and trophies list are initialized.
+	 * @author Marco, Lorenzo, Ludovico, Riccardo
+	 *
+	 * @param name The name of the player
+	 * @param personalObjective The personal objective of the player
+	 */
 	public Player(String name, PersonalObjective personalObjective) {
 		this.name = name;
 		this.personalObjective = personalObjective;
 		shelf = new Shelf();
 		this.trophies = new ArrayList<>();
-}
+	}
 
     public Shelf getShelf() {
         return shelf;
     }
 
-    public ArrayList<Trophy> getTrophies() {
+    public ArrayList<Cockade> getTrophies() {
         return trophies;
     }
 

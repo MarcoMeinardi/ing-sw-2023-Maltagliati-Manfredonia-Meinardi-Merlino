@@ -61,6 +61,7 @@ cmake-build-*/
 # IntelliJ
 .idea/*
 out/
+target/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
@@ -85,6 +86,11 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
+
+.idea/workspace.xml
+
+
+Rulebook_ITA_My-Shelfie.pdf
 
 # Chino
 .ctags

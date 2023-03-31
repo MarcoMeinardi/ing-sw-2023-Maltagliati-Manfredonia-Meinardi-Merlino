@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Core package uml update">
+    <list default="true" id="34d68e50-4f93-4c24-9982-4e76fc42520e" name="Changes" comment="Converted needRefill and fillTable to public">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/model/TableTop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/TableTop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/model/TableTopTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/model/TableTopTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,13 +28,6 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="MavenImportPreferences">
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="workspaceImportEnabled" value="true" />
-      </MavenImportingSettings>
-    </option>
-  </component>
   <component name="ProjectId" id="2N0ZXQNtbFN8pWnamGZ1n6jyB2b" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -52,7 +45,7 @@
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -89,7 +82,42 @@
       <option name="project" value="LOCAL" />
       <updated>1678876984496</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Various methods implemented">
+      <created>1679665409754</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1679665409754</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added missing initialization of cardsDeck in TableTop">
+      <created>1680185577687</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1680185577687</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Added method in TableTop to pick a card and create class to test TableTop">
+      <created>1680186204260</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1680186204260</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added description to pickCard method and corrected isPickable method description">
+      <created>1680189669040</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1680189669040</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Converted needRefill and fillTable to public">
+      <created>1680189840879</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1680189840879</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -109,6 +137,11 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Core package uml" />
     <MESSAGE value="Core package uml update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Core package uml update" />
+    <MESSAGE value="Various methods implemented" />
+    <MESSAGE value="Added missing initialization of cardsDeck in TableTop" />
+    <MESSAGE value="Added method in TableTop to pick a card and create class to test TableTop" />
+    <MESSAGE value="Added description to pickCard method and corrected isPickable method description" />
+    <MESSAGE value="Converted needRefill and fillTable to public" />
+    <option name="LAST_COMMIT_MESSAGE" value="Converted needRefill and fillTable to public" />
   </component>
 </project>
