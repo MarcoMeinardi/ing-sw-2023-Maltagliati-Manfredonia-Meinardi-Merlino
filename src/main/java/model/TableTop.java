@@ -95,21 +95,21 @@ public class TableTop {
 
 	/**
 	 * Places the given card at the specified position on the table.
-	 * @author Lorenzo
 	 *
-	 * @param y The vertical index of the specified position.
-	 * @param x The horizontal index of the specified position.
+	 * @param y    The vertical index of the specified position.
+	 * @param x    The horizontal index of the specified position.
 	 * @param card The card to be placed at the specified position.
 	 * @throws InvalidMoveException If the specified position is not valid.
+	 * @author Lorenzo
 	 */
-	public void setCard(int x, int y, Card card) throws InvalidMoveException {
+	public void setCard(int y, int x, Card card) throws InvalidMoveException {
 		if (y < 0 || x < 0 || y >= SIZE || x >= SIZE) {
 			throw new InvalidMoveException("Invalid position");
 		}
 		if (!isUsed(y, x)) {
 			throw new InvalidMoveException("Card place not used");
 		}
-		table[x][y] = Optional.of(card);
+		table[y][x] = Optional.of(card);
 	}
 
 	/**
@@ -122,19 +122,21 @@ public class TableTop {
 	 * @throws InvalidMoveException If the specified position is not valid or is already empty.
 	 */
 	public boolean isPickable(int y, int x) throws InvalidMoveException {
-		if(y >= SIZE || x >= SIZE || y < 0 || x < 0){
+		if (y >= SIZE || x >= SIZE || y < 0 || x < 0) {
 			throw new InvalidMoveException("Invalid position");
 		}
-		if(isUsed(y, x)){
+		if (!isUsed(y, x)) {
 			throw new InvalidMoveException("Card place not used");
 		}
-		if(table[y][x].isEmpty()){
+		if (table[y][x].isEmpty()) {
 			throw new InvalidMoveException("Empty position");
 		}
 		for (int i = 0; i < 4; i++) {
-			if(y + dy[i] >= SIZE || y + dy[i] < 0 ||
-					x + dx[i] >= SIZE || x + dx[i] < 0 ||
-						table[y + dy[i]][x + dx[i]].isEmpty()){
+			if(
+				y + dy[i] >= SIZE || y + dy[i] < 0 ||
+				x + dx[i] >= SIZE || x + dx[i] < 0 ||
+				table[y + dy[i]][x + dx[i]].isEmpty()
+			) {
 				return true;
 			}
 		}
@@ -164,11 +166,11 @@ public class TableTop {
 		return deck;
 	}
 
-	public Optional<Card> getCard(int x, int y) throws InvalidMoveException {
+	public Optional<Card> getCard(int y, int x) throws InvalidMoveException {
 		if (y < 0 || x < 0 || y >= SIZE || x >= SIZE) {
 			throw new InvalidMoveException("Invalid position");
 		}
-		return table[x][y];
+		return table[y][x];
 	}
 
 }

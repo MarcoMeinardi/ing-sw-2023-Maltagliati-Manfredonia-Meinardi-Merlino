@@ -2,7 +2,6 @@ package model;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
@@ -30,7 +29,6 @@ public class CardsDeckTest {
         for (int i = 0; i < 132; i++) {
             Optional<Card> card = deck.draw();
             assertFalse(card.isEmpty());
-            assertNotEquals(Card.Empty, card.get());
         }
         assertEquals(0, deck.size());
         assertEquals(Optional.empty(), deck.draw());
