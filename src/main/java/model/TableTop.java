@@ -15,15 +15,15 @@ public class TableTop {
 	private static final int[] dy = {0, -1, 0, 1};
 
 	private static final int[][] player_number_mask = {
-		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 3       , 4       , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS},
-		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 2       , 2       , 4       , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS},
-		{MAX_PLAYERS, MAX_PLAYERS, 3       , 2       , 2       , 2       , 3       , MAX_PLAYERS, MAX_PLAYERS},
-		{MAX_PLAYERS, 4       , 2       , 2       , 2       , 2       , 2       , 2       , 3       },
-		{4       , 2       , 2       , 2       , 2       , 2       , 2       , 2       , 4       },
-		{3       , 2       , 2       , 2       , 2       , 2       , 2       , 4       , MAX_PLAYERS},
-		{MAX_PLAYERS, MAX_PLAYERS, 3       , 2       , 2       , 2       , 3       , MAX_PLAYERS, MAX_PLAYERS},
-		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 4       , 2       , 2       , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS},
-		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 4       , 3       , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS}
+		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 3          , 4          , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS},
+		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 2          , 2          , 4          , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS},
+		{MAX_PLAYERS, MAX_PLAYERS, 3          , 2          , 2          , 2          , 3          , MAX_PLAYERS, MAX_PLAYERS},
+		{MAX_PLAYERS, 4          , 2          , 2          , 2          , 2          , 2          , 2          , 3          },
+		{4          , 2          , 2          , 2          , 2          , 2          , 2          , 2          , 4          },
+		{3          , 2          , 2          , 2          , 2          , 2          , 2          , 4          , MAX_PLAYERS},
+		{MAX_PLAYERS, MAX_PLAYERS, 3          , 2          , 2          , 2          , 3          , MAX_PLAYERS, MAX_PLAYERS},
+		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 4          , 2          , 2          , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS},
+		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 4          , 3          , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS}
 	};
 
 	/**
