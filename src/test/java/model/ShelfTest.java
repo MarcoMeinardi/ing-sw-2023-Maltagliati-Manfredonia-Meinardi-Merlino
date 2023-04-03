@@ -6,14 +6,11 @@ import org.junit.Test;
 import java.util.Optional;
 
 public class ShelfTest {
-	private static final int COLUMNS = 5;
-	private static final int ROWS = 6;
-
     @Test
     public void testConstructor() throws InvalidMoveException {
 		Shelf shelf = new Shelf();
-		for (int y = 0; y < ROWS; y++) {
-			for (int x = 0; x < COLUMNS; x++) {
+		for (int y = 0; y < Shelf.ROWS; y++) {
+			for (int x = 0; x < Shelf.COLUMNS; x++) {
 				assertEquals(Optional.empty(), shelf.getCard(y, x));
 			}
 		}
@@ -28,7 +25,7 @@ public class ShelfTest {
 	@Test
 	public void testInsert() throws InvalidMoveException {
 		Shelf shelf = new Shelf();
-		for (int x = 0; x < COLUMNS; x++) {
+		for (int x = 0; x < Shelf.COLUMNS; x++) {
 			shelf.insert(x, new Card[] {Card.Pianta});
 
 			assertEquals(Optional.of(Card.Pianta), shelf.getCard(0, x));
@@ -44,8 +41,8 @@ public class ShelfTest {
 			assertEquals(Optional.of(Card.Gioco), shelf.getCard(3, x));
 			assertEquals(Optional.of(Card.Cornice), shelf.getCard(4, x));
 			assertEquals(Optional.of(Card.Trofeo), shelf.getCard(5, x));
-			if (x < COLUMNS - 1) {
-				for (int y = 0; y < ROWS; y++) {
+			if (x < Shelf.COLUMNS - 1) {
+				for (int y = 0; y < Shelf.ROWS; y++) {
 					assertEquals(Optional.empty(), shelf.getCard(y, x + 1));
 				}
 			}
@@ -61,7 +58,7 @@ public class ShelfTest {
 	@Test(expected = InvalidMoveException.class)
 	public void testInsertTooLargeColumn() throws InvalidMoveException {
 		Shelf shelf = new Shelf();
-		shelf.insert(COLUMNS, new Card[] {Card.Pianta});
+		shelf.insert(Shelf.COLUMNS, new Card[] {Card.Pianta});
 	}
 
 	@Test(expected = InvalidMoveException.class)

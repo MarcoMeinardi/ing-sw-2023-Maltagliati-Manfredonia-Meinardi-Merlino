@@ -12,21 +12,15 @@ public class CardsDeckTest {
     @Test
     public void testDraw() {
         CardsDeck deck = new CardsDeck();
-        assertEquals(132, deck.size());
+        assertEquals(CardsDeck.TOTAL_CARDS, deck.size());
         deck.draw();
-        assertEquals(131, deck.size());
-    }
-
-    @Test
-    public void testSize() {
-        CardsDeck deck = new CardsDeck();
-        assertEquals(132, deck.size());
+        assertEquals(CardsDeck.TOTAL_CARDS - 1, deck.size());
     }
 
     @Test
     public void TestFullDraw() {
         CardsDeck deck = new CardsDeck();
-        for (int i = 0; i < 132; i++) {
+        for (int i = 0; i < CardsDeck.TOTAL_CARDS; i++) {
             Optional<Card> card = deck.draw();
             assertFalse(card.isEmpty());
         }

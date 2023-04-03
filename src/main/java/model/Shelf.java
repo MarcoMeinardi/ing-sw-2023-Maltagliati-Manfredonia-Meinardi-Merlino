@@ -7,8 +7,8 @@ public class Shelf {
     // Size of the shelf 6(rows)x5(columns)
     private Optional<Card>[][] slots;
 
-	private static final int COLUMNS = 5;
-	private static final int ROWS = 6;
+	public static final int COLUMNS = 5;
+	public static final int ROWS = 6;
 
 	private static final int groupPoints[] = {2, 3, 5, 8};
 	private static final int[] dx = {-1, 0, 1, 0};

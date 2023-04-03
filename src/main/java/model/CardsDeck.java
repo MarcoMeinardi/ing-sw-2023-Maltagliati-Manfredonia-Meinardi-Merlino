@@ -4,7 +4,8 @@ import java.util.*;
 
 public class CardsDeck {
     private Stack<Card> cards;
-	private static final int CARDS_PER_TYPE = 22;
+	public static final int CARDS_PER_TYPE = 22;
+	public static final int TOTAL_CARDS = CARDS_PER_TYPE * Card.values().length;
 
     /**
      * Constructor that creates a new deck of cards by initializing a stack of cards
