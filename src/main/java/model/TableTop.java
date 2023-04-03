@@ -94,25 +94,6 @@ public class TableTop {
 	}
 
 	/**
-	 * Places the given card at the specified position on the table.
-	 *
-	 * @param y    The vertical index of the specified position.
-	 * @param x    The horizontal index of the specified position.
-	 * @param card The card to be placed at the specified position.
-	 * @throws InvalidMoveException If the specified position is not valid.
-	 * @author Lorenzo
-	 */
-	public void setCard(int y, int x, Card card) throws InvalidMoveException {
-		if (y < 0 || x < 0 || y >= SIZE || x >= SIZE) {
-			throw new InvalidMoveException("Invalid position");
-		}
-		if (!isUsed(y, x)) {
-			throw new InvalidMoveException("Card place not used");
-		}
-		table[y][x] = Optional.of(card);
-	}
-
-	/**
 	 * Determines if a specified position on the table is pickable based on whether it is adjacent to an empty space and has not already been picked.
 	 * @author Ludovico, Lorenzo, Marco, Riccardo
 	 *

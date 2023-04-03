@@ -48,13 +48,6 @@ public class TableTopTest {
 	}
 
 	@Test
-	public void testSetCard() throws InvalidMoveException {
-		TableTop table = new TableTop(3);
-		table.setCard(0, 3, Card.Gatto);
-		assertEquals(table.getCard(0, 3), Optional.of(Card.Gatto));
-	}
-
-	@Test
 	public void testIsPickable() throws InvalidMoveException {
 		TableTop table = new TableTop(3);
 		assertTrue(table.isPickable(0, 3));
@@ -64,15 +57,7 @@ public class TableTopTest {
 	@Test
 	public void testPickCard() throws InvalidMoveException {
 		TableTop table = new TableTop(3);
-		table.pickCard(0, 3);
+		assertEquals(table.getCard(0, 3).orElse(null), table.pickCard(0, 3));
 		assertEquals(table.getCard(0, 3), Optional.empty());
 	}
-
-	@Test
-	public void testGetCard() throws InvalidMoveException {
-		TableTop table = new TableTop(3);
-		table.setCard(0, 3, Card.Gatto);
-		assertEquals(table.getCard(0, 3), Optional.of(Card.Gatto));
-	}
-
 }
