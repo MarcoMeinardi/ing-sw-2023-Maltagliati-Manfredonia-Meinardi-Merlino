@@ -133,7 +133,7 @@ public class Shelf {
      *         having the same color as the reference card.
      */
 	private int getGroupSize(int y, int x, Card reference, boolean[][] visited) {
-		if (y < 0 || x < 0 || y >= ROWS || x >= COLUMNS || visited[y][x] || slots[y][x].map(value -> value.equals(reference)).orElse(false)) {
+		if (y < 0 || x < 0 || y >= ROWS || x >= COLUMNS || visited[y][x] || !slots[y][x].map(value -> value.equals(reference)).orElse(false)) {
 			return 0;
 		}
 		visited[y][x] = true;
