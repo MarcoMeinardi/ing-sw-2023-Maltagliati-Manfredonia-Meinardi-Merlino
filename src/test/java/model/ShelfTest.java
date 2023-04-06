@@ -3,6 +3,8 @@ package model;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class ShelfTest {
@@ -79,5 +81,70 @@ public class ShelfTest {
 		shelf.insert(2, new Card[] {Card.Gioco, Card.Cornice, Card.Trofeo});
 		shelf.insert(2, new Card[] {Card.Gioco, Card.Cornice, Card.Trofeo});
 		shelf.insert(2, new Card[] {Card.Pianta});
+	}
+
+
+	@Test
+	public void testGetGroupsCockades() throws InvalidMoveException {
+		/*
+		 * P
+		 * P PPP
+		 * PGPGP
+		 * PGGTP
+		 * PPPPP
+		 */
+		Shelf shelf = new Shelf();
+		assertEquals(List.of(), shelf.getGroupsCockades());
+
+		shelf.insert(0, new Card[] {Card.Pianta, Card.Pianta, Card.Pianta});
+		assertEquals(
+			List.of(new Cockade("Area of Pianta of size 3", 2)),
+			shelf.getGroupsCockades()
+		);
+
+		shelf.insert(1, new Card[] {Card.Pianta, Card.Gioco, Card.Gioco});
+		assertEquals(
+			List.of(new Cockade("Area of Pianta of size 4", 3)),
+			shelf.getGroupsCockades()
+		);
+		
+		shelf.insert(2, new Card[] {Card.Pianta, Card.Gioco, Card.Pianta});
+		assertEquals(
+			Arrays.asList(
+				new Cockade("Area of Pianta of size 5", 5),
+				new Cockade("Area of Gioco of size 3", 2)
+			),
+			shelf.getGroupsCockades()
+		);
+
+		shelf.insert(3, new Card[] {Card.Pianta, Card.Trofeo, Card.Gioco});
+		assertEquals(
+			Arrays.asList(
+				new Cockade("Area of Pianta of size 6", 8),
+				new Cockade("Area of Gioco of size 3", 2)
+			),
+			shelf.getGroupsCockades()
+		);
+
+		shelf.insert(4, new Card[] {Card.Pianta, Card.Pianta, Card.Pianta});
+		assertEquals(
+			Arrays.asList(
+				new Cockade("Area of Pianta of size 9", 8),
+				new Cockade("Area of Gioco of size 3", 2)
+			),
+			shelf.getGroupsCockades()
+		);
+
+		shelf.insert(0, new Card[] {Card.Pianta, Card.Pianta});
+		shelf.insert(2, new Card[] {Card.Pianta});
+		shelf.insert(3, new Card[] {Card.Pianta});
+		shelf.insert(4, new Card[] {Card.Pianta});
+		assertEquals(
+			Arrays.asList(
+				new Cockade("Area of Pianta of size 15", 8),
+				new Cockade("Area of Gioco of size 3", 2)
+			),
+			shelf.getGroupsCockades()
+		);
 	}
 }
