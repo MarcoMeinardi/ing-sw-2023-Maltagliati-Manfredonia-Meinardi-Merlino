@@ -111,7 +111,7 @@ public class Shelf {
 				int groupSize = getGroupSize(y, x, slots[y][x].get(), visited);
 				if (groupSize >= 3) {
 					String cockadeName = String.format("Area of %s of size %d", slots[y][x].get().toString(), groupSize);
-					result.add(new Cockade(cockadeName, groupPoints[Math.max(groupSize - 3, 3)]));
+					result.add(new Cockade(cockadeName, groupPoints[Math.min(groupSize - 3, 3)]));
 				}
 			}
 		}
