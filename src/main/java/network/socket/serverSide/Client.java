@@ -21,6 +21,7 @@ public class Client {
         this.socket.setSoTimeout(TIMEOUT);
         this.incomingMessages = new ObjectInputStream(socket.getInputStream());
         this.outcomingMessages = new ObjectOutputStream(socket.getOutputStream());
+        this.status = ClientStatus.Idle;
     }
 
     public ClientStatus getStatus() {
