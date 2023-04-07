@@ -1,8 +1,6 @@
-package socket;
+package network.socket.serverSide;
 
-import java.io.*;
 import java.net.*;
-import java.util.*;
 
 public class Server extends Thread{
 
