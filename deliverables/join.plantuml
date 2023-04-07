@@ -1,0 +1,22 @@
+@startuml
+!theme plain
+participant "Client" as C
+participant "Server" as S
+
+== Registration ==
+
+C -> S: Connects to server over TCP
+note over S: Accepts connection and register active user
+S -> C: Notify client of successful connection
+
+== Lobby search ==
+
+C -> S: Ask for lobbies list
+S -> C: Send lobbies list
+note over C: Chooses lobby to join
+C -> S: Ask to join lobby
+note over S: Verify if lobby is available
+S -> C: Notify client of lobby join
+note over C: Wait for other players to join
+
+@enduml
