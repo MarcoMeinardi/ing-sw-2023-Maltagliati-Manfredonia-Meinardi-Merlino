@@ -111,7 +111,7 @@ public class Shelf {
 				int groupSize = getGroupSize(y, x, slots[y][x].get(), visited);
 				if (groupSize >= 3) {
 					String cockadeName = String.format("Area of %s of size %d", slots[y][x].get().toString(), groupSize);
-					result.add(new Cockade(cockadeName, groupPoints[Math.max(groupSize - 3, 3)]));
+					result.add(new Cockade(cockadeName, groupPoints[Math.min(groupSize - 3, 3)]));
 				}
 			}
 		}
@@ -133,7 +133,7 @@ public class Shelf {
      *         having the same color as the reference card.
      */
 	private int getGroupSize(int y, int x, Card reference, boolean[][] visited) {
-		if (y < 0 || x < 0 || y >= ROWS || x >= COLUMNS || visited[y][x] || slots[y][x].map(value -> value.equals(reference)).orElse(false)) {
+		if (y < 0 || x < 0 || y >= ROWS || x >= COLUMNS || visited[y][x] || !slots[y][x].map(value -> value.equals(reference)).orElse(false)) {
 			return 0;
 		}
 		visited[y][x] = true;
