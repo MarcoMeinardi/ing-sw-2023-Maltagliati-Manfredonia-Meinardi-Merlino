@@ -1,0 +1,12 @@
+@startuml
+!theme plain
+participant "Client" as C
+participant "Server" as S
+
+C -> S: Connect to server
+S -> C: Accept connection
+note over S: Add client to the\n UnidentifiedClient list and wait\n for login request from client
+C --> S: Send login request
+S --> C: Send ack response
+note over S: Remove client from the\n UnidentifiedClient list and add\n to User list
+@enduml
