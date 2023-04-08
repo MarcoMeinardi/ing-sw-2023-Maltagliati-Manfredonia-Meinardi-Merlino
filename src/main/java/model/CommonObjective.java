@@ -76,7 +76,7 @@ public class CommonObjective extends Objective {
 			for (int y = 0; y < Shelf.ROWS; y++) {
 				for (int x = 0; x < Shelf.COLUMNS; x++) {
 					if (shelf.getCard(y, x).isPresent()) {
-						groups += Math.floor(shelf.getGroupSize(y, x, shelf.getCard(y, x).get(), visited) / 4);
+						groups += shelf.getGroupSize(y, x, shelf.getCard(y, x).get(), visited) / 4;
 					}
 				}
 			}
@@ -93,7 +93,7 @@ public class CommonObjective extends Objective {
 			for (int y = 0; y < Shelf.ROWS; y++) {
 				for (int x = 0; x < Shelf.COLUMNS; x++) {
 					if (shelf.getCard(y, x).isPresent()) {
-						groups += Math.floor(shelf.getGroupSize(y, x, shelf.getCard(y, x).get(), visited) / 2);
+						groups += shelf.getGroupSize(y, x, shelf.getCard(y, x).get(), visited) / 2;
 					}
 				}
 			}
