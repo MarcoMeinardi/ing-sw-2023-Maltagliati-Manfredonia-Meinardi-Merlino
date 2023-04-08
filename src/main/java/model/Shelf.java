@@ -106,7 +106,7 @@ public class Shelf {
 		boolean[][] visited = new boolean[ROWS][COLUMNS];
 		for (int y = 0; y < ROWS; y++) {
 			for (int x = 0; x < COLUMNS; x++) {
-				if (slots[y][x].isEmpty() || visited[y][x]) continue;
+				if (slots[y][x].isEmpty()) continue;
 
 				int groupSize = getGroupSize(y, x, slots[y][x].get(), visited);
 				if (groupSize >= 3) {
@@ -132,7 +132,7 @@ public class Shelf {
      * @return The number of cards in the group starting from the specified coordinates and
      *         having the same color as the reference card.
      */
-	private int getGroupSize(int y, int x, Card reference, boolean[][] visited) {
+	public int getGroupSize(int y, int x, Card reference, boolean[][] visited) {
 		if (y < 0 || x < 0 || y >= ROWS || x >= COLUMNS || visited[y][x] || !slots[y][x].map(value -> value.equals(reference)).orElse(false)) {
 			return 0;
 		}
