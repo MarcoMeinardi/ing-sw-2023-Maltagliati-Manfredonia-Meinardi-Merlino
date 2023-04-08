@@ -68,7 +68,7 @@ public class CommonObjective extends Objective {
 
 	// Common objectives functions
 
-	private static Boolean fourGroupsOfFourCards(Shelf shelf) {
+	private static int groupsOfNCards(Shelf shelf, int n) {
 		boolean[][] visited = new boolean[Shelf.ROWS][Shelf.COLUMNS];
 
 		int groups = 0;
@@ -76,29 +76,20 @@ public class CommonObjective extends Objective {
 			for (int y = 0; y < Shelf.ROWS; y++) {
 				for (int x = 0; x < Shelf.COLUMNS; x++) {
 					if (shelf.getCard(y, x).isPresent()) {
-						groups += shelf.getGroupSize(y, x, shelf.getCard(y, x).get(), visited) / 4;
+						groups += shelf.getGroupSize(y, x, shelf.getCard(y, x).get(), visited) / n;
 					}
 				}
 			}
 		} catch (InvalidMoveException e) {}
 
-		return groups >= 4;
+		return groups;
+	}
+
+	private static Boolean fourGroupsOfFourCards(Shelf shelf) {
+		return groupsOfNCards(shelf, 4) >= 4;
 	}
 
 	private static Boolean sixGroupsOfTwoCards(Shelf shelf) {
-		boolean[][] visited = new boolean[Shelf.ROWS][Shelf.COLUMNS];
-
-		int groups = 0;
-		try {
-			for (int y = 0; y < Shelf.ROWS; y++) {
-				for (int x = 0; x < Shelf.COLUMNS; x++) {
-					if (shelf.getCard(y, x).isPresent()) {
-						groups += shelf.getGroupSize(y, x, shelf.getCard(y, x).get(), visited) / 2;
-					}
-				}
-			}
-		} catch (InvalidMoveException e) {}
-
-		return groups >= 6;
+		return groupsOfNCards(shelf, 6) >= 2;
 	}
 }
