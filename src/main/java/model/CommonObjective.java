@@ -124,4 +124,72 @@ public class CommonObjective extends Objective {
         }
         return false;
     }
+
+	private static Boolean fiveCardsInDiagonal(Shelf shelf) {
+		Optional<Card> type = Optional.empty();
+		try{
+			for (int y = 0; y < Shelf.COLUMNS; y++) {
+				if(shelf.getCard(y, y).isEmpty()){
+					break;
+				}
+				if(type.isEmpty()){
+					type = shelf.getCard(y, y);
+				}
+				if(!type.get().equals(shelf.getCard(y, y).get())){
+					break;
+				}
+				if(y == 4){
+					return true;
+				}
+			}
+			for (int y = 0; y < Shelf.COLUMNS; y++) {
+				int x = Shelf.COLUMNS-y-1;
+				if(shelf.getCard(y, x).isEmpty()){
+					break;
+				}
+				if(type.isEmpty()){
+					type = shelf.getCard(y, x);
+				}
+				if(!type.get().equals(shelf.getCard(y, x).get())){
+					break;
+				}
+				if(y == 4){
+					return true;
+				}
+			}
+			for (int y = 1; y < Shelf.ROWS; y++) {
+				int x = y-1;
+				if(shelf.getCard(y, x).isEmpty()){
+					break;
+				}
+				if(type.isEmpty()){
+					type = shelf.getCard(y, x);
+				}
+				if(!type.get().equals(shelf.getCard(y, x).get())){
+					break;
+				}
+				if(y == 5){
+					return true;
+				}
+			}
+			for (int y = 1; y < Shelf.ROWS; y++) {
+				int x = Shelf.COLUMNS-y;
+				if(shelf.getCard(y, x).isEmpty()){
+					break;
+				}
+				if(type.isEmpty()){
+					type = shelf.getCard(y, x);
+				}
+				if(!type.get().equals(shelf.getCard(y, x).get())){
+					break;
+				}
+				if(y == 5){
+					return true;
+				}
+			}
+		}catch (InvalidMoveException e){
+			throw  new RuntimeException("error while checking five cards in diagonal common objective");
+		}
+		return false;
+	}
 }
