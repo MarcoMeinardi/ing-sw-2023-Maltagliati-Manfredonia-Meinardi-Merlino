@@ -1,7 +1,9 @@
 package model;
 
+import javax.swing.text.StyledEditorKit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -92,4 +94,34 @@ public class CommonObjective extends Objective {
 	private static Boolean sixGroupsOfTwoCards(Shelf shelf) {
 		return groupsOfNCards(shelf, 6) >= 2;
 	}
+
+    private static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
+        boolean second = false;
+        HashSet<Card> cards = new HashSet();
+        Card tmp;
+        try{
+            for (int x = 0; x < Shelf.COLUMNS; x++) {
+                for (int y = 0; y < Shelf.ROWS; y++) {
+                    if(shelf.getCard(y, x).isEmpty()){
+                        break;
+                    }
+                    tmp = shelf.getCard(y, x).get();
+                    if(cards.contains(tmp)){
+                        break;
+                    }
+                    cards.add(tmp);
+                }
+                if(cards.size() == 6) {
+                    if (second) {
+                        return true;
+                    }
+                    second = true;
+                }
+                cards.clear();
+            }
+        }catch (InvalidMoveException e){
+            throw  new RuntimeException("error while checking two columns of six different cards common objective");
+        }
+        return false;
+    }
 }
