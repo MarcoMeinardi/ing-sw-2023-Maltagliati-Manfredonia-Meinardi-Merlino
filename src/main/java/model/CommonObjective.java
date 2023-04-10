@@ -41,6 +41,8 @@ public class CommonObjective extends Objective {
 		ArrayList<CommonObjective> all_objectives = new ArrayList<>();
 		all_objectives.add(new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCards));
 		all_objectives.add(new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCards));
+		all_objectives.add(new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCards));
+		all_objectives.add(new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonal));
 		Collections.shuffle(all_objectives);
 		selected_objectives[0] = all_objectives.get(0);
 		selected_objectives[1] = all_objectives.get(1);
