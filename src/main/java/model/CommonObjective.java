@@ -162,7 +162,7 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
-	private static Boolean FourRowsOfAtMostThreeDifferentCards(Shelf shelf) {
+	private static Boolean fourRowsOfAtMostThreeDifferentCards(Shelf shelf) {
 		int count = 0;
 		HashSet<Card> cards = new HashSet();
 
@@ -186,7 +186,7 @@ public class CommonObjective extends Objective {
 		return count == 4;
 	}
 
-	private static Boolean EqualsCorners(Shelf shelf) {
+	private static Boolean equalsCorners(Shelf shelf) {
 		try {
 			if (shelf.getCard(0, 0).isEmpty() || shelf.getCard(0, Shelf.COLUMNS-1).isEmpty() ||
 					shelf.getCard(Shelf.ROWS-1, 0).isEmpty() || shelf.getCard(Shelf.ROWS-1, Shelf.COLUMNS-1).isEmpty()) {
@@ -208,7 +208,7 @@ public class CommonObjective extends Objective {
 		}
 	}
 
-	private static Boolean TwoRowWithFiveDifferentCards(Shelf shelf) {
+	private static Boolean twoRowsWithFiveDifferentCards(Shelf shelf) {
 		boolean firstRow = false;
 		HashSet<Card> cards = new HashSet();
 		Card tmp;
