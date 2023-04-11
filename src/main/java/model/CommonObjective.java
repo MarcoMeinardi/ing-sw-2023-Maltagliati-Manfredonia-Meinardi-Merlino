@@ -126,65 +126,34 @@ public class CommonObjective extends Objective {
 	}
 
 	private static Boolean fiveCardsInDiagonal(Shelf shelf) {
-		Optional<Card> type = Optional.empty();
+		boolean fullDiagonal;
+		Card referece;
 		try {
-			for (int y = 0; y < Shelf.COLUMNS; y++) {
-				if (shelf.getCard(y, y).isEmpty()) {
-					break;
+			for (int offset = 0; offset <= Shelf.ROWS - Shelf.COLUMNS; offset++) {
+				// sud-west to north-est
+				if (!shelf.getCard(offset, 0).isEmpty()) {
+					referece = shelf.getCard(offset, 0).get();
+					fullDiagonal = true;
+					for (int y = 1; fullDiagonal && y < Shelf.COLUMNS; y++) {
+						Optional<Card> card = shelf.getCard(y + offset, y);
+						if (card.isEmpty() || !card.get().equals(referece)) {
+							fullDiagonal = false;
+						}
+					}
+					if (fullDiagonal) return true;
 				}
-				if (type.isEmpty()) {
-					type = shelf.getCard(y, y);
-				}
-				if (!type.get().equals(shelf.getCard(y, y).get())) {
-					break;
-				}
-				if (y == 4) {
-					return true;
-				}
-			}
-			for (int y = 0; y < Shelf.COLUMNS; y++) {
-				int x = Shelf.COLUMNS - y - 1;
-				if (shelf.getCard(y, x).isEmpty()) {
-					break;
-				}
-				if (type.isEmpty()) {
-					type = shelf.getCard(y, x);
-				}
-				if (!type.get().equals(shelf.getCard(y, x).get())) {
-					break;
-				}
-				if (y == 4) {
-					return true;
-				}
-			}
-			for (int y = 1; y < Shelf.ROWS; y++) {
-				int x = y - 1;
-				if (shelf.getCard(y, x).isEmpty()) {
-					break;
-				}
-				if (type.isEmpty()) {
-					type = shelf.getCard(y, x);
-				}
-				if (!type.get().equals(shelf.getCard(y, x).get())) {
-					break;
-				}
-				if (y == 5) {
-					return true;
-				}
-			}
-			for (int y = 1; y < Shelf.ROWS; y++) {
-				int x = Shelf.COLUMNS - y;
-				if (shelf.getCard(y, x).isEmpty()) {
-					break;
-				}
-				if (type.isEmpty()) {
-					type = shelf.getCard(y, x);
-				}
-				if (!type.get().equals(shelf.getCard(y, x).get())) {
-					break;
-				}
-				if (y == 5) {
-					return true;
+
+				// sud-est to north-west
+				if (!shelf.getCard(offset, Shelf.COLUMNS - 1).isEmpty()) {
+					referece = shelf.getCard(offset, Shelf.COLUMNS - 1).get();
+					fullDiagonal = true;
+					for (int y = 1; fullDiagonal && y < Shelf.COLUMNS; y++) {
+						Optional<Card> card = shelf.getCard(y + offset, Shelf.COLUMNS - y - 1);
+						if (card.isEmpty() || !card.get().equals(referece)) {
+							fullDiagonal = false;
+						}
+					}
+					if (fullDiagonal) return true;
 				}
 			}
 		} catch (InvalidMoveException e) {
@@ -194,7 +163,6 @@ public class CommonObjective extends Objective {
 	}
 
 	private static Boolean FourRowsOfFiveDifferentCards(Shelf shelf) {
-
 		int count = 0;
 		HashSet<Card> cards = new HashSet();
 		Card tmp;
