@@ -22,11 +22,11 @@ public class CommonObjective extends Objective {
 	 * Constructor that creates a new common objective with a specified name,
 	 * value, and point decrement based on the number of players.
 	 * The objective also includes a function for checking if it has been completed.
-	 * @author Marco, Lorenzo, Ludovico, Riccardo
 	 *
-	 * @param name The name of the objective
-	 * @param nPlayers The number of players in the game
+	 * @param name           The name of the objective
+	 * @param nPlayers       The number of players in the game
 	 * @param checkCompleted A function for checking if the objective has been completed
+	 * @author Marco, Lorenzo, Ludovico, Riccardo
 	 */
 	public CommonObjective(String name, int nPlayers, Function<Shelf, Boolean> checkCompleted) {
 		super(name);
@@ -36,7 +36,7 @@ public class CommonObjective extends Objective {
 		this.checkCompleted = checkCompleted;
 	}
 
-	public static CommonObjective[] generateCommonObjectives(int nPlayers){
+	public static CommonObjective[] generateCommonObjectives(int nPlayers) {
 		CommonObjective[] selected_objectives = new CommonObjective[2];
 		ArrayList<CommonObjective> all_objectives = new ArrayList<>();
 		all_objectives.add(new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCards));
@@ -53,11 +53,11 @@ public class CommonObjective extends Objective {
 	 * Method that checks if the common objective has been completed using a specified
 	 * shelf, and returns an Optional object containing a Cockade trophy if it has.
 	 * If the objective is completed, the value of the trophy is decreased by the point decrement.
-	 * @author Marco, Ludovico, Lorenzo, Riccardo
 	 *
 	 * @param shelf The shelf to check for completion of the objective
 	 * @return Optional object containing a Cockade trophy,
 	 * or an empty Optional object if the objective has not been completed.
+	 * @author Marco, Ludovico, Lorenzo, Riccardo
 	 */
 	@Override
 	public Optional<Cockade> isCompleted(Shelf shelf) {
@@ -84,7 +84,8 @@ public class CommonObjective extends Objective {
 					}
 				}
 			}
-		} catch (InvalidMoveException e) {}
+		} catch (InvalidMoveException e) {
+		}
 
 		return groups;
 	}
@@ -97,101 +98,161 @@ public class CommonObjective extends Objective {
 		return groupsOfNCards(shelf, 6) >= 2;
 	}
 
-    private static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
-        boolean second = false;
-        HashSet<Card> cards = new HashSet();
-        Card tmp;
-        try{
-            for (int x = 0; x < Shelf.COLUMNS; x++) {
-                for (int y = 0; y < Shelf.ROWS; y++) {
-                    if(shelf.getCard(y, x).isEmpty()){
-                        break;
-                    }
-                    tmp = shelf.getCard(y, x).get();
-                    if(cards.contains(tmp)){
-                        break;
-                    }
-                    cards.add(tmp);
-                }
-                if(cards.size() == 6) {
-                    if (second) {
-                        return true;
-                    }
-                    second = true;
-                }
-                cards.clear();
-            }
-        }catch (InvalidMoveException e){
-            throw  new RuntimeException("error while checking two columns of six different cards common objective");
-        }
-        return false;
-    }
+	private static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
+		boolean second = false;
+		HashSet<Card> cards = new HashSet();
+		Card tmp;
+		try {
+			for (int x = 0; x < Shelf.COLUMNS; x++) {
+				for (int y = 0; y < Shelf.ROWS; y++) {
+					if (shelf.getCard(y, x).isEmpty()) {
+						break;
+					}
+					tmp = shelf.getCard(y, x).get();
+					if (cards.contains(tmp)) {
+						break;
+					}
+					cards.add(tmp);
+				}
+				if (cards.size() == 6) {
+					if (second) {
+						return true;
+					}
+					second = true;
+				}
+				cards.clear();
+			}
+		} catch (InvalidMoveException e) {
+			throw new RuntimeException("error while checking two columns of six different cards common objective");
+		}
+		return false;
+	}
 
 	private static Boolean fiveCardsInDiagonal(Shelf shelf) {
 		Optional<Card> type = Optional.empty();
-		try{
+		try {
 			for (int y = 0; y < Shelf.COLUMNS; y++) {
-				if(shelf.getCard(y, y).isEmpty()){
+				if (shelf.getCard(y, y).isEmpty()) {
 					break;
 				}
-				if(type.isEmpty()){
+				if (type.isEmpty()) {
 					type = shelf.getCard(y, y);
 				}
-				if(!type.get().equals(shelf.getCard(y, y).get())){
+				if (!type.get().equals(shelf.getCard(y, y).get())) {
 					break;
 				}
-				if(y == 4){
+				if (y == 4) {
 					return true;
 				}
 			}
 			for (int y = 0; y < Shelf.COLUMNS; y++) {
-				int x = Shelf.COLUMNS-y-1;
-				if(shelf.getCard(y, x).isEmpty()){
+				int x = Shelf.COLUMNS - y - 1;
+				if (shelf.getCard(y, x).isEmpty()) {
 					break;
 				}
-				if(type.isEmpty()){
+				if (type.isEmpty()) {
 					type = shelf.getCard(y, x);
 				}
-				if(!type.get().equals(shelf.getCard(y, x).get())){
+				if (!type.get().equals(shelf.getCard(y, x).get())) {
 					break;
 				}
-				if(y == 4){
+				if (y == 4) {
 					return true;
 				}
 			}
 			for (int y = 1; y < Shelf.ROWS; y++) {
-				int x = y-1;
-				if(shelf.getCard(y, x).isEmpty()){
+				int x = y - 1;
+				if (shelf.getCard(y, x).isEmpty()) {
 					break;
 				}
-				if(type.isEmpty()){
+				if (type.isEmpty()) {
 					type = shelf.getCard(y, x);
 				}
-				if(!type.get().equals(shelf.getCard(y, x).get())){
+				if (!type.get().equals(shelf.getCard(y, x).get())) {
 					break;
 				}
-				if(y == 5){
+				if (y == 5) {
 					return true;
 				}
 			}
 			for (int y = 1; y < Shelf.ROWS; y++) {
-				int x = Shelf.COLUMNS-y;
-				if(shelf.getCard(y, x).isEmpty()){
+				int x = Shelf.COLUMNS - y;
+				if (shelf.getCard(y, x).isEmpty()) {
 					break;
 				}
-				if(type.isEmpty()){
+				if (type.isEmpty()) {
 					type = shelf.getCard(y, x);
 				}
-				if(!type.get().equals(shelf.getCard(y, x).get())){
+				if (!type.get().equals(shelf.getCard(y, x).get())) {
 					break;
 				}
-				if(y == 5){
+				if (y == 5) {
 					return true;
 				}
 			}
-		}catch (InvalidMoveException e){
-			throw  new RuntimeException("error while checking five cards in diagonal common objective");
+		} catch (InvalidMoveException e) {
+			throw new RuntimeException("error while checking five cards in diagonal common objective");
 		}
 		return false;
+	}
+
+	private static Boolean fiveInARow(Shelf shelf) {
+
+		int count = 0;
+
+		try {
+			for (int y = 0; y < 6; y++) {
+				if (shelf.getCard(y, 0).isPresent() && shelf.getCard(y, 1).isPresent() &&
+						shelf.getCard(y, 2).isPresent() && shelf.getCard(y, 3).isPresent() && shelf.getCard(y, 4).isPresent()) {
+					for (int x = 0; x < 2; x++) {
+						if (!shelf.getCard(y, x).equals(shelf.getCard(y, x + 1))) {
+							if (!shelf.getCard(y, x).equals(shelf.getCard(y, x + 2)) &&
+									!shelf.getCard(y, x + 1).equals(shelf.getCard(y, x + 2))) {
+								if (!shelf.getCard(y, x).equals(shelf.getCard(y, x + 3)) &&
+										!shelf.getCard(y, x + 1).equals(shelf.getCard(y, x + 3)) &&
+										!shelf.getCard(y, x + 2).equals(shelf.getCard(y, x + 3))) {
+									count++;
+								}
+							}
+						}
+					}
+				} else {
+					count++;
+				}
+			}
+		} catch (InvalidMoveException e) {
+			throw new RuntimeException("error while checking five in a row common objective");
+		}
+
+		int result = 6 - count;
+
+		if (result == 4) {
+			return true;
+		}
+
+		return false;
+
+	}
+
+	private static Boolean CheckCorners(Shelf shelf) {
+		try {
+			if (shelf.getCard(0, 0).isEmpty() || shelf.getCard(0, 4).isEmpty() ||
+					shelf.getCard(5, 0).isEmpty() || shelf.getCard(5, 4).isEmpty()) {
+
+				return false;
+
+			} else {
+				if (shelf.getCard(0, 0).equals(shelf.getCard(0, 4)) &&
+						shelf.getCard(0, 0).equals(shelf.getCard(5, 0)) &&
+						shelf.getCard(0, 0).equals(shelf.getCard(5, 4))) {
+					return true;
+				}
+
+				return false;
+			}
+
+		} catch (InvalidMoveException e) {
+			throw new RuntimeException("error while checking corners common objective");
+		}
 	}
 }
