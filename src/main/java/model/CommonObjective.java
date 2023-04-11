@@ -82,6 +82,7 @@ public class CommonObjective extends Objective {
 				}
 			}
 		} catch (InvalidMoveException e) {
+			throw new RuntimeException("error while checking groups of n cards common objective");
 		}
 
 		return groups;
