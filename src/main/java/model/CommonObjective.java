@@ -239,4 +239,24 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
+	private static Boolean equalsX (Shelf shelf) throws InvalidMoveException {
+
+		boolean check = false;
+
+		for (int i = 1; i < Shelf.ROWS - 1; i++) {
+			for (int j = 1; j < Shelf.COLUMNS - 1; j++) {
+				if (shelf.getCard(i, j).isEmpty()) {
+					break;
+				}
+				if (shelf.getCard(i, j).equals(shelf.getCard(i - 1, j - 1)) &&
+					shelf.getCard(i, j).equals(shelf.getCard(i + 1, j + 1)) &&
+					shelf.getCard(i, j).equals(shelf.getCard(i - 1, j + 1)) &&
+					shelf.getCard(i, j).equals(shelf.getCard(i + 1, j - 1))) {
+
+					check = true;
+				}
+			}
+		}
+		return check;
+	}
 }
