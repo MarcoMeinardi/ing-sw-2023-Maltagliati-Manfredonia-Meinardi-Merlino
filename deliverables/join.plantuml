@@ -5,9 +5,7 @@ participant "Server" as S
 
 == Registration ==
 
-C -> S: Connects to server over TCP
-note over S: Accepts network and register active user
-S -> C: Notify client of successful network
+note over C, S: Client registers to server using the login process
 
 == Lobby search ==
 

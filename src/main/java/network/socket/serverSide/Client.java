@@ -43,9 +43,10 @@ public class Client {
         synchronized (this.outcomingMessages){
             try{
                 outcomingMessages.writeObject((Object)message);
-            }catch(Exception e){}
-            disconnect();
-            throw new DisconnectedClientException();
+            }catch(Exception e){
+                disconnect();
+                throw new DisconnectedClientException();
+            }
         }
     }
 
