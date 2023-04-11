@@ -162,10 +162,9 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
-	private static Boolean FourRowsOfFiveDifferentCards(Shelf shelf) {
+	private static Boolean FourRowsOfAtMostThreeDifferentCards(Shelf shelf) {
 		int count = 0;
 		HashSet<Card> cards = new HashSet();
-		Card tmp;
 
 		try {
 			for (int y = 0; y < Shelf.ROWS; y++) {
@@ -173,8 +172,7 @@ public class CommonObjective extends Objective {
 					if (shelf.getCard(y, x).isEmpty()) {
 						break;
 					}
-					tmp = shelf.getCard(y, x).get();
-					cards.add(tmp);
+					cards.add(shelf.getCard(y, x).get());
 				}
 				if (cards.size() <= 3) {
 					count++;
@@ -185,9 +183,7 @@ public class CommonObjective extends Objective {
 			throw new RuntimeException("error while checking five in a row common objective");
 		}
 
-
 		return count == 4;
-
 	}
 
 	private static Boolean EqualsCorners(Shelf shelf) {
