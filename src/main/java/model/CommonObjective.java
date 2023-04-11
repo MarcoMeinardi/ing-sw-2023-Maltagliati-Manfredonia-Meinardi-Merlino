@@ -196,7 +196,7 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
-	private static Boolean fourColumnsOfFiveDifferentCards(Shelf shelf) {
+	private static Boolean FourRowsOfFiveDifferentCards(Shelf shelf) {
 
 		int count = 0;
 		HashSet<Card> cards = new HashSet();
