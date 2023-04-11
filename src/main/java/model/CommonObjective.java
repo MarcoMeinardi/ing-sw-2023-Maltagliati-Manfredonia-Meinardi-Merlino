@@ -206,6 +206,7 @@ public class CommonObjective extends Objective {
 		} catch (InvalidMoveException e) {
 			throw new RuntimeException("error while checking corners common objective");
 		}
+		return true;
 	}
 
 	private static Boolean twoRowsWithFiveDifferentCards(Shelf shelf) {
@@ -255,6 +256,30 @@ public class CommonObjective extends Objective {
 					check = true;
 				}
 			}
+		}
+		return check;
+	}
+	private static Boolean stairsAD (Shelf shelf) throws InvalidMoveException {
+
+		boolean check = false;
+		int j = 0;
+
+		for(int i = 0; i < Shelf.COLUMNS; i++){
+			if(shelf.getCard(j, i).isPresent()){
+				check = true;
+			}
+			j++;
+		}
+		if(check){
+			return check;
+		}
+
+		j = 0;
+		for(int i = Shelf.COLUMNS; i > 0; i--){
+			if(shelf.getCard(j, i).isPresent()){
+				check = true;
+			}
+			j++;
 		}
 		return check;
 	}
