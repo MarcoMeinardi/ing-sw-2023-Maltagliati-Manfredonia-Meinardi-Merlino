@@ -187,21 +187,20 @@ public class CommonObjective extends Objective {
 		return count == 4;
 	}
 
-	private static Boolean equalsCorners(Shelf shelf) {
+	private static final int[] cornersX = {0, 0, Shelf.COLUMNS - 1, Shelf.COLUMNS - 1};
+	private static final int[] cornersY = {0, Shelf.ROWS - 1, 0, Shelf.ROWS - 1};
+	private static Boolean equalCorners(Shelf shelf) {
 		try {
-			if (shelf.getCard(0, 0).isEmpty() || shelf.getCard(0, Shelf.COLUMNS-1).isEmpty() ||
-					shelf.getCard(Shelf.ROWS-1, 0).isEmpty() || shelf.getCard(Shelf.ROWS-1, Shelf.COLUMNS-1).isEmpty()) {
-
-				return false;
-
-			} else {
-				if (shelf.getCard(0, 0).equals(shelf.getCard(0, Shelf.COLUMNS-1)) &&
-						shelf.getCard(0, 0).equals(shelf.getCard(Shelf.ROWS-1, 0)) &&
-						shelf.getCard(0, 0).equals(shelf.getCard(Shelf.ROWS-1, Shelf.COLUMNS-1))) {
-					return true;
+			for (int i = 0; i < 4; i++) {
+				if (shelf.getCard(cornersY[i], cornersX[i]).isEmpty()) {
+					return false;
 				}
-
-				return false;
+			}
+			Card reference = shelf.getCard(cornersY[0], cornersX[0]).get();
+			for (int i = 1; i < 4; i++) {
+				if (!shelf.getCard(cornersY[i], cornersX[i]).get().equals(reference)) {
+					return false;
+				}
 			}
 
 		} catch (InvalidMoveException e) {
@@ -211,7 +210,7 @@ public class CommonObjective extends Objective {
 
 	private static Boolean twoRowsWithFiveDifferentCards(Shelf shelf) {
 		boolean firstRow = false;
-		HashSet<Card> cards = new HashSet();
+		HashSet<Card> cards = new HashSet<>();
 		Card tmp;
 		try {
 			for (int y = 0; y < Shelf.ROWS; y++) {
