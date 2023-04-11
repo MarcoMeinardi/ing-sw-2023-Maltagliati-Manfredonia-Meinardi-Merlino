@@ -1,10 +1,7 @@
 package model;
 
 import javax.swing.text.StyledEditorKit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 
@@ -255,4 +252,35 @@ public class CommonObjective extends Objective {
 			throw new RuntimeException("error while checking corners common objective");
 		}
 	}
+
+	private static Boolean TwoRowWithFiveDifferentCards(Shelf shelf) {
+		boolean firstRow = false;
+		HashSet<Card> cards = new HashSet();
+		Card tmp;
+		try {
+			for (int y = 0; y < Shelf.ROWS; y++) {
+				for (int x = 0; x < Shelf.COLUMNS; x++) {
+					if (shelf.getCard(y, x).isEmpty()) {
+						break;
+					}
+					tmp = shelf.getCard(y, x).get();
+					if (cards.contains(tmp)) {
+						break;
+					}
+					cards.add(tmp);
+				}
+				if (cards.size() == 5) {
+					if (firstRow) {
+						return true;
+					}
+					firstRow = true;
+				}
+				cards.clear();
+			}
+		} catch (InvalidMoveException e) {
+			throw new RuntimeException("error while checking two rows with five different cards common objective");
+		}
+		return false;
+	}
+
 }

@@ -1,3 +1,5 @@
 package network.socket.protoGabibbo;
 
-public class Ping extends Message{}
+public class Ping extends Message{
+
+}
