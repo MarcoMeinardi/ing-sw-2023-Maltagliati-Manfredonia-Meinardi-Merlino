@@ -196,55 +196,46 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
-	private static Boolean fiveInARow(Shelf shelf) {
+	private static Boolean FourRowsOfFiveDifferentCards(Shelf shelf) {
 
 		int count = 0;
+		HashSet<Card> cards = new HashSet();
+		Card tmp;
 
 		try {
-			for (int y = 0; y < 6; y++) {
-				if (shelf.getCard(y, 0).isPresent() && shelf.getCard(y, 1).isPresent() &&
-						shelf.getCard(y, 2).isPresent() && shelf.getCard(y, 3).isPresent() && shelf.getCard(y, 4).isPresent()) {
-					for (int x = 0; x < 2; x++) {
-						if (!shelf.getCard(y, x).equals(shelf.getCard(y, x + 1))) {
-							if (!shelf.getCard(y, x).equals(shelf.getCard(y, x + 2)) &&
-									!shelf.getCard(y, x + 1).equals(shelf.getCard(y, x + 2))) {
-								if (!shelf.getCard(y, x).equals(shelf.getCard(y, x + 3)) &&
-										!shelf.getCard(y, x + 1).equals(shelf.getCard(y, x + 3)) &&
-										!shelf.getCard(y, x + 2).equals(shelf.getCard(y, x + 3))) {
-									count++;
-								}
-							}
-						}
+			for (int y = 0; y < Shelf.ROWS; y++) {
+				for (int x = 0; x < Shelf.COLUMNS; x++) {
+					if (shelf.getCard(y, x).isEmpty()) {
+						break;
 					}
-				} else {
+					tmp = shelf.getCard(y, x).get();
+					cards.add(tmp);
+				}
+				if (cards.size() <= 3) {
 					count++;
 				}
+				cards.clear();
 			}
 		} catch (InvalidMoveException e) {
 			throw new RuntimeException("error while checking five in a row common objective");
 		}
 
-		int result = 6 - count;
 
-		if (result == 4) {
-			return true;
-		}
-
-		return false;
+		return count == 4;
 
 	}
 
-	private static Boolean CheckCorners(Shelf shelf) {
+	private static Boolean EqualsCorners(Shelf shelf) {
 		try {
-			if (shelf.getCard(0, 0).isEmpty() || shelf.getCard(0, 4).isEmpty() ||
-					shelf.getCard(5, 0).isEmpty() || shelf.getCard(5, 4).isEmpty()) {
+			if (shelf.getCard(0, 0).isEmpty() || shelf.getCard(0, Shelf.COLUMNS-1).isEmpty() ||
+					shelf.getCard(Shelf.ROWS-1, 0).isEmpty() || shelf.getCard(Shelf.ROWS-1, Shelf.COLUMNS-1).isEmpty()) {
 
 				return false;
 
 			} else {
-				if (shelf.getCard(0, 0).equals(shelf.getCard(0, 4)) &&
-						shelf.getCard(0, 0).equals(shelf.getCard(5, 0)) &&
-						shelf.getCard(0, 0).equals(shelf.getCard(5, 4))) {
+				if (shelf.getCard(0, 0).equals(shelf.getCard(0, Shelf.COLUMNS-1)) &&
+						shelf.getCard(0, 0).equals(shelf.getCard(Shelf.ROWS-1, 0)) &&
+						shelf.getCard(0, 0).equals(shelf.getCard(Shelf.ROWS-1, Shelf.COLUMNS-1))) {
 					return true;
 				}
 
