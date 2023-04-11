@@ -88,6 +88,8 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 .idea/workspace.xml
+.classpath
+.settings/
 
 
 Rulebook_ITA_My-Shelfie.pdf
