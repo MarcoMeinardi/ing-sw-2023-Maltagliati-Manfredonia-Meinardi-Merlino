@@ -35,10 +35,16 @@ public class CommonObjective extends Objective {
 	public static CommonObjective[] generateCommonObjectives(int nPlayers) {
 		CommonObjective[] selected_objectives = new CommonObjective[2];
 		ArrayList<CommonObjective> all_objectives = new ArrayList<>();
+		
 		all_objectives.add(new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCards));
 		all_objectives.add(new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCards));
 		all_objectives.add(new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCards));
 		all_objectives.add(new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonal));
+		all_objectives.add(new CommonObjective("4 rows of at most three different cards", nPlayers, CommonObjective::fourRowsOfAtMostThreeDifferentCards));
+		all_objectives.add(new CommonObjective("All corners", nPlayers, CommonObjective::equalCorners));
+		all_objectives.add(new CommonObjective("2 rows of 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCards));
+		all_objectives.add(new CommonObjective("2 square-shaped groups", nPlayers, CommonObjective::twoSquareGroups));
+
 		Collections.shuffle(all_objectives);
 		selected_objectives[0] = all_objectives.get(0);
 		selected_objectives[1] = all_objectives.get(1);
@@ -190,7 +196,7 @@ public class CommonObjective extends Objective {
 
 	private static final int[] cornersX = {0, 0, Shelf.COLUMNS - 1, Shelf.COLUMNS - 1};
 	private static final int[] cornersY = {0, Shelf.ROWS - 1, 0, Shelf.ROWS - 1};
-	private static Boolean equalsCorners(Shelf shelf) {
+	private static Boolean equalCorners(Shelf shelf) {
 		try {
 			for (int i = 0; i < 4; i++) {
 				if (shelf.getCard(cornersY[i], cornersX[i]).isEmpty()) {
