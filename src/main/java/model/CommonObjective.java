@@ -1,6 +1,5 @@
 package model;
 
-import javax.swing.text.StyledEditorKit;
 import java.util.*;
 import java.util.function.Function;
 
@@ -98,7 +97,7 @@ public class CommonObjective extends Objective {
 
 	private static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
 		boolean second = false;
-		HashSet<Card> cards = new HashSet();
+		HashSet<Card> cards = new HashSet<>();
 		Card tmp;
 		try {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
@@ -135,10 +134,11 @@ public class CommonObjective extends Objective {
 				if (!shelf.getCard(offset, 0).isEmpty()) {
 					referece = shelf.getCard(offset, 0).get();
 					fullDiagonal = true;
-					for (int y = 1; fullDiagonal && y < Shelf.COLUMNS; y++) {
+					for (int y = 1; y < Shelf.COLUMNS; y++) {
 						Optional<Card> card = shelf.getCard(y + offset, y);
 						if (card.isEmpty() || !card.get().equals(referece)) {
 							fullDiagonal = false;
+							break;
 						}
 					}
 					if (fullDiagonal) return true;
@@ -148,10 +148,11 @@ public class CommonObjective extends Objective {
 				if (!shelf.getCard(offset, Shelf.COLUMNS - 1).isEmpty()) {
 					referece = shelf.getCard(offset, Shelf.COLUMNS - 1).get();
 					fullDiagonal = true;
-					for (int y = 1; fullDiagonal && y < Shelf.COLUMNS; y++) {
+					for (int y = 1; y < Shelf.COLUMNS; y++) {
 						Optional<Card> card = shelf.getCard(y + offset, Shelf.COLUMNS - y - 1);
 						if (card.isEmpty() || !card.get().equals(referece)) {
 							fullDiagonal = false;
+							break;
 						}
 					}
 					if (fullDiagonal) return true;
@@ -165,7 +166,7 @@ public class CommonObjective extends Objective {
 
 	private static Boolean fourRowsOfAtMostThreeDifferentCards(Shelf shelf) {
 		int count = 0;
-		HashSet<Card> cards = new HashSet();
+		HashSet<Card> cards = new HashSet<>();
 
 		try {
 			for (int y = 0; y < Shelf.ROWS; y++) {
@@ -211,7 +212,7 @@ public class CommonObjective extends Objective {
 
 	private static Boolean twoRowsWithFiveDifferentCards(Shelf shelf) {
 		boolean firstRow = false;
-		HashSet<Card> cards = new HashSet();
+		HashSet<Card> cards = new HashSet<>();
 		Card tmp;
 		try {
 			for (int y = 0; y < Shelf.ROWS; y++) {
@@ -239,4 +240,44 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
+	private static final int[] squareDx = {0, 1, 1};
+	private static final int[] squareDy = {1, 0, 1};
+	private static Boolean twoSquareGroups(Shelf shelf) {
+		boolean firstSquare = false;
+		boolean[][] alreadyUsed = new boolean[Shelf.ROWS][Shelf.COLUMNS];
+
+		try {
+			for (int y = 0; y < Shelf.ROWS - 1; y++) {
+				for (int x = 0; x < Shelf.COLUMNS - 1; x++) {
+					Optional<Card> reference = shelf.getCard(y, x);
+					if (alreadyUsed[y][x] || alreadyUsed[y][x + 1] || reference.isEmpty()) {
+						continue;
+					}
+					boolean isValidSquare = true;
+					for (int i = 0; i < 3; i++) {
+						Optional<Card> card = shelf.getCard(y + squareDy[i], x + squareDx[i]);
+						if (card.isEmpty() || !card.get().equals(reference.get())) {
+							isValidSquare = false;
+							break;
+						}
+					}
+
+					if (isValidSquare) {
+						if (firstSquare) {
+							return true;
+						}
+						firstSquare = true;
+						alreadyUsed[y + 1][x] = true;
+						alreadyUsed[y + 1][x + 1] = true;
+						x++;  // skip next cell because it would overlap
+					}
+
+				}
+			}
+		} catch (InvalidMoveException e) {
+			throw new RuntimeException("error while checking two square groups common objective");
+		}
+
+		return false;
+	}
 }
