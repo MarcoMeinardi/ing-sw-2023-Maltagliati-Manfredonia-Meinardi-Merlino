@@ -1,6 +1,5 @@
 package model;
 
-import javax.swing.text.StyledEditorKit;
 import java.util.*;
 import java.util.function.Function;
 
@@ -281,47 +280,48 @@ public class CommonObjective extends Objective {
 	}
 
 	private static Boolean equalsX(Shelf shelf) {
-		boolean check = false;
-
-		for (int i = 1; i < Shelf.ROWS - 1; i++) {
-			for (int j = 1; j < Shelf.COLUMNS - 1; j++) {
-				if (shelf.getCard(i, j).isEmpty()) {
-					break;
-				}
-				if (shelf.getCard(i, j).equals(shelf.getCard(i - 1, j - 1)) &&
-					shelf.getCard(i, j).equals(shelf.getCard(i + 1, j + 1)) &&
-					shelf.getCard(i, j).equals(shelf.getCard(i - 1, j + 1)) &&
-					shelf.getCard(i, j).equals(shelf.getCard(i + 1, j - 1))) {
-
-					check = true;
+		try {
+			for (int i = 1; i < Shelf.ROWS - 1; i++) {
+				for (int j = 1; j < Shelf.COLUMNS - 1; j++) {
+					if (
+						!shelf.getCard(i, j).isEmpty() &&
+						shelf.getCard(i, j).equals(shelf.getCard(i - 1, j - 1)) &&
+						shelf.getCard(i, j).equals(shelf.getCard(i + 1, j + 1)) &&
+						shelf.getCard(i, j).equals(shelf.getCard(i - 1, j + 1)) &&
+						shelf.getCard(i, j).equals(shelf.getCard(i + 1, j - 1))
+					) {
+						return true;
+					}
 				}
 			}
+		} catch (InvalidMoveException e) {
+			throw new RuntimeException("error while checking equals X common objective");
 		}
-		return check;
+		return false;
 	}
 
-	private static Boolean stairsAD (Shelf shelf) throws InvalidMoveException {
-
-		boolean check = false;
-		int j = 0;
-
-		for(int i = 0; i < Shelf.COLUMNS; i++){
-			if(shelf.getCard(j, i).isPresent()){
-				check = true;
+	private static Boolean stairsShape(Shelf shelf) {
+		int h = 0;
+		try {
+			while (h < Shelf.ROWS && shelf.getCard(h, 0).isPresent()) {
+				h++;
 			}
-			j++;
-		}
-		if(check){
-			return check;
+
+			if (h < 1 || (h > 2 && h < 5)) {
+				return false;
+			}
+			int direction = h <= 2 ? 1 : -1;
+
+			for (int x = 1; x < Shelf.COLUMNS; x++) {
+				if (shelf.getCard(h, x).isEmpty() || (h != Shelf.ROWS - 1 && shelf.getCard(h + 1, x).isPresent())) {
+					return false;
+				}
+				h += direction;
+			}
+		} catch (InvalidMoveException e) {
+			throw new RuntimeException("error while checking stairs shape common objective");
 		}
 
-		j = 0;
-		for(int i = Shelf.COLUMNS; i > 0; i--){
-			if(shelf.getCard(j, i).isPresent()){
-				check = true;
-			}
-			j++;
-		}
-		return check;
+		return true;
 	}
 }
