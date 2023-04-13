@@ -70,8 +70,8 @@ public class CommonObjective extends Objective {
 
 	private static int groupsOfNCards(Shelf shelf, int n) {
 		boolean[][] visited = new boolean[Shelf.ROWS][Shelf.COLUMNS];
-
 		int groups = 0;
+
 		try {
 			for (int y = 0; y < Shelf.ROWS; y++) {
 				for (int x = 0; x < Shelf.COLUMNS; x++) {
@@ -96,61 +96,61 @@ public class CommonObjective extends Objective {
 	}
 
 	private static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
-		boolean second = false;
-		HashSet<Card> cards = new HashSet();
-		Card tmp;
+		boolean firstCol = false;
+		HashSet<Card> cards = new HashSet<>();
+
 		try {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
 				for (int y = 0; y < Shelf.ROWS; y++) {
 					if (shelf.getCard(y, x).isEmpty()) {
 						break;
 					}
-					tmp = shelf.getCard(y, x).get();
-					if (cards.contains(tmp)) {
-						break;
-					}
-					cards.add(tmp);
+					cards.add(shelf.getCard(y, x).get());
 				}
 				if (cards.size() == 6) {
-					if (second) {
+					if (firstCol) {
 						return true;
 					}
-					second = true;
+					firstCol = true;
 				}
 				cards.clear();
 			}
 		} catch (InvalidMoveException e) {
 			throw new RuntimeException("error while checking two columns of six different cards common objective");
 		}
+
 		return false;
 	}
 
 	private static Boolean fiveCardsInDiagonal(Shelf shelf) {
 		boolean fullDiagonal;
-		Card referece;
+		Card reference;
+
 		try {
 			for (int offset = 0; offset <= Shelf.ROWS - Shelf.COLUMNS; offset++) {
 				// sud-west to north-est
-				if (!shelf.getCard(offset, 0).isEmpty()) {
-					referece = shelf.getCard(offset, 0).get();
+				if (shelf.getCard(offset, 0).isPresent()) {
+					reference = shelf.getCard(offset, 0).get();
 					fullDiagonal = true;
-					for (int y = 1; fullDiagonal && y < Shelf.COLUMNS; y++) {
-						Optional<Card> card = shelf.getCard(y + offset, y);
-						if (card.isEmpty() || !card.get().equals(referece)) {
+					for (int x = 1; x < Shelf.COLUMNS; x++) {
+						Optional<Card> card = shelf.getCard(x + offset, x);
+						if (card.isEmpty() || !card.get().equals(reference)) {
 							fullDiagonal = false;
+							break;
 						}
 					}
 					if (fullDiagonal) return true;
 				}
 
 				// sud-est to north-west
-				if (!shelf.getCard(offset, Shelf.COLUMNS - 1).isEmpty()) {
-					referece = shelf.getCard(offset, Shelf.COLUMNS - 1).get();
+				if (shelf.getCard(offset, Shelf.COLUMNS - 1).isPresent()) {
+					reference = shelf.getCard(offset, Shelf.COLUMNS - 1).get();
 					fullDiagonal = true;
-					for (int y = 1; fullDiagonal && y < Shelf.COLUMNS; y++) {
+					for (int y = 1; y < Shelf.COLUMNS; y++) {
 						Optional<Card> card = shelf.getCard(y + offset, Shelf.COLUMNS - y - 1);
-						if (card.isEmpty() || !card.get().equals(referece)) {
+						if (card.isEmpty() || !card.get().equals(reference)) {
 							fullDiagonal = false;
+							break;
 						}
 					}
 					if (fullDiagonal) return true;
@@ -159,6 +159,7 @@ public class CommonObjective extends Objective {
 		} catch (InvalidMoveException e) {
 			throw new RuntimeException("error while checking five cards in diagonal common objective");
 		}
+
 		return false;
 	}
 
@@ -190,14 +191,12 @@ public class CommonObjective extends Objective {
 	private static final int[] cornersY = {0, Shelf.ROWS - 1, 0, Shelf.ROWS - 1};
 	private static Boolean equalCorners(Shelf shelf) {
 		try {
-			for (int i = 0; i < 4; i++) {
-				if (shelf.getCard(cornersY[i], cornersX[i]).isEmpty()) {
-					return false;
-				}
+			Optional<Card> reference = shelf.getCard(cornersY[0], cornersX[0]);
+			if (reference.isEmpty()) {
+				return false;
 			}
-			Card reference = shelf.getCard(cornersY[0], cornersX[0]).get();
 			for (int i = 1; i < 4; i++) {
-				if (!shelf.getCard(cornersY[i], cornersX[i]).get().equals(reference)) {
+				if (!shelf.getCard(cornersY[i], cornersX[i]).equals(reference)) {
 					return false;
 				}
 			}
@@ -205,24 +204,21 @@ public class CommonObjective extends Objective {
 		} catch (InvalidMoveException e) {
 			throw new RuntimeException("error while checking corners common objective");
 		}
+
 		return true;
 	}
 
 	private static Boolean twoRowsWithFiveDifferentCards(Shelf shelf) {
 		boolean firstRow = false;
 		HashSet<Card> cards = new HashSet<>();
-		Card tmp;
+
 		try {
 			for (int y = 0; y < Shelf.ROWS; y++) {
 				for (int x = 0; x < Shelf.COLUMNS; x++) {
 					if (shelf.getCard(y, x).isEmpty()) {
 						break;
 					}
-					tmp = shelf.getCard(y, x).get();
-					if (cards.contains(tmp)) {
-						break;
-					}
-					cards.add(tmp);
+					cards.add(shelf.getCard(y, x).get());
 				}
 				if (cards.size() == 5) {
 					if (firstRow) {
@@ -235,6 +231,7 @@ public class CommonObjective extends Objective {
 		} catch (InvalidMoveException e) {
 			throw new RuntimeException("error while checking two rows with five different cards common objective");
 		}
+
 		return false;
 	}
 
@@ -254,7 +251,7 @@ public class CommonObjective extends Objective {
 					boolean isValidSquare = true;
 					for (int i = 0; i < 3; i++) {
 						Optional<Card> card = shelf.getCard(y + squareDy[i], x + squareDx[i]);
-						if (card.isEmpty() || !card.get().equals(reference.get())) {
+						if (card.isEmpty() || !card.equals(reference)) {
 							isValidSquare = false;
 							break;
 						}
@@ -269,7 +266,6 @@ public class CommonObjective extends Objective {
 						alreadyUsed[y + 1][x + 1] = true;
 						x++;  // skip next cell because it would overlap
 					}
-
 				}
 			}
 		} catch (InvalidMoveException e) {
@@ -281,14 +277,14 @@ public class CommonObjective extends Objective {
 
 	private static Boolean equalsX(Shelf shelf) {
 		try {
-			for (int i = 1; i < Shelf.ROWS - 1; i++) {
-				for (int j = 1; j < Shelf.COLUMNS - 1; j++) {
+			for (int y = 1; y < Shelf.ROWS - 1; y++) {
+				for (int x = 1; x < Shelf.COLUMNS - 1; x++) {
 					if (
-						!shelf.getCard(i, j).isEmpty() &&
-						shelf.getCard(i, j).equals(shelf.getCard(i - 1, j - 1)) &&
-						shelf.getCard(i, j).equals(shelf.getCard(i + 1, j + 1)) &&
-						shelf.getCard(i, j).equals(shelf.getCard(i - 1, j + 1)) &&
-						shelf.getCard(i, j).equals(shelf.getCard(i + 1, j - 1))
+						shelf.getCard(y, x).isPresent() &&
+						shelf.getCard(y, x).equals(shelf.getCard(y - 1, x - 1)) &&
+						shelf.getCard(y, x).equals(shelf.getCard(y + 1, x + 1)) &&
+						shelf.getCard(y, x).equals(shelf.getCard(y - 1, x + 1)) &&
+						shelf.getCard(y, x).equals(shelf.getCard(y + 1, x - 1))
 					) {
 						return true;
 					}
@@ -297,11 +293,13 @@ public class CommonObjective extends Objective {
 		} catch (InvalidMoveException e) {
 			throw new RuntimeException("error while checking equals X common objective");
 		}
+
 		return false;
 	}
 
 	private static Boolean stairsShape(Shelf shelf) {
 		int h = 0;
+
 		try {
 			while (h < Shelf.ROWS && shelf.getCard(h, 0).isPresent()) {
 				h++;
