@@ -10,7 +10,7 @@ public class Shelf {
 	public static final int COLUMNS = 5;
 	public static final int ROWS = 6;
 
-	private static final int groupPoints[] = {2, 3, 5, 8};
+	private static final int[] groupPoints = {2, 3, 5, 8};
 	private static final int[] dx = {-1, 0, 1, 0};
 	private static final int[] dy = {0, -1, 0, 1};
 
@@ -101,7 +101,7 @@ public class Shelf {
      *         with a size of at least 3.
      */
 	public ArrayList<Cockade> getGroupsCockades() {
-		ArrayList<Cockade> result = new ArrayList<Cockade>();
+		ArrayList<Cockade> result = new ArrayList<>();
 
 		boolean[][] visited = new boolean[ROWS][COLUMNS];
 		for (int y = 0; y < ROWS; y++) {
@@ -110,7 +110,7 @@ public class Shelf {
 
 				int groupSize = getGroupSize(y, x, slots[y][x].get(), visited);
 				if (groupSize >= 3) {
-					String cockadeName = String.format("Area of %s of size %d", slots[y][x].get().toString(), groupSize);
+					String cockadeName = String.format("Area of %s of size %d", slots[y][x].get(), groupSize);
 					result.add(new Cockade(cockadeName, groupPoints[Math.min(groupSize - 3, 3)]));
 				}
 			}
