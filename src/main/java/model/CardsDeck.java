@@ -14,8 +14,8 @@ public class CardsDeck {
      * @author Lorenzo, Ludovico, Marco, Riccardo
      */
     public CardsDeck() {
-        cards = new Stack<Card>();
-        for (Card c:Card.values()) {
+        cards = new Stack<>();
+        for (Card c : Card.values()) {
             for (int i = 0; i < CARDS_PER_TYPE; i++) {
                 cards.push(c);
             }

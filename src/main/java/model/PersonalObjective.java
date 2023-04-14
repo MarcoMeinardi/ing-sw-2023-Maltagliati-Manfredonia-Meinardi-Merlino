@@ -12,7 +12,7 @@ public class PersonalObjective extends Objective {
      * @author Marco, Ludovico, Lorenzo, Riccardo
      *
      * @param name The name of the personal objective
-     * @param cellscheck An array of cells to check for completion of the objective
+     * @param cellsCheck An array of cells to check for completion of the objective
      */
     public PersonalObjective(String name, Cell[] cellsCheck) {
         super(name);
