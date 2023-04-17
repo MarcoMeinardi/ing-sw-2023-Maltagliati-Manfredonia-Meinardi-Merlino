@@ -1,0 +1,9 @@
+@startuml
+Client1 -> Server: selection request
+note over Server: server updates model
+Server -> Client1: ack
+Server -> Client1: update message
+Server -> Client2: update message
+Server -> Client3: update message
+Server -> Client4: update message
+@enduml
