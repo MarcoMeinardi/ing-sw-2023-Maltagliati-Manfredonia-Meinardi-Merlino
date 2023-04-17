@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
-import java.util.*;
-import java.util.function.Function;
+import java.util.Optional;
 
 public class Client {
     public final int TIMEOUT = 30;
@@ -16,7 +15,7 @@ public class Client {
     private ClientStatus status;
 
     public Client(Socket socket) throws Exception {
-        this.status = ClientStatus.Disconnect;
+        this.status = ClientStatus.Disconnected;
         this.socket = socket;
         this.socket.setSoTimeout(TIMEOUT);
         this.incomingMessages = new ObjectInputStream(socket.getInputStream());
@@ -37,7 +36,7 @@ public class Client {
     }
 
     public void send(Message message) throws DisconnectedClientException{
-        if(getStatus() == ClientStatus.Disconnect){
+        if(getStatus() == ClientStatus.Disconnected){
             throw new DisconnectedClientException();
         }
         synchronized (this.outcomingMessages){
@@ -50,17 +49,19 @@ public class Client {
         }
     }
 
-    public Message receive() throws DisconnectedClientException{
-        if(getStatus() == ClientStatus.Disconnect){
+    public Optional<Message> receive() throws DisconnectedClientException{
+        if(getStatus() == ClientStatus.Disconnected){
             throw new DisconnectedClientException();
         }
         synchronized (this.incomingMessages){
             try{
+                if(this.incomingMessages.available() == 0){
+                    return Optional.empty();
+                }
                 Object obj = this.incomingMessages.readObject();
                 if(obj instanceof Message){
-                    return (Message)obj;
+                    return Optional.of((Message)obj);
                 }
-
             }catch(Exception e){}
             disconnect();
             throw new DisconnectedClientException();
@@ -68,11 +69,12 @@ public class Client {
     }
 
     public void disconnect(){
-        setStatus(ClientStatus.Disconnect);
+        setStatus(ClientStatus.Disconnected);
         synchronized (socket){
             try{
                 socket.close();
             }catch (IOException exception){}
         }
     }
+
 }

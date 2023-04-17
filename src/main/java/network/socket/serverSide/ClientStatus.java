@@ -2,7 +2,7 @@ package network.socket.serverSide;
 
 public enum ClientStatus {
     Idle,
-    Disconnect,
+    Disconnected,
     InGame,
     InLobby,
 }
