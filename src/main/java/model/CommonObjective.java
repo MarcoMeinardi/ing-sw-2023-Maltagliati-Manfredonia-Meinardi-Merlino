@@ -36,16 +36,18 @@ public class CommonObjective extends Objective {
 		CommonObjective[] selected_objectives = new CommonObjective[2];
 		ArrayList<CommonObjective> all_objectives = new ArrayList<>();
 
-		all_objectives.add(new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCards));
 		all_objectives.add(new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCards));
-		all_objectives.add(new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCards));
 		all_objectives.add(new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonal));
-		all_objectives.add(new CommonObjective("4 rows of at most 3 different cards", nPlayers, CommonObjective::fourRowsOfAtMostThreeDifferentCards));
 		all_objectives.add(new CommonObjective("all equal corners", nPlayers, CommonObjective::equalCorners));
-		all_objectives.add(new CommonObjective("2 rows with 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCards));
+		all_objectives.add(new CommonObjective("4 rows of at most 3 different cards", nPlayers, CommonObjective::fourRowsOfAtMostThreeDifferentCards));
+		all_objectives.add(new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCards));
+		all_objectives.add(new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCards));
 		all_objectives.add(new CommonObjective("2 square-shaped groups", nPlayers, CommonObjective::twoSquareGroups));
+		all_objectives.add(new CommonObjective("2 rows with 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCards));
+		all_objectives.add(new CommonObjective("3 columns of at most 3 different cards", nPlayers, CommonObjective::threeColumnsOfAtMostThreeDifferentCards));
 		all_objectives.add(new CommonObjective("X shape group", nPlayers, CommonObjective::equalsX));
-		all_objectives.add(new CommonObjective("stair shaped cards", nPlayers, CommonObjective::stairsShape));
+		all_objectives.add(new CommonObjective("eight equal cards", nPlayers, CommonObjective::eightEquals));
+		all_objectives.add(new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShape));
 
 		Collections.shuffle(all_objectives);
 		selected_objectives[0] = all_objectives.get(0);
@@ -179,6 +181,7 @@ public class CommonObjective extends Objective {
 			for (int y = 0; y < Shelf.ROWS; y++) {
 				for (int x = 0; x < Shelf.COLUMNS; x++) {
 					if (shelf.getCard(y, x).isEmpty()) {
+						cards.clear();
 						break;
 					}
 					cards.add(shelf.getCard(y, x).get());
@@ -330,4 +333,53 @@ public class CommonObjective extends Objective {
 
 		return true;
 	}
+
+	private static Boolean eightEquals(Shelf shelf) {
+		HashMap<Card, Integer> cardCount = new HashMap<>();
+
+		try {
+			for (int y = 0; y < Shelf.ROWS; y++) {
+				for (int x = 0; x < Shelf.COLUMNS; x++) {
+					if (shelf.getCard(y, x).isPresent()) {
+						Card card = shelf.getCard(y, x).get();
+						int count = cardCount.getOrDefault(card, 0) + 1;
+						if (count == 8) {
+							return true;
+						}
+						cardCount.put(card, count);
+					}
+				}
+			}
+		} catch (InvalidMoveException e) {
+			throw new RuntimeException("error while checking eight equals common objective");
+		}
+
+		return false;
+	}
+
+	private static Boolean threeColumnsOfAtMostThreeDifferentCards(Shelf shelf) {
+		int count = 0;
+		HashSet<Card> cards = new HashSet<>();
+
+		try {
+			for (int x = 0; x < Shelf.COLUMNS; x++) {
+				for (int y = 0; y < Shelf.ROWS; y++) {
+					if (shelf.getCard(y, x).isEmpty()) {
+						cards.clear();
+						break;
+					}
+					cards.add(shelf.getCard(y, x).get());
+				}
+				if (cards.size() <= 3) {
+					count++;
+				}
+				cards.clear();
+			}
+		} catch (InvalidMoveException e) {
+			throw new RuntimeException("error while checking five in a row common objective");
+		}
+
+		return count == 3;
+	}
+
 }
