@@ -9,12 +9,12 @@ note over C, S: Client registers to server using the login process
 
 == Lobby search ==
 
-C -> S: Ask for lobbies list
-S -> C: Send lobbies list
+C -> S: Call Lobbies list service
+S -> C: Return list of lobbies
 note over C: Chooses lobby to join
-C -> S: Ask to join lobby
+C -> S: Call join lobby service
 note over S: Verify if lobby is available
-S -> C: Notify client of lobby join
+S -> C: Return result of join lobby service
 note over C: Wait for other players to join
 
 @enduml
