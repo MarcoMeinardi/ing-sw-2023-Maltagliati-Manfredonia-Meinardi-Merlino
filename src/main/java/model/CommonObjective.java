@@ -32,6 +32,13 @@ public class CommonObjective extends Objective {
 		this.checkCompleted = checkCompleted;
 	}
 
+	/**
+	 * Method that generates a list of common objectives based on the number of players.
+	 *
+	 * @param nPlayers The number of players in the game
+	 * @return An array of two randomly selected common objectives
+	 * @author Marco, Lorenzo, Ludovico, Riccardo
+	 */
 	public static CommonObjective[] generateCommonObjectives(int nPlayers) {
 		CommonObjective[] selected_objectives = new CommonObjective[2];
 		ArrayList<CommonObjective> all_objectives = new ArrayList<>();
@@ -78,6 +85,16 @@ public class CommonObjective extends Objective {
 
 	// Common objectives functions
 
+	/**
+	 * Method computes the number of groups of n cards present in the given Shelf object.
+	 *
+	 * @throws RuntimeException if there is any error while checking the groups of n cards common objective
+	 * @param shelf
+	 * @param n
+	 * @return True if the objective has been completed, false otherwise
+	 * @author Marco, Ludovico
+	 *
+	 */
 	private static int groupsOfNCards(Shelf shelf, int n) {
 		boolean[][] visited = new boolean[Shelf.ROWS][Shelf.COLUMNS];
 		int groups = 0;
@@ -97,14 +114,35 @@ public class CommonObjective extends Objective {
 		return groups;
 	}
 
+	/**
+	 * Function that checks if the objective "4 groups of 4 cards" is done.
+	 *
+	 * @param shelf
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
 	private static Boolean fourGroupsOfFourCards(Shelf shelf) {
 		return groupsOfNCards(shelf, 4) >= 4;
 	}
 
+	/**
+	 * Function that checks if the objective "6 groups of 2 cards" is done.
+	 *
+	 * @param shelf
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
 	private static Boolean sixGroupsOfTwoCards(Shelf shelf) {
 		return groupsOfNCards(shelf, 6) >= 2;
 	}
 
+	/**
+	 * Function that checks if there are two columns in the given shelf that have 6 unique cards each is done.
+	 *
+	 * @throws RuntimeException if an InvalidMoveException is caught while checking the shelf.
+	 * @param shelf
+	 * @return
+	 */
 	private static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
 		boolean firstCol = false;
 		HashSet<Card> cards = new HashSet<>();
@@ -132,6 +170,14 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
+	/**
+	 * Function that checks if there are five cards in diagonal on the shelf
+	 *
+	 * @throws RuntimeException if there are any errors while checking for five cards in diagonal
+	 * @param shelf
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco, Lorenzo
+	 */
 	private static Boolean fiveCardsInDiagonal(Shelf shelf) {
 		boolean fullDiagonal;
 		Card reference;
@@ -173,6 +219,14 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
+	/**
+	 * Method that check if there are four rows in the given shelf such that each row has at most three different cards.
+	 *
+	 * @throws RuntimeException if there is an error while checking the rows
+	 * @param shelf
+	 * @return true if the objective is done, false otherwise
+	 * @author Ludovico, Marco
+	 */
 	private static Boolean fourRowsOfAtMostThreeDifferentCards(Shelf shelf) {
 		int count = 0;
 		HashSet<Card> cards = new HashSet<>();
@@ -198,6 +252,14 @@ public class CommonObjective extends Objective {
 		return count == 4;
 	}
 
+	/**
+	 * Function that checks if there are equals cards in the four corners of the shelf
+	 *
+	 * @throws RuntimeException if there are any errors while checking for equal corners
+	 * @param shelf
+	 * @return true if the objective is done, false otherwise
+	 * @author Ludovico, Marco
+	 */
 	private static final int[] cornersX = {0, 0, Shelf.COLUMNS - 1, Shelf.COLUMNS - 1};
 	private static final int[] cornersY = {0, Shelf.ROWS - 1, 0, Shelf.ROWS - 1};
 	private static Boolean equalCorners(Shelf shelf) {
@@ -219,6 +281,14 @@ public class CommonObjective extends Objective {
 		return true;
 	}
 
+	/**
+	 * Checks if there are two rows on the given Shelf containing exactly 5 different cards in each row.
+	 *
+	 * @throws RuntimeException if there are any errors while checking for two rows of five different cards
+	 * @param shelf
+	 * @return true if the objective is done, false otherwise
+	 * @author Riccardo, Marco
+	 */
 	private static Boolean twoRowsWithFiveDifferentCards(Shelf shelf) {
 		boolean firstRow = false;
 		HashSet<Card> cards = new HashSet<>();
@@ -246,6 +316,14 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
+	/**
+	 * This method checks if there are two non-overlapping 2x2 squares in the same shelf.
+	 *
+	 * @throws RuntimeException if there are any errors while checking for two non-overlapping 2x2 squares
+	 * @param shelf
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
 	private static final int[] squareDx = {0, 1, 1};
 	private static final int[] squareDy = {1, 0, 1};
 	private static Boolean twoSquareGroups(Shelf shelf) {
@@ -286,6 +364,14 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
+	/**
+	 * Function that checks there is a sequence of 5 cards that form an X on the shelf
+	 *
+	 * @throws RuntimeException if there are any errors while checking for an X
+	 * @param shelf
+	 * @return true if the objective is done, false otherwise
+	 * @author Riccardo,Marco
+	 */
 	private static Boolean equalsX(Shelf shelf) {
 		try {
 			for (int y = 1; y < Shelf.ROWS - 1; y++) {
@@ -308,6 +394,14 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
+	/**
+	 * Function that checks if there is a sequence of 5 cards that form a staircase on the shelf
+	 *
+	 * @throws RuntimeException if there are any errors while checking for a staircase
+	 * @param shelf
+	 * @return true if the objective is done, false otherwise
+	 * @author Riccardo,Marco
+	 */
 	private static Boolean stairsShape(Shelf shelf) {
 		int h = 0;
 
@@ -334,6 +428,14 @@ public class CommonObjective extends Objective {
 		return true;
 	}
 
+	/**
+	 * Function that checks if there are equals 8 cards on the shelf
+	 *
+	 * @throws RuntimeException if there are any errors while checking for equals 8 cards
+	 * @param shelf
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
 	private static Boolean eightEquals(Shelf shelf) {
 		HashMap<Card, Integer> cardCount = new HashMap<>();
 
@@ -357,6 +459,14 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
+	/**
+	 * This method checks if there are three columns in the given shelf where each column has at most three different cards
+	 *
+	 * @throws RuntimeException if there are any errors while checking for three columns of at most three different cards
+	 * @param shelf
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
 	private static Boolean threeColumnsOfAtMostThreeDifferentCards(Shelf shelf) {
 		int count = 0;
 		HashSet<Card> cards = new HashSet<>();
