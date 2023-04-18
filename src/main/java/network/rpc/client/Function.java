@@ -3,6 +3,7 @@ package network.rpc.client;
 import network.rpc.Call;
 import network.rpc.Result;
 import network.rpc.Service;
+import network.rpc.parameters.Login;
 
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -16,7 +17,7 @@ public class Function<P extends Serializable,R extends Serializable> {
 
     private Service service;
 
-    public Function(P params, Service service){
+    private Function(P params, Service service){
         this.params = params;
         this.result = Optional.empty();
         this.id = UUID.randomUUID();
@@ -48,4 +49,12 @@ public class Function<P extends Serializable,R extends Serializable> {
             result.notifyAll();
         }
     }
+
+    public static Function<Login,Boolean> Login(Login param){
+        return new Function<Login, Boolean>(param, Service.Login);
+    }
+    public static Function<Boolean,Boolean> Ping(){
+        return new Function<Boolean,Boolean>(null, Service.Ping);
+    }
+
 }

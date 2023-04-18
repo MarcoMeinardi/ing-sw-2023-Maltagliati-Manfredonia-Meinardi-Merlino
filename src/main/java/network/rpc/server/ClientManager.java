@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class ClientManager extends Thread{
     final private LinkedList<Client> unidentified_clients = new LinkedList<>();
@@ -31,7 +32,9 @@ public class ClientManager extends Thread{
             try{
                 Client client = new Client(socket.accept());
                 addUidentifiedClient(client);
-            }catch (Exception e){}
+            }catch (Exception e){
+                Logger.getLogger(Client.class.getName()).warning(e.getMessage());
+            }
         }
     }
     protected void addUidentifiedClient(Client client){
@@ -72,6 +75,7 @@ public class ClientManager extends Thread{
                             client.send(result);
                         }
                     }catch (Exception e) {
+                        Logger.getLogger(Client.class.getName()).warning(e.getMessage());
                         client.disconnect();
                         unidentified_clients.remove(client);
                     }
@@ -87,6 +91,7 @@ public class ClientManager extends Thread{
             acceptConnectionsThread.join();
             identifyClientsThread.join();
         }catch(InterruptedException e){
+            Logger.getLogger(Client.class.getName()).warning(e.getMessage());
             acceptConnectionsThread.interrupt();
             identifyClientsThread.interrupt();
         }

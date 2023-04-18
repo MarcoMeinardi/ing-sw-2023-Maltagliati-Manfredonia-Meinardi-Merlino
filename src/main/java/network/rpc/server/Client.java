@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class Client {
         public final int TIMEOUT = 30;
@@ -46,6 +47,7 @@ public class Client {
                 try{
                     outcomingMessages.writeObject((Object)message);
                 }catch(Exception e){
+                    Logger.getLogger(Client.class.getName()).warning(e.getMessage());
                     disconnect();
                     throw new DisconnectedClientException();
                 }
@@ -65,7 +67,9 @@ public class Client {
                     if(obj instanceof Call){
                         return Optional.of((Call)obj);
                     }
-                }catch(Exception e){}
+                }catch(Exception e){
+                    Logger.getLogger(Client.class.getName()).warning(e.getMessage());
+                }
                 disconnect();
                 throw new DisconnectedClientException();
             }
@@ -76,7 +80,9 @@ public class Client {
             synchronized (socket){
                 try{
                     socket.close();
-                }catch (IOException exception){}
+                }catch (IOException e){
+                    Logger.getLogger(Client.class.getName()).warning(e.getMessage());
+                }
             }
         }
 
