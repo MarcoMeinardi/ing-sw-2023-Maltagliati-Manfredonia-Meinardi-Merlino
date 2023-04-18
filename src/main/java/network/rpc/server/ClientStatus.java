@@ -1,4 +1,4 @@
-package network.socket.serverSide;
+package network.rpc.server;
 
 public enum ClientStatus {
     Idle,
