@@ -56,7 +56,7 @@ public class Result<T extends Serializable> implements Serializable{
         return value;
     }
 
-    public UUID getId(){
+    public UUID id(){
         return id;
     }
 }

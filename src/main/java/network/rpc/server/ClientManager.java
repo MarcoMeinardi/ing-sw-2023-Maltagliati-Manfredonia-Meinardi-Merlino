@@ -61,16 +61,16 @@ public class ClientManager extends Thread{
                         if(msg.isEmpty()){
                             continue;
                         }
-                        if(msg.get().getService() == Service.Login){
+                        if(msg.get().service() == Service.Login){
                             Result<Boolean> result;
-                            if(msg.get().getParams() instanceof network.rpc.parameters.Login){
-                                String username = ((network.rpc.parameters.Login)msg.get().getParams()).username();
+                            if(msg.get().params() instanceof network.rpc.parameters.Login){
+                                String username = ((network.rpc.parameters.Login)msg.get().params()).username();
                                 addIdentifiedClient(username, client);
                                 unidentified_clients.remove(client);
-                                result = Result.ok(true, msg.get().getId());
+                                result = Result.ok(true, msg.get().id());
                             }else{
-                                String class_type = msg.get().getParams().getClass().toString();
-                                result = Result.err(new WrongParametersException("String", class_type, "Login"), msg.get().getId());
+                                String class_type = msg.get().params().getClass().toString();
+                                result = Result.err(new WrongParametersException("String", class_type, "Login"), msg.get().id());
                             }
                             client.send(result);
                         }
