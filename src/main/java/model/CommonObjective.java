@@ -69,7 +69,7 @@ public class CommonObjective extends Objective {
 	 *
 	 * @param shelf The shelf to check for completion of the objective
 	 * @return Optional object containing a Cockade trophy,
-	 * or an empty Optional object if the objective has not been completed.
+	 * or an empty Optional object if the objective has not been completed
 	 * @author Marco, Ludovico, Lorenzo, Riccardo
 	 */
 	@Override
@@ -88,11 +88,11 @@ public class CommonObjective extends Objective {
 	/**
 	 * Method computes the number of groups of n cards present in the given Shelf object.
 	 *
-	 * @throws RuntimeException if there is any error while checking the groups of n cards common objective
-	 * @param shelf
-	 * @param n
-	 * @return True if the objective has been completed, false otherwise
-	 * @author Marco, Ludovico
+	 * @throws RuntimeException if there is any error while checking
+	 * @param shelf The shelf object
+	 * @param n The size of the group to check for
+	 * @return The number of groups of n cards present in the given Shelf object
+	 * @author Marco
 	 *
 	 */
 	private static int groupsOfNCards(Shelf shelf, int n) {
@@ -115,9 +115,9 @@ public class CommonObjective extends Objective {
 	}
 
 	/**
-	 * Function that checks if the objective "4 groups of 4 cards" is done.
+	 * Method that checks if the objective "4 groups of 4 cards" is done.
 	 *
-	 * @param shelf
+	 * @param shelf The shelf object
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
@@ -126,9 +126,9 @@ public class CommonObjective extends Objective {
 	}
 
 	/**
-	 * Function that checks if the objective "6 groups of 2 cards" is done.
+	 * Method that checks if the objective "6 groups of 2 cards" is done.
 	 *
-	 * @param shelf
+	 * @param shelf The shelf object
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
@@ -137,11 +137,12 @@ public class CommonObjective extends Objective {
 	}
 
 	/**
-	 * Function that checks if there are two columns in the given shelf that have 6 unique cards each is done.
+	 * Method that checks if the objective "two columns with 6 different cards" is done.
 	 *
-	 * @throws RuntimeException if an InvalidMoveException is caught while checking the shelf.
-	 * @param shelf
-	 * @return
+	 * @throws RuntimeException if there is any error while checking
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Lorenzo
 	 */
 	private static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
 		boolean firstCol = false;
@@ -171,10 +172,10 @@ public class CommonObjective extends Objective {
 	}
 
 	/**
-	 * Function that checks if there are five cards in diagonal on the shelf
+	 * Method that checks if the objective "five cards in diagonal" is done.
 	 *
-	 * @throws RuntimeException if there are any errors while checking for five cards in diagonal
-	 * @param shelf
+	 * @throws RuntimeException if there is any error while checking
+	 * @param shelf The shelf object
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco, Lorenzo
 	 */
@@ -220,10 +221,10 @@ public class CommonObjective extends Objective {
 	}
 
 	/**
-	 * Method that check if there are four rows in the given shelf such that each row has at most three different cards.
+	 * Method that check if the objective "four rows such that each row has at most three different cards" is done.
 	 *
-	 * @throws RuntimeException if there is an error while checking the rows
-	 * @param shelf
+	 * @throws RuntimeException if there is any error while checking
+	 * @param shelf The shelf object
 	 * @return true if the objective is done, false otherwise
 	 * @author Ludovico, Marco
 	 */
@@ -252,16 +253,16 @@ public class CommonObjective extends Objective {
 		return count == 4;
 	}
 
+	private static final int[] cornersX = {0, 0, Shelf.COLUMNS - 1, Shelf.COLUMNS - 1};
+	private static final int[] cornersY = {0, Shelf.ROWS - 1, 0, Shelf.ROWS - 1};
 	/**
-	 * Function that checks if there are equals cards in the four corners of the shelf
+	 * Method that checks if the objective "all equal cards in the four corners of the shelf" is done.
 	 *
-	 * @throws RuntimeException if there are any errors while checking for equal corners
-	 * @param shelf
+	 * @throws RuntimeException if there is any error while checking
+	 * @param shelf The shelf object
 	 * @return true if the objective is done, false otherwise
 	 * @author Ludovico, Marco
 	 */
-	private static final int[] cornersX = {0, 0, Shelf.COLUMNS - 1, Shelf.COLUMNS - 1};
-	private static final int[] cornersY = {0, Shelf.ROWS - 1, 0, Shelf.ROWS - 1};
 	private static Boolean equalCorners(Shelf shelf) {
 		try {
 			Optional<Card> reference = shelf.getCard(cornersY[0], cornersX[0]);
@@ -282,10 +283,10 @@ public class CommonObjective extends Objective {
 	}
 
 	/**
-	 * Checks if there are two rows on the given Shelf containing exactly 5 different cards in each row.
+	 * Method that checks if the objective "two rows contains 5 different cards" is done.
 	 *
-	 * @throws RuntimeException if there are any errors while checking for two rows of five different cards
-	 * @param shelf
+	 * @throws RuntimeException if there is any error while checking
+	 * @param shelf The shelf object
 	 * @return true if the objective is done, false otherwise
 	 * @author Riccardo, Marco
 	 */
@@ -316,16 +317,16 @@ public class CommonObjective extends Objective {
 		return false;
 	}
 
+	private static final int[] squareDx = {0, 1, 1};
+	private static final int[] squareDy = {1, 0, 1};
 	/**
-	 * This method checks if there are two non-overlapping 2x2 squares in the same shelf.
+	 * Method that checks if the objective "two non-overlapping 2x2 squares" is done.
 	 *
-	 * @throws RuntimeException if there are any errors while checking for two non-overlapping 2x2 squares
-	 * @param shelf
+	 * @throws RuntimeException if there is any error while checking
+	 * @param shelf The shelf object
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
-	private static final int[] squareDx = {0, 1, 1};
-	private static final int[] squareDy = {1, 0, 1};
 	private static Boolean twoSquareGroups(Shelf shelf) {
 		boolean firstSquare = false;
 		boolean[][] alreadyUsed = new boolean[Shelf.ROWS][Shelf.COLUMNS];
@@ -365,10 +366,10 @@ public class CommonObjective extends Objective {
 	}
 
 	/**
-	 * Function that checks there is a sequence of 5 cards that form an X on the shelf
+	 * Method that checks if the objective "X-shaped equal cards" is done.
 	 *
-	 * @throws RuntimeException if there are any errors while checking for an X
-	 * @param shelf
+	 * @throws RuntimeException if there is any error while checking
+	 * @param shelf The shelf object
 	 * @return true if the objective is done, false otherwise
 	 * @author Riccardo,Marco
 	 */
@@ -395,10 +396,10 @@ public class CommonObjective extends Objective {
 	}
 
 	/**
-	 * Function that checks if there is a sequence of 5 cards that form a staircase on the shelf
+	 * Method that checks if the objective "stair shaped cards" is done.
 	 *
-	 * @throws RuntimeException if there are any errors while checking for a staircase
-	 * @param shelf
+	 * @throws RuntimeException if there is any error while checking
+	 * @param shelf The shelf object
 	 * @return true if the objective is done, false otherwise
 	 * @author Riccardo,Marco
 	 */
@@ -429,10 +430,10 @@ public class CommonObjective extends Objective {
 	}
 
 	/**
-	 * Function that checks if there are equals 8 cards on the shelf
+	 * Method that checks if the objective "8 equal cards" is done.
 	 *
-	 * @throws RuntimeException if there are any errors while checking for equals 8 cards
-	 * @param shelf
+	 * @throws RuntimeException if there is any error while checking
+	 * @param shelf The shelf object
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
@@ -460,10 +461,10 @@ public class CommonObjective extends Objective {
 	}
 
 	/**
-	 * This method checks if there are three columns in the given shelf where each column has at most three different cards
+	 * Method that checks if the objective "three columns where each column has at most three different cards" is done.
 	 *
-	 * @throws RuntimeException if there are any errors while checking for three columns of at most three different cards
-	 * @param shelf
+	 * @throws RuntimeException if there is any error while checking
+	 * @param shelf The shelf object
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
