@@ -14,7 +14,6 @@ public class Function<P extends Serializable,R extends Serializable> {
     private P params;
     private Optional<Result<R>> result;
     private UUID id;
-
     private Service service;
 
     private Function(P params, Service service){
@@ -23,9 +22,10 @@ public class Function<P extends Serializable,R extends Serializable> {
         this.id = UUID.randomUUID();
     }
 
-    protected void call(ObjectOutputStream stream) throws Exception{
+    protected Function call(ObjectOutputStream stream) throws Exception{
         Call<P> call = new Call(params, service, id);
         stream.writeObject(call);
+        return this;
     }
 
     public Optional<Result<R>> checkResult(){
