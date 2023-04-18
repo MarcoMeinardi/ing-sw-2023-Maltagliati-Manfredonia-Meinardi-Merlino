@@ -83,8 +83,13 @@ public class ClientManager extends Thread{
     public void run(){
         acceptConnectionsThread.start();
         identifyClientsThread.start();
-        acceptConnectionsThread.join();
-        identifyClientsThread.join();
+        try{
+            acceptConnectionsThread.join();
+            identifyClientsThread.join();
+        }catch(InterruptedException e){
+            acceptConnectionsThread.interrupt();
+            identifyClientsThread.interrupt();
+        }
     }
 
     public Optional<Client> getClientByUsername(String username){
