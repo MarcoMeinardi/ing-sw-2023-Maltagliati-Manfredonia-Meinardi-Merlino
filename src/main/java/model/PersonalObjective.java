@@ -38,4 +38,9 @@ public class PersonalObjective extends Objective {
         }
         return Optional.empty();
     }
+
+    public static PersonalObjective[] generatePersonalObjectives(int nPlayers) {
+    	// TODO
+        return null;
+    }
 }

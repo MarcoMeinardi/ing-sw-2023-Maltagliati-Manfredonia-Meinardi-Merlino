@@ -1,11 +1,23 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Game {
+
     private TableTop tabletop;
     private ArrayList<Player> players;
     private CommonObjective[] commonObjectives;
+
+    public Game(ArrayList<String> playersNames) {
+        this.tabletop = new TableTop(players.size());
+        PersonalObjective[] personalObjective = PersonalObjective.generatePersonalObjectives(players.size());
+        this.players = new ArrayList<>();
+        for (int i = 0; i < playersNames.size(); i++) {
+            this.players.add(new Player(playersNames.get(i), personalObjective[i]));
+        }
+        this.commonObjectives = CommonObjective.generateCommonObjectives(players.size());
+    }
 
     /**
      * Method that returns the current tabletop object.
