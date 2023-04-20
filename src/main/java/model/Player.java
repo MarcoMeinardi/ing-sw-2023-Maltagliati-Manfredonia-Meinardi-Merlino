@@ -6,7 +6,9 @@ public class Player {
 	private final String name;
     private final PersonalObjective personalObjective;
     private final Shelf shelf;
-	private ArrayList<Cockade> trophies;
+	private ArrayList<Cockade> cockades;
+
+	private int points;
 
 	/**
 	 * Constructor that creates a new player with a specified name and personal objective.
@@ -20,19 +22,38 @@ public class Player {
 		this.name = name;
 		this.personalObjective = personalObjective;
 		shelf = new Shelf();
-		this.trophies = new ArrayList<>();
+		this.cockades = new ArrayList<>();
+		points = 0;
 	}
 
     public Shelf getShelf() {
         return shelf;
     }
 
-    public ArrayList<Cockade> getTrophies() {
-        return trophies;
+    public ArrayList<Cockade> getCockades() {
+        return cockades;
     }
 
 	public String getName() {
 		return name;
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void addPoints(int points) {
+		this.points += points;
+	}
+
+	public void calculatePoints(){
+		for(Cockade cockade : cockades){
+			points += cockade.points();
+		}
+	}
+
+	public void addCockade(Cockade trophy) {
+		cockades.add(trophy);
 	}
 
 	public PersonalObjective getPersonalObjective() {
