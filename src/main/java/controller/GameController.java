@@ -57,8 +57,6 @@ public class GameController {
                 player.addCockade(cockade);
             }
 
-            player.calculatePoints();
-
         }
 
         Collections.sort(players, (player1, player2) -> player2.getPoints() - player1.getPoints());

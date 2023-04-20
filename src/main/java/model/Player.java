@@ -46,14 +46,9 @@ public class Player {
 		this.points += points;
 	}
 
-	public void calculatePoints(){
-		for(Cockade cockade : cockades){
-			points += cockade.points();
-		}
-	}
-
-	public void addCockade(Cockade trophy) {
-		cockades.add(trophy);
+	public void addCockade(Cockade cockade) {
+		cockades.add(cockade);
+		addPoints(cockade.points());
 	}
 
 	public PersonalObjective getPersonalObjective() {
