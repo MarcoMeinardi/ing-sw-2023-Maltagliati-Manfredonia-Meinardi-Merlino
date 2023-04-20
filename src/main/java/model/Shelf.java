@@ -146,6 +146,13 @@ public class Shelf {
 		return result;
 	}
 
+    /**
+     * Returns a boolean indicating whether the shelf is full or not.
+     * @author Ludovico
+     *
+     * @return True if the shelf is full, false otherwise
+     */
+
     public boolean isFull() {
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLUMNS; x++) {
