@@ -42,13 +42,9 @@ public class Player {
 		return points;
 	}
 
-	public void addPoints(int points) {
-		this.points += points;
-	}
-
 	public void addCockade(Cockade cockade) {
 		cockades.add(cockade);
-		addPoints(cockade.points());
+		points += cockade.points();
 	}
 
 	public PersonalObjective getPersonalObjective() {
