@@ -3,7 +3,6 @@ import model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Optional;
 
 public class GameController {
@@ -41,17 +40,13 @@ public class GameController {
 
     private void addPersonalCockade(Player player){
         Optional<Cockade> helpCockadePersonal = player.getPersonalObjective().isCompleted(player.getShelf());
-        if(helpCockadePersonal.isPresent()) {
-            player.addCockade(helpCockadePersonal.get());
-        }
+        helpCockadePersonal.ifPresent(player::addCockade);
     }
 
     private void addCommonCockade(Player player){
         for(CommonObjective objective : game.getCommonObjectives()) {
             Optional<Cockade> helpCockadeCommon = objective.isCompleted(player.getShelf());
-            if (helpCockadeCommon.isPresent()){
-                player.addCockade(helpCockadeCommon.get());
-            }
+            helpCockadeCommon.ifPresent(player::addCockade);
         }
     }
 
