@@ -62,34 +62,56 @@ public class GameController {
 
         }
 
-        Collections.sort(players, (player1, player2) -> player2.getPoints() - player1.getPoints());
+        players.sort((player1, player2) -> player2.getPoints() - player1.getPoints());
         return players;
     }
 
-    private boolean pickCards(ArrayList<Integer> y, ArrayList<Integer> x, Player player, int column){
-        Card[] cards = new Card[y.size()];
+    private void doMove(Player player, ArrayList<Point> positions, int column) throws InvalidMoveException {
+		if (positions.size() < 1 || positions.size() > 3) {
+			throw new InvalidMoveException("Invalid number of picked cards");
+		}
 
-        if(y.size() != x.size() || y.size() > 3 || y.size() < 1 || x.size() > 3 || x.size() < 1) {
-            return false;
-        }
+		// Check that all the cards are adjacent
+		for (int i = 0; i < positions.size() - 1; i++) {
+			for (int j = 1; j < positions.size(); j++) {
+				int dist = positions.get(i).distance(positions.get(j));
+				if (dist != 1 && dist != 2) {
+					throw new InvalidMoveException("Cards are not pickable (not adjacient)");
+				}
+			}
+		}
 
-        try{
-            for (int i = 0; i < y.size(); i++) {
-                game.getTabletop().isPickable(y.get(i), x.get(i));
-                cards[i] = game.getTabletop().pickCard(y.get(i), x.get(i));
-            }
+		// Check that all the cards are singularly pickable
+		for (Point position : positions) {
+			if (!game.getTabletop().isPickable(position.y(), position.x())) {
+				throw new InvalidMoveException("One of the selected cards is not pickable");
+			}
+		}
 
-            player.getShelf().insert(column, cards);
+		if (positions.size() == 3) {
+			// The three points have to be colinear
+			// To check that, we can calculate the area of the triangle they form
+			// If the area is 0, the points are colinear
+			Point p1 = positions.get(0);
+			Point p2 = positions.get(1);
+			Point p3 = positions.get(2);
 
-        }catch (Exception e) {
-            return false;
-        }
+			// Double triangle area derived from Gauss's area formula
+			int area =
+				p1.x() * (p2.y() - p3.y()) +
+				p2.x() * (p3.y() - p1.y()) +
+				p3.x() * (p1.y() - p2.y());
+			if (area != 0) {
+				throw new InvalidMoveException("Cards are not pickable (not colinear)");
+			}
+		}
 
-        return true;
+		ArrayList<Card> cards = new ArrayList<Card>();
+		for (Point position : positions) {
+			cards.add(game.getTabletop().pickCard(position.y(), position.x()));
+		}
+		player.getShelf().insert(column, cards);
     }
-
-
-
 }
 
 

@@ -41,15 +41,15 @@ public class Shelf {
      * @throws InvalidMoveException if the column index is out of range, the number of cards is invalid,
      * or there is not enough space in the column.
      */
-    public void insert(int column, Card[] cards) throws InvalidMoveException {
+    public void insert(int column, ArrayList<Card> cards) throws InvalidMoveException {
         if (column < 0 || column >= COLUMNS) {
             throw new InvalidMoveException("Invalid column");
         }
-        if (cards.length == 0 || cards.length > 3) {
+        if (cards.size() == 0 || cards.size() > 3) {
             throw new InvalidMoveException("Invalid number of cards");
         }
         int highest = getHighest(column);
-        if(cards.length > ROWS - highest) {
+        if(cards.size() > ROWS - highest) {
             throw new InvalidMoveException("Not enough space in column");
         }
         for(Card card : cards) {
