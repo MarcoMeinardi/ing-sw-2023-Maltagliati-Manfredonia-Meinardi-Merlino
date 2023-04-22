@@ -112,4 +112,11 @@ public class ClientManager extends Thread{
             return identified_clients;
         }
     }
+
+    public boolean isClientConnected(String username){
+        synchronized (identified_clients) {
+            return identified_clients.containsKey(username) && identified_clients.get(username).getStatus() != ClientStatus.Disconnected;
+        }
+    }
+
 }
