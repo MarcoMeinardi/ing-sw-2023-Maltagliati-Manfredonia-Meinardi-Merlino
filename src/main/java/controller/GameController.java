@@ -160,7 +160,6 @@ public class GameController extends Thread {
      * @param positions The positions of the cards to pick
      * @param column The column where the cards will be placed
      */
-
     private void doMove(Player player, ArrayList<Point> positions, int column) throws InvalidMoveException {
         if (positions.size() < 1 || positions.size() > 3) {
             throw new InvalidMoveException("Invalid number of picked cards");
@@ -170,7 +169,7 @@ public class GameController extends Thread {
         for (int i = 0; i < positions.size() - 1; i++) {
             for (int j = 1; j < positions.size(); j++) {
                 int dist = positions.get(i).distance(positions.get(j));
-                if (dist != 1 && dist != 2) {
+                if (dist != 1 && (positions.size() != 3 || dist != 2)) {
                     throw new InvalidMoveException("Cards are not pickable (not adjacient)");
                 }
             }
@@ -185,18 +184,15 @@ public class GameController extends Thread {
 
         if (positions.size() == 3) {
             // The three points have to be colinear
-            // To check that, we can calculate the area of the triangle they form
-            // If the area is 0, the points are colinear
+            // We just have to check if they have all the same x or y, since that's the only valid disposition
             Point p1 = positions.get(0);
             Point p2 = positions.get(1);
             Point p3 = positions.get(2);
 
-            // Double triangle area derived from Gauss's area formula
-            int area =
-                    p1.x() * (p2.y() - p3.y()) +
-                            p2.x() * (p3.y() - p1.y()) +
-                            p3.x() * (p1.y() - p2.y());
-            if (area != 0) {
+            if (
+                (p1.x() != p2.x() || p1.x() != p3.x()) ||
+                (p1.y() != p2.y() || p1.y() != p3.y())
+            ) {
                 throw new InvalidMoveException("Cards are not pickable (not colinear)");
             }
         }
