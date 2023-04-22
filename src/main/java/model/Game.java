@@ -1,9 +1,10 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
-public class Game {
+public class Game implements Iterable<Player> {
 
     private TableTop tabletop;
     private ArrayList<Player> players;
@@ -17,6 +18,11 @@ public class Game {
             this.players.add(new Player(playersNames.get(i), personalObjective[i]));
         }
         this.commonObjectives = CommonObjective.generateCommonObjectives(players.size());
+    }
+
+    @Override
+    public Iterator<Player> iterator() {
+        return new PlayerIterator(this);
     }
 
     /**
@@ -48,5 +54,6 @@ public class Game {
     public CommonObjective[] getCommonObjectives() {
         return commonObjectives;
     }
+
 
 }

@@ -5,26 +5,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
-public class GameController {
+public class GameController extends Thread {
 
     private Game game;
-    private boolean endGame;
 
     /** Constructor that creates a new game with the specified players.
     * @author Ludovico
     * @param playersNames The names of the players
     */
-    private GameController(ArrayList<String> playersNames) {
+    private GameController(ArrayList<String> playersNames) { /** to be changed in lobby*/
         game = new Game(playersNames);
     }
 
-    private boolean checkFullShelf(Player player){
-        return player.getShelf().isFull();
-    }
+    @Override
+    public void run() {
+        for (Player player : game) {
 
-    private void setEndGame(Player player){
-        if(checkFullShelf(player)){
-            endGame = true;
         }
     }
 
@@ -112,6 +108,9 @@ public class GameController {
 		}
 		player.getShelf().insert(column, cards);
     }
+
+
+
 }
 
 
