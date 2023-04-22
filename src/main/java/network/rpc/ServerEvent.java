@@ -3,9 +3,10 @@ package network.rpc;
 import java.io.Serializable;
 
 public class ServerEvent <T extends Serializable> implements Serializable{
-    private enum Type{
+    protected enum Type{
         Pause,
-        Resume
+        Resume,
+        Ping,
     }
 
     public ServerEvent(Type type, T data) {
@@ -31,6 +32,10 @@ public class ServerEvent <T extends Serializable> implements Serializable{
 
     public static ServerEvent Resume(String data){
         return new ServerEvent(Type.Resume, data);
+    }
+
+    public static ServerEvent Ping(){
+        return new ServerEvent(Type.Ping, null);
     }
 
 }

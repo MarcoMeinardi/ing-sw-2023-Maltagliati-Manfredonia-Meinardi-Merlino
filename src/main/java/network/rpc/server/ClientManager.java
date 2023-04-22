@@ -2,6 +2,7 @@ package network.rpc.server;
 
 import network.rpc.Call;
 import network.rpc.Result;
+import network.rpc.ServerEvent;
 import network.rpc.Service;
 import network.rpc.parameters.WrongParametersException;
 
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
 public class ClientManager extends Thread{
     final private LinkedList<Client> unidentified_clients = new LinkedList<>();
     final private HashMap<String, Client> identified_clients = new HashMap<>();
+    private static final int TIMEOUT = 30;
 
     private ServerSocket socket;
 
@@ -90,6 +92,21 @@ public class ClientManager extends Thread{
         try{
             acceptConnectionsThread.join();
             identifyClientsThread.join();
+            while(true){
+                synchronized (identified_clients) {
+                    for (Client client : identified_clients.values()) {
+                        if(client.getStatus() != ClientStatus.Disconnected){
+                            try{
+                                client.send(Result.ok(ServerEvent.Ping(), null));
+                            }catch (Exception e){
+                                Logger.getLogger(Client.class.getName()).warning(e.getMessage());
+                                client.disconnect();
+                            }
+                        }
+                    }
+                }
+                Thread.sleep(TIMEOUT/2);
+            }
         }catch(InterruptedException e){
             Logger.getLogger(Client.class.getName()).warning(e.getMessage());
             acceptConnectionsThread.interrupt();
