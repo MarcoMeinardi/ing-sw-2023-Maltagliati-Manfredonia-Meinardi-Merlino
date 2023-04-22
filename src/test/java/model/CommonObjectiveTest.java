@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public class CommonObjectiveTest {
 
-
     @Test
     public void testGenerateCommonObjectives() {
 
@@ -44,8 +43,6 @@ public class CommonObjectiveTest {
 
         cockade = objective.isCompleted(shelf);
         assertEquals(true, cockade.isPresent());
-
-
 
     }
 
