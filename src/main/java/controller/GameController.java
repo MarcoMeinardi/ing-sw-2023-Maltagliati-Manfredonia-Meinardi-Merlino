@@ -13,6 +13,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+/**
+ * This class runs an instance of game and controls it.
+ * @author Ludovico, Marco, Lorenzo
+ *
+ */
+
 public class GameController extends Thread {
 
     private Game game;
@@ -26,29 +32,70 @@ public class GameController extends Thread {
 
     /**
      * Constructor that creates a new game with the specified players.
+     * @author Ludovico
      *
      * @param playersNames The names of the players
-     * @author Ludovico
      */
     private GameController(ArrayList<String> playersNames, ClientManager clientManager) { /** to be changed in lobby*/
         game = new Game(playersNames);
         this.clientManager = clientManager;
     }
 
+    /**
+     * Runs the game.
+     * @author Ludovico
+     *
+     */
     @Override
     public void run() {
+
         for (Player player : game) {
+            int column = 0;  //TODO: change variables to actual values requested by the player
+            ArrayList<Point> positions = null;
+
+            try {
+                doMove(player, positions, column);
+            } catch (InvalidMoveException e) {
+                checkDisconnection();
+            }
+
+            try {
+                addPersonalCockade(player);
+            } catch (Exception e) {
+                checkDisconnection();
+            }
+
             try{
                 addCommonCockade(player);
             }catch(Exception e){
                 checkDisconnection();
             }
+
+            try{
+                refillTable();
+            }catch(Exception e){
+                checkDisconnection();
+            }
         }
+
     }
+
+    /**
+     * Checks when table needs a refill.
+     * @author Ludovico
+     *
+     * @return True if refill needed, false otherwise
+     */
 
     private boolean checkRefillTable() {
         return game.getTabletop().needRefill();
     }
+
+    /**
+     * Refills the table if needed.
+     * @author Ludovico
+     *
+     */
 
     private void refillTable() {
         if (checkRefillTable()) {
@@ -56,10 +103,24 @@ public class GameController extends Thread {
         }
     }
 
+    /**
+     * Adds the personal cockade to the player's shelf if the player has completed the personal objective.
+     * @author Ludovico
+     *
+     * @param player The player
+     */
+
     private void addPersonalCockade(Player player) {
         Optional<Cockade> helpCockadePersonal = player.getPersonalObjective().isCompleted(player.getShelf());
         helpCockadePersonal.ifPresent(player::addCockade);
     }
+
+    /**
+     * Adds the common cockade to the player's shelf if the player has completed the common objective.
+     * @author Ludovico
+     *
+     * @param player The player
+     */
 
     private void addCommonCockade(Player player) {
         for (CommonObjective objective : game.getCommonObjectives()) {
@@ -67,6 +128,13 @@ public class GameController extends Thread {
             helpCockadeCommon.ifPresent(player::addCockade);
         }
     }
+
+    /**
+     * Returns the final ranks of the players.
+     * @author Ludovico, Marco
+     *
+     * @return The final ranks of the players
+     */
 
     private ArrayList<Player> finalRanks() {
         ArrayList<Player> players = game.getPlayers();
@@ -83,6 +151,15 @@ public class GameController extends Thread {
         players.sort((player1, player2) -> player2.getPoints() - player1.getPoints());
         return players;
     }
+
+    /**
+     * Tries to execute the move requested by the player.
+     * @author Marco
+     *
+     * @param player The player
+     * @param positions The positions of the cards to pick
+     * @param column The column where the cards will be placed
+     */
 
     private void doMove(Player player, ArrayList<Point> positions, int column) throws InvalidMoveException {
         if (positions.size() < 1 || positions.size() > 3) {
@@ -131,9 +208,19 @@ public class GameController extends Thread {
         player.getShelf().insert(column, cards);
     }
 
-    private void checkDisconnection() {
+    /**
+     * Checks if a player has disconnected.
+     * If not, the method simply returns after checking every player and sending a resume game message.
+     * If yes, the method sends a pause event to the players and waits for the disconnect client to reconnect.
+     * The method waits a one and a half minute for the player to reconnect. If that's the case, the method sends a resume event to the players.
+     * if after one and a half minute the player is still disconnected, the method throws a RuntimeException.
+     * @author Lorenzo, Ludovico
+     *
+     */
 
+    private void checkDisconnection() {
         int count = 0;
+
         while (true) {
             List<String> connectedPlayers = game.getPlayers().stream().filter(p -> clientManager.isClientConnected(p.getName())).map(Player::getName).toList();
             if (connectedPlayers.size() == game.getPlayers().size()) {
@@ -149,6 +236,7 @@ public class GameController extends Thread {
                     logger.warning("Error while sending resume event to client" + e.getMessage());
                 }
             }
+
             for (String player:  connectedPlayers) {
                 Optional<Client> client = clientManager.getClientByUsername(player);
                 if(client.isPresent()){
@@ -159,16 +247,21 @@ public class GameController extends Thread {
                     }
                 }
             }
+
             try {
                 Thread.sleep(disconectionTimeOut);
             } catch (InterruptedException e) {
                 logger.warning("Error while sleeping" + e.getMessage());
             }
+
             count++;
+
             if (count == maxDisconnectionTries) {
-                throw new RuntimeException("Too many disconnections"); //TODO: change exception
+                throw new RuntimeException("Waited too long"); //TODO: change exception
             }
+
         }
+
     }
 
 }

@@ -21,10 +21,18 @@ public class PersonalObjective extends Objective {
         this.cellsCheck = cellsCheck;
     }
 
+    /*
+        * checks if the personal objective is completed by the player
+        * @author Marco, Ludovico, Lorenzo
+        *
+        * @param shelf The shelf of the player
+        * @returns An optional containing the cockade if the objective is completed, an empty optional otherwise
+     */
     // TODO doc post invalidMoveException
     @Override
     public Optional<Cockade> isCompleted(Shelf shelf) {
         int count = 0;
+
         try {
             for (Cell cell : cellsCheck) {
                 Optional<Card> pos = shelf.getCard(cell.y(), cell.x());
@@ -35,11 +43,21 @@ public class PersonalObjective extends Objective {
         } catch (InvalidMoveException e) {
             // TODO add log
         }
+
         if (count > 0) {
             return Optional.of(new Cockade(this.name,points[count - 1]));
         }
         return Optional.empty();
+
     }
+
+    /**
+     * Generates an array of personal objectives with the size corresponding to the number of players.
+     * @author Ludovico
+     *
+     * @param nPlayers The number of players
+     * @return An array of personal objectives
+     */
 
     public static PersonalObjective[] generatePersonalObjectives(int nPlayers) {
         PersonalObjective[] selectedPersonalObjectives = new PersonalObjective[nPlayers];
