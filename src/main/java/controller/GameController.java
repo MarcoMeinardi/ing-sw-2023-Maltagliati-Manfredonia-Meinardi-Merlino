@@ -28,6 +28,8 @@ public class GameController {
 
     private static final int maxDisconnectionTries = 18;
 
+    private boolean eventFlag = false;
+
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
     /**
@@ -218,6 +220,37 @@ public class GameController {
             }
 
         }
+
+    }
+
+    private void globalUpdate(ServerEvent event) {
+
+        int count = 0;
+        eventFlag = true;
+        outerloop:
+        while(true) {
+            count = 0;
+            for (Player player : game.getPlayers()) {
+                Optional<Client> client = clientManager.getClientByUsername(player.getName());
+                if (client.isPresent()) {
+                    try {
+                        count++;
+                        client.get().send(Result.ok(event, null));
+                    } catch (Exception e) {
+                        logger.warning("Error while sending event to client" + e.getMessage());
+                    }
+                }
+                else {
+                    logger.warning("Client not found");
+                }
+                if(count == game.getPlayers().size()){
+                    break outerloop;
+                }
+            }
+        }
+
+        eventFlag = false;
+        return;
 
     }
 
