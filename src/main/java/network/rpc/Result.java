@@ -23,7 +23,7 @@ public class Result<T extends Serializable> implements Serializable{
     }
 
     public static Result<Serializable> serverPush(ServerEvent event){
-        return new Result<ServerEvent>(null, event, null);
+        return new Result<Serializable>(null, event, null);
     }
 
     public boolean isOk(){

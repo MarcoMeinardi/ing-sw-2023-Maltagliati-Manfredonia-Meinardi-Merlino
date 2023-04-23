@@ -52,6 +52,7 @@ public class ClientManager extends Thread{
             try{
                 Client client = new Client(socket.accept(), this::registerService);
                 addUidentifiedClient(client);
+                client.start();
             }catch (Exception e){
                 Logger.getLogger(Client.class.getName()).warning(e.getMessage());
             }

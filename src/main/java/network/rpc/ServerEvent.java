@@ -7,6 +7,9 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         Pause,
         Resume,
         Ping,
+        Start,
+        End,
+        Error,
     }
 
     public ServerEvent(Type type, T data) {
@@ -38,4 +41,15 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         return new ServerEvent(Type.Ping, null);
     }
 
+    public static ServerEvent Start(){
+        return new ServerEvent(Type.Start, null);
+    }
+
+    public static ServerEvent End(){
+        return new ServerEvent(Type.End, null);
+    }
+
+    public static ServerEvent Error(Exception data){
+        return new ServerEvent(Type.Error, data);
+    }
 }

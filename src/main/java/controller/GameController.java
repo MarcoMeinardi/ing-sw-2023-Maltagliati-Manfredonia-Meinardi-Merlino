@@ -27,7 +27,7 @@ public class GameController extends Thread {
 
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
-    private final Result<Serializable> gameHandler(Call<Serializable> call, Client client) {
+    private Result<Serializable> gameHandler(Call<Serializable> call, Client client) {
         Result result;
         //TODO: implement
         return result;
@@ -49,6 +49,13 @@ public class GameController extends Thread {
             }else{
                 throw new DisconnectedClientException();
             }
+        }
+        if(trySendToAll(Result.serverPush(ServerEvent.Start()))){
+            logger.info("Game started");
+        }else{
+            Exception e = new DisconnectedClientException();
+            trySendToAll(Result.serverPush(ServerEvent.Error(e)));
+            throw new DisconnectedClientException();
         }
     }
 
