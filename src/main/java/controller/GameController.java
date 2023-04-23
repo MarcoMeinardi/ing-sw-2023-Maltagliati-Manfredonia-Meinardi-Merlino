@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  */
 
-public class GameController extends Thread {
+public class GameController {
 
     private Game game;
     private ClientManager clientManager;
@@ -39,45 +39,6 @@ public class GameController extends Thread {
     private GameController(ArrayList<String> playersNames, ClientManager clientManager) { /** to be changed in lobby*/
         game = new Game(playersNames);
         this.clientManager = clientManager;
-    }
-
-    /**
-     * Runs the game.
-     * @author Ludovico
-     *
-     */
-    @Override
-    public void run() {
-
-        for (Player player : game) {
-            int column = 0;  //TODO: change variables to actual values requested by the player
-            ArrayList<Point> positions = null;
-
-            try {
-                doMove(player, positions, column);
-            } catch (InvalidMoveException e) {
-                checkDisconnection();
-            }
-
-            try {
-                addPersonalCockade(player);
-            } catch (Exception e) {
-                checkDisconnection();
-            }
-
-            try{
-                addCommonCockade(player);
-            }catch(Exception e){
-                checkDisconnection();
-            }
-
-            try{
-                refillTable();
-            }catch(Exception e){
-                checkDisconnection();
-            }
-        }
-
     }
 
     /**
