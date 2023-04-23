@@ -1,11 +1,14 @@
 package controller;
 import model.*;
+import network.rpc.Call;
 import network.rpc.Result;
 import network.rpc.ServerEvent;
 import network.rpc.server.Client;
 import network.rpc.server.ClientManager;
 import network.rpc.server.ClientStatus;
+import network.rpc.server.DisconnectedClientException;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,15 +27,29 @@ public class GameController extends Thread {
 
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
+    private final Result<Serializable> gameHandler(Call<Serializable> call, Client client) {
+        Result result;
+        //TODO: implement
+        return result;
+    }
+
     /**
      * Constructor that creates a new game with the specified players.
      *
      * @param playersNames The names of the players
      * @author Ludovico
      */
-    private GameController(ArrayList<String> playersNames, ClientManager clientManager) { /** to be changed in lobby*/
+    private GameController(ArrayList<String> playersNames, ClientManager clientManager) throws DisconnectedClientException { /** to be changed in lobby*/
         game = new Game(playersNames);
         this.clientManager = clientManager;
+        for(String name : playersNames){
+            Optional<Client> client = clientManager.getClientByUsername(name);
+            if(client.isPresent()){
+                client.get().setCallHandler(this::gameHandler);
+            }else{
+                throw new DisconnectedClientException();
+            }
+        }
     }
 
     @Override
@@ -132,43 +149,33 @@ public class GameController extends Thread {
     }
 
     private void checkDisconnection() {
-
-        int count = 0;
-        while (true) {
-            List<String> connectedPlayers = game.getPlayers().stream().filter(p -> clientManager.isClientConnected(p.getName())).map(Player::getName).toList();
-            if (connectedPlayers.size() == game.getPlayers().size()) {
-                try {
-                    for(Player player: game.getPlayers()){
-                        Optional<Client> client = clientManager.getClientByUsername(player.getName());
-                        if(client.isPresent()){
-                            client.get().send(Result.ok(ServerEvent.Resume(null), null));
-                        }
-                    }
-                    return;
-                }catch (Exception e){
-                    logger.warning("Error while sending resume event to client" + e.getMessage());
-                }
-            }
-            for (String player:  connectedPlayers) {
-                Optional<Client> client = clientManager.getClientByUsername(player);
-                if(client.isPresent()){
-                    try{
-                        client.get().send(Result.ok(ServerEvent.Pause("waiting for all players to connect"), null));
-                    }catch (Exception e){
-                        logger.warning("Error while sending pause event to client" + e.getMessage());
-                    }
-                }
-            }
+        int connectedClients = game.getPlayers().stream().map(Player::getName).filter(clientManager::isClientConnected).toArray().length;
+        int tryNumber = 0;
+        boolean allReceiving = true;
+        while(connectedClients != game.getPlayers().size() && allReceiving){
+            allReceiving = trySendToAll(Result.serverPush(ServerEvent.Pause("Someone has disconnected, pausing game")));
             try {
                 Thread.sleep(disconectionTimeOut);
             } catch (InterruptedException e) {
-                logger.warning("Error while sleeping" + e.getMessage());
+                logger.warning(e.getMessage());
             }
-            count++;
-            if (count == maxDisconnectionTries) {
-                throw new RuntimeException("Too many disconnections"); //TODO: change exception
-            }
+            connectedClients = game.getPlayers().stream().map(Player::getName).filter(clientManager::isClientConnected).toArray().length;
         }
+        for (Player player : game.getPlayers()) {
+            clientManager.trySendToClient(player.getName(), Result.serverPush(ServerEvent.Resume("Someone has reconnected, resuming game")));
+        }
+        tryNumber++;
+        if(tryNumber == maxDisconnectionTries){
+            throw new RuntimeException("Too many disconnections");//TODO change exception
+        }
+    }
+
+    private boolean trySendToAll(Result result){
+        boolean val = true;
+        for (Player player : game.getPlayers()) {
+            val = val && clientManager.trySendToClient(player.getName(), result);
+        }
+        return val;
     }
 
 }

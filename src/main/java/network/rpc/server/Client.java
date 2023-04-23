@@ -2,29 +2,35 @@ package network.rpc.server;
 
 import network.rpc.Call;
 import network.rpc.Result;
+import network.rpc.ServerEvent;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+import java.util.LinkedList;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
-public class Client {
+public class Client extends Thread{
         public final int TIMEOUT = 30;
         private final Socket socket;
         private final ObjectInputStream incomingMessages;
         private final ObjectOutputStream outcomingMessages;
         private ClientStatus status;
+        private BiFunction<Call<Serializable>, Client, Result<Serializable>> handler;
 
-        public Client(Socket socket) throws Exception {
+        public Client(Socket socket, BiFunction<Call<Serializable>,Client,Result<Serializable>> handler) throws Exception {
             this.status = ClientStatus.Disconnected;
             this.socket = socket;
             this.socket.setSoTimeout(TIMEOUT);
             this.incomingMessages = new ObjectInputStream(socket.getInputStream());
             this.outcomingMessages = new ObjectOutputStream(socket.getOutputStream());
             this.status = ClientStatus.Idle;
+            this.handler = handler;
         }
 
         public ClientStatus getStatus() {
@@ -54,18 +60,15 @@ public class Client {
             }
         }
 
-        public <T extends Serializable> Optional<Call<T>> receive() throws DisconnectedClientException{
+        private <T extends Serializable> Call<T> receive() throws DisconnectedClientException{
             if(getStatus() == ClientStatus.Disconnected){
                 throw new DisconnectedClientException();
             }
             synchronized (this.incomingMessages){
                 try{
-                    if(this.incomingMessages.available() == 0){
-                        return Optional.empty();
-                    }
                     Object obj = this.incomingMessages.readObject();
                     if(obj instanceof Call){
-                        return Optional.of((Call)obj);
+                        return (Call)obj;
                     }
                 }catch(Exception e){
                     Logger.getLogger(Client.class.getName()).warning(e.getMessage());
@@ -86,4 +89,25 @@ public class Client {
             }
         }
 
+        public boolean isDisconnected(){
+            return getStatus() == ClientStatus.Disconnected;
+        }
+
+
+        @Override
+        public void run() {
+            while (getStatus() != ClientStatus.Disconnected) {
+                try {
+                    Call call = receive();
+                    Result result = handler.apply(call, this);
+                    send(result);
+                } catch (DisconnectedClientException e) {
+                    Logger.getLogger(Client.class.getName()).warning(e.getMessage());
+                }
+            }
+        }
+
+        public void setCallHandler(BiFunction<Call<Serializable>, Client, Result<Serializable>> handler){
+            this.handler = handler;
+        }
 }
