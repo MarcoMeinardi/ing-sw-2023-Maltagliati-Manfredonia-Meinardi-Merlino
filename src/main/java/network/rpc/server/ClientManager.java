@@ -4,6 +4,7 @@ import network.rpc.Call;
 import network.rpc.Result;
 import network.rpc.ServerEvent;
 import network.rpc.Service;
+import network.rpc.parameters.Login;
 import network.rpc.parameters.WrongParametersException;
 
 import java.io.Serializable;
@@ -17,23 +18,41 @@ public class ClientManager extends Thread{
     final private LinkedList<Client> unidentified_clients = new LinkedList<>();
     final private HashMap<String, Client> identified_clients = new HashMap<>();
     private static final int TIMEOUT = 30;
-
     private ServerSocket socket;
-
     private Thread acceptConnectionsThread;
-    private Thread identifyClientsThread;
+
 
     public ClientManager(int port) throws Exception{
         this.socket = new ServerSocket(port);
         this.acceptConnectionsThread = new Thread(this::acceptConnections);
-        this.identifyClientsThread = new Thread(this::identifyClients);
+    }
+
+    protected Result<Serializable> registerService(Call<Serializable> call, Client client){
+        if(call.service() != Service.Login){
+            return Result.err(new ClientNotIdentifiedException(), call.id());
+        }
+        if(!(call.params() instanceof Login)){
+            return Result.err(new WrongParametersException("Login",call.params().getClass().getName(),"call.param()"), call.id());
+        }
+        Login login = (Login) call.params();
+        try{
+            addIdentifiedClient(login.username(), client);
+            return Result.ok(true, call.id());//chcange handler to lobby handler
+        }catch (ClientAlreadyConnectedExeption e){
+            return Result.err(e, call.id());
+        }
+    }
+
+    protected Result<Serializable> lobbyService(Call<Serializable> call, Client client){
+        return null;
     }
 
     private void acceptConnections(){
         while(true){
             try{
-                Client client = new Client(socket.accept());
+                Client client = new Client(socket.accept(), this::registerService);
                 addUidentifiedClient(client);
+                client.start();
             }catch (Exception e){
                 Logger.getLogger(Client.class.getName()).warning(e.getMessage());
             }
@@ -53,45 +72,11 @@ public class ClientManager extends Thread{
             identified_clients.put(username, client);
         }
     }
-    public void identifyClients(){
-        while(true){
-            synchronized (unidentified_clients) {
-                for (Client client : unidentified_clients) {
-                    Optional<Call<Serializable>> msg;
-                    try{
-                        msg = client.receive();
-                        if(msg.isEmpty()){
-                            continue;
-                        }
-                        if(msg.get().service() == Service.Login){
-                            Result<Boolean> result;
-                            if(msg.get().params() instanceof network.rpc.parameters.Login){
-                                String username = ((network.rpc.parameters.Login)msg.get().params()).username();
-                                addIdentifiedClient(username, client);
-                                unidentified_clients.remove(client);
-                                result = Result.ok(true, msg.get().id());
-                            }else{
-                                String class_type = msg.get().params().getClass().toString();
-                                result = Result.err(new WrongParametersException("String", class_type, "Login"), msg.get().id());
-                            }
-                            client.send(result);
-                        }
-                    }catch (Exception e) {
-                        Logger.getLogger(Client.class.getName()).warning(e.getMessage());
-                        client.disconnect();
-                        unidentified_clients.remove(client);
-                    }
-                }
-            }
-        }
-    }
 
     public void run(){
         acceptConnectionsThread.start();
-        identifyClientsThread.start();
         try{
             acceptConnectionsThread.join();
-            identifyClientsThread.join();
             while(true){
                 synchronized (identified_clients) {
                     for (Client client : identified_clients.values()) {
@@ -110,7 +95,6 @@ public class ClientManager extends Thread{
         }catch(InterruptedException e){
             Logger.getLogger(Client.class.getName()).warning(e.getMessage());
             acceptConnectionsThread.interrupt();
-            identifyClientsThread.interrupt();
         }
     }
 
@@ -134,6 +118,20 @@ public class ClientManager extends Thread{
         synchronized (identified_clients) {
             return identified_clients.containsKey(username) && identified_clients.get(username).getStatus() != ClientStatus.Disconnected;
         }
+    }
+
+    public boolean trySendToClient(String username, Result<Serializable> result){
+        Optional<Client> client = getClientByUsername(username);
+        if(client.isPresent()){
+            try{
+                client.get().send(result);
+                return true;
+            }catch (Exception e){
+                Logger.getLogger(Client.class.getName()).warning(e.getMessage());
+                client.get().disconnect();
+            }
+        }
+        return false;
     }
 
 }

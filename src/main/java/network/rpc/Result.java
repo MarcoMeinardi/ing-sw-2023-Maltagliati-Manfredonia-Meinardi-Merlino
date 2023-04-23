@@ -22,6 +22,10 @@ public class Result<T extends Serializable> implements Serializable{
         return new Result<T>(exception, null, caller_id);
     }
 
+    public static Result<Serializable> serverPush(ServerEvent event){
+        return new Result<Serializable>(null, event, null);
+    }
+
     public boolean isOk(){
         return exception == null;
     }
