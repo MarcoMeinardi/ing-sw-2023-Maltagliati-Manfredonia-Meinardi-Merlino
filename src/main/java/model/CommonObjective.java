@@ -121,7 +121,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
-	private static Boolean fourGroupsOfFourCards(Shelf shelf) {
+	public static Boolean fourGroupsOfFourCards(Shelf shelf) {
 		return groupsOfNCards(shelf, 4) >= 4;
 	}
 
