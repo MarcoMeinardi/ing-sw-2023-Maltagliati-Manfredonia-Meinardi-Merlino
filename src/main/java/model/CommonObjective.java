@@ -234,14 +234,15 @@ public class CommonObjective extends Objective {
 
 		try {
 			for (int y = 0; y < Shelf.ROWS; y++) {
+				boolean isFull = true;
 				for (int x = 0; x < Shelf.COLUMNS; x++) {
 					if (shelf.getCard(y, x).isEmpty()) {
-						cards.clear();
+						isFull = false;
 						break;
 					}
 					cards.add(shelf.getCard(y, x).get());
 				}
-				if (cards.size() <= 3) {
+				if (isFull && cards.size() <= 3) {
 					count++;
 				}
 				cards.clear();
@@ -474,14 +475,15 @@ public class CommonObjective extends Objective {
 
 		try {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
+				boolean isFull = true;
 				for (int y = 0; y < Shelf.ROWS; y++) {
 					if (shelf.getCard(y, x).isEmpty()) {
-						cards.clear();
+						isFull = false;
 						break;
 					}
 					cards.add(shelf.getCard(y, x).get());
 				}
-				if (cards.size() <= 3) {
+				if (isFull && cards.size() <= 3) {
 					count++;
 				}
 				cards.clear();
