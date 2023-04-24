@@ -144,7 +144,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Lorenzo
 	 */
-	private static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
+	public static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
 		boolean firstCol = false;
 		HashSet<Card> cards = new HashSet<>();
 
@@ -179,7 +179,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco, Lorenzo
 	 */
-	private static Boolean fiveCardsInDiagonal(Shelf shelf) {
+	public static Boolean fiveCardsInDiagonal(Shelf shelf) {
 		boolean fullDiagonal;
 		Card reference;
 
@@ -228,7 +228,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Ludovico, Marco
 	 */
-	private static Boolean fourRowsOfAtMostThreeDifferentCards(Shelf shelf) {
+	public static Boolean fourRowsOfAtMostThreeDifferentCards(Shelf shelf) {
 		int count = 0;
 		HashSet<Card> cards = new HashSet<>();
 
@@ -264,7 +264,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Ludovico, Marco
 	 */
-	private static Boolean equalCorners(Shelf shelf) {
+	public static Boolean equalCorners(Shelf shelf) {
 		try {
 			Optional<Card> reference = shelf.getCard(cornersY[0], cornersX[0]);
 			if (reference.isEmpty()) {
@@ -291,7 +291,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Riccardo, Marco
 	 */
-	private static Boolean twoRowsWithFiveDifferentCards(Shelf shelf) {
+	public static Boolean twoRowsWithFiveDifferentCards(Shelf shelf) {
 		boolean firstRow = false;
 		HashSet<Card> cards = new HashSet<>();
 
@@ -328,7 +328,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
-	private static Boolean twoSquareGroups(Shelf shelf) {
+	public static Boolean twoSquareGroups(Shelf shelf) {
 		boolean firstSquare = false;
 		boolean[][] alreadyUsed = new boolean[Shelf.ROWS][Shelf.COLUMNS];
 
@@ -374,7 +374,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Riccardo,Marco
 	 */
-	private static Boolean equalsX(Shelf shelf) {
+	public static Boolean equalsX(Shelf shelf) {
 		try {
 			for (int y = 1; y < Shelf.ROWS - 1; y++) {
 				for (int x = 1; x < Shelf.COLUMNS - 1; x++) {
@@ -404,7 +404,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Riccardo,Marco
 	 */
-	private static Boolean stairsShape(Shelf shelf) {
+	public static Boolean stairsShape(Shelf shelf) {
 		int h = 0;
 
 		try {
@@ -438,7 +438,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
-	private static Boolean eightEquals(Shelf shelf) {
+	public static Boolean eightEquals(Shelf shelf) {
 		HashMap<Card, Integer> cardCount = new HashMap<>();
 
 		try {
@@ -469,7 +469,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
-	private static Boolean threeColumnsOfAtMostThreeDifferentCards(Shelf shelf) {
+	public static Boolean threeColumnsOfAtMostThreeDifferentCards(Shelf shelf) {
 		int count = 0;
 		HashSet<Card> cards = new HashSet<>();
 
