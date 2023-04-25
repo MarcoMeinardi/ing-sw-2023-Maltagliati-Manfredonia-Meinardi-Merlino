@@ -40,7 +40,7 @@ public class ClientManager extends Thread{
             client.setUsername(login.username());
             addIdentifiedClient(client.getUsername(), client);
             client.setCallHandler(LobbyController.getInstance()::handleLobby);
-            return Result.ok(true, call.id());//change handler to lobby handler
+            return Result.empty(call.id());//change handler to lobby handler
         }catch (Exception e){
             return Result.err(e, call.id());
         }

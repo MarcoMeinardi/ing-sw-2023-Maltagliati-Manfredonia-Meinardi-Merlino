@@ -1,14 +1,11 @@
-package controller;
+package controller.game;
 import model.*;
 import network.rpc.Result;
 import network.rpc.ServerEvent;
 import network.rpc.server.Client;
 import network.rpc.server.ClientManager;
-import network.rpc.server.ClientStatus;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;

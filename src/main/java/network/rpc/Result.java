@@ -26,6 +26,10 @@ public class Result<T extends Serializable> implements Serializable{
         return new Result<Serializable>(null, event, null);
     }
 
+    public static Result<Serializable> empty(UUID caller_id){
+        return new Result<Serializable>(null, Boolean.TRUE, caller_id);
+    }
+
     public boolean isOk(){
         return exception == null;
     }
@@ -38,7 +42,7 @@ public class Result<T extends Serializable> implements Serializable{
         return Optional.ofNullable(exception);
     }
 
-    public T getOrThrow() throws Exception{
+    public T unwrap() throws Exception{
         if(exception != null){
             throw exception;
         }
@@ -49,17 +53,20 @@ public class Result<T extends Serializable> implements Serializable{
         return Optional.ofNullable(value);
     }
 
-    public T getOrElse(T defaultValue){
+    public T unwrapOrElse(T defaultValue){
         return value == null ? defaultValue : value;
     }
 
-    public T getOrElseThrow(Exception exception) throws Exception{
+    public T unwrapOrElseThrow(Exception exception) throws Exception{
         if(value == null){
             throw exception;
         }
         return value;
     }
 
+    public boolean isEvent(){
+        return id == null;
+    }
     public UUID id(){
         return id;
     }

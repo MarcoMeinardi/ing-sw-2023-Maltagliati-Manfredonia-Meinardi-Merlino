@@ -16,7 +16,7 @@ public class Function<P extends Serializable,R extends Serializable> {
     private UUID id;
     private Service service;
 
-    private Function(P params, Service service){
+    public Function(P params, Service service){
         this.params = params;
         this.result = Optional.empty();
         this.id = UUID.randomUUID();
@@ -24,7 +24,9 @@ public class Function<P extends Serializable,R extends Serializable> {
 
     protected Function call(ObjectOutputStream stream) throws Exception{
         Call<P> call = new Call(params, service, id);
-        stream.writeObject(call);
+        synchronized (stream){
+            stream.writeObject(call);
+        }
         return this;
     }
 
@@ -34,10 +36,23 @@ public class Function<P extends Serializable,R extends Serializable> {
         }
     }
 
+    public P getParams() {
+        return params;
+    }
+
     public Result<R> waitResult() throws Exception{
         synchronized (result){
             while(result.isEmpty()){
                 result.wait();
+            }
+            return result.get();
+        }
+    }
+
+    public Result<R> waitResult(long timeout) throws Exception{
+        synchronized (result){
+            while(result.isEmpty()){
+                result.wait(timeout);
             }
             return result.get();
         }

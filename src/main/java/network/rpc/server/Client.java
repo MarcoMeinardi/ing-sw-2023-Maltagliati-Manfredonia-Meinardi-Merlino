@@ -3,6 +3,7 @@ package network.rpc.server;
 import network.rpc.Call;
 import network.rpc.Result;
 import network.rpc.ServerEvent;
+import network.rpc.Service;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -101,8 +102,12 @@ public class Client extends Thread{
             while (getStatus() != ClientStatus.Disconnected) {
                 try {
                     Call call = receive();
-                    Result result = handler.apply(call, this);
-                    send(result);
+                    if(call.service() == Service.Ping){
+                        send(Result.ok(true, call.id()));
+                    }else{
+                        Result result = handler.apply(call, this);
+                        send(result);
+                    }
                 } catch (DisconnectedClientException e) {
                     Logger.getLogger(Client.class.getName()).warning(e.getMessage());
                 }

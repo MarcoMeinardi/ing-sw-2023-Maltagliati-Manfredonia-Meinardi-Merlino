@@ -81,7 +81,7 @@ public class LobbyController {
                     }
                     String lobbyname = ((NewLobby) call.params()).lobbyName();
                     createLobby(lobbyname, client.getUsername());
-                    result = Result.ok(true, call.id());
+                    result = Result.empty(call.id());
                     break;
                 case LobbyList:
                     result = Result.ok(getLobbies(), call.id());
@@ -92,7 +92,7 @@ public class LobbyController {
                     }
                     String selected_lobby = (String) call.params();
                     joinLobby(selected_lobby, client.getUsername());
-                    result = Result.ok(true, call.id());
+                    result = Result.empty(call.id());
                     break;
                 case LobbyLeave:
                     if (!(call.params() instanceof String)) {
@@ -100,7 +100,7 @@ public class LobbyController {
                     }
                     String lobby_to_leave = (String) call.params();
                     leaveLobby(client.getUsername());
-                    result = Result.ok(true, call.id());
+                    result = Result.empty(call.id());
                     break;
                 default:
                     result = Result.err(new WrongServiceException(), call.id());
