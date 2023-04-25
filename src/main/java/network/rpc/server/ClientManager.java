@@ -1,5 +1,6 @@
 package network.rpc.server;
 
+import controller.lobby.LobbyController;
 import network.rpc.Call;
 import network.rpc.Result;
 import network.rpc.ServerEvent;
@@ -36,9 +37,11 @@ public class ClientManager extends Thread{
         }
         Login login = (Login) call.params();
         try{
-            addIdentifiedClient(login.username(), client);
+            client.setUsername(login.username());
+            addIdentifiedClient(client.getUsername(), client);
+            client.setCallHandler(LobbyController.getInstance()::handleLobby);
             return Result.ok(true, call.id());//change handler to lobby handler
-        }catch (ClientAlreadyConnectedExeption e){
+        }catch (Exception e){
             return Result.err(e, call.id());
         }
     }

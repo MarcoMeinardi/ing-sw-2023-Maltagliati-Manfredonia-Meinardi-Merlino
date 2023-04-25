@@ -23,6 +23,8 @@ public class Client extends Thread{
         private ClientStatus status;
         private BiFunction<Call<Serializable>, Client, Result<Serializable>> handler;
 
+        private String username = null;
+
         public Client(Socket socket, BiFunction<Call<Serializable>,Client,Result<Serializable>> handler) throws Exception {
             this.status = ClientStatus.Disconnected;
             this.socket = socket;
@@ -109,5 +111,19 @@ public class Client extends Thread{
 
         public void setCallHandler(BiFunction<Call<Serializable>, Client, Result<Serializable>> handler){
             this.handler = handler;
+        }
+
+        protected void setUsername(String username) throws ClientAlreadyConnectedExeption{
+            if(this.username != null){
+                throw new ClientAlreadyConnectedExeption();
+            }
+            this.username = username;
+        }
+
+        public String getUsername() throws ClientNotIdentifiedException{
+            if(this.username == null){
+                throw new ClientNotIdentifiedException();
+            }
+            return this.username;
         }
 }
