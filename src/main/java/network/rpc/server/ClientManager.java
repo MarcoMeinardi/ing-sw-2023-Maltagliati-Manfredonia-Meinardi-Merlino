@@ -37,7 +37,7 @@ public class ClientManager extends Thread{
         Login login = (Login) call.params();
         try{
             addIdentifiedClient(login.username(), client);
-            return Result.ok(true, call.id());//chcange handler to lobby handler
+            return Result.ok(true, call.id());//change handler to lobby handler
         }catch (ClientAlreadyConnectedExeption e){
             return Result.err(e, call.id());
         }
@@ -106,6 +106,19 @@ public class ClientManager extends Thread{
             }
         }
         return client;
+    }
+
+    public Optional<String> getUsernameByClient(Client client){
+        Optional<String> username = Optional.empty();
+        synchronized (identified_clients) {
+            for(String key : identified_clients.keySet()){
+                if(identified_clients.get(key) == client){
+                    username = Optional.of(key);
+                    break;
+                }
+            }
+        }
+        return username;
     }
 
     protected HashMap<String, Client> getClients(){
