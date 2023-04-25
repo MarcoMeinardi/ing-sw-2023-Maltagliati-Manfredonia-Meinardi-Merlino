@@ -198,7 +198,22 @@ public class CommonObjectiveTest {
         cockade = objective.isCompleted(shelf);
         assertEquals(true, cockade.isPresent());
 
+        shelf = new Shelf();
+        objective = (new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShape));
 
+        cockade = objective.isCompleted(shelf);
+        assertEquals(false, cockade.isPresent());
+
+        shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Gatto, Card.Gioco)));
+        shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gioco)));
+        shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gioco, Card.Libro)));
+        shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Gioco)));
+        shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Gioco, Card.Libro, Card.Trofeo)));
+        shelf.insert(3,  new ArrayList<Card>(Arrays.asList(Card.Libro, Card.Trofeo)));
+        shelf.insert(4,  new ArrayList<Card>(Arrays.asList(Card.Trofeo)));
+
+        cockade = objective.isCompleted(shelf);
+        assertEquals(true, cockade.isPresent());
     }
 
 }

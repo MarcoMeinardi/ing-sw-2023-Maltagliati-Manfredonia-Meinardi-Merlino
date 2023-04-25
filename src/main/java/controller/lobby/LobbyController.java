@@ -7,6 +7,7 @@ import network.rpc.parameters.NewLobby;
 import network.rpc.parameters.WrongParametersException;
 import network.rpc.server.Client;
 import network.rpc.Service;
+import network.rpc.server.ClientStatus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class LobbyController {
                     }
                     String lobbyname = ((NewLobby) call.params()).lobbyName();
                     createLobby(lobbyname, client.getUsername());
-                    result = Result.empty(call.id());
+                    result = Result.ok(true, call.id());
                     break;
                 case LobbyList:
                     result = Result.ok(getLobbies(), call.id());
@@ -92,6 +93,7 @@ public class LobbyController {
                     }
                     String selected_lobby = (String) call.params();
                     joinLobby(selected_lobby, client.getUsername());
+                    client.setStatus(ClientStatus.InLobby);
                     result = Result.empty(call.id());
                     break;
                 case LobbyLeave:
@@ -100,6 +102,7 @@ public class LobbyController {
                     }
                     String lobby_to_leave = (String) call.params();
                     leaveLobby(client.getUsername());
+                    client.setStatus(ClientStatus.Idle);
                     result = Result.empty(call.id());
                     break;
                 default:
