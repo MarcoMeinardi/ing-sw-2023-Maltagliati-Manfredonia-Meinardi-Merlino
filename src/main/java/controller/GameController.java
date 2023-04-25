@@ -28,7 +28,7 @@ public class GameController {
 
     private static final int maxDisconnectionTries = 18;
 
-    private boolean eventFlag = false;
+    private boolean gamePaused = false;
 
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
@@ -178,6 +178,7 @@ public class GameController {
      */
 
     private void checkDisconnection() {
+        gamePaused = true;
         int count = 0;
 
         while (true) {
@@ -186,10 +187,12 @@ public class GameController {
                 try {
                     for(Player player: game.getPlayers()){
                         Optional<Client> client = clientManager.getClientByUsername(player.getName());
-                        if(client.isPresent()){
-                            client.get().send(Result.ok(ServerEvent.Resume(null), null));
+                        if(client.isEmpty()){
+                            throw new RuntimeException("Client not found" + player.getName());
                         }
+                        client.get().send(Result.ok(ServerEvent.Resume(null), null));
                     }
+                    gamePaused = false;
                     return;
                 }catch (Exception e){
                     logger.warning("Error while sending resume event to client" + e.getMessage());
@@ -224,36 +227,19 @@ public class GameController {
     }
 
     private void globalUpdate(ServerEvent event) {
-
-        int count = 0;
-        eventFlag = true;
-        outerloop:
-        while(true) {
-            count = 0;
-            for (Player player : game.getPlayers()) {
+        try{
+            for(Player player : game.getPlayers()){
                 Optional<Client> client = clientManager.getClientByUsername(player.getName());
-                if (client.isPresent()) {
-                    try {
-                        count++;
-                        client.get().send(Result.ok(event, null));
-                    } catch (Exception e) {
-                        logger.warning("Error while sending event to client" + e.getMessage());
-                    }
+                if(client.isEmpty()){
+                    throw new RuntimeException("Client not found" + player.getName());
                 }
-                else {
-                    logger.warning("Client not found");
-                }
-                if(count == game.getPlayers().size()){
-                    break outerloop;
-                }
+                client.get().send(Result.ok(event, null));
             }
+        }catch (Exception e){
+            logger.warning("Error while sending global update event to client" + e.getMessage());
+            checkDisconnection();
         }
-
-        eventFlag = false;
-        return;
-
     }
-
 }
 
 
