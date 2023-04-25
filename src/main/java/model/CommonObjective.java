@@ -416,6 +416,7 @@ public class CommonObjective extends Objective {
 				return false;
 			}
 			int direction = h <= 2 ? 1 : -1;
+			h += direction - 1;
 
 			for (int x = 1; x < Shelf.COLUMNS; x++) {
 				if (shelf.getCard(h, x).isEmpty() || (h != Shelf.ROWS - 1 && shelf.getCard(h + 1, x).isPresent())) {
