@@ -114,8 +114,6 @@ public class LobbyController {
             }
         } catch (Exception e) {
             result = Result.err(e, call.id());
-        } catch (LobbyAlreadyExistsException e) {
-            throw new RuntimeException(e);
         }
         return result;
     }

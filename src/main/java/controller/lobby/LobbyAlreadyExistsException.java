@@ -1,4 +1,4 @@
 package controller.lobby;
 
-public class LobbyAlreadyExistsException extends Throwable {
+public class LobbyAlreadyExistsException extends Exception {
 }

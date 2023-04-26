@@ -25,27 +25,22 @@ public class LobbyControllerTest {
     @Test
     public void testFindLobby() throws LobbyAlreadyExistsException {
         LobbyController lobbyController = LobbyController.getInstance();
-        lobbyController.createLobby("test", "test");
+        lobbyController.createLobby("test2", "test45");
         try {
-            Lobby lobby = lobbyController.findLobby("test");
-            assert(lobby.getName().equals("test"));
+            Lobby lobby = lobbyController.findLobby("test45");
+            assert(lobby.getName().equals("test2"));
         } catch (Exception e) {
             assert(false);
         }
     }
 
     @Test
-    public void testJoinLobby() throws LobbyAlreadyExistsException {
+    public void testJoinLobby() throws Exception {
         LobbyController lobbyController = LobbyController.getInstance();
-        lobbyController.createLobby("test", "test");
-        try{
-            lobbyController.joinLobby("test", "test2");
-            Lobby lobby = lobbyController.findLobby("test");
-            Lobby lobby2 = lobbyController.findLobby("test2");
-            assert(lobby.getPlayers().contains("test2"));
-        }catch (Exception e){
-            assert(false);
-        }
+        lobbyController.createLobby("test3", "test34");
+        lobbyController.joinLobby("test3", "test35");
+        Lobby lobby = lobbyController.findLobby("test3");
+        assert(lobby.getPlayers().contains("test35"));
     }
 
 
