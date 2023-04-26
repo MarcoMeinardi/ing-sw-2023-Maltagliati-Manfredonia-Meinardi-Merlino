@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
 import java.util.*;
@@ -81,7 +82,7 @@ public class NetworkManager extends Thread{
         if(lastPing == null){
             return 0;
         }
-        return LocalDateTime.now().minus((TemporalAmount)lastPing).getSecond();
+        return Duration.between(lastPing.getParams(), LocalDateTime.now()).getSeconds();
     }
     public void run(){
         while(isConnected()){

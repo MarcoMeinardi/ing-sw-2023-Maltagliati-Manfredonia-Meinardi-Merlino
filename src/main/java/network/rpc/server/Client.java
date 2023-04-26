@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
@@ -23,7 +24,7 @@ public class Client extends Thread{
         private final ObjectOutputStream outcomingMessages;
         private ClientStatus status;
         private BiFunction<Call<Serializable>, Client, Result<Serializable>> handler;
-
+        private LocalDateTime lastMessageTime = LocalDateTime.now();
         private String username = null;
 
         public Client(Socket socket, BiFunction<Call<Serializable>,Client,Result<Serializable>> handler) throws Exception {
@@ -102,6 +103,9 @@ public class Client extends Thread{
             while (getStatus() != ClientStatus.Disconnected) {
                 try {
                     Call call = receive();
+                    synchronized (lastMessageTime){
+                        lastMessageTime = LocalDateTime.now();
+                    }
                     if(call.service() == Service.Ping){
                         send(Result.ok(true, call.id()));
                     }else{
@@ -130,5 +134,11 @@ public class Client extends Thread{
                 throw new ClientNotIdentifiedException();
             }
             return this.username;
+        }
+
+        public LocalDateTime getLastMessageTime(){
+            synchronized (lastMessageTime){
+                return lastMessageTime;
+            }
         }
 }

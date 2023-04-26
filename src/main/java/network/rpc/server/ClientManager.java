@@ -10,6 +10,9 @@ import network.rpc.parameters.WrongParametersException;
 
 import java.io.Serializable;
 import java.net.ServerSocket;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Optional;
@@ -18,7 +21,7 @@ import java.util.logging.Logger;
 public class ClientManager extends Thread{
     final private LinkedList<Client> unidentified_clients = new LinkedList<>();
     final private HashMap<String, Client> identified_clients = new HashMap<>();
-    private static final int TIMEOUT = 30;
+    private static final int TIMEOUT = 60;
     private ServerSocket socket;
     private Thread acceptConnectionsThread;
 
@@ -84,10 +87,8 @@ public class ClientManager extends Thread{
                 synchronized (identified_clients) {
                     for (Client client : identified_clients.values()) {
                         if(client.getStatus() != ClientStatus.Disconnected){
-                            try{
-                                client.send(Result.ok(ServerEvent.Ping(), null));
-                            }catch (Exception e){
-                                Logger.getLogger(Client.class.getName()).warning(e.getMessage());
+                            if(Duration.between(client.getLastMessageTime(),LocalDateTime.now()).getSeconds() > TIMEOUT){
+                                client.interrupt();
                                 client.disconnect();
                             }
                         }

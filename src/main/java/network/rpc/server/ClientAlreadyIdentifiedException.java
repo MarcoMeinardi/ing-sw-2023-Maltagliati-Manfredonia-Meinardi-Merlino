@@ -1,4 +1,4 @@
 package network.rpc.server;
 
-public class ClientAlreadyIdentifiedException {
+public class ClientAlreadyIdentifiedException extends Exception{
 }
