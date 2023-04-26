@@ -1,11 +1,18 @@
 package controller.game;
+import controller.lobby.Lobby;
+import controller.lobby.LobbyController;
 import model.*;
+import network.rpc.Call;
 import network.rpc.Result;
 import network.rpc.ServerEvent;
+import network.rpc.parameters.CardSelect;
+import network.rpc.parameters.Update;
+import network.rpc.parameters.WrongParametersException;
 import network.rpc.server.Client;
 import network.rpc.server.ClientManager;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -19,13 +26,15 @@ import java.util.logging.Logger;
 public class GameController {
 
     private Game game;
-    private ClientManager clientManager;
 
     private static final int disconectionTimeOut = 10000;
 
     private static final int maxDisconnectionTries = 18;
 
-    private boolean gamePaused = false;
+    private Boolean gamePaused = false;
+    private Iterator<Player> playerIterator;
+    private Player currentPlayer;
+    private String gameName;
 
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
@@ -33,11 +42,16 @@ public class GameController {
      * Constructor that creates a new game with the specified players.
      * @author Ludovico
      *
-     * @param playersNames The names of the players
      */
-    private GameController(ArrayList<String> playersNames, ClientManager clientManager) { /** to be changed in lobby*/
-        game = new Game(playersNames);
-        this.clientManager = clientManager;
+    private GameController(Lobby lobby) throws Exception{
+        game = new Game(lobby.getPlayers());
+        playerIterator = game.iterator();
+        gameName = lobby.getName();
+        currentPlayer = playerIterator.next();
+        for(Player player : game.getPlayers()){
+            Client client = ClientManager.getInstance().getClientByUsername(player.getName()).orElseThrow();
+            client.setCallHandler(this::handleGame);
+        }
     }
 
     /**
@@ -173,10 +187,22 @@ public class GameController {
      * @author Lorenzo, Ludovico
      *
      */
+    public void setGamePaused(boolean gamePaused) {
+        synchronized (this.gamePaused) {
+            this.gamePaused = gamePaused;
+        }
+    }
 
-    private void checkDisconnection() {
-        gamePaused = true;
+    public boolean isGamePaused() {
+        synchronized (this.gamePaused) {
+            return gamePaused;
+        }
+    }
+
+    public void checkDisconnection() {
+        setGamePaused(true);
         int count = 0;
+        ClientManager clientManager = ClientManager.getInstance();
 
         while (true) {
             List<String> connectedPlayers = game.getPlayers().stream().filter(p -> clientManager.isClientConnected(p.getName())).map(Player::getName).toList();
@@ -189,7 +215,7 @@ public class GameController {
                         }
                         client.get().send(Result.ok(ServerEvent.Resume(null), null));
                     }
-                    gamePaused = false;
+                    setGamePaused(false);
                     return;
                 }catch (Exception e){
                     logger.warning("Error while sending resume event to client" + e.getMessage());
@@ -223,7 +249,8 @@ public class GameController {
 
     }
 
-    private void globalUpdate(ServerEvent event) {
+    public void globalUpdate(ServerEvent event) {
+        ClientManager clientManager = ClientManager.getInstance();
         try{
             for(Player player : game.getPlayers()){
                 Optional<Client> client = clientManager.getClientByUsername(player.getName());
@@ -237,6 +264,60 @@ public class GameController {
             checkDisconnection();
         }
     }
+
+    public Result handleGame(Call call, Client client){
+        Result result;
+        try{
+            switch (call.service()){
+                case CardSelect -> {
+                    if(!(call.params() instanceof CardSelect)){
+                        throw new WrongParametersException("CardSelect", call.params().getClass().getName(), "CardSelect");
+                    }
+                    if(isGamePaused()){
+                        throw new WaitingForUpdateException();
+                    }
+                    CardSelect cardSelect = (CardSelect) call.params();
+                    String username = client.getUsername();
+                    Player player = game.getPlayers().stream().filter(p -> p.getName().equals(username)).findFirst().orElseThrow();
+                    if(!currentPlayer.equals(player)){
+                        throw new NotYourTurnException();
+                    }
+                    doMove(player, cardSelect.selectedCards(), cardSelect.column());
+                    addPersonalCockade(player);
+                    addCommonCockade(player);
+                    refillTable();
+                    if(playerIterator.hasNext()){
+                        Update update = new Update(username, game.getTabletop(), player.getShelf());
+                        globalUpdate(ServerEvent.Update(update));
+                        currentPlayer = playerIterator.next();
+                    }else{
+                        ScoreBoard scoreBoard = new ScoreBoard(game);
+                        globalUpdate(ServerEvent.End(scoreBoard));
+                        exitGame();
+                    }
+                    result = Result.empty(call.id());
+                }
+                default -> {
+                    throw new WrongThreadException();
+                }
+            }
+        }catch(Exception e){
+            result = Result.err(e, call.id());
+        }
+        return result;
+    }
+
+    public void exitGame(){
+        ClientManager clientManager = ClientManager.getInstance();
+        LobbyController lobbyController = LobbyController.getInstance();
+        for(Player player: game.getPlayers()){
+            Optional<Client> client = clientManager.getClientByUsername(player.getName());
+            if(client.isPresent()){
+                client.get().setCallHandler(lobbyController::handleLobby);
+            }
+        }
+    }
+
 }
 
 

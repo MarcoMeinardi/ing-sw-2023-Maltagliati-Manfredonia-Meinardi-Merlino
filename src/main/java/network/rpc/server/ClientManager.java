@@ -25,8 +25,27 @@ public class ClientManager extends Thread{
     private ServerSocket socket;
     private Thread acceptConnectionsThread;
 
+    private static int port = 8000;
 
-    public ClientManager(int port) throws Exception{
+    private static ClientManager instance = null;
+
+    public static void setPort(int port){
+        ClientManager.port = port;
+    }
+
+    public static ClientManager getInstance(){
+        if(instance == null){
+            try{
+                instance = new ClientManager(port);
+                instance.start();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return instance;
+    }
+
+    private ClientManager(int port) throws Exception{
         this.socket = new ServerSocket(port);
         this.acceptConnectionsThread = new Thread(this::acceptConnections);
     }

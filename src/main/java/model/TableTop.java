@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Optional;
 
-public class TableTop {
+public class TableTop implements Serializable {
 	public static final int SIZE = 9;
 	public static final int MAX_PLAYERS = 6;
 

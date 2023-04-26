@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class Shelf {
+public class Shelf implements Serializable {
     // Size of the shelf 6(rows)x5(columns)
     private Optional<Card>[][] slots;
 

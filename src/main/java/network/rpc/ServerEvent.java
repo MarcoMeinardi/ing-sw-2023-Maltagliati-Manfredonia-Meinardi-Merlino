@@ -1,15 +1,20 @@
 package network.rpc;
 
+import model.ScoreBoard;
+import network.rpc.client.Server;
+import network.rpc.parameters.Update;
+
 import java.io.Serializable;
 
 public class ServerEvent <T extends Serializable> implements Serializable{
     protected enum Type{
         Pause,
         Resume,
-        Ping,
         Start,
         End,
         Error,
+
+        UPDATE,
     }
 
     public ServerEvent(Type type, T data) {
@@ -37,19 +42,17 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         return new ServerEvent(Type.Resume, data);
     }
 
-    public static ServerEvent Ping(){
-        return new ServerEvent(Type.Ping, null);
-    }
-
     public static ServerEvent Start(){
         return new ServerEvent(Type.Start, null);
     }
 
-    public static ServerEvent End(){
-        return new ServerEvent(Type.End, null);
+    public static ServerEvent End(ScoreBoard scoreBoard){
+        return new ServerEvent(Type.End, scoreBoard);
     }
 
     public static ServerEvent Error(Exception data){
         return new ServerEvent(Type.Error, data);
     }
+
+    public static ServerEvent Update(Update update){ return new ServerEvent(Type.UPDATE, update);}
 }
