@@ -14,7 +14,7 @@ public class Lobby implements Serializable {
     }
 
     public String getName() {
-        synchronized (name){
+        synchronized (name) {
             return name;
         }
     }

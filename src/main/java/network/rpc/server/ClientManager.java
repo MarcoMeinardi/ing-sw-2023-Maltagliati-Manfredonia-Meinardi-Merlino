@@ -94,6 +94,12 @@ public class ClientManager extends Thread{
             if(identified_clients.containsKey(username) && identified_clients.get(username).getStatus() != ClientStatus.Disconnected){
                 throw new ClientAlreadyConnectedExeption();
             }
+            if(identified_clients.containsKey(username)){
+                identified_clients.get(username).disconnect();
+                Client lastClient = identified_clients.get(username);
+                client.setStatus(lastClient.getLastValidStatus());
+                client.setCallHandler(lastClient.getCallHandler());
+            }
             identified_clients.put(username, client);
         }
     }

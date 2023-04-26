@@ -43,7 +43,7 @@ public class GameController {
      * @author Ludovico
      *
      */
-    private GameController(Lobby lobby) throws Exception{
+    public GameController(Lobby lobby) throws Exception{
         game = new Game(lobby.getPlayers());
         playerIterator = game.iterator();
         gameName = lobby.getName();

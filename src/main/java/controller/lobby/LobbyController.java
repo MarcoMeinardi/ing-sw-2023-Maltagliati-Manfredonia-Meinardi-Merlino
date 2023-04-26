@@ -1,5 +1,6 @@
 package controller.lobby;
 
+import controller.game.GameController;
 import network.rpc.Call;
 import network.rpc.Result;
 import network.rpc.WrongServiceException;
@@ -85,6 +86,7 @@ public class LobbyController {
                     }
                     String lobbyname = ((NewLobby) call.params()).lobbyName();
                     createLobby(lobbyname, client.getUsername());
+                    client.setStatus(ClientStatus.InLobby);
                     result = Result.ok(true, call.id());
                     break;
                 case LobbyList:
@@ -100,14 +102,20 @@ public class LobbyController {
                     result = Result.empty(call.id());
                     break;
                 case LobbyLeave:
-                    if (!(call.params() instanceof String)) {
-                        throw new WrongParametersException("String", call.params().getClass().getName(), "LobbyLeave");
-                    }
-                    String lobby_to_leave = (String) call.params();
                     leaveLobby(client.getUsername());
                     client.setStatus(ClientStatus.Idle);
                     result = Result.empty(call.id());
                     break;
+                case GameStart:
+                    Lobby lobby = findLobby(client.getUsername());
+                    if(lobby.getNumberOfPlayers() < 2){
+                        throw new NotEnoughPlayersException();
+                    }
+                    if(!lobby.isHost(client.getUsername())){
+                        throw new NotHostException();
+                    }
+                    startGame(lobby);
+                    result = Result.empty(call.id());
                 default:
                     result = Result.err(new WrongServiceException(), call.id());
                     break;
@@ -116,5 +124,11 @@ public class LobbyController {
             result = Result.err(e, call.id());
         }
         return result;
+    }
+
+    public void startGame(Lobby lobby) throws Exception{
+        synchronized (lobby){
+            GameController game = new GameController(lobby);
+        }
     }
 }

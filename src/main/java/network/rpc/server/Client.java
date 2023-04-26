@@ -23,6 +23,7 @@ public class Client extends Thread{
         private final ObjectInputStream incomingMessages;
         private final ObjectOutputStream outcomingMessages;
         private ClientStatus status;
+        private ClientStatus last_valid_status;
         private BiFunction<Call<Serializable>, Client, Result<Serializable>> handler;
         private LocalDateTime lastMessageTime = LocalDateTime.now();
         private String username = null;
@@ -34,6 +35,7 @@ public class Client extends Thread{
             this.incomingMessages = new ObjectInputStream(socket.getInputStream());
             this.outcomingMessages = new ObjectOutputStream(socket.getOutputStream());
             this.status = ClientStatus.Idle;
+            this.last_valid_status = ClientStatus.Idle;
             this.handler = handler;
         }
 
@@ -45,7 +47,18 @@ public class Client extends Thread{
 
         public void setStatus(ClientStatus status) {
             synchronized (this.status){
+                if(status == ClientStatus.Disconnected){
+                    synchronized (this.last_valid_status){
+                        this.last_valid_status = this.status;
+                    }
+                }
                 this.status = status;
+            }
+        }
+
+        public ClientStatus getLastValidStatus(){
+            synchronized (this.last_valid_status){
+                return this.last_valid_status;
             }
         }
 
@@ -141,4 +154,10 @@ public class Client extends Thread{
                 return lastMessageTime;
             }
         }
+
+    public BiFunction<Call<Serializable>, Client, Result<Serializable>> getCallHandler() {
+        synchronized (handler){
+            return handler;
+        }
+    }
 }

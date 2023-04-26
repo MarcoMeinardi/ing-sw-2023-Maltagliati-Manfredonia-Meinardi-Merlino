@@ -7,6 +7,6 @@ public enum Service {
     LobbyCreate,
     LobbyJoin,
     LobbyLeave,
-
+    GameStart,
     CardSelect,
 }

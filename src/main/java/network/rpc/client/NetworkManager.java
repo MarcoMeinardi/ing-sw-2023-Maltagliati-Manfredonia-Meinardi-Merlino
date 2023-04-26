@@ -147,4 +147,11 @@ public class NetworkManager extends Thread{
             return Optional.of(eventQueue.remove());
         }
     }
+
+    LobbyList,
+    LobbyCreate,
+    LobbyJoin,
+    LobbyLeave,
+    GameStart,
+    CardSelect,
 }
