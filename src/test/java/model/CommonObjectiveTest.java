@@ -10,9 +10,6 @@ import static org.junit.Assert.*;
 
 public class CommonObjectiveTest {
 
-    final int NROWS = 6;
-    final int NCOLS = 5;
-
     @Test
     public void testGenerateCommonObjectives() {
 
