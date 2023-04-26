@@ -38,7 +38,10 @@ public class LobbyController {
         throw new LobbyNotFoundException();
     }
 
-    public void createLobby(String lobbyname, String host) {
+    public void createLobby(String lobbyname, String host) throws LobbyAlreadyExistsException {
+        if(lobbies.containsKey(lobbyname)){
+            throw new LobbyAlreadyExistsException();
+        }
         Lobby lobby = new Lobby(lobbyname, host);
         synchronized (lobbies){
             lobbies.put(lobbyname, lobby);
@@ -111,6 +114,8 @@ public class LobbyController {
             }
         } catch (Exception e) {
             result = Result.err(e, call.id());
+        } catch (LobbyAlreadyExistsException e) {
+            throw new RuntimeException(e);
         }
         return result;
     }

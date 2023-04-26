@@ -1,6 +1,7 @@
 package controller;
 
 import controller.lobby.Lobby;
+import controller.lobby.LobbyAlreadyExistsException;
 import controller.lobby.LobbyController;
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ public class LobbyControllerTest {
     }
 
     @Test
-    public void testCreateLobby(){
+    public void testCreateLobby() throws LobbyAlreadyExistsException {
         LobbyController lobbyController = LobbyController.getInstance();
         lobbyController.createLobby("test", "test");
         ArrayList<Lobby> lobbies = lobbyController.getLobbies();
@@ -22,7 +23,7 @@ public class LobbyControllerTest {
     }
 
     @Test
-    public void testFindLobby(){
+    public void testFindLobby() throws LobbyAlreadyExistsException {
         LobbyController lobbyController = LobbyController.getInstance();
         lobbyController.createLobby("test", "test");
         try {
@@ -34,7 +35,7 @@ public class LobbyControllerTest {
     }
 
     @Test
-    public void testJoinLobby(){
+    public void testJoinLobby() throws LobbyAlreadyExistsException {
         LobbyController lobbyController = LobbyController.getInstance();
         lobbyController.createLobby("test", "test");
         try{
