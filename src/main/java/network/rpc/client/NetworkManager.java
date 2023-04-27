@@ -1,8 +1,11 @@
 package network.rpc.client;
 
+import controller.lobby.Lobby;
 import network.rpc.Result;
 import network.rpc.ServerEvent;
 import network.rpc.Service;
+import network.rpc.parameters.CardSelect;
+import network.rpc.parameters.NewLobby;
 
 import java.io.Serializable;
 import java.net.Socket;
@@ -65,18 +68,6 @@ public class NetworkManager extends Thread{
             }
             return Optional.of((Result<Serializable>)obj);
         }
-    }
-    private Function<LocalDateTime,Boolean> ping() throws Exception{
-        LocalDateTime now = LocalDateTime.now();
-        Function<LocalDateTime,Boolean> ping = new Function<LocalDateTime,Boolean>(now, Service.Ping);
-        this.lastPing = ping;
-        ping.call(out);
-        return ping;
-    }
-    public Function<String,Boolean> login(String username) throws Exception{
-        Function<String,Boolean> login = new Function<String,Boolean>(username, Service.Login);
-        login.call(out);
-        return login;
     }
     private long secondsSinceLastPing(){
         if(lastPing == null){
@@ -148,10 +139,46 @@ public class NetworkManager extends Thread{
         }
     }
 
-    LobbyList,
-    LobbyCreate,
-    LobbyJoin,
-    LobbyLeave,
-    GameStart,
-    CardSelect,
+    public Function<Boolean,ArrayList<Lobby>> lobbyList() throws Exception{
+        Function<Boolean,ArrayList<Lobby>> lobbyList = new Function<Boolean,ArrayList<Lobby>>(true, Service.LobbyList);
+        lobbyList.call(out);
+        return lobbyList;
+    }
+    public Function<NewLobby,Boolean> lobbyCreate(NewLobby lobby) throws Exception{
+        Function<NewLobby,Boolean> lobbyCreate = new Function<NewLobby,Boolean>(lobby, Service.LobbyCreate);
+        lobbyCreate.call(out);
+        return lobbyCreate;
+    }
+    public Function<String,Boolean> lobbyJoin(String lobbyName) throws Exception{
+        Function<String,Boolean> lobbyJoin = new Function<String,Boolean>(lobbyName, Service.LobbyJoin);
+        lobbyJoin.call(out);
+        return lobbyJoin;
+    }
+    public Function<Boolean,Boolean> lobbyLeave() throws Exception{
+        Function<Boolean,Boolean> lobbyLeave = new Function<Boolean,Boolean>(true, Service.LobbyLeave);
+        lobbyLeave.call(out);
+        return lobbyLeave;
+    }
+    public Function<Boolean,Boolean> gameStart() throws Exception{
+        Function<Boolean,Boolean> gameStart = new Function<Boolean,Boolean>(true, Service.GameStart);
+        gameStart.call(out);
+        return gameStart;
+    }
+    public Function<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception{
+        Function<CardSelect,Boolean> cardSelect = new Function<CardSelect,Boolean>(selected, Service.CardSelect);
+        cardSelect.call(out);
+        return cardSelect;
+    }
+    private Function<LocalDateTime,Boolean> ping() throws Exception{
+        LocalDateTime now = LocalDateTime.now();
+        Function<LocalDateTime,Boolean> ping = new Function<LocalDateTime,Boolean>(now, Service.Ping);
+        this.lastPing = ping;
+        ping.call(out);
+        return ping;
+    }
+    public Function<String,Boolean> login(String username) throws Exception{
+        Function<String,Boolean> login = new Function<String,Boolean>(username, Service.Login);
+        login.call(out);
+        return login;
+    }
 }

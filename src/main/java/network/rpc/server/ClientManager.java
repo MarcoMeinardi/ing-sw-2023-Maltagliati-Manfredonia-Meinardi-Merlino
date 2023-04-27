@@ -50,7 +50,7 @@ public class ClientManager extends Thread{
         this.acceptConnectionsThread = new Thread(this::acceptConnections);
     }
 
-    protected Result<Serializable> registerService(Call<Serializable> call, Client client){
+    private Result<Serializable> registerService(Call<Serializable> call, Client client){
         if(call.service() != Service.Login){
             return Result.err(new ClientNotIdentifiedException(), call.id());
         }
@@ -67,11 +67,6 @@ public class ClientManager extends Thread{
             return Result.err(e, call.id());
         }
     }
-
-    protected Result<Serializable> lobbyService(Call<Serializable> call, Client client){
-        return null;
-    }
-
     private void acceptConnections(){
         while(true){
             try{
@@ -83,7 +78,7 @@ public class ClientManager extends Thread{
             }
         }
     }
-    protected void addUidentifiedClient(Client client){
+    private void addUidentifiedClient(Client client){
         synchronized (unidentified_clients) {
             unidentified_clients.add(client);
         }
@@ -150,7 +145,7 @@ public class ClientManager extends Thread{
         return username;
     }
 
-    protected HashMap<String, Client> getClients(){
+    private HashMap<String, Client> getClients(){
         synchronized (identified_clients) {
             return identified_clients;
         }
