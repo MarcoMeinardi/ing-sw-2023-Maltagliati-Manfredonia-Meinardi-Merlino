@@ -5,6 +5,7 @@ import network.rpc.Result;
 import network.rpc.ServerEvent;
 import network.rpc.Service;
 import network.rpc.parameters.CardSelect;
+import network.rpc.parameters.Login;
 import network.rpc.parameters.NewLobby;
 
 import java.io.Serializable;
@@ -187,8 +188,8 @@ public class NetworkManager extends Thread{
         ping.call(out);
         return ping;
     }
-    public Function<String,Boolean> login(String username) throws Exception{
-        Function<String,Boolean> login = new Function<String,Boolean>(username, Service.Login);
+    public Function<Login, Boolean> login(Login username) throws Exception {
+        Function<Login,Boolean> login = new Function<Login, Boolean>(username, Service.Login);
         login.call(out);
         return login;
     }
