@@ -42,7 +42,7 @@ public class NetworkManager extends Thread{
         this.socket = new Socket(server.ip(), server.port());
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
-        this.ping().waitResult(this.PING_TIMEOUT);
+        testConnection();
         setConnected(true);
         this.start();
         logger.info("Connected to server");
@@ -68,6 +68,17 @@ public class NetworkManager extends Thread{
             }
             return Optional.of((Result<Serializable>)obj);
         }
+    }
+
+    private void testConnection() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+        lastPing = new Function<>(now, Service.Ping);
+        lastPing.call(out);
+        Object obj = in.readObject();
+        if(!(obj instanceof Result)){
+            throw new Exception("Invalid object received");
+        }
+        lastPing.setResult((Result<Boolean>)obj);
     }
     private long secondsSinceLastPing(){
         if(lastPing == null){
