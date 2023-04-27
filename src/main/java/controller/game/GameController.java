@@ -35,7 +35,7 @@ public class GameController {
     private Iterator<Player> playerIterator;
     private Player currentPlayer;
     private String gameName;
-
+	private Thread globalUpdateThread = null;
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
     /**
@@ -178,29 +178,7 @@ public class GameController {
         player.getShelf().insert(column, cards);
     }
 
-    /**
-     * Checks if a player has disconnected.
-     * If not, the method simply returns after checking every player and sending a resume game message.
-     * If yes, the method sends a pause event to the players and waits for the disconnect client to reconnect.
-     * The method waits a one and a half minute for the player to reconnect. If that's the case, the method sends a resume event to the players.
-     * if after one and a half minute the player is still disconnected, the method throws a RuntimeException.
-     * @author Lorenzo, Ludovico
-     *
-     */
-    public void setGamePaused(boolean gamePaused) {
-        synchronized (this.gamePaused) {
-            this.gamePaused = gamePaused;
-        }
-    }
-
-    public boolean isGamePaused() {
-        synchronized (this.gamePaused) {
-            return gamePaused;
-        }
-    }
-
     public void checkDisconnection() {
-        setGamePaused(true);
         int count = 0;
         ClientManager clientManager = ClientManager.getInstance();
 
@@ -215,7 +193,6 @@ public class GameController {
                         }
                         client.get().send(Result.ok(ServerEvent.Resume(null), null));
                     }
-                    setGamePaused(false);
                     return;
                 }catch (Exception e){
                     logger.warning("Error while sending resume event to client" + e.getMessage());
@@ -242,7 +219,7 @@ public class GameController {
             count++;
 
             if (count == maxDisconnectionTries) {
-                throw new RuntimeException("Waited too long"); //TODO: change exception
+				exitGame();
             }
 
         }
@@ -251,18 +228,22 @@ public class GameController {
 
     public void globalUpdate(ServerEvent event) {
         ClientManager clientManager = ClientManager.getInstance();
-        try{
-            for(Player player : game.getPlayers()){
-                Optional<Client> client = clientManager.getClientByUsername(player.getName());
-                if(client.isEmpty()){
-                    throw new RuntimeException("Client not found" + player.getName());
-                }
-                client.get().send(Result.ok(event, null));
-            }
-        }catch (Exception e){
-            logger.warning("Error while sending global update event to client" + e.getMessage());
-            checkDisconnection();
-        }
+
+		while (true) {
+			try {
+				for(Player player : game.getPlayers()) {
+					Optional<Client> client = clientManager.getClientByUsername(player.getName());
+					if(client.isEmpty()) {
+						throw new RuntimeException("Client not found" + player.getName());
+					}
+					client.get().send(Result.ok(event, null));
+				}
+				break;
+			} catch (Exception e) {
+				logger.warning("Error while sending global update event to client" + e.getMessage());
+				checkDisconnection();
+			}
+		}
     }
 
     public Result handleGame(Call call, Client client){
@@ -273,7 +254,7 @@ public class GameController {
                     if(!(call.params() instanceof CardSelect)){
                         throw new WrongParametersException("CardSelect", call.params().getClass().getName(), "CardSelect");
                     }
-                    if(isGamePaused()){
+                    if(globalUpdateOnGoing()){
                         throw new WaitingForUpdateException();
                     }
                     CardSelect cardSelect = (CardSelect) call.params();
@@ -288,11 +269,11 @@ public class GameController {
                     refillTable();
                     if(playerIterator.hasNext()){
                         Update update = new Update(username, game.getTabletop(), player.getShelf());
-                        globalUpdate(ServerEvent.Update(update));
+						setGlobalUpdate(ServerEvent.Update(update));
                         currentPlayer = playerIterator.next();
                     }else{
                         ScoreBoard scoreBoard = new ScoreBoard(game);
-                        globalUpdate(ServerEvent.End(scoreBoard));
+						setGlobalUpdate(ServerEvent.End(scoreBoard));
                         exitGame();
                     }
                     result = Result.empty(call.id());
@@ -306,6 +287,14 @@ public class GameController {
         }
         return result;
     }
+
+	private boolean globalUpdateOnGoing() {
+		return globalUpdateThread != null && globalUpdateThread.isAlive();
+	}
+
+	private void setGlobalUpdate(ServerEvent event) {
+		globalUpdateThread = new Thread(() -> globalUpdate(event));
+	}
 
     public void exitGame(){
         ClientManager clientManager = ClientManager.getInstance();
