@@ -18,6 +18,7 @@ public class Function<P extends Serializable,R extends Serializable> {
 
     public Function(P params, Service service){
         this.params = params;
+        this.service = service;
         this.result = Optional.empty();
         this.id = UUID.randomUUID();
     }
