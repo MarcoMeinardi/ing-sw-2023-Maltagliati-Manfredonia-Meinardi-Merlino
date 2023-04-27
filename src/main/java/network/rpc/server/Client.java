@@ -18,7 +18,6 @@ import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
 public class Client extends Thread{
-        public final int TIMEOUT = 30;
         private final Socket socket;
         private final ObjectInputStream incomingMessages;
         private final ObjectOutputStream outcomingMessages;
@@ -31,7 +30,6 @@ public class Client extends Thread{
         public Client(Socket socket, BiFunction<Call<Serializable>,Client,Result<Serializable>> handler) throws Exception {
             this.status = ClientStatus.Disconnected;
             this.socket = socket;
-            this.socket.setSoTimeout(TIMEOUT);
             this.incomingMessages = new ObjectInputStream(socket.getInputStream());
             this.outcomingMessages = new ObjectOutputStream(socket.getOutputStream());
             this.status = ClientStatus.Idle;
