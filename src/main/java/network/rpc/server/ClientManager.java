@@ -61,8 +61,8 @@ public class ClientManager extends Thread{
         try{
             client.setUsername(login.username());
             addIdentifiedClient(client.getUsername(), client);
-            client.setCallHandler(LobbyController.getInstance()::handleLobby);
-            return Result.empty(call.id());//change handler to lobby handler
+            client.setCallHandler(LobbyController.getInstance()::handleLobby);  // TODO don't reset in events such an in-game reconnection
+            return Result.empty(call.id());
         }catch (Exception e){
             return Result.err(e, call.id());
         }
@@ -92,7 +92,11 @@ public class ClientManager extends Thread{
             if(identified_clients.containsKey(username)){
                 identified_clients.get(username).disconnect();
                 Client lastClient = identified_clients.get(username);
-                client.setStatus(lastClient.getLastValidStatus());
+                if (lastClient.getLastValidStatus().equals(ClientStatus.Disconnected)) {
+                    client.setStatus(ClientStatus.Idle);
+                } else {
+                    client.setStatus(lastClient.getLastValidStatus());
+                }
                 client.setCallHandler(lastClient.getCallHandler());
             }
             identified_clients.put(username, client);
