@@ -30,6 +30,7 @@ public class NetworkManager extends Thread{
     private Logger logger = Logger.getLogger(NetworkManager.class.getName());
     private Function<LocalDateTime,Boolean> lastPing = null;
     private static final int PING_TIMEOUT = 60;
+    private Thread checkPingThread;
     private NetworkManager(){}
     public static NetworkManager getInstance(){
         if(instance == null){
@@ -58,16 +59,13 @@ public class NetworkManager extends Thread{
         }
     }
 
-    private Optional<Result<Serializable>> receive() throws Exception{
+    private Result<Serializable> receive() throws Exception{
         synchronized(in){
-            if(in.available() <= 0){
-                return Optional.empty();
-            }
             Object obj = in.readObject();
             if(!(obj instanceof Result)){
                 throw new Exception("Invalid object received");
             }
-            return Optional.of((Result<Serializable>)obj);
+            return (Result<Serializable>)obj;
         }
     }
 
@@ -87,42 +85,44 @@ public class NetworkManager extends Thread{
         }
         return Duration.between(lastPing.getParams(), LocalDateTime.now()).getSeconds();
     }
-    public void run(){
+    private void checkPing(){
         while(isConnected()){
             try{
-                Optional<Result<Serializable>> result = receive();//read all incoming messages
-                while(result.isPresent()){
-                    try{
-                        if(result.get().isEvent()){
-                            ServerEvent event = (ServerEvent)result.get().unwrap();
-                            synchronized (eventQueue){
-                                eventQueue.add(event);
-                            }
-                        }else{
-                            Function caller;
-                            synchronized (callQueue){
-                                caller = callQueue.get(result.get().id());
-                            }
-                            caller.setResult(result.get());
-                        }
-                    }catch(Exception e){
-                        logger.warning(e.getMessage());
+                if(lastPing.checkResult().isPresent()){
+                        lastPing.call(out);
                     }
-                    result = receive();
+                }catch(Exception e){
+                    logger.warning(e.getMessage());
+                    disconnect();
                 }
-                long elapsedTime = this.secondsSinceLastPing();//check if we need to ping
-                if(elapsedTime > this.PING_TIMEOUT/2){
-                    if(lastPing.checkResult().isPresent()){//if we have a ping result ping again
-                        ping();
-                    }else{
-                        if(elapsedTime > this.PING_TIMEOUT){//if we don't have a ping result and we have waited too long, disconnect
-                            disconnect();
-                        }
+                try{
+                    Thread.sleep(PING_TIMEOUT*1000/2);
+                }catch(Exception e){
+                    logger.warning(e.getMessage());
+                    disconnect();
+                }
+            }
+    }
+    public void run(){
+        checkPingThread = new Thread(this::checkPing);
+        checkPingThread.start();
+        while(isConnected()){
+            try{
+                Result<Serializable> result = receive();
+                if(result.isEvent()){
+                    ServerEvent event = (ServerEvent)result.unwrap();
+                    synchronized (eventQueue){
+                        eventQueue.add(event);
                     }
+                }else{
+                    Function caller;
+                    synchronized (callQueue){
+                        caller = callQueue.get(result.id());
+                    }
+                    caller.setResult(result);
                 }
             }catch(Exception e){
                 logger.warning(e.getMessage());
-                disconnect();
             }
         }
     }
