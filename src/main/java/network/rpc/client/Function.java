@@ -73,4 +73,7 @@ public class Function<P extends Serializable,R extends Serializable> {
         return new Function<Boolean,Boolean>(null, Service.Ping);
     }
 
+    public UUID id(){
+        return id;
+    }
 }

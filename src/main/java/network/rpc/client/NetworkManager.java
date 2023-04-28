@@ -96,7 +96,7 @@ public class NetworkManager extends Thread{
                     disconnect();
                 }
                 try{
-                    Thread.sleep(PING_TIMEOUT*1000/2);
+                    Thread.sleep(PING_TIMEOUT*1000);
                 }catch(Exception e){
                     logger.warning(e.getMessage());
                     disconnect();
@@ -107,12 +107,16 @@ public class NetworkManager extends Thread{
         checkPingThread = new Thread(this::checkPing);
         checkPingThread.start();
         while(isConnected()){
-            try{
-                Result<Serializable> result = receive();
-                if(result.isEvent()){
-                    ServerEvent event = (ServerEvent)result.unwrap();
-                    synchronized (eventQueue){
+            try {
+                Result result = receive();
+                if (result.isEvent()) {
+                    ServerEvent event = (ServerEvent) result.unwrap();
+                    synchronized (eventQueue) {
                         eventQueue.add(event);
+                    }
+                } else if (lastPing.id().equals(result.id())){
+                    synchronized (lastPing){
+                        lastPing.setResult((Result<Boolean>)result);
                     }
                 }else{
                     Function caller;
@@ -153,43 +157,43 @@ public class NetworkManager extends Thread{
 
     public Function<Boolean,ArrayList<Lobby>> lobbyList() throws Exception{
         Function<Boolean,ArrayList<Lobby>> lobbyList = new Function<Boolean,ArrayList<Lobby>>(true, Service.LobbyList);
+        callQueue.put(lobbyList.id(), lobbyList);
         lobbyList.call(out);
         return lobbyList;
     }
     public Function<NewLobby,Boolean> lobbyCreate(NewLobby lobby) throws Exception{
         Function<NewLobby,Boolean> lobbyCreate = new Function<NewLobby,Boolean>(lobby, Service.LobbyCreate);
+        callQueue.put(lobbyCreate.id(), lobbyCreate);
         lobbyCreate.call(out);
         return lobbyCreate;
     }
     public Function<String,Boolean> lobbyJoin(String lobbyName) throws Exception{
         Function<String,Boolean> lobbyJoin = new Function<String,Boolean>(lobbyName, Service.LobbyJoin);
+        callQueue.put(lobbyJoin.id(), lobbyJoin);
         lobbyJoin.call(out);
         return lobbyJoin;
     }
     public Function<Boolean,Boolean> lobbyLeave() throws Exception{
         Function<Boolean,Boolean> lobbyLeave = new Function<Boolean,Boolean>(true, Service.LobbyLeave);
+        callQueue.put(lobbyLeave.id(), lobbyLeave);
         lobbyLeave.call(out);
         return lobbyLeave;
     }
     public Function<Boolean,Boolean> gameStart() throws Exception{
         Function<Boolean,Boolean> gameStart = new Function<Boolean,Boolean>(true, Service.GameStart);
+        callQueue.put(gameStart.id(), gameStart);
         gameStart.call(out);
         return gameStart;
     }
     public Function<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception{
         Function<CardSelect,Boolean> cardSelect = new Function<CardSelect,Boolean>(selected, Service.CardSelect);
+        callQueue.put(cardSelect.id(), cardSelect);
         cardSelect.call(out);
         return cardSelect;
     }
-    private Function<LocalDateTime,Boolean> ping() throws Exception{
-        LocalDateTime now = LocalDateTime.now();
-        Function<LocalDateTime,Boolean> ping = new Function<LocalDateTime,Boolean>(now, Service.Ping);
-        this.lastPing = ping;
-        ping.call(out);
-        return ping;
-    }
     public Function<Login, Boolean> login(Login username) throws Exception {
         Function<Login,Boolean> login = new Function<Login, Boolean>(username, Service.Login);
+        callQueue.put(login.id(), login);
         login.call(out);
         return login;
     }
