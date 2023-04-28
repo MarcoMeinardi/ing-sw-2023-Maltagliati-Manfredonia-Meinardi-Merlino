@@ -13,6 +13,7 @@ import java.util.UUID;
 public class Function<P extends Serializable,R extends Serializable> {
     private P params;
     private Optional<Result<R>> result;
+    private final Object resultLock = new Object();
     private UUID id;
     private Service service;
 
@@ -32,7 +33,7 @@ public class Function<P extends Serializable,R extends Serializable> {
     }
 
     public Optional<Result<R>> checkResult(){
-        synchronized (result){
+        synchronized (resultLock) {
             return result;
         }
     }
@@ -42,16 +43,16 @@ public class Function<P extends Serializable,R extends Serializable> {
     }
 
     public Result<R> waitResult() throws Exception{
-        synchronized (result){
+        synchronized (resultLock) {
             while(result.isEmpty()){
-                result.wait();
+                resultLock.wait();
             }
             return result.get();
         }
     }
 
     public Result<R> waitResult(long timeout) throws Exception{
-        synchronized (result){
+        synchronized (resultLock) {
             while(result.isEmpty()){
                 result.wait(timeout);
             }
@@ -60,9 +61,9 @@ public class Function<P extends Serializable,R extends Serializable> {
     }
 
     protected void setResult(Result<R> result){
-        synchronized (result){
+        synchronized (resultLock) {
             this.result = Optional.of(result);
-            result.notifyAll();
+            resultLock.notifyAll();
         }
     }
 
