@@ -45,7 +45,7 @@ public class Client extends Thread{
 
         public void setStatus(ClientStatus status) {
             synchronized (this.status){
-                if(status == ClientStatus.Disconnected){
+                if(status != ClientStatus.Disconnected){
                     synchronized (this.last_valid_status){
                         this.last_valid_status = this.status;
                     }
