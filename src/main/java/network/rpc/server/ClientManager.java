@@ -91,7 +91,11 @@ public class ClientManager extends Thread{
             if(identified_clients.containsKey(username)){
                 identified_clients.get(username).disconnect();
                 Client lastClient = identified_clients.get(username);
-                client.setStatus(lastClient.getLastValidStatus());
+                if (lastClient.getLastValidStatus().equals(ClientStatus.Disconnected)) {
+                    client.setStatus(ClientStatus.Idle);
+                } else {
+                    client.setStatus(lastClient.getLastValidStatus());
+                }
                 client.setCallHandler(lastClient.getCallHandler());
             }else{
                 client.setCallHandler(LobbyController.getInstance()::handleLobby);       
