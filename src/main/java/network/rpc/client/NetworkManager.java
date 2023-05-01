@@ -23,6 +23,7 @@ public class NetworkManager extends Thread{
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private Boolean connected = false;
+    private Object connectedLock = new Object();
     private Server server;
     private static NetworkManager instance;
     private HashMap<UUID,Function> callQueue = new HashMap<UUID,Function>();
@@ -32,12 +33,14 @@ public class NetworkManager extends Thread{
     private static final int PING_TIMEOUT = 60;
     private Thread checkPingThread;
     private NetworkManager(){}
+
     public static NetworkManager getInstance(){
         if(instance == null){
             instance = new NetworkManager();
         }
         return instance;
     }
+
     public void connect(Server server) throws Exception{
         setConnected(false);
         this.server = server;
@@ -49,6 +52,7 @@ public class NetworkManager extends Thread{
         this.start();
         logger.info("Connected to server");
     }
+
     public void disconnect(){
         logger.info("Disconnecting from server");
         setConnected(false);
@@ -79,12 +83,14 @@ public class NetworkManager extends Thread{
         }
         lastPing.setResult((Result<Boolean>)obj);
     }
+
     private long secondsSinceLastPing(){
         if(lastPing == null){
             return 0;
         }
         return Duration.between(lastPing.getParams(), LocalDateTime.now()).getSeconds();
     }
+
     private void checkPing(){
         while(isConnected()){
             try{
@@ -103,6 +109,7 @@ public class NetworkManager extends Thread{
                 }
             }
     }
+
     public void run(){
         checkPingThread = new Thread(this::checkPing);
         checkPingThread.start();
@@ -130,6 +137,7 @@ public class NetworkManager extends Thread{
             }
         }
     }
+
     public void reconnect() throws Exception{
         disconnect();
         this.join();
@@ -137,15 +145,17 @@ public class NetworkManager extends Thread{
     }
 
     private void setConnected(boolean connected){
-        synchronized (this.connected){
+        synchronized (connectedLock){
             this.connected = connected;
         }
     }
+
     public boolean isConnected(){
-        synchronized (connected){
+        synchronized (connectedLock){
             return connected;
         }
     }
+
     public Optional<ServerEvent> getEvent(){
         synchronized (eventQueue){
             if(eventQueue.isEmpty()){
