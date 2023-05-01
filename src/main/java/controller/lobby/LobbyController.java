@@ -84,6 +84,9 @@ public class LobbyController {
                     if (!(call.params() instanceof NewLobby)) {
                         throw new WrongParametersException("NewLobby", call.params().getClass().getName(), "LobbyCreate");
                     }
+                    if (client.getStatus() == ClientStatus.Idle) {
+                        throw new PlayerAlreadyInLobbyException();
+                    }
                     String lobbyname = ((NewLobby) call.params()).lobbyName();
                     createLobby(lobbyname, client.getUsername());
                     client.setStatus(ClientStatus.InLobby);
@@ -95,6 +98,9 @@ public class LobbyController {
                 case LobbyJoin:
                     if (!(call.params() instanceof String)) {
                         throw new WrongParametersException("String", call.params().getClass().getName(), "LobbyJoin");
+                    }
+                    if (client.getStatus() == ClientStatus.Idle) {
+                        throw new PlayerAlreadyInLobbyException();
                     }
                     String selected_lobby = (String) call.params();
                     joinLobby(selected_lobby, client.getUsername());
