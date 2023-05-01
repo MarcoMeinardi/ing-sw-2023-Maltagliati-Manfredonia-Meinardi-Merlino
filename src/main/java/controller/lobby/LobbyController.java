@@ -79,69 +79,60 @@ public class LobbyController {
         Result<Serializable> result;
         try {
             switch (call.service()) {
-                case LobbyCreate:
+                case LobbyCreate -> {
                     if (!(call.params() instanceof String)) {
                         throw new WrongParametersException("NewLobby", call.params().getClass().getName(), "LobbyCreate");
                     }
                     if (client.getStatus() != ClientStatus.Idle) {
                         throw new PlayerAlreadyInLobbyException();
                     }
-                    Lobby created = createLobby(((String)call.params()), client.getUsername());
+                    Lobby created = createLobby(((String) call.params()), client.getUsername());
                     client.setStatus(ClientStatus.InLobby);
                     result = Result.ok(created, call.id());
-                    break;
-
-                case LobbyList:
-                    result = Result.ok(getLobbies(), call.id());
-                    break;
-
-                case LobbyJoin:
+                }
+                case LobbyList -> result = Result.ok(getLobbies(), call.id());
+                case LobbyJoin -> {
                     if (!(call.params() instanceof String)) {
                         throw new WrongParametersException("String", call.params().getClass().getName(), "LobbyJoin");
                     }
                     if (client.getStatus() != ClientStatus.Idle) {
                         throw new PlayerAlreadyInLobbyException();
                     }
-                    String selected_lobby = (String)call.params();
+                    String selected_lobby = (String) call.params();
                     Lobby joined = joinLobby(selected_lobby, client.getUsername());
                     client.setStatus(ClientStatus.InLobby);
                     result = Result.ok(joined, call.id());
-                    break;
-
-                case LobbyLeave:
+                }
+                case LobbyLeave -> {
                     if (client.getStatus() != ClientStatus.InLobby) {
                         throw new PlayerNotInLobbyException();
                     }
                     leaveLobby(client.getUsername());
                     client.setStatus(ClientStatus.Idle);
                     result = Result.empty(call.id());
-                    break;
-
-                case LobbyUpdate:
+                }
+                case LobbyUpdate -> {
                     if (client.getStatus() != ClientStatus.InLobby) {
                         throw new PlayerNotInLobbyException();
                     }
                     Lobby updatedLobby = findPlayerLobby(client.getUsername());
                     result = Result.ok(updatedLobby, call.id());
-                    break;
-
-                case GameStart:
+                }
+                case GameStart -> {
                     if (client.getStatus() != ClientStatus.InLobby) {
                         throw new PlayerNotInLobbyException();
                     }
                     Lobby lobby = findPlayerLobby(client.getUsername());
-                    if(lobby.getNumberOfPlayers() < 2){
+                    if (lobby.getNumberOfPlayers() < 2) {
                         throw new NotEnoughPlayersException();
                     }
-                    if(!lobby.isHost(client.getUsername())){
+                    if (!lobby.isHost(client.getUsername())) {
                         throw new NotHostException();
                     }
                     startGame(lobby);
                     result = Result.empty(call.id());
-
-                default:
-                    result = Result.err(new WrongServiceException(), call.id());
-                    break;
+                }
+                default -> result = Result.err(new WrongServiceException(), call.id());
             }
         } catch (Exception e) {
             result = Result.err(e, call.id());
