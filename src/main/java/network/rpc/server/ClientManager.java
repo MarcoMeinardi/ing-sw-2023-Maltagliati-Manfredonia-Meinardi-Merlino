@@ -59,8 +59,7 @@ public class ClientManager extends Thread{
         }
         Login login = (Login) call.params();
         try{
-            client.setUsername(login.username());
-            addIdentifiedClient(client.getUsername(), client);
+            addIdentifiedClient(login.username(), client);
             return Result.empty(call.id());//change handler to lobby handler
         }catch (Exception e){
             return Result.err(e, call.id());
@@ -100,6 +99,7 @@ public class ClientManager extends Thread{
             }else{
                 client.setCallHandler(LobbyController.getInstance()::handleLobby);       
             }
+			client.setUsername(username);
             identified_clients.put(username, client);
         }
     }
