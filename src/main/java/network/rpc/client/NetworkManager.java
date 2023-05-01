@@ -91,23 +91,23 @@ public class NetworkManager extends Thread{
         return Duration.between(lastPing.getParams(), LocalDateTime.now()).getSeconds();
     }
 
-    private void checkPing(){
-        while(isConnected()){
-            try{
-                if(lastPing.checkResult().isPresent()){
-                        lastPing.call(out);
-                    }
-                }catch(Exception e){
-                    logger.warning(e.getMessage());
-                    disconnect();
+    private void checkPing() {
+        while (isConnected()) {
+            try {
+                if (lastPing.checkResult().isPresent()) {
+                    lastPing.call(out);
                 }
-                try{
-                    Thread.sleep(PING_TIMEOUT*1000);
-                }catch(Exception e){
-                    logger.warning(e.getMessage());
-                    disconnect();
-                }
+            } catch (Exception e) {
+                logger.warning(e.getMessage());
+                disconnect();
             }
+            try {
+                Thread.sleep(PING_TIMEOUT*1000);
+            } catch (Exception e) {
+                logger.warning(e.getMessage());
+                disconnect();
+            }
+        }
     }
 
     public void run(){
