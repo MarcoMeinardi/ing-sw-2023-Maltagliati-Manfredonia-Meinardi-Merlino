@@ -66,6 +66,7 @@ public class Client extends Thread{
             }
             synchronized (this.outcomingMessages){
                 try{
+                    outcomingMessages.reset();
                     outcomingMessages.writeObject((Object)message);
                 }catch(Exception e){
                     Logger.getLogger(Client.class.getName()).warning(e.getMessage());
