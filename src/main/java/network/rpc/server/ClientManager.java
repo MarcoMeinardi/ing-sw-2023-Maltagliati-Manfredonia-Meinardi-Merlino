@@ -70,14 +70,14 @@ public class ClientManager extends Thread{
         while(true){
             try{
                 Client client = new Client(socket.accept(), this::registerService);
-                addUidentifiedClient(client);
+                addUnidentifiedClient(client);
                 client.start();
             }catch (Exception e){
                 Logger.getLogger(Client.class.getName()).warning(e.getMessage());
             }
         }
     }
-    private void addUidentifiedClient(Client client){
+    private void addUnidentifiedClient(Client client){
         synchronized (unidentified_clients) {
             unidentified_clients.add(client);
         }
