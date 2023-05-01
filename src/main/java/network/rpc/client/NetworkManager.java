@@ -6,7 +6,6 @@ import network.rpc.ServerEvent;
 import network.rpc.Service;
 import network.rpc.parameters.CardSelect;
 import network.rpc.parameters.Login;
-import network.rpc.parameters.NewLobby;
 
 import java.io.Serializable;
 import java.net.Socket;
@@ -14,7 +13,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -171,36 +169,49 @@ public class NetworkManager extends Thread{
         lobbyList.call(out);
         return lobbyList;
     }
-    public Function<NewLobby,Boolean> lobbyCreate(NewLobby lobby) throws Exception{
-        Function<NewLobby,Boolean> lobbyCreate = new Function<NewLobby,Boolean>(lobby, Service.LobbyCreate);
+
+    public Function<String, Lobby> lobbyCreate(String lobby) throws Exception {
+        Function<String, Lobby> lobbyCreate = new Function<String, Lobby>(lobby, Service.LobbyCreate);
         callQueue.put(lobbyCreate.id(), lobbyCreate);
         lobbyCreate.call(out);
         return lobbyCreate;
     }
-    public Function<String,Boolean> lobbyJoin(String lobbyName) throws Exception{
-        Function<String,Boolean> lobbyJoin = new Function<String,Boolean>(lobbyName, Service.LobbyJoin);
+
+    public Function<String, Lobby> lobbyJoin(String lobbyName) throws Exception {
+        Function<String, Lobby> lobbyJoin = new Function<String, Lobby>(lobbyName, Service.LobbyJoin);
         callQueue.put(lobbyJoin.id(), lobbyJoin);
         lobbyJoin.call(out);
         return lobbyJoin;
     }
-    public Function<Boolean,Boolean> lobbyLeave() throws Exception{
-        Function<Boolean,Boolean> lobbyLeave = new Function<Boolean,Boolean>(true, Service.LobbyLeave);
+
+    public Function<Boolean, Boolean> lobbyLeave() throws Exception {
+        Function<Boolean, Boolean> lobbyLeave = new Function<Boolean, Boolean>(true, Service.LobbyLeave);
         callQueue.put(lobbyLeave.id(), lobbyLeave);
         lobbyLeave.call(out);
         return lobbyLeave;
     }
+
+    public Function<Boolean, Lobby> updateLobby() throws Exception {
+        Function<Boolean, Lobby> lobbyUpdate = new Function<Boolean, Lobby>(true, Service.LobbyUpdate);
+        callQueue.put(lobbyUpdate.id(), lobbyUpdate);
+        lobbyUpdate.call(out);
+        return lobbyUpdate;
+    }
+
     public Function<Boolean,Boolean> gameStart() throws Exception{
         Function<Boolean,Boolean> gameStart = new Function<Boolean,Boolean>(true, Service.GameStart);
         callQueue.put(gameStart.id(), gameStart);
         gameStart.call(out);
         return gameStart;
     }
+
     public Function<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception{
         Function<CardSelect,Boolean> cardSelect = new Function<CardSelect,Boolean>(selected, Service.CardSelect);
         callQueue.put(cardSelect.id(), cardSelect);
         cardSelect.call(out);
         return cardSelect;
     }
+
     public Function<Login, Boolean> login(Login username) throws Exception {
         Function<Login,Boolean> login = new Function<Login, Boolean>(username, Service.Login);
         callQueue.put(login.id(), login);

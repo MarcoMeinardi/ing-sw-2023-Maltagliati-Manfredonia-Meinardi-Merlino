@@ -27,7 +27,7 @@ public class LobbyControllerTest {
         LobbyController lobbyController = LobbyController.getInstance();
         lobbyController.createLobby("test2", "test45");
         try {
-            Lobby lobby = lobbyController.findLobby("test45");
+            Lobby lobby = lobbyController.findPlayerLobby("test45");
             assert(lobby.getName().equals("test2"));
         } catch (Exception e) {
             assert(false);
@@ -39,7 +39,7 @@ public class LobbyControllerTest {
         LobbyController lobbyController = LobbyController.getInstance();
         lobbyController.createLobby("test3", "test34");
         lobbyController.joinLobby("test3", "test35");
-        Lobby lobby = lobbyController.findLobby("test3");
+        Lobby lobby = lobbyController.findPlayerLobby("test3");
         assert(lobby.getPlayers().contains("test35"));
     }
 

@@ -4,16 +4,13 @@ import controller.game.GameController;
 import network.rpc.Call;
 import network.rpc.Result;
 import network.rpc.WrongServiceException;
-import network.rpc.parameters.NewLobby;
 import network.rpc.parameters.WrongParametersException;
 import network.rpc.server.Client;
-import network.rpc.Service;
 import network.rpc.server.ClientStatus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class LobbyController {
     private static LobbyController instance = null;
@@ -28,7 +25,7 @@ public class LobbyController {
         return instance;
     }
 
-    public Lobby findLobby(String playerName) throws LobbyNotFoundException {
+    public Lobby findPlayerLobby(String playerName) throws LobbyNotFoundException {
         synchronized (lobbies){
             for(Lobby lobby : lobbies.values()){
                 if(lobby.getPlayers().contains(playerName)){
@@ -39,7 +36,7 @@ public class LobbyController {
         throw new LobbyNotFoundException();
     }
 
-    public void createLobby(String lobbyname, String host) throws LobbyAlreadyExistsException {
+    public Lobby createLobby(String lobbyname, String host) throws LobbyAlreadyExistsException {
         if(lobbies.containsKey(lobbyname)){
             throw new LobbyAlreadyExistsException();
         }
@@ -47,6 +44,7 @@ public class LobbyController {
         synchronized (lobbies){
             lobbies.put(lobbyname, lobby);
         }
+        return lobby;
     }
 
     public ArrayList<Lobby> getLobbies() {
@@ -55,7 +53,7 @@ public class LobbyController {
         }
     }
 
-    public void joinLobby(String lobbyname, String player) throws LobbyNotFoundException, PlayerAlreadyInLobbyException, LobbyFullException {
+    public Lobby joinLobby(String lobbyname, String player) throws LobbyNotFoundException, PlayerAlreadyInLobbyException, LobbyFullException {
         Lobby lobby;
         synchronized (lobbies){
             if(!lobbies.containsKey(lobbyname)){
@@ -64,10 +62,11 @@ public class LobbyController {
             lobby = lobbies.get(lobbyname);
         }
         lobby.addPlayer(player);
+        return lobby;
     }
 
     public void leaveLobby(String player) throws LobbyNotFoundException, PlayerNotInLobbyException {
-        Lobby lobby = findLobby(player);
+        Lobby lobby = findPlayerLobby(player);
         lobby.removePlayer(player);
         if(lobby.getNumberOfPlayers() == 0){
             synchronized (lobbies){
@@ -81,39 +80,56 @@ public class LobbyController {
         try {
             switch (call.service()) {
                 case LobbyCreate:
-                    if (!(call.params() instanceof NewLobby)) {
+                    if (!(call.params() instanceof String)) {
                         throw new WrongParametersException("NewLobby", call.params().getClass().getName(), "LobbyCreate");
                     }
-                    if (client.getStatus() == ClientStatus.Idle) {
+                    if (client.getStatus() != ClientStatus.Idle) {
                         throw new PlayerAlreadyInLobbyException();
                     }
-                    String lobbyname = ((NewLobby) call.params()).lobbyName();
-                    createLobby(lobbyname, client.getUsername());
+                    Lobby created = createLobby(((String)call.params()), client.getUsername());
                     client.setStatus(ClientStatus.InLobby);
-                    result = Result.ok(true, call.id());
+                    result = Result.ok(created, call.id());
                     break;
+
                 case LobbyList:
                     result = Result.ok(getLobbies(), call.id());
                     break;
+
                 case LobbyJoin:
                     if (!(call.params() instanceof String)) {
                         throw new WrongParametersException("String", call.params().getClass().getName(), "LobbyJoin");
                     }
-                    if (client.getStatus() == ClientStatus.Idle) {
+                    if (client.getStatus() != ClientStatus.Idle) {
                         throw new PlayerAlreadyInLobbyException();
                     }
-                    String selected_lobby = (String) call.params();
-                    joinLobby(selected_lobby, client.getUsername());
+                    String selected_lobby = (String)call.params();
+                    Lobby joined = joinLobby(selected_lobby, client.getUsername());
                     client.setStatus(ClientStatus.InLobby);
-                    result = Result.empty(call.id());
+                    result = Result.ok(joined, call.id());
                     break;
+
                 case LobbyLeave:
+                    if (client.getStatus() != ClientStatus.InLobby) {
+                        throw new PlayerNotInLobbyException();
+                    }
                     leaveLobby(client.getUsername());
                     client.setStatus(ClientStatus.Idle);
                     result = Result.empty(call.id());
                     break;
+
+                case LobbyUpdate:
+                    if (client.getStatus() != ClientStatus.InLobby) {
+                        throw new PlayerNotInLobbyException();
+                    }
+                    Lobby updatedLobby = findPlayerLobby(client.getUsername());
+                    result = Result.ok(updatedLobby, call.id());
+                    break;
+
                 case GameStart:
-                    Lobby lobby = findLobby(client.getUsername());
+                    if (client.getStatus() != ClientStatus.InLobby) {
+                        throw new PlayerNotInLobbyException();
+                    }
+                    Lobby lobby = findPlayerLobby(client.getUsername());
                     if(lobby.getNumberOfPlayers() < 2){
                         throw new NotEnoughPlayersException();
                     }
@@ -122,6 +138,7 @@ public class LobbyController {
                     }
                     startGame(lobby);
                     result = Result.empty(call.id());
+
                 default:
                     result = Result.err(new WrongServiceException(), call.id());
                     break;

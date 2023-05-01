@@ -1,12 +1,11 @@
 package it.polimi.ingsw;
 
-import network.rpc.client.NetworkManager;
-import network.rpc.client.Server;
+import CLI.CLI;
 
 public class Client {
-	static private NetworkManager networkManager = NetworkManager.getInstance();
+	static private CLI cli = CLI.getInstance();
 
 	static public void main(String[] args) throws Exception {
-		networkManager.connect(new Server("127.0.0.1", 8000));
+		cli.run();
 	}
 }
