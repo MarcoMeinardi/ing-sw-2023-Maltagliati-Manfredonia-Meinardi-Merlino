@@ -99,8 +99,9 @@ public class ClientManager extends Thread{
             }else{
                 client.setCallHandler(LobbyController.getInstance()::handleLobby);       
             }
-			client.setUsername(username);
+            client.setUsername(username);
             identified_clients.put(username, client);
+            unidentified_clients.remove(client);
         }
     }
 
