@@ -2,12 +2,12 @@ package cli;
 
 import network.rpc.client.NetworkManager;
 import network.rpc.client.Server;
-import network.rpc.parameters.Login;
+import network.parameters.Login;
 
 import java.util.ArrayList;
 
 import controller.lobby.Lobby;
-import network.rpc.Result;
+import network.Result;
 import network.rpc.server.ClientStatus;
 
 public class CLI {

@@ -1,8 +1,8 @@
-package network.rpc;
+package network;
 
-import network.rpc.parameters.Message;
+import network.parameters.Message;
 import model.ScoreBoard;
-import network.rpc.parameters.Update;
+import network.parameters.Update;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package network.rpc;
+package network;
 
 public enum Service {
     Ping,

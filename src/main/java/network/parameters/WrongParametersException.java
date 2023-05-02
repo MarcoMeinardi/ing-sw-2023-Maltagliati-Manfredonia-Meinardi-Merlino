@@ -1,4 +1,4 @@
-package network.rpc.parameters;
+package network.parameters;
 
 public class WrongParametersException extends Exception{
     public WrongParametersException(String expected, String actual, String variableName) {

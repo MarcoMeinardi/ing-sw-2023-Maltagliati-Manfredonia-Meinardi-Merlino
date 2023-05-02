@@ -1,11 +1,11 @@
 package network.rpc.client;
 
 import controller.lobby.Lobby;
-import network.rpc.Result;
-import network.rpc.ServerEvent;
-import network.rpc.Service;
-import network.rpc.parameters.CardSelect;
-import network.rpc.parameters.Login;
+import network.Result;
+import network.ServerEvent;
+import network.Service;
+import network.parameters.CardSelect;
+import network.parameters.Login;
 
 import java.io.Serializable;
 import java.net.Socket;

@@ -1,8 +1,8 @@
 package network.rpc.server;
 
-import network.rpc.Call;
-import network.rpc.Result;
-import network.rpc.Service;
+import network.Call;
+import network.Result;
+import network.Service;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

@@ -1,4 +1,4 @@
-package network.rpc.parameters;
+package network.parameters;
 
 import java.io.Serializable;
 

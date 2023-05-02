@@ -1,11 +1,11 @@
 package network.rpc.server;
 
-import controller.lobby.LobbyController;
-import network.rpc.Call;
-import network.rpc.Result;
-import network.rpc.Service;
-import network.rpc.parameters.Login;
-import network.rpc.parameters.WrongParametersException;
+import controller.lobby.NotEnoughPlayersException;
+import network.Call;
+import network.Result;
+import network.Service;
+import network.parameters.Login;
+import network.parameters.WrongParametersException;
 
 import java.io.Serializable;
 import java.net.ServerSocket;
@@ -92,7 +92,7 @@ public class ClientManager extends Thread{
                 }
                 client.setCallHandler(lastClient.getCallHandler());
             }else{
-                client.setCallHandler(LobbyController.getInstance()::handleLobbySearch);       
+                client.setCallHandler(NotEnoughPlayersException.LobbyController.getInstance()::handleLobbySearch);
             }
             client.setUsername(username);
             identifiedClients.put(username, client);

@@ -1,14 +1,14 @@
 package controller.game;
 import controller.lobby.Lobby;
-import controller.lobby.LobbyController;
+import controller.lobby.NotEnoughPlayersException;
 import model.*;
-import network.rpc.Call;
-import network.rpc.Result;
-import network.rpc.ServerEvent;
-import network.rpc.parameters.CardSelect;
-import network.rpc.parameters.Message;
-import network.rpc.parameters.Update;
-import network.rpc.parameters.WrongParametersException;
+import network.Call;
+import network.Result;
+import network.ServerEvent;
+import network.parameters.CardSelect;
+import network.parameters.Message;
+import network.parameters.Update;
+import network.parameters.WrongParametersException;
 import network.rpc.server.Client;
 import network.rpc.server.ClientManager;
 
@@ -316,7 +316,7 @@ public class GameController {
 
     public void exitGame(){
         ClientManager clientManager = ClientManager.getInstance();
-        LobbyController lobbyController = LobbyController.getInstance();
+        NotEnoughPlayersException.LobbyController lobbyController = NotEnoughPlayersException.LobbyController.getInstance();
         for(Player player: game.getPlayers()){
             Optional<Client> client = clientManager.getClientByUsername(player.getName());
             if(client.isPresent()){

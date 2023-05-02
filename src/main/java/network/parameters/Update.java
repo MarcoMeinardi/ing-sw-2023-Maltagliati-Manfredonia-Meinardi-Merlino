@@ -1,4 +1,4 @@
-package network.rpc.parameters;
+package network.parameters;
 
 import model.Cell;
 import model.Shelf;

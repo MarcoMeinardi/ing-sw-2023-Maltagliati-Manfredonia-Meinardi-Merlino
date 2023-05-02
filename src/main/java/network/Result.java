@@ -1,4 +1,4 @@
-package network.rpc;
+package network;
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.UUID;

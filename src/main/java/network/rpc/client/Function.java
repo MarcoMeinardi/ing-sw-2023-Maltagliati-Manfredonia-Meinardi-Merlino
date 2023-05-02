@@ -1,9 +1,9 @@
 package network.rpc.client;
 
-import network.rpc.Call;
-import network.rpc.Result;
-import network.rpc.Service;
-import network.rpc.parameters.Login;
+import network.Call;
+import network.Result;
+import network.Service;
+import network.parameters.Login;
 
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
