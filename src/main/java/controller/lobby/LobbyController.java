@@ -130,6 +130,7 @@ public class LobbyController {
                         throw new NotHostException();
                     }
                     startGame(lobby);
+                    client.setStatus(ClientStatus.InGame);
                     result = Result.empty(call.id());
                 }
                 default -> result = Result.err(new WrongServiceException(), call.id());
