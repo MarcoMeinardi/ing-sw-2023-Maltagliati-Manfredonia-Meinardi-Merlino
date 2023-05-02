@@ -39,7 +39,7 @@ public class LobbyControllerTest {
         LobbyController lobbyController = LobbyController.getInstance();
         lobbyController.createLobby("test3", "test34");
         lobbyController.joinLobby("test3", "test35");
-        Lobby lobby = lobbyController.findPlayerLobby("test3");
+        Lobby lobby = lobbyController.findPlayerLobby("test34");
         assert(lobby.getPlayers().contains("test35"));
     }
 
