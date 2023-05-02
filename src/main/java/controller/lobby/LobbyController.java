@@ -40,15 +40,17 @@ public class LobbyController extends Thread {
                 Thread.sleep(1000);
                 synchronized (lobbies) {
                     for (Lobby lobby : lobbies.values()) {
-                        for (String player : lobby.getPlayers()) {
-                            Optional<Client> client = ClientManager.getInstance().getClientByUsername(player);
+                        ArrayList<String> players = lobby.getPlayers();
+                        for (int i = 0; i < players.size(); i++) {
+                            Optional<Client> client = ClientManager.getInstance().getClientByUsername(players.get(i));
                             if (client.isEmpty()) {
                                 throw new ClientNotFoundException();
                             } else {
                                 if (client.get().isDisconnected()) {
-                                    leaveLobby(player);
+                                    leaveLobby(players.get(i));
                                     client.get().setLastValidStatus(ClientStatus.Disconnected);
                                     client.get().setCallHandler(LobbyController.getInstance()::handleLobbySearch);
+                                    i--;
                                 }
                             }
                         }
