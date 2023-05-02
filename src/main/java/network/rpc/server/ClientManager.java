@@ -1,5 +1,6 @@
 package network.rpc.server;
 
+import controller.lobby.LobbyController;
 import controller.lobby.NotEnoughPlayersException;
 import network.Call;
 import network.Result;
@@ -92,7 +93,7 @@ public class ClientManager extends Thread{
                 }
                 client.setCallHandler(lastClient.getCallHandler());
             }else{
-                client.setCallHandler(NotEnoughPlayersException.LobbyController.getInstance()::handleLobbySearch);
+                client.setCallHandler(LobbyController.getInstance()::handleLobbySearch);
             }
             client.setUsername(username);
             identifiedClients.put(username, client);

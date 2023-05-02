@@ -1,5 +1,6 @@
 package controller.game;
 import controller.lobby.Lobby;
+import controller.lobby.LobbyController;
 import controller.lobby.NotEnoughPlayersException;
 import model.*;
 import network.Call;
@@ -316,7 +317,7 @@ public class GameController {
 
     public void exitGame(){
         ClientManager clientManager = ClientManager.getInstance();
-        NotEnoughPlayersException.LobbyController lobbyController = NotEnoughPlayersException.LobbyController.getInstance();
+        LobbyController lobbyController = LobbyController.getInstance();
         for(Player player: game.getPlayers()){
             Optional<Client> client = clientManager.getClientByUsername(player.getName());
             if(client.isPresent()){
