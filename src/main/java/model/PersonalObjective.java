@@ -173,10 +173,10 @@ public class PersonalObjective extends Objective {
         }));
 
         Collections.shuffle(allObjectives);
-        selectedPersonalObjectives[0] = allObjectives.get(0);
-        selectedPersonalObjectives[1] = allObjectives.get(1);
-        selectedPersonalObjectives[2] = allObjectives.get(2);
-        selectedPersonalObjectives[3] = allObjectives.get(3);
+        for (int i = 0; i < nPlayers; i++) {
+            selectedPersonalObjectives[i] = allObjectives.get(i);
+        }
+
         return selectedPersonalObjectives;
 
     }
