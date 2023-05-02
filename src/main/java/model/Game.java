@@ -11,8 +11,8 @@ public class Game implements Iterable<Player> {
     private CommonObjective[] commonObjectives;
 
     public Game(ArrayList<String> playersNames) {
-        this.tabletop = new TableTop(players.size());
-        PersonalObjective[] personalObjective = PersonalObjective.generatePersonalObjectives(players.size());
+        this.tabletop = new TableTop(playersNames.size());
+        PersonalObjective[] personalObjective = PersonalObjective.generatePersonalObjectives(playersNames.size());
         this.players = new ArrayList<>();
         for (int i = 0; i < playersNames.size(); i++) {
             this.players.add(new Player(playersNames.get(i), personalObjective[i]));
