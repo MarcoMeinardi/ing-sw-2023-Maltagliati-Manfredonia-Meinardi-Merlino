@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ public class Game implements Iterable<Player> {
         for (int i = 0; i < playersNames.size(); i++) {
             this.players.add(new Player(playersNames.get(i), personalObjective[i]));
         }
+        Collections.shuffle(this.players);
         this.commonObjectives = CommonObjective.generateCommonObjectives(players.size());
     }
 

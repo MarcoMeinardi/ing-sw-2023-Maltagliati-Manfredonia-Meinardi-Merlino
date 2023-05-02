@@ -25,16 +25,15 @@ import java.util.logging.Logger;
 
 public class GameController {
 
-    private Game game;
+    private final Game game;
 
     private static final int disconectionTimeOut = 10000;
 
     private static final int maxDisconnectionTries = 18;
 
     private Boolean gamePaused = false;
-    private Iterator<Player> playerIterator;
+    private final Iterator<Player> playerIterator;
     private Player currentPlayer;
-    private String gameName;
 	private Thread globalUpdateThread = null;
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
@@ -46,7 +45,6 @@ public class GameController {
     public GameController(Lobby lobby) throws Exception{
         game = new Game(lobby.getPlayers());
         playerIterator = game.iterator();
-        gameName = lobby.getName();
         currentPlayer = playerIterator.next();
         for(Player player : game.getPlayers()){
             Client client = ClientManager.getInstance().getClientByUsername(player.getName()).orElseThrow();
@@ -226,24 +224,25 @@ public class GameController {
 
     }
 
-    public void globalUpdate(ServerEvent event) {
+    public void globalUpdate(List<ServerEvent> events) {
         ClientManager clientManager = ClientManager.getInstance();
-
-		while (true) {
-			try {
-				for(Player player : game.getPlayers()) {
-					Optional<Client> client = clientManager.getClientByUsername(player.getName());
-					if(client.isEmpty()) {
-						throw new RuntimeException("Client not found" + player.getName());
-					}
-					client.get().send(Result.ok(event, null));
-				}
-				break;
-			} catch (Exception e) {
-				logger.warning("Error while sending global update event to client" + e.getMessage());
-				checkDisconnection();
-			}
-		}
+        for(ServerEvent event : events){
+            while (true) {
+                try {
+                    for(Player player : game.getPlayers()) {
+                        Optional<Client> client = clientManager.getClientByUsername(player.getName());
+                        if(client.isEmpty()) {
+                            throw new RuntimeException("Client not found" + player.getName());
+                        }
+                        client.get().send(Result.ok(event, null));
+                    }
+                    break;
+                } catch (Exception e) {
+                    logger.warning("Error while sending global update event to client" + e.getMessage());
+                    checkDisconnection();
+                }
+            }
+        }
     }
 
     public Result handleGame(Call call, Client client){
@@ -269,8 +268,11 @@ public class GameController {
                     refillTable();
                     if(playerIterator.hasNext()){
                         Update update = new Update(username, game.getTabletop(), player.getShelf());
-						setGlobalUpdate(ServerEvent.Update(update));
                         currentPlayer = playerIterator.next();
+						ArrayList<ServerEvent> events = new ArrayList<>();
+                        events.add(ServerEvent.Update(update));
+                        events.add(ServerEvent.NextTurn(currentPlayer.getName()));
+                        setGlobalUpdate(events);
                     }else{
                         ScoreBoard scoreBoard = new ScoreBoard(game);
 						setGlobalUpdate(ServerEvent.End(scoreBoard));
@@ -292,8 +294,14 @@ public class GameController {
 		return globalUpdateThread != null && globalUpdateThread.isAlive();
 	}
 
-	private void setGlobalUpdate(ServerEvent event) {
-		globalUpdateThread = new Thread(() -> globalUpdate(event));
+    private void setGlobalUpdate(ServerEvent event) throws Exception{
+        setGlobalUpdate(List.of(event));
+    }
+	private void setGlobalUpdate(List<ServerEvent> events) throws Exception{
+        if(globalUpdateThread != null && globalUpdateThread.isAlive()){
+            throw new GlobalUpdateAlreadyOngoingException();
+        }
+		globalUpdateThread = new Thread(() -> globalUpdate(events));
 	}
 
     public void exitGame(){
@@ -308,6 +316,15 @@ public class GameController {
         lobbyController.endGame(this);
     }
 
+    public ArrayList<String> getPlayersOrder(){
+        ArrayList<String> playersOrder = new ArrayList<>();
+        synchronized (game.getPlayers()){
+            for(Player player: game.getPlayers()){
+                playersOrder.add(player.getName());
+            }
+        }
+        return playersOrder;
+    }
 }
 
 

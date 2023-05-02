@@ -4,6 +4,7 @@ import model.ScoreBoard;
 import network.rpc.parameters.Update;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class ServerEvent <T extends Serializable> implements Serializable{
     public enum Type{
@@ -13,6 +14,7 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         End,
         Error,
         Update,
+        NextTurn,
     }
 
     public ServerEvent(Type type, T data) {
@@ -40,8 +42,8 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         return new ServerEvent(Type.Resume, data);
     }
 
-    public static ServerEvent Start(){
-        return new ServerEvent(Type.Start, null);
+    public static ServerEvent Start(ArrayList<String> players){
+        return new ServerEvent(Type.Start, players);
     }
 
     public static ServerEvent End(ScoreBoard scoreBoard){
@@ -53,4 +55,6 @@ public class ServerEvent <T extends Serializable> implements Serializable{
     }
 
     public static ServerEvent Update(Update update){ return new ServerEvent(Type.Update, update);}
+
+    public static ServerEvent NextTurn(String idPlayer){ return new ServerEvent(Type.NextTurn, idPlayer);}
 }
