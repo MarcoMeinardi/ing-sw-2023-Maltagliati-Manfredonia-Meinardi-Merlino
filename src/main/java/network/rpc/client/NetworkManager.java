@@ -108,7 +108,7 @@ public class NetworkManager extends Thread{
         }
     }
 
-    public void run(){
+    public void run() {
         checkPingThread = new Thread(this::checkPing);
         checkPingThread.start();
         while(isConnected()){
@@ -130,9 +130,14 @@ public class NetworkManager extends Thread{
                     }
                     caller.setResult(result);
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 logger.warning(e.getMessage());
             }
+        }
+        try {
+            checkPingThread.interrupt();
+        } catch (Exception e) {
+            logger.warning(e.getMessage());
         }
     }
 
