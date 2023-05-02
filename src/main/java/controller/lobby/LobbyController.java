@@ -6,13 +6,16 @@ import network.rpc.Result;
 import network.rpc.WrongServiceException;
 import network.rpc.parameters.WrongParametersException;
 import network.rpc.server.Client;
+import network.rpc.server.ClientManager;
+import network.rpc.server.ClientNotFoundException;
 import network.rpc.server.ClientStatus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 
-public class LobbyController {
+public class LobbyController extends Thread {
     private static LobbyController instance = null;
     private HashMap<String,Lobby> lobbies = new HashMap<>();
     private ArrayList<GameController> games = new ArrayList<>();
@@ -21,9 +24,40 @@ public class LobbyController {
 
     public static LobbyController getInstance() {
         if (instance == null) {
-            instance = new LobbyController();
+            try {
+                instance = new LobbyController();
+                instance.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return instance;
+    }
+
+    public void run() {
+        try {
+            while (true) {
+                Thread.sleep(1000);
+                synchronized (lobbies) {
+                    for (Lobby lobby : lobbies.values()) {
+                        for (String player : lobby.getPlayers()) {
+                            Optional<Client> client = ClientManager.getInstance().getClientByUsername(player);
+                            if (client.isEmpty()) {
+                                throw new ClientNotFoundException();
+                            } else {
+                                if (client.get().isDisconnected()) {
+                                    leaveLobby(player);
+                                    client.get().setLastValidStatus(ClientStatus.Disconnected);
+                                    client.get().setCallHandler(LobbyController.getInstance()::handleLobbySearch);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Lobby findPlayerLobby(String playerName) throws LobbyNotFoundException {
