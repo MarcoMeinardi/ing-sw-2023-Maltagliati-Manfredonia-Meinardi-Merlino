@@ -16,12 +16,14 @@ public class CLI {
 
 	private ClientStatus state;
 	private Lobby lobby;
+	boolean hasConnected;
 
 	private String ip;
 	private int port;
 
 	private CLI() {
 		state = ClientStatus.Disconnected;
+		hasConnected = false;
 	}
 	public static CLI getInstance() {
 		if(instance == null){
@@ -32,7 +34,7 @@ public class CLI {
 
 	public void run() {
 		printWelcome();
-		while (true) {
+		while (state != ClientStatus.Disconnected || !hasConnected) {
 			switch (state) {
 				case Disconnected -> state = connect();
 				case Idle -> state = login();
@@ -54,6 +56,7 @@ public class CLI {
 		this.port = 8000;
 		try {
 			networkManager.connect(new Server(this.ip, this.port));
+			hasConnected = true;
 			return ClientStatus.Idle;
 		} catch (Exception e) {
 			System.out.println("[ERROR] " + e.getMessage());
@@ -124,6 +127,12 @@ public class CLI {
 						System.out.println("[ERROR] " + result.getException().orElse("List lobbies failed"));
 					}
 					return ClientStatus.InLobbySearch;
+				}
+				case QUIT -> {
+					networkManager.disconnect();
+					networkManager.join();
+					System.out.println("Bye bye!");
+					return ClientStatus.Disconnected;
 				}
 				default -> throw new RuntimeException("Invalid option");
 			}
