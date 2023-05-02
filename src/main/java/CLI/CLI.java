@@ -8,19 +8,22 @@ import java.util.ArrayList;
 
 import controller.lobby.Lobby;
 import network.rpc.Result;
+import network.rpc.server.ClientStatus;
 
 public class CLI {
 	private static CLI instance;
 	private static NetworkManager networkManager = NetworkManager.getInstance();
 
-	private CLIState state;
+	private ClientStatus state;
+	private boolean searchingLobby;
 	private Lobby lobby;
 
 	private String ip;
 	private int port;
 
 	private CLI() {
-		state = CLIState.CONNECT;
+		state = ClientStatus.Disconnected;
+		searchingLobby = false;
 	}
 	public static CLI getInstance() {
 		if(instance == null){
@@ -33,11 +36,10 @@ public class CLI {
 		printWelcome();
 		while (true) {
 			switch (state) {
-				case CONNECT -> state =	connect();
-				case LOGIN -> state = login();
-				case SELECT_LOBBY -> state = selectLobby();
-				case IN_LOBBY -> state = inLobby();
-				case IN_GAME -> state = inGame();
+				case Disconnected -> state = connect();
+				case Idle -> state = searchingLobby ? selectLobby() : login();
+				case InLobby -> state = inLobby();
+				case InGame -> state = inGame();
 				default -> {
 					throw new RuntimeException ("Invalid state");
 				}
@@ -49,14 +51,16 @@ public class CLI {
 		System.out.println("Welcome to this beautiful game, that has been accidentally written in Rust");
 	}
 
-	private CLIState connect() {
-		askIpPort();
+	private ClientStatus connect() {
+		// askIpPort();
+		this.ip = "localhost";
+		this.port = 8000;
 		try {
 			networkManager.connect(new Server(this.ip, this.port));
-			return CLIState.LOGIN;
+			return ClientStatus.Idle;
 		} catch (Exception e) {
 			System.out.println("[ERROR] " + e.getMessage());
-			return CLIState.CONNECT;
+			return ClientStatus.Disconnected;
 		}
 	}
 
@@ -66,21 +70,22 @@ public class CLI {
 	}
 
 	// TODO we need to receive the previous status in case of a reconnection
-	private CLIState login() {
+	private ClientStatus login() {
 		String username = Utils.askString("Username: ");
 		try {
 			Result result = networkManager.login(new Login(username)).waitResult();
 			if (result.isOk()) {
-				return CLIState.SELECT_LOBBY;
+				searchingLobby = true;
+				return ClientStatus.Idle;
 			}
 			System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
 		} catch (Exception e) {
 			System.out.println("[ERROR] " + e.getMessage());
 		}
-		return CLIState.LOGIN;
+		return ClientStatus.Idle;
 	}
 
-	private CLIState selectLobby() {
+	private ClientStatus selectLobby() {
 		SelectLobbyOptions option = Utils.askOption(SelectLobbyOptions.class);
 		String lobbyName;
 		Result result;
@@ -91,10 +96,10 @@ public class CLI {
 					result = networkManager.lobbyCreate(lobbyName).waitResult();
 					if (result.isOk()) {
 						lobby = ((Result<Lobby>)result).unwrap();
-						return CLIState.IN_LOBBY;
+						return ClientStatus.InLobby;
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
-						return CLIState.SELECT_LOBBY;
+						return ClientStatus.Idle;
 					}
 				}
 				case JOIN_LOBBY -> {
@@ -102,10 +107,10 @@ public class CLI {
 					result = networkManager.lobbyJoin(lobbyName).waitResult();
 					if (result.isOk()) {
 						lobby = ((Result<Lobby>)result).unwrap();
-						return CLIState.IN_LOBBY;
+						return ClientStatus.InLobby;
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("Join failed"));
-						return CLIState.SELECT_LOBBY;
+						return ClientStatus.Idle;
 					}
 				}
 				case LIST_LOBBIES -> {
@@ -122,13 +127,13 @@ public class CLI {
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("List lobbies failed"));
 					}
-					return CLIState.SELECT_LOBBY;
+					return ClientStatus.Idle;
 				}
 				default -> throw new RuntimeException("Invalid option");
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] " + e.getMessage());
-			return CLIState.SELECT_LOBBY;
+			return ClientStatus.Idle;
 		}
 	}
 
@@ -145,7 +150,7 @@ public class CLI {
 		}
 	}
 
-	private CLIState inLobby() {
+	private ClientStatus inLobby() {
 		InLobbyOptions option = Utils.askOption(InLobbyOptions.class);
 		Result result;
 		try {
@@ -153,19 +158,19 @@ public class CLI {
 				case START_GAME -> {  // TODO: maybe check if can be called (update lobby and check owner / n players), need to save username
 					result = networkManager.gameStart().waitResult();
 					if (result.isOk()) {
-						return CLIState.IN_GAME;
+						return ClientStatus.InGame;
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("Start game failed"));
-						return CLIState.IN_LOBBY;
+						return ClientStatus.InLobby;
 					}
 				}
 				case LEAVE_LOBBY -> {
 					result = networkManager.lobbyLeave().waitResult();
 					if (result.isOk()) {
-						return CLIState.SELECT_LOBBY;
+						return ClientStatus.Idle;
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("Leave lobby failed"));
-						return CLIState.IN_LOBBY;
+						return ClientStatus.InLobby;
 					}
 				}
 				case LIST_PLAYERS -> {
@@ -177,17 +182,17 @@ public class CLI {
 							System.out.println(String.format(" - %s", lobby.getPlayers().get(i)));
 						}
 					}
-					return CLIState.IN_LOBBY;
+					return ClientStatus.InLobby;
 				}
 				default -> throw new RuntimeException("Invalid option");
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] " + e.getMessage());
-			return CLIState.IN_LOBBY;
+			return ClientStatus.InLobby;
 		}
 	}
 
-	private CLIState inGame() {
+	private ClientStatus inGame() {
 		System.out.println("In Game");
 		throw new RuntimeException("Not implemented");
 	}
