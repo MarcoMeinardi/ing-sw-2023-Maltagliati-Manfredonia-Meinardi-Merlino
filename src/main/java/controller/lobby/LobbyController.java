@@ -70,7 +70,7 @@ public class LobbyController {
         lobby.removePlayer(player);
         if(lobby.getNumberOfPlayers() == 0){
             synchronized (lobbies){
-                lobbies.remove(lobby);
+                lobbies.remove(lobby.getName());
             }
         }
     }
