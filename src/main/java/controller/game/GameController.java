@@ -302,7 +302,7 @@ public class GameController {
         for(Player player: game.getPlayers()){
             Optional<Client> client = clientManager.getClientByUsername(player.getName());
             if(client.isPresent()){
-                client.get().setCallHandler(lobbyController::handleLobby);
+                client.get().setCallHandler(lobbyController::handleInLobby);  /// TODO block toxic boys
             }
         }
     }

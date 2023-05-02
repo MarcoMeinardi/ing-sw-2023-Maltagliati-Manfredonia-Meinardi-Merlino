@@ -75,7 +75,7 @@ public class LobbyController {
         }
     }
 
-    public Result<Serializable> handleLobby(Call<Serializable> call, Client client) {
+    public Result<Serializable> handleLobbySearch(Call<Serializable> call, Client client) {
         Result<Serializable> result;
         try {
             switch (call.service()) {
@@ -83,11 +83,9 @@ public class LobbyController {
                     if (!(call.params() instanceof String)) {
                         throw new WrongParametersException("NewLobby", call.params().getClass().getName(), "LobbyCreate");
                     }
-                    if (client.getStatus() != ClientStatus.Idle) {
-                        throw new PlayerAlreadyInLobbyException();
-                    }
-                    Lobby created = createLobby(((String) call.params()), client.getUsername());
+                    Lobby created = createLobby(((String)call.params()), client.getUsername());
                     client.setStatus(ClientStatus.InLobby);
+                    client.setCallHandler(this::handleInLobby);
                     result = Result.ok(created, call.id());
                 }
                 case LobbyList -> result = Result.ok(getLobbies(), call.id());
@@ -95,33 +93,35 @@ public class LobbyController {
                     if (!(call.params() instanceof String)) {
                         throw new WrongParametersException("String", call.params().getClass().getName(), "LobbyJoin");
                     }
-                    if (client.getStatus() != ClientStatus.Idle) {
-                        throw new PlayerAlreadyInLobbyException();
-                    }
-                    String selected_lobby = (String) call.params();
+                    String selected_lobby = (String)call.params();
                     Lobby joined = joinLobby(selected_lobby, client.getUsername());
                     client.setStatus(ClientStatus.InLobby);
+                    client.setCallHandler(this::handleInLobby);
                     result = Result.ok(joined, call.id());
                 }
+                default -> result = Result.err(new WrongServiceException(), call.id());
+            }
+        } catch (Exception e) {
+            result = Result.err(e, call.id());
+        }
+        return result;
+    }
+
+    public Result<Serializable> handleInLobby(Call<Serializable> call, Client client) {
+        Result<Serializable> result;
+        try {
+            switch (call.service()) {
                 case LobbyLeave -> {
-                    if (client.getStatus() != ClientStatus.InLobby) {
-                        throw new PlayerNotInLobbyException();
-                    }
                     leaveLobby(client.getUsername());
-                    client.setStatus(ClientStatus.Idle);
+                    client.setStatus(ClientStatus.InLobbySearch);
+                    client.setCallHandler(this::handleLobbySearch);
                     result = Result.empty(call.id());
                 }
                 case LobbyUpdate -> {
-                    if (client.getStatus() != ClientStatus.InLobby) {
-                        throw new PlayerNotInLobbyException();
-                    }
                     Lobby updatedLobby = findPlayerLobby(client.getUsername());
                     result = Result.ok(updatedLobby, call.id());
                 }
                 case GameStart -> {
-                    if (client.getStatus() != ClientStatus.InLobby) {
-                        throw new PlayerNotInLobbyException();
-                    }
                     Lobby lobby = findPlayerLobby(client.getUsername());
                     if (lobby.getNumberOfPlayers() < 2) {
                         throw new NotEnoughPlayersException();

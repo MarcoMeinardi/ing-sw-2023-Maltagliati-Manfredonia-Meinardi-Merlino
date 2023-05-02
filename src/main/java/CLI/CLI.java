@@ -15,7 +15,6 @@ public class CLI {
 	private static NetworkManager networkManager = NetworkManager.getInstance();
 
 	private ClientStatus state;
-	private boolean searchingLobby;
 	private Lobby lobby;
 
 	private String ip;
@@ -23,7 +22,6 @@ public class CLI {
 
 	private CLI() {
 		state = ClientStatus.Disconnected;
-		searchingLobby = false;
 	}
 	public static CLI getInstance() {
 		if(instance == null){
@@ -37,12 +35,11 @@ public class CLI {
 		while (true) {
 			switch (state) {
 				case Disconnected -> state = connect();
-				case Idle -> state = searchingLobby ? selectLobby() : login();
+				case Idle -> state = login();
+				case InLobbySearch -> state = searchLobby();
 				case InLobby -> state = inLobby();
 				case InGame -> state = inGame();
-				default -> {
-					throw new RuntimeException ("Invalid state");
-				}
+				default -> throw new RuntimeException ("Invalid state");
 			}
 		}
 	}
@@ -75,8 +72,7 @@ public class CLI {
 		try {
 			Result result = networkManager.login(new Login(username)).waitResult();
 			if (result.isOk()) {
-				searchingLobby = true;
-				return ClientStatus.Idle;
+				return ClientStatus.InLobbySearch;
 			}
 			System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
 		} catch (Exception e) {
@@ -85,7 +81,7 @@ public class CLI {
 		return ClientStatus.Idle;
 	}
 
-	private ClientStatus selectLobby() {
+	private ClientStatus searchLobby() {
 		SelectLobbyOptions option = Utils.askOption(SelectLobbyOptions.class);
 		String lobbyName;
 		Result result;
@@ -99,7 +95,7 @@ public class CLI {
 						return ClientStatus.InLobby;
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
-						return ClientStatus.Idle;
+						return ClientStatus.InLobbySearch;
 					}
 				}
 				case JOIN_LOBBY -> {
@@ -110,7 +106,7 @@ public class CLI {
 						return ClientStatus.InLobby;
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("Join failed"));
-						return ClientStatus.Idle;
+						return ClientStatus.InLobbySearch;
 					}
 				}
 				case LIST_LOBBIES -> {
@@ -127,13 +123,13 @@ public class CLI {
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("List lobbies failed"));
 					}
-					return ClientStatus.Idle;
+					return ClientStatus.InLobbySearch;
 				}
 				default -> throw new RuntimeException("Invalid option");
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] " + e.getMessage());
-			return ClientStatus.Idle;
+			return ClientStatus.InLobbySearch;
 		}
 	}
 
@@ -167,7 +163,7 @@ public class CLI {
 				case LEAVE_LOBBY -> {
 					result = networkManager.lobbyLeave().waitResult();
 					if (result.isOk()) {
-						return ClientStatus.Idle;
+						return ClientStatus.InLobbySearch;
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("Leave lobby failed"));
 						return ClientStatus.InLobby;
