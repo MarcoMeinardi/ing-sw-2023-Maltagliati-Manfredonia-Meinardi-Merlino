@@ -120,7 +120,7 @@ public class NetworkManager extends Thread{
                         eventQueue.add(event);
                     }
                 } else if (lastPing.id().equals(result.id())){
-                    synchronized (lastPing){
+                    synchronized (lastPing) {
                         lastPing.setResult((Result<Boolean>)result);
                     }
                 }else{

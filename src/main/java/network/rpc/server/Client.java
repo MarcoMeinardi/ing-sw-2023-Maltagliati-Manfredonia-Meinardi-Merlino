@@ -2,7 +2,6 @@ package network.rpc.server;
 
 import network.rpc.Call;
 import network.rpc.Result;
-import network.rpc.ServerEvent;
 import network.rpc.Service;
 
 import java.io.IOException;
@@ -11,9 +10,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
@@ -22,10 +18,15 @@ public class Client extends Thread{
         private final ObjectInputStream incomingMessages;
         private final ObjectOutputStream outcomingMessages;
         private ClientStatus status;
-        private ClientStatus last_valid_status;
+        private ClientStatus lastValidStatus;
+        private Object statusLock = new Object();
+        private Object lastValidStatusLock = new Object();
         private BiFunction<Call<Serializable>, Client, Result<Serializable>> handler;
+        private Object handlerLock = new Object();
         private LocalDateTime lastMessageTime = LocalDateTime.now();
+        private Object lastMessageTimeLock = new Object();
         private String username = null;
+        protected static final int TIMEOUT = 60;
 
         public Client(Socket socket, BiFunction<Call<Serializable>,Client,Result<Serializable>> handler) throws Exception {
             this.status = ClientStatus.Disconnected;
@@ -33,30 +34,36 @@ public class Client extends Thread{
             this.incomingMessages = new ObjectInputStream(socket.getInputStream());
             this.outcomingMessages = new ObjectOutputStream(socket.getOutputStream());
             this.status = ClientStatus.Idle;
-            this.last_valid_status = ClientStatus.Idle;
+            this.lastValidStatus = ClientStatus.Idle;
             this.handler = handler;
         }
 
         public ClientStatus getStatus() {
-            synchronized (this.status){
+            synchronized (this.statusLock){
                 return this.status;
             }
         }
 
         public void setStatus(ClientStatus status) {
-            synchronized (this.status){
+            synchronized (this.statusLock){
                 if(status != ClientStatus.Disconnected){
-                    synchronized (this.last_valid_status){
-                        this.last_valid_status = this.status;
+                    synchronized (this.lastValidStatusLock){
+                        this.lastValidStatus = this.status;
                     }
                 }
                 this.status = status;
             }
         }
 
-        public ClientStatus getLastValidStatus(){
-            synchronized (this.last_valid_status){
-                return this.last_valid_status;
+        public ClientStatus getLastValidStatus() {
+            synchronized (this.lastValidStatusLock) {
+                return this.lastValidStatus;
+            }
+        }
+
+        public void setLastValidStatus(ClientStatus status) {
+            synchronized (this.lastValidStatusLock) {
+                this.lastValidStatus = status;
             }
         }
 
@@ -108,14 +115,26 @@ public class Client extends Thread{
         public boolean isDisconnected(){
             return getStatus() == ClientStatus.Disconnected;
         }
-
+        
+        public boolean checkPing() {
+            if(getStatus() == ClientStatus.Disconnected){
+                return false;
+            }
+            synchronized (lastMessageTimeLock) {
+                if(lastMessageTime.plusSeconds(TIMEOUT).isBefore(LocalDateTime.now())){
+                    disconnect();
+                    return false;
+                }
+            }
+            return true;
+        }
 
         @Override
         public void run() {
             while (getStatus() != ClientStatus.Disconnected) {
                 try {
                     Call call = receive();
-                    synchronized (lastMessageTime){
+                    synchronized (lastMessageTimeLock){
                         lastMessageTime = LocalDateTime.now();
                     }
                     if(call.service() == Service.Ping){
@@ -131,7 +150,9 @@ public class Client extends Thread{
         }
 
         public void setCallHandler(BiFunction<Call<Serializable>, Client, Result<Serializable>> handler){
-            this.handler = handler;
+            synchronized (this.handlerLock) {
+                this.handler = handler;
+            }
         }
 
         protected void setUsername(String username) throws ClientAlreadyConnectedExeption{
@@ -149,13 +170,13 @@ public class Client extends Thread{
         }
 
         public LocalDateTime getLastMessageTime(){
-            synchronized (lastMessageTime){
+            synchronized (lastMessageTimeLock){
                 return lastMessageTime;
             }
         }
 
     public BiFunction<Call<Serializable>, Client, Result<Serializable>> getCallHandler() {
-        synchronized (handler){
+        synchronized (this.handlerLock) {
             return handler;
         }
     }

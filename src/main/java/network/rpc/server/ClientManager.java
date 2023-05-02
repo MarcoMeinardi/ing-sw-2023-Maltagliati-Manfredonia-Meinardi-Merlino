@@ -3,25 +3,20 @@ package network.rpc.server;
 import controller.lobby.LobbyController;
 import network.rpc.Call;
 import network.rpc.Result;
-import network.rpc.ServerEvent;
 import network.rpc.Service;
 import network.rpc.parameters.Login;
 import network.rpc.parameters.WrongParametersException;
 
 import java.io.Serializable;
 import java.net.ServerSocket;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.logging.Logger;
 
 public class ClientManager extends Thread{
-    final private LinkedList<Client> unidentified_clients = new LinkedList<>();
-    final private HashMap<String, Client> identified_clients = new HashMap<>();
-    private static final int TIMEOUT = 60;
+    final private LinkedList<Client> unidentifiedClients = new LinkedList<>();
+    final private HashMap<String, Client> identifiedClients = new HashMap<>();
     private ServerSocket socket;
     private Thread acceptConnectionsThread;
 
@@ -77,19 +72,19 @@ public class ClientManager extends Thread{
         }
     }
     private void addUnidentifiedClient(Client client){
-        synchronized (unidentified_clients) {
-            unidentified_clients.add(client);
+        synchronized (unidentifiedClients) {
+            unidentifiedClients.add(client);
         }
     }
 
     private void addIdentifiedClient(String username, Client client) throws ClientAlreadyConnectedExeption {
-        synchronized (identified_clients) {
-            if(identified_clients.containsKey(username) && identified_clients.get(username).getStatus() != ClientStatus.Disconnected){
+        synchronized (identifiedClients) {
+            if(identifiedClients.containsKey(username) && identifiedClients.get(username).getStatus() != ClientStatus.Disconnected){
                 throw new ClientAlreadyConnectedExeption();
             }
-            if(identified_clients.containsKey(username)){
-                identified_clients.get(username).disconnect();
-                Client lastClient = identified_clients.get(username);
+            if(identifiedClients.containsKey(username)){
+                identifiedClients.get(username).disconnect();
+                Client lastClient = identifiedClients.get(username);
                 if (lastClient.getLastValidStatus().equals(ClientStatus.Disconnected)) {
                     client.setStatus(ClientStatus.Idle);
                 } else {
@@ -100,8 +95,8 @@ public class ClientManager extends Thread{
                 client.setCallHandler(LobbyController.getInstance()::handleLobbySearch);       
             }
             client.setUsername(username);
-            identified_clients.put(username, client);
-            unidentified_clients.remove(client);
+            identifiedClients.put(username, client);
+            unidentifiedClients.remove(client);
         }
     }
 
@@ -110,17 +105,16 @@ public class ClientManager extends Thread{
         try{
             acceptConnectionsThread.join();
             while(true){
-                synchronized (identified_clients) {
-                    for (Client client : identified_clients.values()) {
+                synchronized (identifiedClients) {
+                    for (Client client : identifiedClients.values()) {
                         if(client.getStatus() != ClientStatus.Disconnected){
-                            if(Duration.between(client.getLastMessageTime(),LocalDateTime.now()).getSeconds() > TIMEOUT){
+                            if(!client.checkPing()) {
                                 client.interrupt();
-                                client.disconnect();
                             }
                         }
                     }
                 }
-                Thread.sleep(TIMEOUT/2);
+                Thread.sleep(Client.TIMEOUT / 2);
             }
         }catch(InterruptedException e){
             Logger.getLogger(Client.class.getName()).warning(e.getMessage());
@@ -130,9 +124,9 @@ public class ClientManager extends Thread{
 
     public Optional<Client> getClientByUsername(String username){
         Optional<Client> client = Optional.empty();
-        synchronized (identified_clients) {
-            if(identified_clients.containsKey(username)){
-                client = Optional.of(identified_clients.get(username));
+        synchronized (identifiedClients) {
+            if(identifiedClients.containsKey(username)){
+                client = Optional.of(identifiedClients.get(username));
             }
         }
         return client;
@@ -140,9 +134,9 @@ public class ClientManager extends Thread{
 
     public Optional<String> getUsernameByClient(Client client){
         Optional<String> username = Optional.empty();
-        synchronized (identified_clients) {
-            for(String key : identified_clients.keySet()){
-                if(identified_clients.get(key) == client){
+        synchronized (identifiedClients) {
+            for(String key : identifiedClients.keySet()){
+                if(identifiedClients.get(key) == client){
                     username = Optional.of(key);
                     break;
                 }
@@ -152,14 +146,14 @@ public class ClientManager extends Thread{
     }
 
     private HashMap<String, Client> getClients(){
-        synchronized (identified_clients) {
-            return identified_clients;
+        synchronized (identifiedClients) {
+            return identifiedClients;
         }
     }
 
     public boolean isClientConnected(String username){
-        synchronized (identified_clients) {
-            return identified_clients.containsKey(username) && identified_clients.get(username).getStatus() != ClientStatus.Disconnected;
+        synchronized (identifiedClients) {
+            return identifiedClients.containsKey(username) && identifiedClients.get(username).getStatus() != ClientStatus.Disconnected;
         }
     }
 
