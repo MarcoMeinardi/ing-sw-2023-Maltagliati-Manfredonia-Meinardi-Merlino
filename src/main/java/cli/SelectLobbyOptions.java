@@ -1,4 +1,4 @@
-package CLI;
+package cli;
 
 public enum SelectLobbyOptions {
 	CREATE_LOBBY,

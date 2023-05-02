@@ -15,6 +15,7 @@ import java.util.HashMap;
 public class LobbyController {
     private static LobbyController instance = null;
     private HashMap<String,Lobby> lobbies = new HashMap<>();
+    private ArrayList<GameController> games = new ArrayList<>();
 
     private LobbyController() {}
 
@@ -144,6 +145,13 @@ public class LobbyController {
     public void startGame(Lobby lobby) throws Exception{
         synchronized (lobby){
             GameController game = new GameController(lobby);
+            games.add(game);
+        }
+    }
+
+    public void endGame(GameController game) {
+        synchronized (games){
+            games.remove(game);
         }
     }
 }

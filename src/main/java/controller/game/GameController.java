@@ -305,6 +305,7 @@ public class GameController {
                 client.get().setCallHandler(lobbyController::handleInLobby);  /// TODO block toxic boys
             }
         }
+        lobbyController.endGame(this);
     }
 
 }

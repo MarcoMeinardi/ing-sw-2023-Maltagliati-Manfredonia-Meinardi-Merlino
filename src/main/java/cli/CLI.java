@@ -1,4 +1,4 @@
-package CLI;
+package cli;
 
 import network.rpc.client.NetworkManager;
 import network.rpc.client.Server;
