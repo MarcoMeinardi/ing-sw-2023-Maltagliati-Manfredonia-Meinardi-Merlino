@@ -1,5 +1,6 @@
 package network.rpc;
 
+import network.rpc.parameters.Message;
 import model.ScoreBoard;
 import network.rpc.parameters.Update;
 
@@ -15,6 +16,7 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         Error,
         Update,
         NextTurn,
+        NewMessage,
     }
 
     public ServerEvent(Type type, T data) {
@@ -57,4 +59,6 @@ public class ServerEvent <T extends Serializable> implements Serializable{
     public static ServerEvent Update(Update update){ return new ServerEvent(Type.Update, update);}
 
     public static ServerEvent NextTurn(String idPlayer){ return new ServerEvent(Type.NextTurn, idPlayer);}
+
+    public static ServerEvent NewMessage(Message message){ return new ServerEvent(Type.NewMessage, message);}
 }

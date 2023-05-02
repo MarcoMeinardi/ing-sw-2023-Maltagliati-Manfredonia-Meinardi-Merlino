@@ -6,6 +6,7 @@ import network.rpc.Call;
 import network.rpc.Result;
 import network.rpc.ServerEvent;
 import network.rpc.parameters.CardSelect;
+import network.rpc.parameters.Message;
 import network.rpc.parameters.Update;
 import network.rpc.parameters.WrongParametersException;
 import network.rpc.server.Client;
@@ -248,13 +249,13 @@ public class GameController {
     public Result handleGame(Call call, Client client){
         Result result;
         try{
+            if(globalUpdateOnGoing()){
+                throw new WaitingForUpdateException();
+            }
             switch (call.service()){
                 case CardSelect -> {
                     if(!(call.params() instanceof CardSelect)){
                         throw new WrongParametersException("CardSelect", call.params().getClass().getName(), "CardSelect");
-                    }
-                    if(globalUpdateOnGoing()){
-                        throw new WaitingForUpdateException();
                     }
                     CardSelect cardSelect = (CardSelect) call.params();
                     String username = client.getUsername();
@@ -278,6 +279,15 @@ public class GameController {
 						setGlobalUpdate(ServerEvent.End(scoreBoard));
                         exitGame();
                     }
+                    result = Result.empty(call.id());
+                }
+                case GameChatSend -> {
+                    if(!(call.params() instanceof String)){
+                        throw new WrongParametersException("String", call.params().getClass().getName(), "GameChatSend");
+                    }
+                    Message message = new Message(client.getUsername(), (String) call.params());
+                    ServerEvent event = ServerEvent.NewMessage(message);
+                    setGlobalUpdate(event);
                     result = Result.empty(call.id());
                 }
                 default -> {

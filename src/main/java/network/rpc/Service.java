@@ -10,4 +10,5 @@ public enum Service {
     LobbyLeave,
     GameStart,
     CardSelect,
+    GameChatSend,
 }
