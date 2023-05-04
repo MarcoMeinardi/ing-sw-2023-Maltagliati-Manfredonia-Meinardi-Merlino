@@ -115,6 +115,7 @@ public class NetworkManager extends Thread{
             try {
                 Result result = receive();
                 if (result.isEvent()) {
+					System.out.println(result);
                     ServerEvent event = (ServerEvent) result.unwrap();
                     synchronized (eventQueue) {
                         eventQueue.add(event);
@@ -165,6 +166,11 @@ public class NetworkManager extends Thread{
                 return Optional.empty();
             }
             return Optional.of(eventQueue.remove());
+        }
+    }
+    public boolean hasEvent() {
+        synchronized (eventQueue){
+            return !eventQueue.isEmpty();
         }
     }
 

@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class LobbyController extends Thread {
     private static LobbyController instance = null;
@@ -96,6 +97,7 @@ public class LobbyController extends Thread {
             lobby = lobbies.get(lobbyname);
         }
         lobby.addPlayer(player);
+        globalUpdate(lobby, ServerEvent.Leave(player));
         return lobby;
     }
 
@@ -144,11 +146,13 @@ public class LobbyController extends Thread {
     public Result<Serializable> handleInLobby(Call<Serializable> call, ClientInterface client) {
         Result<Serializable> result;
         try {
+            Lobby lobby = findPlayerLobby(client.getUsername());
             switch (call.service()) {
                 case LobbyLeave -> {
                     leaveLobby(client.getUsername());
                     client.setStatus(ClientStatus.InLobbySearch);
                     client.setCallHandler(this::handleLobbySearch);
+                    globalUpdate(lobby, ServerEvent.Leave(client.getUsername()));
                     result = Result.empty(call.id());
                 }
                 case LobbyUpdate -> {
@@ -156,7 +160,6 @@ public class LobbyController extends Thread {
                     result = Result.ok(updatedLobby, call.id());
                 }
                 case GameStart -> {
-                    Lobby lobby = findPlayerLobby(client.getUsername());
                     if (lobby.getNumberOfPlayers() < 2) {
                         throw new NotEnoughPlayersException();
                     }
@@ -175,16 +178,46 @@ public class LobbyController extends Thread {
         return result;
     }
 
-    public void startGame(Lobby lobby) throws Exception{
-        synchronized (lobby){
+    public boolean startGame(Lobby lobby) throws Exception{
+        synchronized (lobby) {
+            if (checkDisconnected(lobby.getPlayers())) {
+                return false;
+            }
+            globalUpdate(lobby, ServerEvent.Start());
             GameController game = new GameController(lobby);
             games.add(game);
         }
+        return true;
     }
 
     public void endGame(GameController game) {
         synchronized (games){
             games.remove(game);
+        }
+    }
+
+    private boolean checkDisconnected(ArrayList<String> players) {
+        for (String player : players) {
+            Optional<ClientInterface> client = ClientManager.getInstance().getClient(player);
+            if (client.isEmpty() || client.get().isDisconnected()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void globalUpdate(Lobby lobby, ServerEvent event) {
+        synchronized (lobby) {
+            for(String player : lobby.getPlayers()) {
+                try {
+                    Optional<ClientInterface> client = ClientManager.getInstance().getClient(player);
+                    if(client.isPresent()) {
+                        client.get().send(Result.ok(event, null));
+                    }
+                } catch (Exception e) {
+                    Logger.getLogger(LobbyController.class.getName()).warning("Error while sending global update event to client" + player + " " + e.getMessage());
+                }
+            }
         }
     }
 }

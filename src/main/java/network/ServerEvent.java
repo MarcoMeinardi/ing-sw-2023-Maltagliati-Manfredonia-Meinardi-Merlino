@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 public class ServerEvent <T extends Serializable> implements Serializable{
     public enum Type{
+        Join,
+        Leave,
         Pause,
         Resume,
         Start,
@@ -36,6 +38,14 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         return data;
     }
 
+    public static ServerEvent Join(String player) {
+        return new ServerEvent(Type.Join, player);
+    }
+
+    public static ServerEvent Leave(String player) {
+        return new ServerEvent(Type.Leave, player);
+    }
+
     public static ServerEvent Pause(String data){
         return new ServerEvent(Type.Pause, data);
     }
@@ -44,8 +54,8 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         return new ServerEvent(Type.Resume, data);
     }
 
-    public static ServerEvent Start(ArrayList<String> players){
-        return new ServerEvent(Type.Start, players);
+    public static ServerEvent Start(){
+        return new ServerEvent(Type.Start, null);
     }
 
     public static ServerEvent End(ScoreBoard scoreBoard){
