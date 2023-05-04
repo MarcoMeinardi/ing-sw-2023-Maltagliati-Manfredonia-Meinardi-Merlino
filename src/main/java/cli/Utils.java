@@ -1,33 +1,35 @@
 package cli;
 
-import java.util.Scanner;
 
 public class Utils {
-	private static Scanner scanner = new Scanner(System.in);
+	private static NonBlockingIO IO = NonBlockingIO.getInstance();
 
 	public static String askString(String message) {
 		System.out.print(message);
-		return scanner.nextLine();
+		return askString();
 	}
 	public static String askString() {
-		return scanner.nextLine();
+		IO.ask();
+		try {
+			while (!IO.isAvailable()) {
+				Thread.sleep(50);
+			}
+		} catch (InterruptedException e) {
+			return null;
+		}
+		return IO.getResult();
 	}
 
 	public static int askInt(String message) {
-		int result = -1;
-		try {
-			System.out.print(message);
-			result = scanner.nextInt();
-		} catch (Exception e) {}
-		scanner.nextLine();
-		return result;
+		System.out.print(message);
+		return askInt();
 	}
 	public static int askInt() {
 		int result = -1;
+		String line = askString();
 		try {
-			result = scanner.nextInt();
+			result = Integer.parseInt(line);
 		} catch (Exception e) {}
-		scanner.nextLine();
 		return result;
 	}
 
@@ -42,7 +44,7 @@ public class Utils {
 			for (int i = 0; i < options.length; i++) {
 				System.out.println(String.format("[%d] %s", i + 1, enumToOption(options[i])));
 			}
-			int selected = Utils.askInt() - 1;
+			int selected = askInt() - 1;
 			if (selected >= 0 && selected < options.length) {
 				return options[selected];
 			} else {
