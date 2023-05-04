@@ -1,4 +1,4 @@
-package network.rpc.client;
+package network.errors;
 
 public class ServerDisconnectedException extends Exception{
 }

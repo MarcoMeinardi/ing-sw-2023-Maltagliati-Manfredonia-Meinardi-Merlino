@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import controller.lobby.Lobby;
 import network.Result;
-import network.rpc.server.ClientStatus;
+import network.ClientStatus;
 
 public class CLI {
 	private static CLI instance;

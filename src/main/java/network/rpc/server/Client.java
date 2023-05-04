@@ -1,8 +1,9 @@
 package network.rpc.server;
 
-import network.Call;
-import network.Result;
-import network.Service;
+import network.*;
+import network.errors.ClientAlreadyConnectedExeption;
+import network.errors.ClientNotIdentifiedException;
+import network.errors.DisconnectedClientException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
-public class Client extends Thread{
+public class Client extends Thread implements ClientInterface {
         private final Socket socket;
         private final ObjectInputStream incomingMessages;
         private final ObjectOutputStream outcomingMessages;
@@ -21,14 +22,14 @@ public class Client extends Thread{
         private ClientStatus lastValidStatus;
         private Object statusLock = new Object();
         private Object lastValidStatusLock = new Object();
-        private BiFunction<Call<Serializable>, Client, Result<Serializable>> handler;
+        private BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> handler;
         private Object handlerLock = new Object();
         private LocalDateTime lastMessageTime = LocalDateTime.now();
         private Object lastMessageTimeLock = new Object();
         private String username = null;
         protected static final int TIMEOUT = 60;
 
-        public Client(Socket socket, BiFunction<Call<Serializable>,Client,Result<Serializable>> handler) throws Exception {
+        public Client(Socket socket, BiFunction<Call<Serializable>,ClientInterface,Result<Serializable>> handler) throws Exception {
             this.status = ClientStatus.Disconnected;
             this.socket = socket;
             this.incomingMessages = new ObjectInputStream(socket.getInputStream());
@@ -149,20 +150,20 @@ public class Client extends Thread{
             }
         }
 
-        public void setCallHandler(BiFunction<Call<Serializable>, Client, Result<Serializable>> handler){
+        public void setCallHandler(BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> handler){
             synchronized (this.handlerLock) {
                 this.handler = handler;
             }
         }
 
-        protected void setUsername(String username) throws ClientAlreadyConnectedExeption{
+        protected void setUsername(String username) throws ClientAlreadyConnectedExeption {
             if(this.username != null){
                 throw new ClientAlreadyConnectedExeption();
             }
             this.username = username;
         }
 
-        public String getUsername() throws ClientNotIdentifiedException{
+        public String getUsername() throws ClientNotIdentifiedException {
             if(this.username == null){
                 throw new ClientNotIdentifiedException();
             }
@@ -175,7 +176,7 @@ public class Client extends Thread{
             }
         }
 
-    public BiFunction<Call<Serializable>, Client, Result<Serializable>> getCallHandler() {
+    public BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> getCallHandler() {
         synchronized (this.handlerLock) {
             return handler;
         }

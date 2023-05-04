@@ -1,4 +1,4 @@
-package network.rpc.server;
+package network;
 
 public enum ClientStatus {
     Disconnected,

@@ -1,4 +1,4 @@
-package network.rpc.server;
+package network.errors;
 
 public class ClientNotFoundException extends Exception{
 }

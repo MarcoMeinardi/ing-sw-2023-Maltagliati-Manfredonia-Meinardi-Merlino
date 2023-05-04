@@ -1,14 +1,11 @@
 package controller.lobby;
 
 import controller.game.GameController;
-import network.Call;
-import network.Result;
-import network.WrongServiceException;
+import network.*;
 import network.parameters.WrongParametersException;
 import network.rpc.server.Client;
 import network.rpc.server.ClientManager;
-import network.rpc.server.ClientNotFoundException;
-import network.rpc.server.ClientStatus;
+import network.errors.ClientNotFoundException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,7 +39,7 @@ public class LobbyController extends Thread {
                     for (Lobby lobby : lobbies.values()) {
                         ArrayList<String> players = lobby.getPlayers();
                         for (int i = 0; i < players.size(); i++) {
-                            Optional<Client> client = ClientManager.getInstance().getClientByUsername(players.get(i));
+                            Optional<ClientInterface> client = ClientManager.getInstance().getClient(players.get(i));
                             if (client.isEmpty()) {
                                 throw new ClientNotFoundException();
                             } else {
@@ -112,7 +109,7 @@ public class LobbyController extends Thread {
         }
     }
 
-    public Result<Serializable> handleLobbySearch(Call<Serializable> call, Client client) {
+    public Result<Serializable> handleLobbySearch(Call<Serializable> call, ClientInterface client) {
         Result<Serializable> result;
         try {
             switch (call.service()) {
@@ -144,7 +141,7 @@ public class LobbyController extends Thread {
         return result;
     }
 
-    public Result<Serializable> handleInLobby(Call<Serializable> call, Client client) {
+    public Result<Serializable> handleInLobby(Call<Serializable> call, ClientInterface client) {
         Result<Serializable> result;
         try {
             switch (call.service()) {

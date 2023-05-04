@@ -1,11 +1,8 @@
 package controller.game;
 import controller.lobby.Lobby;
 import controller.lobby.LobbyController;
-import controller.lobby.NotEnoughPlayersException;
 import model.*;
-import network.Call;
-import network.Result;
-import network.ServerEvent;
+import network.*;
 import network.parameters.CardSelect;
 import network.parameters.Message;
 import network.parameters.Update;
@@ -49,7 +46,7 @@ public class GameController {
         playerIterator = game.iterator();
         currentPlayer = playerIterator.next();
         for(Player player : game.getPlayers()){
-            Client client = ClientManager.getInstance().getClientByUsername(player.getName()).orElseThrow();
+            ClientInterface client = ClientManager.getInstance().getClient(player.getName()).orElseThrow();
             client.setCallHandler(this::handleGame);
         }
     }
@@ -180,14 +177,14 @@ public class GameController {
 
     public void checkDisconnection() {
         int count = 0;
-        ClientManager clientManager = ClientManager.getInstance();
+        ClientManagerInterface clientManager = ClientManager.getInstance();
 
         while (true) {
             List<String> connectedPlayers = game.getPlayers().stream().filter(p -> clientManager.isClientConnected(p.getName())).map(Player::getName).toList();
             if (connectedPlayers.size() == game.getPlayers().size()) {
                 try {
                     for(Player player: game.getPlayers()){
-                        Optional<Client> client = clientManager.getClientByUsername(player.getName());
+                        Optional<ClientInterface> client = clientManager.getClient(player.getName());
                         if(client.isEmpty()){
                             throw new RuntimeException("Client not found" + player.getName());
                         }
@@ -200,7 +197,7 @@ public class GameController {
             }
 
             for (String player:  connectedPlayers) {
-                Optional<Client> client = clientManager.getClientByUsername(player);
+                Optional<ClientInterface> client = clientManager.getClient(player);
                 if(client.isPresent()){
                     try{
                         client.get().send(Result.ok(ServerEvent.Pause("waiting for all players to connect"), null));
@@ -227,12 +224,12 @@ public class GameController {
     }
 
     public void globalUpdate(List<ServerEvent> events) {
-        ClientManager clientManager = ClientManager.getInstance();
+        ClientManagerInterface clientManager = ClientManager.getInstance();
         for(ServerEvent event : events){
             while (true) {
                 try {
                     for(Player player : game.getPlayers()) {
-                        Optional<Client> client = clientManager.getClientByUsername(player.getName());
+                        Optional<ClientInterface> client = clientManager.getClient(player.getName());
                         if(client.isEmpty()) {
                             throw new RuntimeException("Client not found" + player.getName());
                         }
@@ -247,7 +244,7 @@ public class GameController {
         }
     }
 
-    public Result handleGame(Call call, Client client){
+    public Result handleGame(Call call, ClientInterface client){
         Result result;
         try{
             if(globalUpdateOnGoing()){
@@ -316,10 +313,10 @@ public class GameController {
 	}
 
     public void exitGame(){
-        ClientManager clientManager = ClientManager.getInstance();
+        ClientManagerInterface clientManager = ClientManager.getInstance();
         LobbyController lobbyController = LobbyController.getInstance();
         for(Player player: game.getPlayers()){
-            Optional<Client> client = clientManager.getClientByUsername(player.getName());
+            Optional<ClientInterface> client = clientManager.getClient(player.getName());
             if(client.isPresent()){
                 client.get().setCallHandler(lobbyController::handleInLobby);  /// TODO block toxic boys
             }
