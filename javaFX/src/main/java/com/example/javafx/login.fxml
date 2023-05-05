@@ -9,34 +9,29 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafx.Controller">
   <children>
       <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-            <Button layoutX="298.0" layoutY="279.0" mnemonicParsing="false" text="Play" textAlignment="CENTER" textOverrun="CLIP">
+            <Button layoutX="298.0" layoutY="279.0" mnemonicParsing="false" onAction="#btnOnClick" text="Play" textAlignment="CENTER" textOverrun="CLIP">
                <font>
                   <Font name="Harrington" size="13.0" />
                </font>
             </Button>
-            <TextField layoutX="245.0" layoutY="200.0" />
+            <TextField fx:id="txtName" layoutX="245.0" layoutY="200.0" />
             <Text layoutX="167.0" layoutY="187.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Insert your Name" textAlignment="CENTER" wrappingWidth="304.80001220703116">
                <font>
                   <Font name="Harrington" size="19.0" />
                </font>
             </Text>
-            <ImageView fitHeight="264.0" fitWidth="474.0" layoutX="187.0" layoutY="-51.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="130.0" fitWidth="418.0" layoutX="111.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../../../../../Downloads/17_MyShelfie_BGA/17_MyShelfie_BGA/Publisher%20material/Title%202000x2000px.png" />
+                  <Image url="@../../../../../../images/Publisher%20material/Title%202000x618px.png" />
                </image>
             </ImageView>
             <ImageView fitHeight="130.0" fitWidth="65.0" layoutX="561.0" layoutY="321.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../../../../../Downloads/17_MyShelfie_BGA/17_MyShelfie_BGA/Publisher%20material/Publisher.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="96.0" fitWidth="168.0" layoutX="91.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../../../../../../../Downloads/17_MyShelfie_BGA/17_MyShelfie_BGA/Publisher%20material/Box%20noshadow%20280x280.png" />
+                  <Image url="@../../../../../../images/Publisher%20material/Publisher.png" />
                </image>
             </ImageView>
       </children>
