@@ -23,6 +23,9 @@ public class Utils {
 		return askString();
 	}
 	public static Optional<String> askStringOrEvent() {
+		if (NetworkManager.getInstance().hasEvent()) {
+			return Optional.empty();
+		}
 		IO.ask();
 		try {
 			while (!IO.isAvailable()) {

@@ -26,11 +26,13 @@ public class CLI {
 	String username;
 
 	boolean doPrint;
+	boolean gameStarted;
 
 	private CLI() {
 		state = ClientStatus.Disconnected;
 		hasConnected = false;
 		doPrint = true;
+		gameStarted = false;
 	}
 	public static CLI getInstance() {
 		if(instance == null){
@@ -211,10 +213,25 @@ public class CLI {
 	}
 
 	private ClientStatus inGame() {
-		System.out.println("In Game");
+		if (!gameStarted) {
+			try {
+				Thread.sleep(1000);  // Wait to receive game start event before promting to abort
+			} catch (InterruptedException e) {}
+
+			if (networkManager.hasEvent()) {
+				return handleEvent();
+			}
+			System.out.println("Waiting for other players...");
+			// TODO ask to abort
+			Optional<InLobbyOptions> option = Utils.askOptionOrEvent(InLobbyOptions.class, doPrint);
+			if (option.isEmpty()) {
+				return handleEvent();
+			} else {
+				throw new RuntimeException("Abort not implemented");
+			}
+		}
 		throw new RuntimeException("Not implemented");
 	}
-
 
 	private ClientStatus handleEvent() {
 		Optional<ServerEvent> event = networkManager.getEvent();
@@ -241,6 +258,8 @@ public class CLI {
 				return ClientStatus.InLobby;
 			}
 			case Start -> {
+				gameStarted = true;
+				doPrint = true;
 				System.out.println("Game has started");
 				return ClientStatus.InGame;
 			}

@@ -13,14 +13,14 @@ public class CommonObjectiveTest {
     @Test
     public void testGenerateCommonObjectives() {
 
-        CommonObjective[] commonObjectives = CommonObjective.generateCommonObjectives(2);
-        assertEquals(2, commonObjectives.length);
+        ArrayList<CommonObjective> commonObjectives = CommonObjective.generateCommonObjectives(2);
+        assertEquals(2, commonObjectives.size());
 
         commonObjectives = CommonObjective.generateCommonObjectives(3);
-        assertEquals(2, commonObjectives.length);
+        assertEquals(2, commonObjectives.size());
 
         commonObjectives = CommonObjective.generateCommonObjectives(4);
-        assertEquals(2, commonObjectives.length);
+        assertEquals(2, commonObjectives.size());
 
     }
 

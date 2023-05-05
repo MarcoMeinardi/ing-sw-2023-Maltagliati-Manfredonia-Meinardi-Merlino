@@ -179,9 +179,6 @@ public class LobbyController extends Thread {
 
     public boolean startGame(Lobby lobby) throws Exception {
         synchronized (lobby) {
-            if (checkDisconnected(lobby.getPlayers())) {
-                return false;
-            }
             GameController game = new GameController(lobby);
             games.add(game);
         }
@@ -192,16 +189,6 @@ public class LobbyController extends Thread {
         synchronized (games){
             games.remove(game);
         }
-    }
-
-    private boolean checkDisconnected(ArrayList<String> players) {
-        for (String player : players) {
-            Optional<ClientInterface> client = ClientManager.getInstance().getClient(player);
-            if (client.isEmpty() || client.get().isDisconnected()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void globalUpdate(Lobby lobby, ServerEvent event) {

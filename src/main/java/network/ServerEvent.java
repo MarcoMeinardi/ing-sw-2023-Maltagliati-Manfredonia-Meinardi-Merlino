@@ -2,6 +2,7 @@ package network;
 
 import network.parameters.Message;
 import model.ScoreBoard;
+import network.parameters.StartingInfo;
 import network.parameters.Update;
 
 import java.io.Serializable;
@@ -57,6 +58,9 @@ public class ServerEvent <T extends Serializable> implements Serializable{
     public static ServerEvent Start(){
         return new ServerEvent(Type.Start, null);
     }
+    public static ServerEvent Start(StartingInfo data){
+        return new ServerEvent(Type.Start, data);
+    }
 
     public static ServerEvent End(ScoreBoard scoreBoard){
         return new ServerEvent(Type.End, scoreBoard);
@@ -66,9 +70,15 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         return new ServerEvent(Type.Error, data);
     }
 
-    public static ServerEvent Update(Update update){ return new ServerEvent(Type.Update, update);}
+    public static ServerEvent Update(Update update){
+		return new ServerEvent(Type.Update, update);
+	}
 
-    public static ServerEvent NextTurn(String idPlayer){ return new ServerEvent(Type.NextTurn, idPlayer);}
+    public static ServerEvent NextTurn(String idPlayer){
+		return new ServerEvent(Type.NextTurn, idPlayer);
+	}
 
-    public static ServerEvent NewMessage(Message message){ return new ServerEvent(Type.NewMessage, message);}
+    public static ServerEvent NewMessage(Message message){
+		return new ServerEvent(Type.NewMessage, message);
+	}
 }
