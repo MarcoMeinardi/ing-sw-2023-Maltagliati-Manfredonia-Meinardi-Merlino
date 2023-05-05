@@ -2,6 +2,7 @@ package controller;
 
 import controller.lobby.Lobby;
 import controller.lobby.LobbyAlreadyExistsException;
+import controller.lobby.LobbyController;
 import org.junit.Test;
 
 import java.util.ArrayList;

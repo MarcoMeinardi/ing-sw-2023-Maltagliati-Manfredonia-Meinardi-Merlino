@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import controller.lobby.LobbyController;
 import network.ClientManagerInterface;
 import network.rpc.server.ClientManager;
 

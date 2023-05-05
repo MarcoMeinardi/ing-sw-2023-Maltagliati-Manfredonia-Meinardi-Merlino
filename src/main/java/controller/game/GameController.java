@@ -1,5 +1,6 @@
 package controller.game;
 import controller.lobby.Lobby;
+import controller.lobby.LobbyController;
 import model.*;
 import network.*;
 import network.parameters.CardSelect;

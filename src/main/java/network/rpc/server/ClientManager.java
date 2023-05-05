@@ -1,5 +1,6 @@
 package network.rpc.server;
 
+import controller.lobby.LobbyController;
 import network.*;
 import network.errors.ClientAlreadyConnectedExeption;
 import network.errors.ClientNotIdentifiedException;
