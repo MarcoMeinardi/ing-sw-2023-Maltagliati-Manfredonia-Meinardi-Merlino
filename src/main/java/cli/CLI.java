@@ -3,6 +3,7 @@ package cli;
 import network.rpc.client.NetworkManager;
 import network.rpc.client.Server;
 import network.parameters.Login;
+import network.parameters.StartingInfo;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -27,6 +28,8 @@ public class CLI {
 
 	boolean doPrint;
 	boolean gameStarted;
+
+	CLIGame game;
 
 	private CLI() {
 		state = ClientStatus.Disconnected;
@@ -260,6 +263,7 @@ public class CLI {
 			case Start -> {
 				gameStarted = true;
 				doPrint = true;
+				game = new CLIGame((StartingInfo)event.get().getData());
 				System.out.println("Game has started");
 				return ClientStatus.InGame;
 			}
