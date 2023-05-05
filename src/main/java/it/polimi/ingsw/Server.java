@@ -1,7 +1,6 @@
 package it.polimi.ingsw;
 
-import controller.lobby.LobbyController;
-import controller.lobby.NotEnoughPlayersException;
+import controller.game.LobbyController;
 import network.ClientManagerInterface;
 import network.rpc.server.ClientManager;
 

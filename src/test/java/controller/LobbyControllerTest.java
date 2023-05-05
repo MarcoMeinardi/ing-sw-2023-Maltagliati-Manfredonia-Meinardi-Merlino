@@ -2,8 +2,7 @@ package controller;
 
 import controller.lobby.Lobby;
 import controller.lobby.LobbyAlreadyExistsException;
-import controller.lobby.LobbyController;
-import controller.lobby.NotEnoughPlayersException;
+import controller.game.LobbyController;
 import org.junit.Test;
 
 import java.util.ArrayList;

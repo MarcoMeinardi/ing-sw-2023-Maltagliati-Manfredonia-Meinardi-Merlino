@@ -1,13 +1,11 @@
 package controller.game;
 import controller.lobby.Lobby;
-import controller.lobby.LobbyController;
 import model.*;
 import network.*;
 import network.parameters.CardSelect;
 import network.parameters.Message;
 import network.parameters.Update;
 import network.parameters.WrongParametersException;
-import network.rpc.server.Client;
 import network.rpc.server.ClientManager;
 
 import java.util.ArrayList;

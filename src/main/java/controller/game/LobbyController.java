@@ -1,9 +1,8 @@
-package controller.lobby;
+package controller.game;
 
-import controller.game.GameController;
+import controller.lobby.*;
 import network.*;
 import network.parameters.WrongParametersException;
-import network.rpc.server.Client;
 import network.rpc.server.ClientManager;
 import network.errors.ClientNotFoundException;
 
