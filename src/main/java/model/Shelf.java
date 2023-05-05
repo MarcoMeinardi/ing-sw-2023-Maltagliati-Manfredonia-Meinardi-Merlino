@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class Shelf implements Serializable {
+public class Shelf {
     // Size of the shelf 6(rows)x5(columns)
     private Optional<Card>[][] slots;
 
@@ -163,4 +163,24 @@ public class Shelf implements Serializable {
         return true;
     }
 
+	/**
+	 * Returns a serializable copy of the shelf
+	 * Note: this method must only be used to send the shelf over network,
+	 * DON'T use it in any other case and once received convert it immediately
+	 * to it's `Optional` form
+	 *
+	 * @return a serializable copy of the shelf
+	 * @author Marco
+	 */
+	public Card[][] getSerializable() {
+		Card[][] result = new Card[ROWS][COLUMNS];
+
+		for (int y = 0; y < ROWS; y++) {
+			for (int x = 0; x < COLUMNS; x++) {
+				result[y][x] = slots[y][x].orElse(null);
+			}
+		}
+
+		return result;
+	}
 }
