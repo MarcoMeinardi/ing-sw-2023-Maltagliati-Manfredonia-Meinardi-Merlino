@@ -13,7 +13,7 @@
   <children>
       <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-            <Button layoutX="298.0" layoutY="279.0" mnemonicParsing="false" onAction="#btnOnClick" text="Play" textAlignment="CENTER" textOverrun="CLIP">
+            <Button fx:id="login_button" layoutX="298.0" layoutY="279.0" mnemonicParsing="false" onAction="#login_action" text="Play" textAlignment="CENTER" textOverrun="CLIP">
                <font>
                   <Font name="Harrington" size="13.0" />
                </font>
