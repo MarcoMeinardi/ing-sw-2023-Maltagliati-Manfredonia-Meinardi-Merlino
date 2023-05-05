@@ -14,4 +14,9 @@ public class Controller {
 
     }
 
+    @FXML
+    void btnError(ActionEvent event) {
+
+    }
+
 }
