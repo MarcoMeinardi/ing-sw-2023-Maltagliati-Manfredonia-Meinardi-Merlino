@@ -11,9 +11,9 @@ public class ServerEvent <T extends Serializable> implements Serializable{
     public enum Type{
         Join,
         Leave,
+        Start,
         Pause,
         Resume,
-        Start,
         End,
         Error,
         Update,

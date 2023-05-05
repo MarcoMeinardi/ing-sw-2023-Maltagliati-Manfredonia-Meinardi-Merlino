@@ -88,11 +88,13 @@ public class Utils {
 			}
 		}
 	}
-	public static <E extends Enum<E>> Optional<E> askOptionOrEvent(Class<E> enumClass) {
+	public static <E extends Enum<E>> Optional<E> askOptionOrEvent(Class<E> enumClass, boolean doPrint) {
 		while (true) {
 			E[] options = enumClass.getEnumConstants();
-			for (int i = 0; i < options.length; i++) {
-				System.out.println(String.format("[%d] %s", i + 1, enumToOption(options[i])));
+			if (doPrint) {
+				for (int i = 0; i < options.length; i++) {
+					System.out.println(String.format("[%d] %s", i + 1, enumToOption(options[i])));
+				}
 			}
 			Optional<Integer> option = askIntOrEvent();
 			if (option.isEmpty()) {

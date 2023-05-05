@@ -115,18 +115,17 @@ public class NetworkManager extends Thread{
             try {
                 Result result = receive();
                 if (result.isEvent()) {
-					System.out.println(result);
-                    ServerEvent event = (ServerEvent) result.unwrap();
+                    ServerEvent event = (ServerEvent)result.unwrap();
                     synchronized (eventQueue) {
                         eventQueue.add(event);
                     }
-                } else if (lastPing.id().equals(result.id())){
+                } else if (lastPing.id().equals(result.id())) {
                     synchronized (lastPing) {
                         lastPing.setResult((Result<Boolean>)result);
                     }
-                }else{
+                } else {
                     Function caller;
-                    synchronized (callQueue){
+                    synchronized (callQueue) {
                         caller = callQueue.get(result.id());
                     }
                     caller.setResult(result);

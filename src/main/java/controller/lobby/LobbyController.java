@@ -90,14 +90,14 @@ public class LobbyController extends Thread {
 
     public Lobby joinLobby(String lobbyname, String player) throws LobbyNotFoundException, PlayerAlreadyInLobbyException, LobbyFullException {
         Lobby lobby;
-        synchronized (lobbies){
-            if(!lobbies.containsKey(lobbyname)){
+        synchronized (lobbies) {
+            if(!lobbies.containsKey(lobbyname)) {
                 throw new LobbyNotFoundException();
             }
             lobby = lobbies.get(lobbyname);
         }
         lobby.addPlayer(player);
-        globalUpdate(lobby, ServerEvent.Leave(player));
+        globalUpdate(lobby, ServerEvent.Join(player));
         return lobby;
     }
 

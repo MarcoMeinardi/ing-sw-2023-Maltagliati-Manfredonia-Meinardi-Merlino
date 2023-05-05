@@ -11,6 +11,9 @@ public class NonBlockingIO extends Thread {
 	private boolean isAvailable = false;
 	private String result;
 
+	private final Object isAskingLock = new Object();
+	private final Object isAvailableLock = new Object();
+
 	private NonBlockingIO() {}
 	public static NonBlockingIO getInstance() {
 		if (instance == null) {
@@ -28,15 +31,16 @@ public class NonBlockingIO extends Thread {
 	public void run() {
 		try {
 			while (true) {
-				synchronized (scanner) {
+				synchronized (isAskingLock) {
 					while (!isAsking) {
-						scanner.wait();
+						isAskingLock.wait();
 					}
-					result = scanner.nextLine();
-					isAsking = false;
+				}
+				result = scanner.nextLine();
+				synchronized (isAvailableLock) {
 					isAvailable = true;
 					while (isAvailable) {
-						scanner.wait();
+						isAvailableLock.wait();
 					}
 				}
 			}
@@ -44,28 +48,33 @@ public class NonBlockingIO extends Thread {
 	}
 
 	public void ask() {
-		synchronized (scanner) {
+		synchronized (isAskingLock) {
 			if (isAvailable) {
 				throw new RuntimeException("Ask before getting result");
 			}
 			isAsking = true;
-			scanner.notifyAll();
+			isAskingLock.notifyAll();
 		}
 	}
 
 	public boolean isAvailable() {
-		return isAvailable;
+		synchronized (isAvailableLock) {
+			return isAvailable;
+		}
 	}
 
 	public String getResult() {
 		String line;
-		synchronized (scanner) {
-			if (!isAvailable) {
-				throw new RuntimeException("Result is not available");
+		synchronized (isAskingLock) {
+			synchronized (isAvailableLock) {
+				if (!isAvailable) {
+					throw new RuntimeException("Result is not available");
+				}
+				isAvailable = false;
+				isAsking = false;
+				line = result;
+				isAvailableLock.notifyAll();
 			}
-			isAvailable = false;
-			line = result;
-			scanner.notifyAll();
 		}
 		return line;
 	}

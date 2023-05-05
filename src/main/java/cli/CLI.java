@@ -5,9 +5,11 @@ import network.rpc.client.Server;
 import network.parameters.Login;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import controller.lobby.Lobby;
 import network.Result;
+import network.ServerEvent;
 import network.ClientStatus;
 
 public class CLI {
@@ -21,9 +23,14 @@ public class CLI {
 	private String ip;
 	private int port;
 
+	String username;
+
+	boolean doPrint;
+
 	private CLI() {
 		state = ClientStatus.Disconnected;
 		hasConnected = false;
+		doPrint = true;
 	}
 	public static CLI getInstance() {
 		if(instance == null){
@@ -71,7 +78,7 @@ public class CLI {
 
 	// TODO we need to receive the previous status in case of a reconnection
 	private ClientStatus login() {
-		String username = Utils.askString("Username: ");
+		username = Utils.askString("Username: ");
 		try {
 			Result result = networkManager.login(new Login(username)).waitResult();
 			if (result.isOk()) {
@@ -142,27 +149,34 @@ public class CLI {
 		}
 	}
 
-	private void updateLobby() {
-		try {
-			Result result = networkManager.updateLobby().waitResult();
-			if (result.isOk()) {
-				lobby = ((Result<Lobby>)result).unwrap();
-			} else {
-				System.out.println("[ERROR] " + result.getException().orElse("List players failed"));
-			}
-		} catch (Exception e) {
-			System.out.println("[ERROR] " + e.getMessage());
+	boolean checkCanStartGame() {
+		if (!lobby.isHost(username)) {
+			System.out.println("[ERROR] You are not the lobby's host");
+			return false;
+		} else if (lobby.getNumberOfPlayers() < 2) {
+			System.out.println("[ERROR] Not enough players to start the game");
+			return false;
 		}
+		return true;
 	}
 
 	private ClientStatus inLobby() {
-		InLobbyOptions option = Utils.askOption(InLobbyOptions.class);
+		Optional<InLobbyOptions> option = Utils.askOptionOrEvent(InLobbyOptions.class, doPrint);
+		if (option.isEmpty()) {
+			doPrint = false;
+			return handleEvent();
+		}
+		doPrint = true;
 		Result result;
 		try {
-			switch (option) {
-				case START_GAME -> {  // TODO: maybe check if can be called (update lobby and check owner / n players), need to save username
+			switch (option.get()) {
+				case START_GAME -> {
+					if (!checkCanStartGame()) {
+						return ClientStatus.InLobby;
+					}
 					result = networkManager.gameStart().waitResult();
 					if (result.isOk()) {
+						System.out.println("Starting game");
 						return ClientStatus.InGame;
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("Start game failed"));
@@ -179,7 +193,6 @@ public class CLI {
 					}
 				}
 				case LIST_PLAYERS -> {
-					updateLobby();
 					for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {
 						if (i == 0) {
 							System.out.println(String.format(" + %s", lobby.getPlayers().get(i)));
@@ -200,5 +213,38 @@ public class CLI {
 	private ClientStatus inGame() {
 		System.out.println("In Game");
 		throw new RuntimeException("Not implemented");
+	}
+
+
+	private ClientStatus handleEvent() {
+		Optional<ServerEvent> event = networkManager.getEvent();
+		if (event.isEmpty()) {
+			throw new RuntimeException("Empty event queue");
+		}
+		switch (event.get().getType()) {
+			case Join -> {
+				String joinedPlayer = (String)event.get().getData();
+				try {
+					lobby.addPlayer(joinedPlayer);
+				} catch (Exception e) {}  // Cannot happen
+				if (!joinedPlayer.equals(username)) {
+					System.out.println(joinedPlayer + " joined the lobby");
+				}
+				return ClientStatus.InLobby;
+			}
+			case Leave -> {
+				String leftPlayer = (String)event.get().getData();
+				try {
+					lobby.removePlayer(leftPlayer);
+				} catch (Exception e) {}  // Cannot happen
+				System.out.println(leftPlayer + " left the lobby");
+				return ClientStatus.InLobby;
+			}
+			case Start -> {
+				System.out.println("Game has started");
+				return ClientStatus.InGame;
+			}
+			default -> throw new RuntimeException("Unhandled exception");
+		}
 	}
 }

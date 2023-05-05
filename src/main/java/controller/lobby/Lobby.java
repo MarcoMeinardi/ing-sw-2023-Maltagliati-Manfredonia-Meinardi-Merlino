@@ -46,7 +46,7 @@ public class Lobby implements Serializable {
         }
     }
 
-    protected boolean isHost(String player) {
+    public boolean isHost(String player) {
         synchronized (players){
             return players.get(0).equals(player);
         }
