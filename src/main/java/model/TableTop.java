@@ -3,7 +3,7 @@ package model;
 import java.io.Serializable;
 import java.util.Optional;
 
-public class TableTop implements Serializable {
+public class TableTop {
 	public static final int SIZE = 9;
 	public static final int MAX_PLAYERS = 6;
 
@@ -155,5 +155,25 @@ public class TableTop implements Serializable {
 		return table[y][x];
 	}
 
+	/**
+	 * Returns a serializable copy of the table
+	 * Note: this method must only be used to send the table over network,
+	 * DON'T use it in any other case and once received convert it immediately
+	 * to it's `Optional` form
+	 *
+	 * @return a serializable copy of the table
+	 * @author Marco
+	 */
+	public Card[][] getSerializable() {
+		Card[][] result = new Card[SIZE][SIZE];
+
+		for (int y = 0; y < SIZE; y++) {
+			for (int x = 0; x < SIZE; x++) {
+				result[y][x] = table[y][x].orElse(null);
+			}
+		}
+
+		return result;
+	}
 }
 

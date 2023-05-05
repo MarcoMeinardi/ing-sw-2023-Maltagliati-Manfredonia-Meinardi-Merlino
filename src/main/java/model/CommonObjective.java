@@ -2,6 +2,7 @@ package model;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 public class CommonObjective extends Objective {
@@ -39,27 +40,24 @@ public class CommonObjective extends Objective {
 	 * @return An array of two randomly selected common objectives
 	 * @author Marco, Lorenzo, Ludovico, Riccardo
 	 */
-	public static CommonObjective[] generateCommonObjectives(int nPlayers) {
-		CommonObjective[] selected_objectives = new CommonObjective[2];
-		ArrayList<CommonObjective> all_objectives = new ArrayList<>();
+	public static ArrayList<CommonObjective> generateCommonObjectives(int nPlayers) {
+		ArrayList<CommonObjective> allObjectives = new ArrayList<>();
 
-		all_objectives.add(new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCards));
-		all_objectives.add(new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonal));
-		all_objectives.add(new CommonObjective("all equal corners", nPlayers, CommonObjective::equalCorners));
-		all_objectives.add(new CommonObjective("4 rows of at most 3 different cards", nPlayers, CommonObjective::fourRowsOfAtMostThreeDifferentCards));
-		all_objectives.add(new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCards));
-		all_objectives.add(new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCards));
-		all_objectives.add(new CommonObjective("2 square-shaped groups", nPlayers, CommonObjective::twoSquareGroups));
-		all_objectives.add(new CommonObjective("2 rows with 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCards));
-		all_objectives.add(new CommonObjective("3 columns of at most 3 different cards", nPlayers, CommonObjective::threeColumnsOfAtMostThreeDifferentCards));
-		all_objectives.add(new CommonObjective("X shape group", nPlayers, CommonObjective::equalsX));
-		all_objectives.add(new CommonObjective("eight equal cards", nPlayers, CommonObjective::eightEquals));
-		all_objectives.add(new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShape));
+		allObjectives.add(new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCards));
+		allObjectives.add(new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonal));
+		allObjectives.add(new CommonObjective("all equal corners", nPlayers, CommonObjective::equalCorners));
+		allObjectives.add(new CommonObjective("4 rows of at most 3 different cards", nPlayers, CommonObjective::fourRowsOfAtMostThreeDifferentCards));
+		allObjectives.add(new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCards));
+		allObjectives.add(new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCards));
+		allObjectives.add(new CommonObjective("2 square-shaped groups", nPlayers, CommonObjective::twoSquareGroups));
+		allObjectives.add(new CommonObjective("2 rows with 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCards));
+		allObjectives.add(new CommonObjective("3 columns of at most 3 different cards", nPlayers, CommonObjective::threeColumnsOfAtMostThreeDifferentCards));
+		allObjectives.add(new CommonObjective("X shape group", nPlayers, CommonObjective::equalsX));
+		allObjectives.add(new CommonObjective("eight equal cards", nPlayers, CommonObjective::eightEquals));
+		allObjectives.add(new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShape));
 
-		Collections.shuffle(all_objectives);
-		selected_objectives[0] = all_objectives.get(0);
-		selected_objectives[1] = all_objectives.get(1);
-		return selected_objectives;
+		Collections.shuffle(allObjectives);
+		return allObjectives.stream().limit(2).collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	/**

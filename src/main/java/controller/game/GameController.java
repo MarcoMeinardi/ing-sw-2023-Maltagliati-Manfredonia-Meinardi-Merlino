@@ -3,8 +3,10 @@ import controller.lobby.Lobby;
 import controller.lobby.LobbyController;
 import model.*;
 import network.*;
+import network.errors.DisconnectedClientException;
 import network.parameters.CardSelect;
 import network.parameters.Message;
+import network.parameters.StartingInfo;
 import network.parameters.Update;
 import network.parameters.WrongParametersException;
 import network.rpc.server.ClientManager;
@@ -14,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * This class runs an instance of game and controls it.
@@ -40,13 +43,14 @@ public class GameController {
      * @author Ludovico
      *
      */
-    public GameController(Lobby lobby) throws Exception{
+    public GameController(Lobby lobby) throws Exception {
         game = new Game(lobby.getPlayers());
         playerIterator = game.iterator();
         currentPlayer = playerIterator.next();
-        for(Player player : game.getPlayers()){
+        for (Player player : game.getPlayers()) {
             ClientInterface client = ClientManager.getInstance().getClient(player.getName()).orElseThrow();
             client.setCallHandler(this::handleGame);
+            sendStartInfo(player);
         }
     }
 
@@ -311,13 +315,13 @@ public class GameController {
 		globalUpdateThread = new Thread(() -> globalUpdate(events));
 	}
 
-    public void exitGame(){
+    public void exitGame() {
         ClientManagerInterface clientManager = ClientManager.getInstance();
         LobbyController lobbyController = LobbyController.getInstance();
         for(Player player: game.getPlayers()){
             Optional<ClientInterface> client = clientManager.getClient(player.getName());
             if(client.isPresent()){
-                client.get().setCallHandler(lobbyController::handleInLobby);  /// TODO block toxic boys
+                client.get().setCallHandler(lobbyController::handleLobbySearch);  // TODO block toxic boys
             }
         }
         lobbyController.endGame(this);
@@ -331,6 +335,21 @@ public class GameController {
             }
         }
         return playersOrder;
+    }
+
+    private void sendStartInfo(Player player) throws DisconnectedClientException {
+        ArrayList<Card[][]> shelfs = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<String> players = game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<String> commonObjectives = game.getCommonObjectives().stream().map(CommonObjective::getName).collect(Collectors.toCollection(ArrayList::new));
+        ServerEvent toSend = ServerEvent.Start(new StartingInfo(
+            game.getTabletop().getSerializable(),
+            players,
+            shelfs,
+            commonObjectives,
+            player.getPersonalObjective().getName()
+        ));
+        ClientInterface client = ClientManager.getInstance().getClient(player.getName()).orElseThrow();
+        client.send(Result.ok(toSend, null));
     }
 }
 
