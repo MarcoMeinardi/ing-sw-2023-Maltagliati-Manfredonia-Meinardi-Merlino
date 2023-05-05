@@ -182,7 +182,6 @@ public class LobbyController extends Thread {
             if (checkDisconnected(lobby.getPlayers())) {
                 return false;
             }
-            globalUpdate(lobby, ServerEvent.Start());
             GameController game = new GameController(lobby);
             games.add(game);
         }

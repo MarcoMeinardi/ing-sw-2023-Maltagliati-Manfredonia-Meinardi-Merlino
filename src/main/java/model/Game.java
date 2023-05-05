@@ -3,13 +3,12 @@ package model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.stream.Collectors;
 
 public class Game implements Iterable<Player> {
 
     private TableTop tabletop;
     private ArrayList<Player> players;
-    private CommonObjective[] commonObjectives;
+    private ArrayList<CommonObjective> commonObjectives;
 
     public Game(ArrayList<String> playersNames) {
         this.tabletop = new TableTop(playersNames.size());
@@ -53,7 +52,7 @@ public class Game implements Iterable<Player> {
      *
      * @return An array of all CommonObjective objects in the game
      */
-    public CommonObjective[] getCommonObjectives() {
+    public ArrayList<CommonObjective> getCommonObjectives() {
         return commonObjectives;
     }
 

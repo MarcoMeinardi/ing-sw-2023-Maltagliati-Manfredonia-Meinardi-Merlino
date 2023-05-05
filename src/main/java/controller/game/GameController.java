@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * This class runs an instance of game and controls it.
@@ -317,7 +318,7 @@ public class GameController {
         for(Player player: game.getPlayers()){
             Optional<ClientInterface> client = clientManager.getClient(player.getName());
             if(client.isPresent()){
-                client.get().setCallHandler(lobbyController::handleInLobby);  /// TODO block toxic boys
+                client.get().setCallHandler(lobbyController::handleLobbySearch);  /// TODO block toxic boys
             }
         }
         lobbyController.endGame(this);
