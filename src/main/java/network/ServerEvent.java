@@ -18,7 +18,6 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         End,
         Error,
         Update,
-        NextTurn,
         NewMessage,
         LobbyUpdate,
     }
@@ -72,12 +71,8 @@ public class ServerEvent <T extends Serializable> implements Serializable{
     }
 
     public static ServerEvent Update(Update update){
-		return new ServerEvent(Type.Update, update);
-	}
-
-    public static ServerEvent NextTurn(String idPlayer){
-		return new ServerEvent(Type.NextTurn, idPlayer);
-	}
+        return new ServerEvent(Type.Update, update);
+    }
 
     public static ServerEvent NewMessage(Message message){
 		return new ServerEvent(Type.NewMessage, message);

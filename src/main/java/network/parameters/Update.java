@@ -1,11 +1,8 @@
 package network.parameters;
 
-import model.Cell;
-import model.Shelf;
-import model.TableTop;
+import model.Card;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
-public record Update(String idPlayer, TableTop tableTop, Shelf shelf) implements Serializable {
+public record Update(String idPlayer, Card[][] tableTop, Card[][] shelf, String nextPlayer) implements Serializable {
 }
