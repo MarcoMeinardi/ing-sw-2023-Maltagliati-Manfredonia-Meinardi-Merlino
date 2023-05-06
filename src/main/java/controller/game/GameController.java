@@ -191,7 +191,7 @@ public class GameController {
                         if(client.isEmpty()){
                             throw new RuntimeException("Client not found" + player.getName());
                         }
-                        client.get().send(Result.ok(ServerEvent.Resume(null), null));
+                        client.get().send(ServerEvent.Resume(null));
                     }
                     return;
                 }catch (Exception e){
@@ -203,7 +203,7 @@ public class GameController {
                 Optional<ClientInterface> client = clientManager.getClient(player);
                 if(client.isPresent()){
                     try{
-                        client.get().send(Result.ok(ServerEvent.Pause("waiting for all players to connect"), null));
+                        client.get().send(ServerEvent.Pause("waiting for all players to connect"));
                     }catch (Exception e){
                         logger.warning("Error while sending pause event to client" + e.getMessage());
                     }
@@ -236,7 +236,7 @@ public class GameController {
                         if(client.isEmpty()) {
                             throw new RuntimeException("Client not found" + player.getName());
                         }
-                        client.get().send(Result.ok(event, null));
+                        client.get().send(event);
                     }
                     break;
                 } catch (Exception e) {
@@ -337,7 +337,7 @@ public class GameController {
         return playersOrder;
     }
 
-    private void sendStartInfo(Player player) throws DisconnectedClientException {
+    private void sendStartInfo(Player player) throws Exception {
         ArrayList<Card[][]> shelfs = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> players = game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> commonObjectives = game.getCommonObjectives().stream().map(CommonObjective::getName).collect(Collectors.toCollection(ArrayList::new));
@@ -349,7 +349,7 @@ public class GameController {
             player.getPersonalObjective().getName()
         ));
         ClientInterface client = ClientManager.getInstance().getClient(player.getName()).orElseThrow();
-        client.send(Result.ok(toSend, null));
+        client.send(toSend);
     }
 }
 

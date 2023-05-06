@@ -1,3 +1,3 @@
-package network.rpc.client;
+package network;
 
 public record Server(String ip, int port) {}

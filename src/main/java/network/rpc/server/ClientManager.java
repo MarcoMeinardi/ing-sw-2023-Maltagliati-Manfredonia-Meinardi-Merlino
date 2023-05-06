@@ -137,7 +137,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         try{
             acceptConnectionsThread.join();
             synchronized (identifiedClients) {
-                for (ClientInterface client : identifiedClients.values()) {
+                for (Client client : identifiedClients.values()) {
                     client.disconnect();
                 }
             }

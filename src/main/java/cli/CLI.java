@@ -1,7 +1,7 @@
 package cli;
 
 import network.rpc.client.NetworkManager;
-import network.rpc.client.Server;
+import network.Server;
 import network.parameters.Login;
 import network.parameters.StartingInfo;
 

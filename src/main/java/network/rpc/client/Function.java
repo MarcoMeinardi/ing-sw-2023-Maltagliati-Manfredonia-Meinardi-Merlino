@@ -1,6 +1,7 @@
 package network.rpc.client;
 
 import network.Call;
+import network.RemoteFunctionInterface;
 import network.Result;
 import network.Service;
 import network.parameters.Login;
@@ -10,7 +11,7 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class Function<P extends Serializable,R extends Serializable> {
+public class Function<P extends Serializable,R extends Serializable> implements RemoteFunctionInterface<P,R> {
     private P params;
     private Optional<Result<R>> result;
     private final Object resultLock = new Object();
@@ -66,14 +67,6 @@ public class Function<P extends Serializable,R extends Serializable> {
             resultLock.notifyAll();
         }
     }
-
-    public static Function<Login,Boolean> Login(Login param){
-        return new Function<Login, Boolean>(param, Service.Login);
-    }
-    public static Function<Boolean,Boolean> Ping(){
-        return new Function<Boolean,Boolean>(null, Service.Ping);
-    }
-
     public UUID id(){
         return id;
     }

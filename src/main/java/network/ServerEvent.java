@@ -20,6 +20,7 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         Update,
         NextTurn,
         NewMessage,
+        LobbyUpdate,
     }
 
     public ServerEvent(Type type, T data) {
@@ -81,4 +82,8 @@ public class ServerEvent <T extends Serializable> implements Serializable{
     public static ServerEvent NewMessage(Message message){
 		return new ServerEvent(Type.NewMessage, message);
 	}
+
+    public static ServerEvent LobbyUpdate(ArrayList<String> players){
+        return new ServerEvent(Type.LobbyUpdate, players);
+    }
 }

@@ -13,9 +13,7 @@ public interface ClientInterface {
     public ClientStatus getStatus();
     public void setStatus(ClientStatus status);
     public ClientStatus getLastValidStatus();
-    public void setLastValidStatus(ClientStatus status);
-    public <T extends Serializable> void send(Result<T> message) throws DisconnectedClientException;
-    public void disconnect();
+    public <T extends Serializable> void send(ServerEvent<T> message) throws Exception;
     public boolean isDisconnected();
     public void setCallHandler(BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> handler);
     public String getUsername() throws ClientNotIdentifiedException;

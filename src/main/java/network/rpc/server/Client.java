@@ -18,10 +18,7 @@ public class Client extends Thread implements ClientInterface {
         private final Socket socket;
         private final ObjectInputStream incomingMessages;
         private final ObjectOutputStream outcomingMessages;
-        private ClientStatus status;
-        private ClientStatus lastValidStatus;
-        private Object statusLock = new Object();
-        private Object lastValidStatusLock = new Object();
+        private ClientStatusHandler statusHandler;
         private BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> handler;
         private Object handlerLock = new Object();
         private LocalDateTime lastMessageTime = LocalDateTime.now();
@@ -30,52 +27,37 @@ public class Client extends Thread implements ClientInterface {
         protected static final int TIMEOUT = 60;
 
         public Client(Socket socket, BiFunction<Call<Serializable>,ClientInterface,Result<Serializable>> handler) throws Exception {
-            this.status = ClientStatus.Disconnected;
             this.socket = socket;
             this.incomingMessages = new ObjectInputStream(socket.getInputStream());
             this.outcomingMessages = new ObjectOutputStream(socket.getOutputStream());
-            this.status = ClientStatus.Idle;
-            this.lastValidStatus = ClientStatus.Idle;
             this.handler = handler;
         }
 
         public ClientStatus getStatus() {
-            synchronized (this.statusLock){
-                return this.status;
-            }
+            return statusHandler.getStatus();
         }
 
         public void setStatus(ClientStatus status) {
-            synchronized (this.statusLock){
-                if(status != ClientStatus.Disconnected){
-                    synchronized (this.lastValidStatusLock){
-                        this.lastValidStatus = this.status;
-                    }
-                }
-                this.status = status;
-            }
+            statusHandler.setStatus(status);
         }
 
         public ClientStatus getLastValidStatus() {
-            synchronized (this.lastValidStatusLock) {
-                return this.lastValidStatus;
-            }
+            return statusHandler.getLastValidStatus();
         }
 
         public void setLastValidStatus(ClientStatus status) {
-            synchronized (this.lastValidStatusLock) {
-                this.lastValidStatus = status;
-            }
+            statusHandler.setLastValidStatus(status);
         }
 
-        public <T extends Serializable> void send(Result<T> message) throws DisconnectedClientException {
+        public <T extends Serializable> void send(ServerEvent<T> message) throws DisconnectedClientException {
             if(getStatus() == ClientStatus.Disconnected){
                 throw new DisconnectedClientException();
             }
             synchronized (this.outcomingMessages){
                 try{
                     outcomingMessages.reset();
-                    outcomingMessages.writeObject((Object)message);
+                    Result<Serializable> result = Result.serverPush(message);
+                    outcomingMessages.writeObject((Object)result);
                 }catch(Exception e){
                     Logger.getLogger(Client.class.getName()).warning(e.getMessage());
                     disconnect();
@@ -83,6 +65,21 @@ public class Client extends Thread implements ClientInterface {
                 }
             }
         }
+    private <T extends Serializable> void send(Result<T> message) throws DisconnectedClientException {
+        if(getStatus() == ClientStatus.Disconnected){
+            throw new DisconnectedClientException();
+        }
+        synchronized (this.outcomingMessages){
+            try{
+                outcomingMessages.reset();
+                outcomingMessages.writeObject((Object)message);
+            }catch(Exception e){
+                Logger.getLogger(Client.class.getName()).warning(e.getMessage());
+                disconnect();
+                throw new DisconnectedClientException();
+            }
+        }
+    }
 
         private <T extends Serializable> Call<T> receive() throws DisconnectedClientException{
             if(getStatus() == ClientStatus.Disconnected){

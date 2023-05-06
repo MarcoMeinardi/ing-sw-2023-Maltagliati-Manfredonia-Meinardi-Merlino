@@ -1,9 +1,7 @@
 package network.rpc.client;
 
 import controller.lobby.Lobby;
-import network.Result;
-import network.ServerEvent;
-import network.Service;
+import network.*;
 import network.parameters.CardSelect;
 import network.parameters.Login;
 
@@ -24,7 +22,7 @@ public class NetworkManager extends Thread{
     private Object connectedLock = new Object();
     private Server server;
     private static NetworkManager instance;
-    private HashMap<UUID,Function> callQueue = new HashMap<UUID,Function>();
+    private HashMap<UUID, Function> callQueue = new HashMap<UUID,Function>();
     private Queue<ServerEvent> eventQueue = new LinkedList<ServerEvent>();
     private Logger logger = Logger.getLogger(NetworkManager.class.getName());
     private Function<LocalDateTime,Boolean> lastPing = null;
@@ -56,7 +54,12 @@ public class NetworkManager extends Thread{
         setConnected(false);
         try{
             this.socket.close();
-        }catch(Exception e){
+        }catch(Exception e) {
+            logger.warning(e.getMessage());
+        }
+        try{
+            this.join();
+        }catch(Exception e) {
             logger.warning(e.getMessage());
         }
     }
@@ -143,7 +146,6 @@ public class NetworkManager extends Thread{
 
     public void reconnect() throws Exception{
         disconnect();
-        this.join();
         connect(server);
     }
 

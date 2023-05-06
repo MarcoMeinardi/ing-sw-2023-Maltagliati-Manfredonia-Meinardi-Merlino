@@ -46,7 +46,7 @@ public class LobbyController extends Thread {
                             } else {
                                 if (client.get().isDisconnected()) {
                                     leaveLobby(players.get(i));
-                                    client.get().setLastValidStatus(ClientStatus.Disconnected);
+                                    client.get().setStatus(ClientStatus.Disconnected);
                                     client.get().setCallHandler(LobbyController.getInstance()::handleLobbySearch);
                                     i--;
                                 }
@@ -197,7 +197,7 @@ public class LobbyController extends Thread {
                 try {
                     Optional<ClientInterface> client = ClientManager.getInstance().getClient(player);
                     if(client.isPresent()) {
-                        client.get().send(Result.ok(event, null));
+                        client.get().send(event);
                     }
                 } catch (Exception e) {
                     Logger.getLogger(LobbyController.class.getName()).warning("Error while sending global update event to client" + player + " " + e.getMessage());
