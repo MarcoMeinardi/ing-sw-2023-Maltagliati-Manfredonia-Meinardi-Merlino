@@ -338,13 +338,13 @@ public class GameController {
     }
 
     private void sendStartInfo(Player player) throws Exception {
-        ArrayList<Card[][]> shelfs = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Card[][]> shelves = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> players = game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> commonObjectives = game.getCommonObjectives().stream().map(CommonObjective::getName).collect(Collectors.toCollection(ArrayList::new));
         ServerEvent toSend = ServerEvent.Start(new StartingInfo(
             game.getTabletop().getSerializable(),
             players,
-            shelfs,
+            shelves,
             commonObjectives,
             player.getPersonalObjective().getName()
         ));

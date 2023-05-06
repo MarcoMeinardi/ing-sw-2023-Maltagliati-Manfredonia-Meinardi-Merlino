@@ -8,7 +8,7 @@ import model.Card;
 public record StartingInfo(
 	Card[][] tableTop,
 	ArrayList<String> players,
-	ArrayList<Card[][]> shelfs,
+	ArrayList<Card[][]> shelves,
 	ArrayList<String> commonObjectives,
 	String personalObjective
 ) implements Serializable {

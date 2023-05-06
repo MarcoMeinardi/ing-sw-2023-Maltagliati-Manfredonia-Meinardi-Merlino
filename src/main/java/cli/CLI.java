@@ -28,6 +28,7 @@ public class CLI {
 
 	boolean doPrint;
 	boolean gameStarted;
+	boolean yourTurn;
 
 	CLIGame game;
 
@@ -217,23 +218,88 @@ public class CLI {
 
 	private ClientStatus inGame() {
 		if (!gameStarted) {
-			try {
-				Thread.sleep(1000);  // Wait to receive game start event before promting to abort
+			try {  // Wait to receive game start event before promting to abort
+				for (int i = 0; i < 20; i++) {
+					Thread.sleep(50);
+					if (networkManager.hasEvent()) {
+						return handleEvent();
+					}
+				}
 			} catch (InterruptedException e) {}
 
-			if (networkManager.hasEvent()) {
-				return handleEvent();
-			}
 			System.out.println("Waiting for other players...");
 			// TODO ask to abort
-			Optional<InLobbyOptions> option = Utils.askOptionOrEvent(InLobbyOptions.class, doPrint);
-			if (option.isEmpty()) {
-				return handleEvent();
-			} else {
-				throw new RuntimeException("Abort not implemented");
-			}
+			throw new RuntimeException("Abort not implemented");
+			// Optional<InLobbyOptions> option = Utils.askOptionOrEvent(EarlyAbortOptions.class, true);
+			// if (option.isEmpty()) {
+			// 	return handleEvent();
+			// }
 		}
-		throw new RuntimeException("Not implemented");
+
+		if (yourTurn) {
+			return inGameTurn();
+		} else {
+			return inGameNoTurn();
+		}
+	}
+
+	private ClientStatus inGameTurn() {
+		System.out.println("It's your turn");
+		Optional<InGameTurnOptions> option = Utils.askOptionOrEvent(InGameTurnOptions.class, doPrint);
+		if (option.isEmpty()) {
+			doPrint = false;
+			return handleEvent();
+		}
+		switch (option.get()) {
+			case SHOW_YOUR_SHELF -> {
+				game.printYourShelf();
+				return ClientStatus.InGame;
+			}
+			case SHOW_ALL_SHELVES -> {
+				game.printAllShelves();
+				return ClientStatus.InGame;
+			}
+			case SHOW_TABLETOP -> {
+				game.printTableTop();
+				return ClientStatus.InGame;
+			}
+			case PICK_CARDS -> {
+				throw new RuntimeException("Not implemented");
+				// return ClientStatus.InGame;
+			}
+			case LEAVE_GAME -> {
+				throw new RuntimeException("Not implemented");
+				// return ClientStatus.InLobbySearch;
+			}
+			default -> throw new RuntimeException("Invalid option");
+		}
+	}
+
+	private ClientStatus inGameNoTurn() {
+		Optional<InGameNoTurnOptions> option = Utils.askOptionOrEvent(InGameNoTurnOptions.class, doPrint);
+		if (option.isEmpty()) {
+			doPrint = false;
+			return handleEvent();
+		}
+		switch (option.get()) {
+			case SHOW_YOUR_SHELF -> {
+				game.printYourShelf();
+				return ClientStatus.InGame;
+			}
+			case SHOW_ALL_SHELVES -> {
+				game.printAllShelves();
+				return ClientStatus.InGame;
+			}
+			case SHOW_TABLETOP -> {
+				game.printTableTop();
+				return ClientStatus.InGame;
+			}
+			case LEAVE_GAME -> {
+				// throw new RuntimeException("Not implemented");
+				return ClientStatus.InLobbySearch;
+			}
+			default -> throw new RuntimeException("Invalid option");
+		}
 	}
 
 	private ClientStatus handleEvent() {
@@ -263,7 +329,8 @@ public class CLI {
 			case Start -> {
 				gameStarted = true;
 				doPrint = true;
-				game = new CLIGame((StartingInfo)event.get().getData());
+				game = new CLIGame((StartingInfo)event.get().getData(), username);
+				yourTurn = game.players.get(0).equals(username);
 				System.out.println("Game has started");
 				return ClientStatus.InGame;
 			}
@@ -271,3 +338,4 @@ public class CLI {
 		}
 	}
 }
+
