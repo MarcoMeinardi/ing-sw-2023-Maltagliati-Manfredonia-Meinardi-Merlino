@@ -429,6 +429,7 @@ public class CLI {
 			case Update -> {
 				Update update = (Update)event.get().getData();
 				game.update(update);
+				doPrint = true;
 				if (update.nextPlayer().equals(username)) {
 					yourTurn = true;
 					System.out.println("It's your turn");
