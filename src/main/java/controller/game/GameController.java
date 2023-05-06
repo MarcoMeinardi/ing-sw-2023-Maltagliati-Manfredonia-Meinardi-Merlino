@@ -305,6 +305,7 @@ public class GameController {
             throw new GlobalUpdateAlreadyOngoingException();
         }
 		globalUpdateThread = new Thread(() -> globalUpdate(event));
+		globalUpdateThread.start();
 	}
 
     public void exitGame() {

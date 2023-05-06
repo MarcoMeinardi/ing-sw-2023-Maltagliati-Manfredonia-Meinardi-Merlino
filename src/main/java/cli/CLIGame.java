@@ -7,6 +7,7 @@ import model.Card;
 import model.Shelf;
 import model.TableTop;
 import network.parameters.StartingInfo;
+import network.parameters.Update;
 
 public class CLIGame {
 	String me;
@@ -36,13 +37,38 @@ public class CLIGame {
 
 		shelves = new ArrayList<>();
 		for (int i = 0; i < nPlayers; i++) {
+			Card[][] shelf = data.shelves().get(i);
 			shelves.add(new Optional[Shelf.ROWS][Shelf.COLUMNS]);
 			for (int y = 0;  y < Shelf.ROWS; y++) {
 				for (int x = 0; x < Shelf.COLUMNS; x++) {
-					shelves.get(i)[y][x] = data.shelves().get(i)[y][x] != null ?
-						Optional.of(data.shelves().get(i)[y][x]) :
+					shelves.get(i)[y][x] = shelf[y][x] != null ?
+						Optional.of(shelf[y][x]) :
 						Optional.empty();
 				}
+			}
+		}
+	}
+
+	public void update(Update update) {
+		for (int y = 0; y < TableTop.SIZE; y++) {
+			for (int x = 0; x < TableTop.SIZE; x++) {
+				tableTop[y][x] = update.tableTop()[y][x] != null ?
+					Optional.of(update.tableTop()[y][x]) :
+					Optional.empty();
+			}
+		}
+
+		for (int i = 0; i < nPlayers; i++) {
+			if (players.get(i).equals(update.idPlayer())) {
+				Card[][] shelf = update.shelf();
+				for (int y = 0;  y < Shelf.ROWS; y++) {
+					for (int x = 0; x < Shelf.COLUMNS; x++) {
+						shelves.get(i)[y][x] = shelf[y][x] != null ?
+							Optional.of(shelf[y][x]) :
+							Optional.empty();
+					}
+				}
+				break;
 			}
 		}
 	}

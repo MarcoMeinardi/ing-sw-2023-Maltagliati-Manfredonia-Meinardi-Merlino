@@ -66,6 +66,7 @@ public class Client extends Thread implements ClientInterface {
                 }
             }
         }
+
     private <T extends Serializable> void send(Result<T> message) throws DisconnectedClientException {
         if(getStatus() == ClientStatus.Disconnected){
             throw new DisconnectedClientException();

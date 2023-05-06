@@ -2,13 +2,20 @@ package cli;
 
 import network.rpc.client.NetworkManager;
 import network.Server;
+import network.parameters.CardSelect;
 import network.parameters.Login;
 import network.parameters.StartingInfo;
+import network.parameters.Update;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import controller.lobby.Lobby;
+import model.Point;
+import model.Shelf;
+import model.TableTop;
 import network.Result;
 import network.ServerEvent;
 import network.ClientStatus;
@@ -244,7 +251,6 @@ public class CLI {
 	}
 
 	private ClientStatus inGameTurn() {
-		System.out.println("It's your turn");
 		Optional<InGameTurnOptions> option = Utils.askOptionOrEvent(InGameTurnOptions.class, doPrint);
 		if (option.isEmpty()) {
 			doPrint = false;
@@ -264,14 +270,95 @@ public class CLI {
 				return ClientStatus.InGame;
 			}
 			case PICK_CARDS -> {
-				throw new RuntimeException("Not implemented");
-				// return ClientStatus.InGame;
+				handlePickCard();
+				return ClientStatus.InGame;
 			}
 			case LEAVE_GAME -> {
 				throw new RuntimeException("Not implemented");
 				// return ClientStatus.InLobbySearch;
 			}
 			default -> throw new RuntimeException("Invalid option");
+		}
+	}
+
+	private Point stringToPoint(String line) {
+		char[] chars = line.toCharArray();
+		if (chars[0] >= '0' && chars[0] <= '9') {
+			Collections.reverse(Arrays.asList(chars));
+		}
+		int x = chars[0] - 'a';
+		int y = chars[1] - '1';
+		return new Point(y, x);
+	}
+
+	private void handlePickCard() {
+		ArrayList<Point> selectedCards = new ArrayList<>();
+		int column;
+
+		game.printTableTop();
+		System.out.println("Enter the coordinates of the cards you want to pick");
+		for (int i = 0; i < 3; i++) {
+			boolean ok = false;
+			while (!ok) {
+				String line = Utils.askString();
+				line = line.toLowerCase().replaceAll("\\W", "");
+				if (line.isEmpty()) {
+					break;
+				}
+				if (line.length() != 2) {
+					System.out.println("Invalid coordinates");
+				} else {
+					Point p = stringToPoint(line);
+					if (p.x() < 0 || p.x() >= TableTop.SIZE || p.y() < 0 || p.y() >= TableTop.SIZE) {
+						System.out.println("Invalid coordinates");
+					} else if (game.tableTop[p.y()][p.x()].isEmpty()) {
+						System.out.println("Cannot pick card from empty slot");
+					} else {
+						selectedCards.add(p);
+						ok = true;
+					}
+				}
+			}
+			if (!ok) {
+				if (i == 0) {
+					System.out.println("No cards selected, aborting");
+					return;
+				}
+				break;
+			}
+		}
+
+		game.printYourShelf();
+		System.out.println("Enter the column where you want to place the cards");
+		while (true) {
+			column = Utils.askInt() - 1;
+			if (column < 0 || column >= Shelf.COLUMNS) {
+				System.out.println("Invalid column");
+			} else {
+				break;
+			}
+		}
+
+		try {
+			Result result = networkManager.cardSelect(new CardSelect(column, selectedCards)).waitResult();
+			if (result.isErr()) {
+				System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
+			}
+		} catch (Exception e) {
+			System.out.println("[ERROR] " + e.getMessage());
+		}
+
+		waitGlobalUpdate();
+	}
+
+	public void waitGlobalUpdate() {
+		try {
+			while (!networkManager.hasEvent()) {
+				Thread.sleep(50);
+			}
+		} catch (InterruptedException e) {}
+		if (handleEvent() != ClientStatus.InGame) {
+			throw new RuntimeException("Invalid status");
 		}
 	}
 
@@ -295,8 +382,8 @@ public class CLI {
 				return ClientStatus.InGame;
 			}
 			case LEAVE_GAME -> {
-				// throw new RuntimeException("Not implemented");
-				return ClientStatus.InLobbySearch;
+				throw new RuntimeException("Not implemented");
+				// return ClientStatus.InLobbySearch;
 			}
 			default -> throw new RuntimeException("Invalid option");
 		}
@@ -332,7 +419,25 @@ public class CLI {
 				game = new CLIGame((StartingInfo)event.get().getData(), username);
 				yourTurn = game.players.get(0).equals(username);
 				System.out.println("Game has started");
+				if (yourTurn) {
+					System.out.println("It's your turn");
+				} else {
+					System.out.println("It's " + game.players.get(0) + "'s turn");
+				}
 				return ClientStatus.InGame;
+			}
+			case Update -> {
+				Update update = (Update)event.get().getData();
+				game.update(update);
+				if (update.nextPlayer().equals(username)) {
+					yourTurn = true;
+					System.out.println("It's your turn");
+					return ClientStatus.InGame;
+				} else {
+					yourTurn = false;
+					System.out.println("It's " + update.nextPlayer() + "'s turn");
+					return ClientStatus.InGame;
+				}
 			}
 			default -> throw new RuntimeException("Unhandled exception");
 		}
