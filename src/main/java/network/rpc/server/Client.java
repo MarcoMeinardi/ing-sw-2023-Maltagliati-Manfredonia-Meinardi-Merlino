@@ -31,6 +31,7 @@ public class Client extends Thread implements ClientInterface {
             this.incomingMessages = new ObjectInputStream(socket.getInputStream());
             this.outcomingMessages = new ObjectOutputStream(socket.getOutputStream());
             this.handler = handler;
+            this.statusHandler = new ClientStatusHandler();
         }
 
         public ClientStatus getStatus() {
