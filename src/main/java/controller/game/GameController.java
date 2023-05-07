@@ -3,7 +3,6 @@ import controller.lobby.Lobby;
 import controller.lobby.LobbyController;
 import model.*;
 import network.*;
-import network.errors.DisconnectedClientException;
 import network.parameters.CardSelect;
 import network.parameters.Message;
 import network.parameters.StartingInfo;
@@ -263,7 +262,6 @@ public class GameController {
                         throw new NotYourTurnException();
                     }
                     doMove(player, cardSelect.selectedCards(), cardSelect.column());
-                    addPersonalCockade(player);
                     addCommonCockade(player);
                     refillTable();
                     if(playerIterator.hasNext()){
@@ -271,6 +269,9 @@ public class GameController {
                         Update update = new Update(username, game.getTabletop().getSerializable(), player.getShelf().getSerializable(), currentPlayer.getName());
                         setGlobalUpdate(ServerEvent.Update(update));
                     }else{
+                        for(Player p : game.getPlayers()){
+                            addPersonalCockade(player);
+                        }
                         ScoreBoard scoreBoard = new ScoreBoard(game);
 						setGlobalUpdate(ServerEvent.End(scoreBoard));
                         exitGame();
