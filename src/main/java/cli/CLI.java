@@ -386,12 +386,13 @@ public class CLI {
 			Result result = networkManager.cardSelect(new CardSelect(column, selectedCards)).waitResult();
 			if (result.isErr()) {
 				System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
+			} else {
+				waitGlobalUpdate();
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] " + e.getMessage());
 		}
 
-		waitGlobalUpdate();
 	}
 
 	public void waitGlobalUpdate() {
