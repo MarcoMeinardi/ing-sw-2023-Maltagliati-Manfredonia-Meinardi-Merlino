@@ -59,8 +59,7 @@ public class PersonalObjective extends Objective {
      * @return An array of personal objectives
      */
 
-    public static PersonalObjective[] generatePersonalObjectives(int nPlayers) {
-        PersonalObjective[] selectedPersonalObjectives = new PersonalObjective[nPlayers];
+    public static ArrayList<PersonalObjective> generateAllPersonalObjectives() {
         ArrayList<PersonalObjective> allObjectives = new ArrayList<>();
 
         allObjectives.add(new PersonalObjective("First", new Cell[]{
@@ -172,6 +171,13 @@ public class PersonalObjective extends Objective {
                 new Cell(0,0, Card.Gatto)
         }));
 
+        return allObjectives;
+    }
+
+    public static PersonalObjective[] generatePersonalObjectives(int nPlayers) {
+        PersonalObjective[] selectedPersonalObjectives = new PersonalObjective[nPlayers];
+
+        ArrayList<PersonalObjective> allObjectives = generateAllPersonalObjectives();
         Collections.shuffle(allObjectives);
         for (int i = 0; i < nPlayers; i++) {
             selectedPersonalObjectives[i] = allObjectives.get(i);
