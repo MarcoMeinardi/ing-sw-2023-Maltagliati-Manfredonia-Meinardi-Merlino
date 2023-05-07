@@ -21,6 +21,16 @@ public class PersonalObjective extends Objective {
         this.cellsCheck = cellsCheck;
     }
 
+    /**
+     * Returns the array of cells to check for completion of the objective.
+     * @Author Marco
+     *
+     * @return The array of cells to check for completion of the objective
+     */
+    public Cell[] getCellsCheck() {
+        return cellsCheck;
+    }
+
     /*
         * checks if the personal objective is completed by the player
         * @author Marco, Ludovico, Lorenzo
@@ -52,10 +62,9 @@ public class PersonalObjective extends Objective {
     }
 
     /**
-     * Generates an array of personal objectives with the size corresponding to the number of players.
+     * Generates an ArrayList with all the existing personal objectives.
      * @author Ludovico
      *
-     * @param nPlayers The number of players
      * @return An array of personal objectives
      */
 
@@ -174,6 +183,13 @@ public class PersonalObjective extends Objective {
         return allObjectives;
     }
 
+    /**
+     * Generates an array of personal objectives, one for each player, randomly selected from the list of all the existing personal objectives.
+     * @Author Ludovico
+     * 
+     * @param nPlayers The number of players in the game
+     * @return An array of personal objectives
+     */
     public static PersonalObjective[] generatePersonalObjectives(int nPlayers) {
         PersonalObjective[] selectedPersonalObjectives = new PersonalObjective[nPlayers];
 

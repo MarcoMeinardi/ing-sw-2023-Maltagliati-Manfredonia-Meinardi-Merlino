@@ -1,6 +1,5 @@
 package model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -27,6 +26,17 @@ public class Shelf {
                 slots[y][x] = Optional.empty();
             }
         }
+    }
+
+    /**
+     * Constructor to initialize a shelf with a specified two-dimensional array of cards.
+     * Note: this game must not be used by the controller it has to be used only for testing or for the CLI
+     * @Author Marco
+     *
+     * @param slots The two-dimensional array of cards to initialize the shelf with
+     */
+    public Shelf(Optional<Card>[][] slots) {
+        this.slots = slots;
     }
 
     /**

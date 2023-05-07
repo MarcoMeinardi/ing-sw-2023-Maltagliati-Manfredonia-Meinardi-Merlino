@@ -14,6 +14,7 @@ public class CommonObjective extends Objective {
 	private static final int INITIAL_VALUE = 8;
 	private static final int POINT_DECREMENT = 2;
 	private static final int POINT_DECREMENT_2_PLAYERS = 4;
+	public static final int N_COMMON_OBJECTIVES = 2;
 
 	/**
 	 * Constructor that creates a new common objective with a specified name,
@@ -57,7 +58,7 @@ public class CommonObjective extends Objective {
 		allObjectives.add(new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShape));
 
 		Collections.shuffle(allObjectives);
-		return allObjectives.stream().limit(2).collect(Collectors.toCollection(ArrayList::new));
+		return allObjectives.stream().limit(N_COMMON_OBJECTIVES).collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	/**

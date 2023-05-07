@@ -269,8 +269,51 @@ public class CLI {
 				game.printTableTop();
 				return ClientStatus.InGame;
 			}
+			case SHOW_PERSONAL_OBJECTIVE -> {
+				game.printPersonalObjective();
+				return ClientStatus.InGame;
+			}
+			case SHOW_COMMON_OBJECTIVES -> {
+				game.printCommonObjectives();
+				return ClientStatus.InGame;
+			}
 			case PICK_CARDS -> {
 				handlePickCard();
+				return ClientStatus.InGame;
+			}
+			case LEAVE_GAME -> {
+				throw new RuntimeException("Not implemented");
+				// return ClientStatus.InLobbySearch;
+			}
+			default -> throw new RuntimeException("Invalid option");
+		}
+	}
+
+	private ClientStatus inGameNoTurn() {
+		Optional<InGameNoTurnOptions> option = Utils.askOptionOrEvent(InGameNoTurnOptions.class, doPrint);
+		if (option.isEmpty()) {
+			doPrint = false;
+			return handleEvent();
+		}
+		switch (option.get()) {
+			case SHOW_YOUR_SHELF -> {
+				game.printYourShelf();
+				return ClientStatus.InGame;
+			}
+			case SHOW_ALL_SHELVES -> {
+				game.printAllShelves();
+				return ClientStatus.InGame;
+			}
+			case SHOW_TABLETOP -> {
+				game.printTableTop();
+				return ClientStatus.InGame;
+			}
+			case SHOW_PERSONAL_OBJECTIVE -> {
+				game.printPersonalObjective();
+				return ClientStatus.InGame;
+			}
+			case SHOW_COMMON_OBJECTIVES -> {
+				game.printCommonObjectives();
 				return ClientStatus.InGame;
 			}
 			case LEAVE_GAME -> {
@@ -359,33 +402,6 @@ public class CLI {
 		} catch (InterruptedException e) {}
 		if (handleEvent() != ClientStatus.InGame) {
 			throw new RuntimeException("Invalid status");
-		}
-	}
-
-	private ClientStatus inGameNoTurn() {
-		Optional<InGameNoTurnOptions> option = Utils.askOptionOrEvent(InGameNoTurnOptions.class, doPrint);
-		if (option.isEmpty()) {
-			doPrint = false;
-			return handleEvent();
-		}
-		switch (option.get()) {
-			case SHOW_YOUR_SHELF -> {
-				game.printYourShelf();
-				return ClientStatus.InGame;
-			}
-			case SHOW_ALL_SHELVES -> {
-				game.printAllShelves();
-				return ClientStatus.InGame;
-			}
-			case SHOW_TABLETOP -> {
-				game.printTableTop();
-				return ClientStatus.InGame;
-			}
-			case LEAVE_GAME -> {
-				throw new RuntimeException("Not implemented");
-				// return ClientStatus.InLobbySearch;
-			}
-			default -> throw new RuntimeException("Invalid option");
 		}
 	}
 

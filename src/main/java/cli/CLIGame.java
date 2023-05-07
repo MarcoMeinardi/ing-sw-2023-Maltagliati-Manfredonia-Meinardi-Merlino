@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import model.Card;
+import model.Cell;
+import model.Cockade;
+import model.CommonObjective;
+import model.InvalidMoveException;
+import model.PersonalObjective;
 import model.Shelf;
 import model.TableTop;
 import network.parameters.StartingInfo;
@@ -15,73 +20,93 @@ public class CLIGame {
 	int nPlayers;
 	Optional<Card>[][] tableTop;
 	ArrayList<String> players;
-	ArrayList<Optional<Card>[][]> shelves;
+	ArrayList<Shelf> shelves;
+	Shelf myShelf;
 	ArrayList<String> commonObjectives;
-	String personalObjective;
+	PersonalObjective personalObjective;
 
 	public CLIGame(StartingInfo data, String me) {
 		this.me = me;
 		this.players = data.players();
 		this.commonObjectives = data.commonObjectives();
-		this.personalObjective = data.personalObjective();
-		nPlayers = this.players.size();
+		this.nPlayers = this.players.size();
 
-		tableTop = new Optional[TableTop.SIZE][TableTop.SIZE];
-		for (int y = 0;  y < TableTop.SIZE; y++) {
-			for (int x = 0; x < TableTop.SIZE; x++) {
-				tableTop[y][x] = data.tableTop()[y][x] != null ?
-					Optional.of(data.tableTop()[y][x]) :
-					Optional.empty();
+		String personalObjectiveName = data.personalObjective();
+		ArrayList<PersonalObjective> allObjectives = PersonalObjective.generateAllPersonalObjectives();
+		for (PersonalObjective objective : allObjectives) {
+			if (objective.getName().equals(personalObjectiveName)) {
+				this.personalObjective = objective;
+				break;
 			}
 		}
+		if (this.personalObjective == null) {
+			throw new RuntimeException("Unknown personal objective found");
+		}
+
+		updateTableTop(data.tableTop());
 
 		shelves = new ArrayList<>();
 		for (int i = 0; i < nPlayers; i++) {
-			Card[][] shelf = data.shelves().get(i);
-			shelves.add(new Optional[Shelf.ROWS][Shelf.COLUMNS]);
-			for (int y = 0;  y < Shelf.ROWS; y++) {
-				for (int x = 0; x < Shelf.COLUMNS; x++) {
-					shelves.get(i)[y][x] = shelf[y][x] != null ?
-						Optional.of(shelf[y][x]) :
-						Optional.empty();
-				}
+			shelves.add(convertShelf(data.shelves().get(i)));
+			if (players.get(i).equals(me)) {
+				myShelf = shelves.get(i);
 			}
 		}
 	}
 
 	public void update(Update update) {
-		for (int y = 0; y < TableTop.SIZE; y++) {
-			for (int x = 0; x < TableTop.SIZE; x++) {
-				tableTop[y][x] = update.tableTop()[y][x] != null ?
-					Optional.of(update.tableTop()[y][x]) :
-					Optional.empty();
-			}
-		}
+		updateTableTop(update.tableTop());
 
 		for (int i = 0; i < nPlayers; i++) {
 			if (players.get(i).equals(update.idPlayer())) {
-				Card[][] shelf = update.shelf();
-				for (int y = 0;  y < Shelf.ROWS; y++) {
-					for (int x = 0; x < Shelf.COLUMNS; x++) {
-						shelves.get(i)[y][x] = shelf[y][x] != null ?
-							Optional.of(shelf[y][x]) :
-							Optional.empty();
-					}
+				shelves.set(i, convertShelf(update.shelf()));
+				if (players.get(i).equals(me)) {
+					myShelf = shelves.get(i);
 				}
 				break;
 			}
 		}
 	}
 
-	private void printShelf(Optional<Card>[][] shelf) {
+	private void updateTableTop(Card[][] tableTop) {
+		this.tableTop = new Optional[TableTop.SIZE][TableTop.SIZE];
+
+		for (int y = 0;  y < TableTop.SIZE; y++) {
+			for (int x = 0; x < TableTop.SIZE; x++) {
+				this.tableTop[y][x] = tableTop[y][x] != null ?
+					Optional.of(tableTop[y][x]) :
+					Optional.empty();
+			}
+		}
+	}
+
+	private Shelf convertShelf(Card[][] shelf) {
+		Optional<Card>[][] optionalShelf = new Optional[Shelf.ROWS][Shelf.COLUMNS];
+
+		for (int y = 0;  y < Shelf.ROWS; y++) {
+			for (int x = 0; x < Shelf.COLUMNS; x++) {
+				optionalShelf[y][x] = shelf[y][x] != null ?
+					Optional.of(shelf[y][x]) :
+					Optional.empty();
+			}
+		}
+
+		return new Shelf(optionalShelf);
+	}
+
+	private void printShelf(Shelf shelf) {
 		System.out.println("┌─┬─┬─┬─┬─┐");
 		for (int y = Shelf.ROWS - 1; y >= 0; y--) {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
 				System.out.print("│");
-				if (shelf[y][x].isPresent()) {
-					System.out.print(cardToChar(shelf[y][x].get()));
-				} else {
-					System.out.print(" ");
+				try {
+					if (shelf.getCard(y, x).isPresent()) {
+						System.out.print(cardToChar(shelf.getCard(y, x).get()));
+					} else {
+						System.out.print(" ");
+					}
+				} catch (InvalidMoveException e) {
+					throw new RuntimeException("Shelf is broken");
 				}
 			}
 			System.out.println("│");
@@ -110,15 +135,7 @@ public class CLIGame {
 	}
 
 	public void printYourShelf() {
-		Optional<Card>[][] shelf = null;
-		for (int i = 0; i < nPlayers; i++) {
-			if (players.get(i).equals(me)) {
-				shelf = shelves.get(i);
-				break;
-			}
-		}  // Where is the for else loop?
-
-		printShelf(shelf);
+		printShelf(myShelf);
 	}
 
 	public void printAllShelves() {
@@ -155,5 +172,36 @@ public class CLIGame {
 			System.out.format(" %c", 'a' + x);
 		}
 		System.out.println();
+	}
+
+	public void printPersonalObjective() {
+		Optional<Card>[][] shelfLikePersonalObjective = new Optional[Shelf.ROWS][Shelf.COLUMNS];
+
+		for (int y = 0; y < Shelf.ROWS; y++) {
+			for (int x = 0; x < Shelf.COLUMNS; x++) {
+				shelfLikePersonalObjective[y][x] = Optional.empty();
+			}
+		}
+		for (Cell cell : personalObjective.getCellsCheck()) {
+			shelfLikePersonalObjective[cell.y()][cell.x()] = Optional.of(cell.card());
+		}
+		printShelf(new Shelf(shelfLikePersonalObjective));
+		
+		Optional<Cockade> cockade = personalObjective.isCompleted(myShelf);
+		if (cockade.isEmpty()) {
+			System.out.println("You won't get any point for your personal objective");
+		} else {
+			System.out.format(
+				"You will get %d %s for your personal objective%n",
+				cockade.get().points(),
+				cockade.get().points() == 1 ? "point" : "points"
+			);
+		}
+	}
+
+	public void printCommonObjectives() {
+		for (int i = 0; i < CommonObjective.N_COMMON_OBJECTIVES; i++) {
+			System.out.format("%d: %s%n", i + 1, commonObjectives.get(i));
+		}
 	}
 }
