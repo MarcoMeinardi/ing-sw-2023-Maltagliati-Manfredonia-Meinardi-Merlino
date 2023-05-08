@@ -158,7 +158,9 @@ public class LobbyController extends Thread {
             synchronized (lobbies){
                 lobbies.remove(lobby.getName());
             }
-        }
+        } else {
+			globalUpdate(lobby, ServerEvent.Leave(player));
+		}
     }
 
     /**
@@ -216,7 +218,6 @@ public class LobbyController extends Thread {
                     leaveLobby(client.getUsername());
                     client.setStatus(ClientStatus.InLobbySearch);
                     client.setCallHandler(this::handleLobbySearch);
-                    globalUpdate(lobby, ServerEvent.Leave(client.getUsername()));
                     result = Result.empty(call.id());
                 }
                 case LobbyUpdate -> {
