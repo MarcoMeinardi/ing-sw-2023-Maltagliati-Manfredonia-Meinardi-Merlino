@@ -358,12 +358,14 @@ public class CLI {
 	}
 
 	private Point stringToPoint(String line) {
-		char[] chars = line.toCharArray();
-		if (chars[0] >= '0' && chars[0] <= '9') {
-			Collections.reverse(Arrays.asList(chars));
+		int y, x;
+		if ('0' <= line.charAt(0) && line.charAt(0) <= '9') {
+			y = line.charAt(0) - '1';
+			x = line.charAt(1) - 'a';
+		} else {
+			y = line.charAt(1) - '1';
+			x = line.charAt(0) - 'a';
 		}
-		int x = chars[0] - 'a';
-		int y = chars[1] - '1';
 		return new Point(y, x);
 	}
 
