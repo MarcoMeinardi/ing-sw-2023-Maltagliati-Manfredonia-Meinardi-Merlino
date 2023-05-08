@@ -459,7 +459,7 @@ public class CLI {
 				try {
 					lobby.removePlayer(leftPlayer);
 				} catch (Exception e) {}  // Cannot happen
-				System.out.println(leftPlayer + " left the lobby");
+				System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
 			}
 			case Start -> {
 				gameStarted = true;
