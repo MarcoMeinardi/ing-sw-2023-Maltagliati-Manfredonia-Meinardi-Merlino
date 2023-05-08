@@ -55,9 +55,6 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
 
     @Override
     public void waitAndClose() {
-        synchronized (instanceLock){
-            instance = null;
-        }
         try{
             this.join();
         }catch (InterruptedException e){

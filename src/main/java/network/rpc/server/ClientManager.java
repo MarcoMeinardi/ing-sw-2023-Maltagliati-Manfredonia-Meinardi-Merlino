@@ -139,9 +139,6 @@ public class ClientManager extends Thread implements ClientManagerInterface{
 
     @Override
     public void waitAndClose() {
-        synchronized (instanceLock){
-            instance = null;
-        }
         try{
             acceptConnectionsThread.join();
         }catch (InterruptedException e){
