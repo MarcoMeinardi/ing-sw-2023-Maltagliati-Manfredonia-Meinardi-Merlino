@@ -27,9 +27,9 @@ public class GameController {
 
     private final Game game;
 
-    private static final int disconectionTimeOut = 10000;
+    private static final int DISCONNECTION_TIMOUT = 10000;
 
-    private static final int maxDisconnectionTries = 18;
+    private static final int MAX_DISCONNECTION_TRIES = 18;
 
     private Boolean gamePaused = false;
     private final Iterator<Player> playerIterator;
@@ -210,14 +210,14 @@ public class GameController {
             }
 
             try {
-                Thread.sleep(disconectionTimeOut);
+                Thread.sleep(DISCONNECTION_TIMOUT);
             } catch (InterruptedException e) {
                 logger.warning("Error while sleeping" + e.getMessage());
             }
 
             count++;
 
-            if (count == maxDisconnectionTries) {
+            if (count == MAX_DISCONNECTION_TRIES) {
                 exitGame();
             }
 
