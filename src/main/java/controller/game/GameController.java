@@ -37,6 +37,8 @@ public class GameController {
 	private Thread globalUpdateThread = null;
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
+    private final ClientManagerInterface clientManager;
+
     /**
      * Constructor that creates a new game with the specified players.
      * @author Ludovico
@@ -46,8 +48,9 @@ public class GameController {
         game = new Game(lobby.getPlayers());
         playerIterator = game.iterator();
         currentPlayer = playerIterator.next();
+        clientManager = ClientManager.getInstance();
         for (Player player : game.getPlayers()) {
-            ClientInterface client = ClientManager.getInstance().getClient(player.getName()).orElseThrow();
+            ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
             client.setCallHandler(this::handleGame);
             sendStartInfo(player);
         }
@@ -179,8 +182,6 @@ public class GameController {
 
     public void checkDisconnection() {
         int count = 0;
-        ClientManagerInterface clientManager = ClientManager.getInstance();
-
         while (true) {
             List<String> connectedPlayers = game.getPlayers().stream().filter(p -> clientManager.isClientConnected(p.getName())).map(Player::getName).toList();
             if (connectedPlayers.size() == game.getPlayers().size()) {
@@ -197,7 +198,6 @@ public class GameController {
                     logger.warning("Error while sending resume event to client" + e.getMessage());
                 }
             }
-
             for (String player:  connectedPlayers) {
                 Optional<ClientInterface> client = clientManager.getClient(player);
                 if(client.isPresent()){
@@ -226,7 +226,6 @@ public class GameController {
     }
 
     public void globalUpdate(ServerEvent event) {
-        ClientManagerInterface clientManager = ClientManager.getInstance();
         while (true) {
             try {
                 for(Player player : game.getPlayers()) {
@@ -310,7 +309,6 @@ public class GameController {
 	}
 
     public void exitGame() {
-        ClientManagerInterface clientManager = ClientManager.getInstance();
         LobbyController lobbyController = LobbyController.getInstance();
         for(Player player: game.getPlayers()){
             Optional<ClientInterface> client = clientManager.getClient(player.getName());
@@ -342,7 +340,7 @@ public class GameController {
             commonObjectives,
             player.getPersonalObjective().getName()
         ));
-        ClientInterface client = ClientManager.getInstance().getClient(player.getName()).orElseThrow();
+        ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
         client.send(toSend);
     }
 }
