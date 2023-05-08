@@ -16,7 +16,7 @@ public class TableTopTest {
 		TableTop table = new TableTop(3);
 		for (int y = 0; y < TableTop.SIZE; y++) {
 			for (int x = 0; x < TableTop.SIZE; x++) {
-				if (TableTop.player_number_mask[y][x] <= 3) {
+				if (TableTop.PLAYER_NUMBER_MASK[y][x] <= 3) {
 					assertNotEquals(table.getCard(y, x), Optional.empty());
 				}
 			}

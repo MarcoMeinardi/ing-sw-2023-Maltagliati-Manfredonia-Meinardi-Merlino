@@ -15,7 +15,7 @@ public class TableTop {
 	private static final int[] dx = {-1, 0, 1, 0};
 	private static final int[] dy = {0, -1, 0, 1};
 
-	public static final int[][] player_number_mask = {
+	public static final int[][] PLAYER_NUMBER_MASK = {
 		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 3          , 4          , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS},
 		{MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS, 2          , 2          , 4          , MAX_PLAYERS, MAX_PLAYERS, MAX_PLAYERS},
 		{MAX_PLAYERS, MAX_PLAYERS, 3          , 2          , 2          , 2          , 3          , MAX_PLAYERS, MAX_PLAYERS},
@@ -36,7 +36,7 @@ public class TableTop {
 	 * @return The card at the specified position.
 	 */
 	private boolean isUsed(int y, int x) {
-		return player_number_mask[y][x] <= player_count;
+		return PLAYER_NUMBER_MASK[y][x] <= player_count;
 	}
 
 	/**

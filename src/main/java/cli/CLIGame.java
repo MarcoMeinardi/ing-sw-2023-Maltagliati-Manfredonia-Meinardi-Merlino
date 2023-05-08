@@ -95,15 +95,15 @@ public class CLIGame {
 	}
 
 	private void printShelf(Shelf shelf) {
-		System.out.println("┌─┬─┬─┬─┬─┐");
+		System.out.println("┌───┬───┬───┬───┬───┐");
 		for (int y = Shelf.ROWS - 1; y >= 0; y--) {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
 				System.out.print("│");
 				try {
 					if (shelf.getCard(y, x).isPresent()) {
-						System.out.print(cardToChar(shelf.getCard(y, x).get()));
+						System.out.format(" %s ", cardToChar(shelf.getCard(y, x).get()));
 					} else {
-						System.out.print(" ");
+						System.out.print("   ");
 					}
 				} catch (InvalidMoveException e) {
 					throw new RuntimeException("Shelf is broken");
@@ -111,13 +111,13 @@ public class CLIGame {
 			}
 			System.out.println("│");
 			if (y == 0) {
-				System.out.println("└─┴─┴─┴─┴─┘");
+				System.out.println("└───┴───┴───┴───┴───┘");
 			} else {
-				System.out.println("├─┼─┼─┼─┼─┤");
+				System.out.println("├───┼───┼───┼───┼───┤");
 			}
 		}
 		for (int i = 0; i < Shelf.COLUMNS; i++) {
-			System.out.format(" %d", i + 1);
+			System.out.format("  %d ", i + 1);
 		}
 		System.out.println();
 	}
@@ -147,29 +147,29 @@ public class CLIGame {
 	}
 
 	public void printTableTop() {
-		System.out.println("  ┌─┬─┬─┬─┬─┬─┬─┬─┬─┐");
+		System.out.println("  ┌───┬───┬───┬───┬───┬───┬───┬───┬───┐");
 
 		for (int y = TableTop.SIZE - 1; y >= 0; y--) {
 			System.out.format("%d ", y + 1);
 			for (int x = 0; x < TableTop.SIZE; x++) {
 				System.out.print("│");
 				if (tableTop[y][x].isPresent()) {
-					System.out.print(cardToChar(tableTop[y][x].get()));
+					System.out.format(" %s ", cardToChar(tableTop[y][x].get()));
 				} else {
-					System.out.print(" ");
+					System.out.print("   ");
 				}
 			}
 			System.out.println("│");
 			if (y == 0) {
-				System.out.println("  └─┴─┴─┴─┴─┴─┴─┴─┴─┘");
+				System.out.println("  └───┴───┴───┴───┴───┴───┴───┴───┴───┘");
 			} else {
-				System.out.println("  ├─┼─┼─┼─┼─┼─┼─┼─┼─┤");
+				System.out.println("  ├───┼───┼───┼───┼───┼───┼───┼───┼───┤");
 			}
 		}
 
 		System.out.print("  ");
 		for (int x = 0; x < TableTop.SIZE; x++) {
-			System.out.format(" %c", 'a' + x);
+			System.out.format("  %c ", 'a' + x);
 		}
 		System.out.println();
 	}
