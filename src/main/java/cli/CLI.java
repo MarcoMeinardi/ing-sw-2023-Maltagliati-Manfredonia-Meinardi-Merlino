@@ -405,10 +405,13 @@ public class CLI {
 		}
 
 		game.printYourShelf();
-		System.out.println("Enter the column where you want to place the cards");
+		System.out.println("Enter the column where you want to place the cards (-1 to abort)");
 		while (true) {
 			column = Utils.askInt() - 1;
-			if (column < 0 || column >= Shelf.COLUMNS) {
+			if (column == -2) {
+				System.out.println("Aborted");
+				return;
+			} else if (column < 0 || column >= Shelf.COLUMNS) {
 				System.out.println("Invalid column");
 			} else {
 				break;
