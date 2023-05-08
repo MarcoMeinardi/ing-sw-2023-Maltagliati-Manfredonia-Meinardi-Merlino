@@ -122,6 +122,9 @@ public class NetworkManager extends Thread{
                     synchronized (eventQueue) {
                         eventQueue.add(event);
                     }
+                    synchronized (instance) {
+                        instance.notifyAll();
+                    }
                 } else if (lastPing.id().equals(result.id())) {
                     synchronized (lastPing) {
                         lastPing.setResult((Result<Boolean>)result);

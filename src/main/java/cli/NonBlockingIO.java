@@ -2,6 +2,8 @@ package cli;
 
 import java.util.Scanner;
 
+import network.rpc.client.NetworkManager;
+
 public class NonBlockingIO extends Thread {
 	private static Scanner scanner = new Scanner(System.in);
 
@@ -39,6 +41,9 @@ public class NonBlockingIO extends Thread {
 				result = scanner.nextLine();
 				synchronized (isAvailableLock) {
 					isAvailable = true;
+					synchronized (NetworkManager.getInstance()) {
+						NetworkManager.getInstance().notifyAll();
+					}
 					while (isAvailable) {
 						isAvailableLock.wait();
 					}

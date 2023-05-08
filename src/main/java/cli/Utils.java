@@ -27,12 +27,15 @@ public class Utils {
 			return Optional.empty();
 		}
 		IO.ask();
+		NetworkManager networkManager = NetworkManager.getInstance();
 		try {
-			while (!IO.isAvailable()) {
-				if (NetworkManager.getInstance().hasEvent()) {
+			synchronized (networkManager) {
+				while (!IO.isAvailable() && !networkManager.hasEvent()) {
+					networkManager.wait();
+				}
+				if (!IO.isAvailable() && NetworkManager.getInstance().hasEvent()) {
 					return Optional.empty();
 				}
-				Thread.sleep(50);
 			}
 		} catch (InterruptedException e) {
 			return Optional.empty();
