@@ -22,10 +22,9 @@ public class LobbyController extends Thread {
     private LobbyController() {}
 
     /**
-     * @author Riccardo, Lorenzo
      * Singleton pattern, if the instance is null, it creates a new one and starts it
      * @return the instance of the LobbyController
-     *
+     * @author Riccardo, Lorenzo
      */
     public static LobbyController getInstance() {
         if (instance == null) {
@@ -40,14 +39,13 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * @author Riccardo, Lorenzo
      * This method continuously checks the status of players in lobbies and handles disconnections.
      * It sleeps for 1000 milliseconds between each iteration.
      * If a player is disconnected, they are removed from the lobby and their status is updated.
      * The method also sets the call handler for disconnected clients to the LobbyController's handleLobbySearch method.
      * If a client is not found in the ClientManager, a ClientNotFoundException is thrown.
      * Any exceptions that occur during execution are printed to the standard error stream
-     *
+     * @author Riccardo, Lorenzo
      */
     public void run() {
         try {
@@ -78,11 +76,11 @@ public class LobbyController extends Thread {
     }
 
     /**
-     *  @author Riccardo, Lorenzo
      *  Finds the lobby that contains a specific player.
      *  @param playerName the name of the player to search for
      *  @return the Lobby object that contains the player
      *  @throws LobbyNotFoundException if the player is not found in any lobby
+     *  @author Riccardo, Lorenzo
      */
 
     public Lobby findPlayerLobby(String playerName) throws LobbyNotFoundException {
@@ -97,12 +95,12 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * @author Riccardo, Lorenzo
      * Creates a new lobby with the specified name and host player.
      * @param lobbyname the name of the lobby to create
      * @param host the name of the player who will be the host of the lobby
      * @return the created Lobby object
      * @throws LobbyAlreadyExistsException if a lobby with the same name already exists
+     * @author Riccardo, Lorenzo
      */
     public Lobby createLobby(String lobbyname, String host) throws LobbyAlreadyExistsException {
         if(lobbies.containsKey(lobbyname)){
@@ -122,7 +120,6 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * @author Riccardo, Lorenzo
      * Joins a player to a specified lobby.
      * @param lobbyname the name of the lobby to join
      * @param player the name of the player to join the lobby
@@ -130,6 +127,7 @@ public class LobbyController extends Thread {
      * @throws LobbyNotFoundException if the specified lobby does not exist
      * @throws PlayerAlreadyInLobbyException if the player is already in a lobby
      * @throws LobbyFullException if the lobby is already full and cannot accept more players
+     * @author Riccardo, Lorenzo
      */
     public Lobby joinLobby(String lobbyname, String player) throws LobbyNotFoundException, PlayerAlreadyInLobbyException, LobbyFullException {
         Lobby lobby;
@@ -145,11 +143,11 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * @author Riccardo, Lorenzo
      * Removes a player from their current lobby.
      * @param player the name of the player to remove from the lobby
      * @throws LobbyNotFoundException if the player is not found in any lobby
      * @throws PlayerNotInLobbyException if the player is not in a lobby
+     * @author Riccardo, Lorenzo
      */
     public void leaveLobby(String player) throws LobbyNotFoundException, PlayerNotInLobbyException {
         Lobby lobby = findPlayerLobby(player);
@@ -164,11 +162,11 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * @author Riccardo, Lorenzo
      * Handles the lobby search call based on the specified service and parameters.
      * @param call the Call object representing the lobby search request
      * @param client the ClientInterface object of the client making the request
      * @return a Result object containing the result of the lobby search operation
+     * @author Riccardo, Lorenzo
      */
     public Result<Serializable> handleLobbySearch(Call<Serializable> call, ClientInterface client) {
         Result<Serializable> result;
@@ -203,11 +201,11 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * @author Riccardo, Lorenzo
      * Handles the in-lobby call based on the specified service and parameters.
      * @param call the Call object representing the in-lobby request
      * @param client the ClientInterface object of the client making the request
      * @return a Result object containing the result of the in-lobby operation
+     * @author Riccardo, Lorenzo
      */
     public Result<Serializable> handleInLobby(Call<Serializable> call, ClientInterface client) {
         Result<Serializable> result;
@@ -266,10 +264,10 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * @author Marco
      * Sends a global update event to all clients in the specified lobby.
      * @param lobby the Lobby object to send the update event to
      * @param event the ServerEvent object representing the update event
+     * @author Marco
      */
     private void globalUpdate(Lobby lobby, ServerEvent event) {
         synchronized (lobby) {
