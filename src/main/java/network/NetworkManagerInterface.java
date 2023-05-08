@@ -26,4 +26,5 @@ public interface NetworkManagerInterface {
     public RemoteFunctionInterface<Boolean,Boolean> gameStart() throws Exception;
     public RemoteFunctionInterface<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception;
     public RemoteFunctionInterface<Login, Boolean> login(Login username) throws Exception;
+    public RemoteFunctionInterface<Login, Boolean> chat(String message) throws Exception;
 }

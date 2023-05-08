@@ -4,6 +4,7 @@ import network.rpc.client.NetworkManager;
 import network.Server;
 import network.parameters.CardSelect;
 import network.parameters.Login;
+import network.parameters.Message;
 import network.parameters.StartingInfo;
 import network.parameters.Update;
 
@@ -215,6 +216,14 @@ public class CLI {
 					}
 					return ClientStatus.InLobby;
 				}
+				case SEND_MESSAGE -> {
+					String message = Utils.askString("Message: ");
+					result = networkManager.chat(message).waitResult();
+					if (result.isErr()) {
+						System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
+					}
+					return ClientStatus.InLobby;
+				}
 				default -> throw new RuntimeException("Invalid option");
 			}
 		} catch (Exception e) {
@@ -277,6 +286,18 @@ public class CLI {
 				game.printCommonObjectives();
 				return ClientStatus.InGame;
 			}
+			case SEND_MESSAGE -> {
+				String message = Utils.askString("Message: ");
+				try {
+					Result result = networkManager.chat(message).waitResult();
+					if (result.isErr()) {
+						System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
+					}
+				} catch (Exception e) {
+					System.out.println("[ERROR] " + e.getMessage());
+				}
+				return ClientStatus.InGame;
+			}
 			case PICK_CARDS -> {
 				handlePickCard();
 				return ClientStatus.InGame;
@@ -314,6 +335,18 @@ public class CLI {
 			}
 			case SHOW_COMMON_OBJECTIVES -> {
 				game.printCommonObjectives();
+				return ClientStatus.InGame;
+			}
+			case SEND_MESSAGE -> {
+				String message = Utils.askString("Message: ");
+				try {
+					Result result = networkManager.chat(message).waitResult();
+					if (result.isErr()) {
+						System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
+					}
+				} catch (Exception e) {
+					System.out.println("[ERROR] " + e.getMessage());
+				}
 				return ClientStatus.InGame;
 			}
 			case LEAVE_GAME -> {
@@ -420,7 +453,6 @@ public class CLI {
 				if (!joinedPlayer.equals(username)) {
 					System.out.println(joinedPlayer + " joined the lobby");
 				}
-				return ClientStatus.InLobby;
 			}
 			case Leave -> {
 				String leftPlayer = (String)event.get().getData();
@@ -428,7 +460,6 @@ public class CLI {
 					lobby.removePlayer(leftPlayer);
 				} catch (Exception e) {}  // Cannot happen
 				System.out.println(leftPlayer + " left the lobby");
-				return ClientStatus.InLobby;
 			}
 			case Start -> {
 				gameStarted = true;
@@ -450,15 +481,20 @@ public class CLI {
 				if (update.nextPlayer().equals(username)) {
 					yourTurn = true;
 					System.out.println("It's your turn");
-					return ClientStatus.InGame;
 				} else {
 					yourTurn = false;
 					System.out.println("It's " + update.nextPlayer() + "'s turn");
-					return ClientStatus.InGame;
+				}
+			}
+			case NewMessage -> {
+				Message message = (Message)event.get().getData();
+				if (!message.idPlayer().equals(username)) {
+					System.out.format("%s: %s%n", message.idPlayer(), message.message());
 				}
 			}
 			default -> throw new RuntimeException("Unhandled exception");
 		}
+		return state;
 	}
 }
 

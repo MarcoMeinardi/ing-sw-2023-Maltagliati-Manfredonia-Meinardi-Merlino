@@ -2,6 +2,7 @@ package controller.lobby;
 
 import controller.game.GameController;
 import network.*;
+import network.parameters.Message;
 import network.parameters.WrongParametersException;
 import network.rpc.server.Client;
 import network.rpc.server.ClientManager;
@@ -230,6 +231,15 @@ public class LobbyController extends Thread {
                     }
                     startGame(lobby);
                     client.setStatus(ClientStatus.InGame);
+                    result = Result.empty(call.id());
+                }
+                case GameChatSend -> {
+                    if(!(call.params() instanceof String)){
+                        throw new WrongParametersException("String", call.params().getClass().getName(), "GameChatSend");
+                    }
+                    Message message = new Message(client.getUsername(), (String) call.params());
+                    ServerEvent event = ServerEvent.NewMessage(message);
+                    globalUpdate(lobby, event);
                     result = Result.empty(call.id());
                 }
                 default -> result = Result.err(new WrongServiceException(), call.id());
