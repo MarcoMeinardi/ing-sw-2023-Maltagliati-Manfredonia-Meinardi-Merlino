@@ -1,17 +1,11 @@
-package network.rpc.client;
-
-import network.Call;
-import network.RemoteFunctionInterface;
-import network.Result;
-import network.Service;
-import network.parameters.Login;
+package network;
 
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class Function<P extends Serializable,R extends Serializable> implements RemoteFunctionInterface<P,R> {
+public class Function<P extends Serializable,R extends Serializable>{
     private P params;
     private Optional<Result<R>> result;
     private final Object resultLock = new Object();
@@ -25,7 +19,7 @@ public class Function<P extends Serializable,R extends Serializable> implements 
         this.id = UUID.randomUUID();
     }
 
-    protected Function call(ObjectOutputStream stream) throws Exception{
+    public Function call(ObjectOutputStream stream) throws Exception{
         Call<P> call = new Call(params, service, id);
         synchronized (stream){
             stream.writeObject(call);
@@ -61,7 +55,7 @@ public class Function<P extends Serializable,R extends Serializable> implements 
         }
     }
 
-    protected void setResult(Result<R> result){
+    public void setResult(Result<R> result){
         synchronized (resultLock) {
             this.result = Optional.of(result);
             resultLock.notifyAll();

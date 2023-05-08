@@ -6,6 +6,7 @@ import network.errors.DisconnectedClientException;
 import network.rmi.ClientService;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDateTime;
@@ -22,7 +23,11 @@ public class Client implements ClientService, ClientInterface {
     LocalDateTime lastMessageTime = LocalDateTime.now();
     Object messageTimeLock = new Object();
     ClientService stub;
-    public Client(String username , Registry registry, int port) throws Exception {
+    private Object lastMessageTimeLock = new Object();
+
+    public static final int TIMEOUT = 60;
+
+    public Client(String username , Registry registry, int port) throws RemoteException {
         this.username = username;
         stub = (ClientService) UnicastRemoteObject.exportObject(this, port);
         registry.rebind(username, stub);
@@ -82,6 +87,9 @@ public class Client implements ClientService, ClientInterface {
 
     @Override
     public Result requestService(Call call) {
+        if(statusHandler.getStatus() == ClientStatus.Disconnected){
+            statusHandler.setStatus(statusHandler.getLastValidStatus());
+        }
         synchronized (messageTimeLock){
             lastMessageTime = LocalDateTime.now();
         }
@@ -101,5 +109,18 @@ public class Client implements ClientService, ClientInterface {
         synchronized (serverEvents){
             return serverEvents.poll();
         }
+    }
+
+    @Override
+    public boolean checkPing(){
+        if(getStatus() == ClientStatus.Disconnected){
+            return false;
+        }
+        synchronized (lastMessageTimeLock) {
+            if(lastMessageTime.plusSeconds(TIMEOUT).isBefore(LocalDateTime.now())){
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -5,26 +5,99 @@ import network.ClientManagerInterface;
 import network.rmi.LoginService;
 
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
 import java.util.Optional;
 
-public class ClientManager implements ClientManagerInterface, LoginService {
+public class ClientManager extends Thread implements ClientManagerInterface, LoginService {
+    HashMap <String, Client> clients;
+    public static int port = 8000;
+    private int availablePort = 10000;
+    private Object availablePortLock;
+    private final Registry registry;
+    private final LoginService stub;
+    private static ClientManager instance = null;
+    private static final Object instanceLock = new Object();
+
+    private ClientManager() throws Exception{
+        clients = new HashMap<>();
+        availablePortLock = new Object();
+        stub = (LoginService) UnicastRemoteObject.exportObject(this, availablePort);
+        availablePort++;
+        registry = LocateRegistry.createRegistry(port);
+        registry.rebind("LoginService", stub);
+    }
+
+    public ClientManagerInterface getInstance() throws Exception{
+        synchronized (instanceLock) {
+            if (instance == null) {
+                instance = new ClientManager();
+                instance.start();
+            }
+            return instance;
+        }
+    }
     @Override
     public boolean isClientConnected(String username) {
-        return false;
+        return clients.containsKey(username) && !clients.get(username).isDisconnected();
     }
 
     @Override
     public Optional<ClientInterface> getClient(String username) {
-        return Optional.empty();
+        Optional<ClientInterface> client = Optional.empty();
+        if(clients.containsKey(username)){
+            client = Optional.of(clients.get(username));
+        }
+        return client;
     }
 
     @Override
     public void waitAndClose() {
-
+        synchronized (instanceLock){
+            instance = null;
+        }
+        try{
+            this.join();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean login(String username) throws RemoteException {
-        return false;
+        if(clients.containsKey(username) || username.equals("LoginService")){
+            return false;
+        }
+        synchronized (availablePortLock){
+            Client client = new Client(username, registry, availablePort);
+            clients.put(username, client);
+            availablePort++;
+        }
+        return true;
+    }
+
+    @Override
+    public void run(){
+        boolean running;
+        synchronized (instanceLock){
+            running = instance != null;
+        }
+        while(running){
+            try{
+                Thread.sleep((Client.TIMEOUT/2)*1000);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+            for(Client client : clients.values()){
+                if(client.checkPing()){
+
+                }
+            }
+            synchronized (instanceLock){
+                running = instance != null;
+            }
+        }
     }
 }

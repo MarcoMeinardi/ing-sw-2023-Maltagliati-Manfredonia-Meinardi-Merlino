@@ -19,4 +19,6 @@ public interface ClientInterface {
     public String getUsername() throws ClientNotIdentifiedException;
     public LocalDateTime getLastMessageTime();
     public BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> getCallHandler();
+
+    public boolean checkPing();
 }

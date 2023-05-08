@@ -23,21 +23,20 @@ public class ClientManager extends Thread implements ClientManagerInterface{
     private static int port = 8000;
 
     private static ClientManager instance = null;
+    private static final Object instanceLock = new Object();
 
     public static void setPort(int port){
         ClientManager.port = port;
     }
 
-    public static ClientManagerInterface getInstance(){
-        if(instance == null){
-            try{
+    public static ClientManagerInterface getInstance() throws Exception {
+        synchronized (instanceLock){
+            if(instance == null){
                 instance = new ClientManager(port);
                 instance.start();
-            }catch (Exception e){
-                e.printStackTrace();
             }
+            return instance;
         }
-        return instance;
     }
 
     private ClientManager(int port) throws Exception{
@@ -61,7 +60,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         }
     }
     private void acceptConnections(){
-        while(true){
+        while(instance != null){
             try{
                 Client client = new Client(socket.accept(), this::registerService);
                 addUnidentifiedClient(client);
@@ -103,8 +102,11 @@ public class ClientManager extends Thread implements ClientManagerInterface{
     public void run(){
         acceptConnectionsThread.start();
         try{
-            acceptConnectionsThread.join();
-            while(true){
+            boolean running;
+            synchronized (instanceLock){
+                running = instance != null;
+            }
+            while(running){
                 synchronized (identifiedClients) {
                     for (Client client : identifiedClients.values()) {
                         if(client.getStatus() != ClientStatus.Disconnected){
@@ -115,6 +117,9 @@ public class ClientManager extends Thread implements ClientManagerInterface{
                     }
                 }
                 Thread.sleep(Client.TIMEOUT / 2);
+                synchronized (instanceLock){
+                    running = instance != null;
+                }
             }
         }catch(InterruptedException e){
             Logger.getLogger(Client.class.getName()).warning(e.getMessage());
@@ -134,21 +139,33 @@ public class ClientManager extends Thread implements ClientManagerInterface{
 
     @Override
     public void waitAndClose() {
+        synchronized (instanceLock){
+            instance = null;
+        }
         try{
             acceptConnectionsThread.join();
-            synchronized (identifiedClients) {
-                for (Client client : identifiedClients.values()) {
-                    client.disconnect();
-                }
-            }
         }catch (InterruptedException e){
             Logger.getLogger(Client.class.getName()).warning(e.getMessage());
         }
-    }
-
-    private HashMap<String, Client> getClients(){
+        try{
+            socket.close();
+        }catch (Exception e){
+            Logger.getLogger(Client.class.getName()).warning(e.getMessage());
+        }
+        try{
+            this.join();
+        }catch (InterruptedException e){
+            Logger.getLogger(Client.class.getName()).warning(e.getMessage());
+        }
+        synchronized (unidentifiedClients) {
+            for (Client client : unidentifiedClients) {
+                client.disconnect();
+            }
+        }
         synchronized (identifiedClients) {
-            return identifiedClients;
+            for (Client client : identifiedClients.values()) {
+                client.disconnect();
+            }
         }
     }
 

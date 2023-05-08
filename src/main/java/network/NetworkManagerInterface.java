@@ -3,7 +3,6 @@ package network;
 import controller.lobby.Lobby;
 import network.parameters.CardSelect;
 import network.parameters.Login;
-import network.rpc.client.Function;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -18,12 +17,12 @@ public interface NetworkManagerInterface {
     public boolean isConnected();
     public Optional<ServerEvent> getEvent();
     public boolean hasEvent();
-    public RemoteFunctionInterface<Boolean, ArrayList<Lobby>> lobbyList() throws Exception;
-    public RemoteFunctionInterface<String, Lobby> lobbyCreate(String lobbyName) throws Exception;
-    public RemoteFunctionInterface<String, Lobby> lobbyJoin(String lobbyName) throws Exception;
-    public RemoteFunctionInterface<Boolean, Boolean> lobbyLeave() throws Exception;
-    public RemoteFunctionInterface<Boolean, Lobby> updateLobby() throws Exception;
-    public RemoteFunctionInterface<Boolean,Boolean> gameStart() throws Exception;
-    public RemoteFunctionInterface<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception;
-    public RemoteFunctionInterface<Login, Boolean> login(Login username) throws Exception;
+    public Function<Boolean, ArrayList<Lobby>> lobbyList() throws Exception;
+    public Function<String, Lobby> lobbyCreate(String lobbyName) throws Exception;
+    public Function<String, Lobby> lobbyJoin(String lobbyName) throws Exception;
+    public Function<Boolean, Boolean> lobbyLeave() throws Exception;
+    public Function<Boolean, Lobby> updateLobby() throws Exception;
+    public Function<Boolean,Boolean> gameStart() throws Exception;
+    public Function<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception;
+    public Function<Login, Boolean> login(Login username) throws Exception;
 }
