@@ -366,6 +366,10 @@ public class CLI {
 			y = line.charAt(1) - '1';
 			x = line.charAt(0) - 'a';
 		}
+		if (lobby.getNumberOfPlayers() == 2) {
+			y++;
+			x++;
+		}
 		return new Point(y, x);
 	}
 
