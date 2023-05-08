@@ -2,13 +2,21 @@ package cli;
 
 import network.rpc.client.NetworkManager;
 import network.Server;
+import network.parameters.CardSelect;
 import network.parameters.Login;
+import network.parameters.Message;
 import network.parameters.StartingInfo;
+import network.parameters.Update;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import controller.lobby.Lobby;
+import model.Point;
+import model.Shelf;
+import model.TableTop;
 import network.Result;
 import network.ServerEvent;
 import network.ClientStatus;
@@ -28,6 +36,7 @@ public class CLI {
 
 	boolean doPrint;
 	boolean gameStarted;
+	boolean yourTurn;
 
 	CLIGame game;
 
@@ -207,6 +216,14 @@ public class CLI {
 					}
 					return ClientStatus.InLobby;
 				}
+				case SEND_MESSAGE -> {
+					String message = Utils.askString("Message: ");
+					result = networkManager.chat(message).waitResult();
+					if (result.isErr()) {
+						System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
+					}
+					return ClientStatus.InLobby;
+				}
 				default -> throw new RuntimeException("Invalid option");
 			}
 		} catch (Exception e) {
@@ -217,23 +234,212 @@ public class CLI {
 
 	private ClientStatus inGame() {
 		if (!gameStarted) {
-			try {
-				Thread.sleep(1000);  // Wait to receive game start event before promting to abort
+			try {  // Wait to receive game start event before promting to abort
+				for (int i = 0; i < 20; i++) {
+					Thread.sleep(50);
+					if (networkManager.hasEvent()) {
+						return handleEvent();
+					}
+				}
 			} catch (InterruptedException e) {}
 
-			if (networkManager.hasEvent()) {
-				return handleEvent();
-			}
 			System.out.println("Waiting for other players...");
 			// TODO ask to abort
-			Optional<InLobbyOptions> option = Utils.askOptionOrEvent(InLobbyOptions.class, doPrint);
-			if (option.isEmpty()) {
-				return handleEvent();
-			} else {
-				throw new RuntimeException("Abort not implemented");
+			throw new RuntimeException("Abort not implemented");
+			// Optional<InLobbyOptions> option = Utils.askOptionOrEvent(EarlyAbortOptions.class, true);
+			// if (option.isEmpty()) {
+			// 	return handleEvent();
+			// }
+		}
+
+		if (yourTurn) {
+			return inGameTurn();
+		} else {
+			return inGameNoTurn();
+		}
+	}
+
+	private ClientStatus inGameTurn() {
+		Optional<InGameTurnOptions> option = Utils.askOptionOrEvent(InGameTurnOptions.class, doPrint);
+		if (option.isEmpty()) {
+			doPrint = false;
+			return handleEvent();
+		}
+		switch (option.get()) {
+			case SHOW_YOUR_SHELF -> {
+				game.printYourShelf();
+				return ClientStatus.InGame;
+			}
+			case SHOW_ALL_SHELVES -> {
+				game.printAllShelves();
+				return ClientStatus.InGame;
+			}
+			case SHOW_TABLETOP -> {
+				game.printTableTop();
+				return ClientStatus.InGame;
+			}
+			case SHOW_PERSONAL_OBJECTIVE -> {
+				game.printPersonalObjective();
+				return ClientStatus.InGame;
+			}
+			case SHOW_COMMON_OBJECTIVES -> {
+				game.printCommonObjectives();
+				return ClientStatus.InGame;
+			}
+			case SEND_MESSAGE -> {
+				String message = Utils.askString("Message: ");
+				try {
+					Result result = networkManager.chat(message).waitResult();
+					if (result.isErr()) {
+						System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
+					}
+				} catch (Exception e) {
+					System.out.println("[ERROR] " + e.getMessage());
+				}
+				return ClientStatus.InGame;
+			}
+			case PICK_CARDS -> {
+				handlePickCard();
+				return ClientStatus.InGame;
+			}
+			case LEAVE_GAME -> {
+				throw new RuntimeException("Not implemented");
+				// return ClientStatus.InLobbySearch;
+			}
+			default -> throw new RuntimeException("Invalid option");
+		}
+	}
+
+	private ClientStatus inGameNoTurn() {
+		Optional<InGameNoTurnOptions> option = Utils.askOptionOrEvent(InGameNoTurnOptions.class, doPrint);
+		if (option.isEmpty()) {
+			doPrint = false;
+			return handleEvent();
+		}
+		switch (option.get()) {
+			case SHOW_YOUR_SHELF -> {
+				game.printYourShelf();
+				return ClientStatus.InGame;
+			}
+			case SHOW_ALL_SHELVES -> {
+				game.printAllShelves();
+				return ClientStatus.InGame;
+			}
+			case SHOW_TABLETOP -> {
+				game.printTableTop();
+				return ClientStatus.InGame;
+			}
+			case SHOW_PERSONAL_OBJECTIVE -> {
+				game.printPersonalObjective();
+				return ClientStatus.InGame;
+			}
+			case SHOW_COMMON_OBJECTIVES -> {
+				game.printCommonObjectives();
+				return ClientStatus.InGame;
+			}
+			case SEND_MESSAGE -> {
+				String message = Utils.askString("Message: ");
+				try {
+					Result result = networkManager.chat(message).waitResult();
+					if (result.isErr()) {
+						System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
+					}
+				} catch (Exception e) {
+					System.out.println("[ERROR] " + e.getMessage());
+				}
+				return ClientStatus.InGame;
+			}
+			case LEAVE_GAME -> {
+				throw new RuntimeException("Not implemented");
+				// return ClientStatus.InLobbySearch;
+			}
+			default -> throw new RuntimeException("Invalid option");
+		}
+	}
+
+	private Point stringToPoint(String line) {
+		char[] chars = line.toCharArray();
+		if (chars[0] >= '0' && chars[0] <= '9') {
+			Collections.reverse(Arrays.asList(chars));
+		}
+		int x = chars[0] - 'a';
+		int y = chars[1] - '1';
+		return new Point(y, x);
+	}
+
+	private void handlePickCard() {
+		ArrayList<Point> selectedCards = new ArrayList<>();
+		int column;
+
+		game.printTableTop();
+		System.out.println("Enter the coordinates of the cards you want to pick");
+		for (int i = 0; i < 3; i++) {
+			boolean ok = false;
+			while (!ok) {
+				String line = Utils.askString();
+				line = line.toLowerCase().replaceAll("\\W", "");
+				if (line.isEmpty()) {
+					break;
+				}
+				if (line.length() != 2) {
+					System.out.println("Invalid coordinates");
+				} else {
+					Point p = stringToPoint(line);
+					if (p.x() < 0 || p.x() >= TableTop.SIZE || p.y() < 0 || p.y() >= TableTop.SIZE) {
+						System.out.println("Invalid coordinates");
+					} else if (game.tableTop[p.y()][p.x()].isEmpty()) {
+						System.out.println("Cannot pick card from empty slot");
+					} else {
+						selectedCards.add(p);
+						ok = true;
+					}
+				}
+			}
+			if (!ok) {
+				if (i == 0) {
+					System.out.println("No cards selected, aborting");
+					return;
+				}
+				break;
 			}
 		}
-		throw new RuntimeException("Not implemented");
+
+		game.printYourShelf();
+		System.out.println("Enter the column where you want to place the cards (-1 to abort)");
+		while (true) {
+			column = Utils.askInt() - 1;
+			if (column == -2) {
+				System.out.println("Aborted");
+				return;
+			} else if (column < 0 || column >= Shelf.COLUMNS) {
+				System.out.println("Invalid column");
+			} else {
+				break;
+			}
+		}
+
+		try {
+			Result result = networkManager.cardSelect(new CardSelect(column, selectedCards)).waitResult();
+			if (result.isErr()) {
+				System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
+			} else {
+				waitGlobalUpdate();
+			}
+		} catch (Exception e) {
+			System.out.println("[ERROR] " + e.getMessage());
+		}
+
+	}
+
+	public void waitGlobalUpdate() {
+		try {
+			while (!networkManager.hasEvent()) {
+				Thread.sleep(50);
+			}
+		} catch (InterruptedException e) {}
+		if (handleEvent() != ClientStatus.InGame) {
+			throw new RuntimeException("Invalid status");
+		}
 	}
 
 	private ClientStatus handleEvent() {
@@ -250,24 +456,48 @@ public class CLI {
 				if (!joinedPlayer.equals(username)) {
 					System.out.println(joinedPlayer + " joined the lobby");
 				}
-				return ClientStatus.InLobby;
 			}
 			case Leave -> {
 				String leftPlayer = (String)event.get().getData();
 				try {
 					lobby.removePlayer(leftPlayer);
 				} catch (Exception e) {}  // Cannot happen
-				System.out.println(leftPlayer + " left the lobby");
-				return ClientStatus.InLobby;
+				System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
 			}
 			case Start -> {
 				gameStarted = true;
 				doPrint = true;
-				game = new CLIGame((StartingInfo)event.get().getData());
+				game = new CLIGame((StartingInfo)event.get().getData(), username);
+				yourTurn = game.players.get(0).equals(username);
 				System.out.println("Game has started");
+				if (yourTurn) {
+					System.out.println("It's your turn");
+				} else {
+					System.out.println("It's " + game.players.get(0) + "'s turn");
+				}
 				return ClientStatus.InGame;
+			}
+			case Update -> {
+				Update update = (Update)event.get().getData();
+				game.update(update);
+				doPrint = true;
+				if (update.nextPlayer().equals(username)) {
+					yourTurn = true;
+					System.out.println("It's your turn");
+				} else {
+					yourTurn = false;
+					System.out.println("It's " + update.nextPlayer() + "'s turn");
+				}
+			}
+			case NewMessage -> {
+				Message message = (Message)event.get().getData();
+				if (!message.idPlayer().equals(username)) {
+					System.out.format("%s: %s%n", message.idPlayer(), message.message());
+				}
 			}
 			default -> throw new RuntimeException("Unhandled exception");
 		}
+		return state;
 	}
 }
+

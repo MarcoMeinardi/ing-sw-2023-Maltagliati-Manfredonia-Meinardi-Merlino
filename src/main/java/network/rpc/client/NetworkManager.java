@@ -225,9 +225,16 @@ public class NetworkManager extends Thread{
     }
 
     public Function<Login, Boolean> login(Login username) throws Exception {
-        Function<Login,Boolean> login = new Function<Login, Boolean>(username, Service.Login);
+        Function<Login, Boolean> login = new Function<Login, Boolean>(username, Service.Login);
         callQueue.put(login.id(), login);
         login.call(out);
         return login;
+    }
+
+    public Function<String, Boolean> chat(String message) throws Exception {
+        Function<String, Boolean> chat = new Function<String, Boolean>(message, Service.GameChatSend);
+        callQueue.put(chat.id(), chat);
+        chat.call(out);
+        return chat;
     }
 }

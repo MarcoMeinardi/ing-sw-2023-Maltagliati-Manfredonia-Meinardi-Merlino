@@ -3,7 +3,6 @@ import controller.lobby.Lobby;
 import controller.lobby.LobbyController;
 import model.*;
 import network.*;
-import network.errors.DisconnectedClientException;
 import network.parameters.CardSelect;
 import network.parameters.Message;
 import network.parameters.StartingInfo;
@@ -219,30 +218,28 @@ public class GameController {
             count++;
 
             if (count == maxDisconnectionTries) {
-				exitGame();
+                exitGame();
             }
 
         }
 
     }
 
-    public void globalUpdate(List<ServerEvent> events) {
+    public void globalUpdate(ServerEvent event) {
         ClientManagerInterface clientManager = ClientManager.getInstance();
-        for(ServerEvent event : events){
-            while (true) {
-                try {
-                    for(Player player : game.getPlayers()) {
-                        Optional<ClientInterface> client = clientManager.getClient(player.getName());
-                        if(client.isEmpty()) {
-                            throw new RuntimeException("Client not found" + player.getName());
-                        }
-                        client.get().send(event);
+        while (true) {
+            try {
+                for(Player player : game.getPlayers()) {
+                    Optional<ClientInterface> client = clientManager.getClient(player.getName());
+                    if(client.isEmpty()) {
+                        throw new RuntimeException("Client not found" + player.getName());
                     }
-                    break;
-                } catch (Exception e) {
-                    logger.warning("Error while sending global update event to client" + e.getMessage());
-                    checkDisconnection();
+                    client.get().send(event);
                 }
+                break;
+            } catch (Exception e) {
+                logger.warning("Error while sending global update event to client" + e.getMessage());
+                checkDisconnection();
             }
         }
     }
@@ -265,17 +262,16 @@ public class GameController {
                         throw new NotYourTurnException();
                     }
                     doMove(player, cardSelect.selectedCards(), cardSelect.column());
-                    addPersonalCockade(player);
                     addCommonCockade(player);
                     refillTable();
                     if(playerIterator.hasNext()){
-                        Update update = new Update(username, game.getTabletop(), player.getShelf());
-                        currentPlayer = playerIterator.next();
-						ArrayList<ServerEvent> events = new ArrayList<>();
-                        events.add(ServerEvent.Update(update));
-                        events.add(ServerEvent.NextTurn(currentPlayer.getName()));
-                        setGlobalUpdate(events);
+						currentPlayer = playerIterator.next();
+                        Update update = new Update(username, game.getTabletop().getSerializable(), player.getShelf().getSerializable(), currentPlayer.getName());
+                        setGlobalUpdate(ServerEvent.Update(update));
                     }else{
+                        for(Player p : game.getPlayers()){
+                            addPersonalCockade(player);
+                        }
                         ScoreBoard scoreBoard = new ScoreBoard(game);
 						setGlobalUpdate(ServerEvent.End(scoreBoard));
                         exitGame();
@@ -305,14 +301,12 @@ public class GameController {
 		return globalUpdateThread != null && globalUpdateThread.isAlive();
 	}
 
-    private void setGlobalUpdate(ServerEvent event) throws Exception{
-        setGlobalUpdate(List.of(event));
-    }
-	private void setGlobalUpdate(List<ServerEvent> events) throws Exception{
+	private void setGlobalUpdate(ServerEvent event) throws Exception{
         if(globalUpdateThread != null && globalUpdateThread.isAlive()){
             throw new GlobalUpdateAlreadyOngoingException();
         }
-		globalUpdateThread = new Thread(() -> globalUpdate(events));
+		globalUpdateThread = new Thread(() -> globalUpdate(event));
+		globalUpdateThread.start();
 	}
 
     public void exitGame() {
@@ -338,13 +332,13 @@ public class GameController {
     }
 
     private void sendStartInfo(Player player) throws Exception {
-        ArrayList<Card[][]> shelfs = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Card[][]> shelves = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> players = game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> commonObjectives = game.getCommonObjectives().stream().map(CommonObjective::getName).collect(Collectors.toCollection(ArrayList::new));
         ServerEvent toSend = ServerEvent.Start(new StartingInfo(
             game.getTabletop().getSerializable(),
             players,
-            shelfs,
+            shelves,
             commonObjectives,
             player.getPersonalObjective().getName()
         ));
@@ -352,5 +346,3 @@ public class GameController {
         client.send(toSend);
     }
 }
-
-
