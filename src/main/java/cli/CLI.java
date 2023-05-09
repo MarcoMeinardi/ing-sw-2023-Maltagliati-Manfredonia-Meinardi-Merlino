@@ -234,7 +234,7 @@ public class CLI {
 
 	private ClientStatus inGame() {
 		if (!gameStarted) {
-			try {  // Wait to receive game start event before promting to abort
+			try {  // Wait to receive game start event before prompting to abort
 				for (int i = 0; i < 20; i++) {
 					Thread.sleep(50);
 					if (networkManager.hasEvent()) {
