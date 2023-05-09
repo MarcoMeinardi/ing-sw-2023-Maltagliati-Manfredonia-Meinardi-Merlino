@@ -264,6 +264,8 @@ public class CLI {
 			doPrint = false;
 			return handleEvent();
 		}
+		doPrint = true;
+
 		switch (option.get()) {
 			case SHOW_YOUR_SHELF -> {
 				game.printYourShelf();
@@ -314,6 +316,8 @@ public class CLI {
 			doPrint = false;
 			return handleEvent();
 		}
+		doPrint = true;
+
 		switch (option.get()) {
 			case SHOW_YOUR_SHELF -> {
 				game.printYourShelf();
