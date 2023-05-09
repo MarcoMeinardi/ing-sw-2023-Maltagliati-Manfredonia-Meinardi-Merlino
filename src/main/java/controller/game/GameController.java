@@ -58,9 +58,9 @@ public class GameController {
 
     /**
      * Checks when table needs a refill.
-     * @author Ludovico
      *
      * @return True if refill needed, false otherwise
+     * @author Ludovico
      */
 
     private boolean checkRefillTable() {
@@ -81,9 +81,9 @@ public class GameController {
 
     /**
      * Adds the personal cockade to the player's shelf if the player has completed the personal objective.
-     * @author Ludovico
      *
      * @param player The player
+     * @author Ludovico
      */
 
     private void addPersonalCockade(Player player) {
@@ -93,9 +93,9 @@ public class GameController {
 
     /**
      * Adds the common cockade to the player's shelf if the player has completed the common objective.
-     * @author Ludovico
      *
      * @param player The player
+     * @author Ludovico
      */
 
     private ArrayList<Cockade> addCommonCockade(Player player) {
@@ -115,6 +115,7 @@ public class GameController {
      * @author Ludovico, Marco
      *
      * @return The final ranks of the players
+     * @author Ludovico
      */
 
     private ArrayList<Player> finalRanks() {
@@ -140,6 +141,7 @@ public class GameController {
      * @param player The player
      * @param positions The positions of the cards to pick
      * @param column The column where the cards will be placed
+     * @author Marco, Ludovico
      */
     private void doMove(Player player, ArrayList<Point> positions, int column) throws InvalidMoveException {
         if (positions.size() < 1 || positions.size() > 3) {
@@ -191,6 +193,11 @@ public class GameController {
         player.getShelf().insert(column, cards);
     }
 
+    /**
+     * checks for disconnected players in the game and sends a resume event to the clients if all the players are connected
+     * @author Ludovico, Lorenzo, Marco, Riccardo
+     */
+
     public void checkDisconnection() {
         int count = 0;
         while (true) {
@@ -236,6 +243,12 @@ public class GameController {
 
     }
 
+    /**
+     * Sends the global update event to all the clients.
+     * @param event
+     * @author Ludovico, Lorenzo, Marco, Riccardo
+     */
+
     public void globalUpdate(ServerEvent event) {
         while (true) {
             try {
@@ -253,6 +266,20 @@ public class GameController {
             }
         }
     }
+
+    /**
+     * Handles the game send by the client. Executes all the methods in this class that are needed to process
+     * the turns. Utilizes iterator to iterate over the players. Every turn of every player the method checks if
+     * the correct player is trying a move, tries to execute the move requested by the player and checks if the
+     * common objectives are completed. At the end of turn the method checks if the game is over and in that case
+     * checks the personal objectives completed and sends the final ranking to the clients; otherwise it moves to the next turn.
+     * Handles when a player sends a message in the chat.
+     *
+     * @param call The call from the client
+     * @param client The client
+     * @return The result of the call
+     * @author Ludovico, Lorenzo
+     */
 
     public Result handleGame(Call call, ClientInterface client){
         Result result;
@@ -307,9 +334,22 @@ public class GameController {
         return result;
     }
 
+    /**
+     * Checks if a global update is ongoing
+     * @return
+     * @author Marco
+     */
+
 	private boolean globalUpdateOnGoing() {
 		return globalUpdateThread != null && globalUpdateThread.isAlive();
 	}
+
+    /**
+     * Sets a global update
+     * @param event The event to send
+     * @throws Exception If a global update is already ongoing
+     * @author Lorenzo, Marco
+     */
 
 	private void setGlobalUpdate(ServerEvent event) throws Exception{
         if(globalUpdateThread != null && globalUpdateThread.isAlive()){
@@ -318,6 +358,12 @@ public class GameController {
 		globalUpdateThread = new Thread(() -> globalUpdate(event));
 		globalUpdateThread.start();
 	}
+
+    /**
+     * makes the player exit the game
+     * and ends the game
+     * @author Ludovico, Lorenzo, Marco
+     */
 
     public void exitGame() {
         LobbyController lobbyController = LobbyController.getInstance();
@@ -330,6 +376,12 @@ public class GameController {
         lobbyController.endGame(this);
     }
 
+    /**
+     * Return the order of the players
+     * @return
+     * @author Lorenzo
+     */
+
     public ArrayList<String> getPlayersOrder(){
         ArrayList<String> playersOrder = new ArrayList<>();
         synchronized (game.getPlayers()){
@@ -339,6 +391,13 @@ public class GameController {
         }
         return playersOrder;
     }
+
+    /**
+     * Prepares the game for the start
+     * @param player
+     * @throws Exception
+     * @author Marco, Lorenzo
+     */
 
     private void sendStartInfo(Player player) throws Exception {
         ArrayList<Card[][]> shelves = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
