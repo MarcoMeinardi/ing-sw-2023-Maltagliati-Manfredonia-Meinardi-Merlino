@@ -98,11 +98,16 @@ public class GameController {
      * @param player The player
      */
 
-    private void addCommonCockade(Player player) {
+    private ArrayList<Cockade> addCommonCockade(Player player) {
+        ArrayList<Cockade> result = new ArrayList<>();
+
         for (CommonObjective objective : game.getCommonObjectives()) {
-            Optional<Cockade> helpCockadeCommon = objective.isCompleted(player.getShelf());
-            helpCockadeCommon.ifPresent(player::addCockade);
+            Optional<Cockade> cockade = objective.isCompleted(player.getShelf());
+            cockade.ifPresent(player::addCockade);
+            cockade.ifPresent(result::add);
         }
+
+        return result;
     }
 
     /**
@@ -143,7 +148,7 @@ public class GameController {
 
         // Check that all the cards are adjacent
         for (int i = 0; i < positions.size() - 1; i++) {
-            for (int j = 1; j < positions.size(); j++) {
+            for (int j = i + 1; j < positions.size(); j++) {
                 int dist = positions.get(i).distance(positions.get(j));
                 if (dist != 1 && (positions.size() != 3 || dist != 2)) {
                     throw new InvalidMoveException("Cards are not pickable (not adjacient)");
@@ -166,7 +171,7 @@ public class GameController {
             Point p3 = positions.get(2);
 
             if (
-                (p1.x() != p2.x() || p1.x() != p3.x()) ||
+                (p1.x() != p2.x() || p1.x() != p3.x()) &&
                 (p1.y() != p2.y() || p1.y() != p3.y())
             ) {
                 throw new InvalidMoveException("Cards are not pickable (not colinear)");
@@ -261,11 +266,11 @@ public class GameController {
                         throw new NotYourTurnException();
                     }
                     doMove(player, cardSelect.selectedCards(), cardSelect.column());
-                    addCommonCockade(player);
+                    ArrayList<Cockade> completedObjectives = addCommonCockade(player);
                     refillTable();
                     if(playerIterator.hasNext()){
 						currentPlayer = playerIterator.next();
-                        Update update = new Update(username, game.getTabletop().getSerializable(), player.getShelf().getSerializable(), currentPlayer.getName());
+                        Update update = new Update(username, game.getTabletop().getSerializable(), player.getShelf().getSerializable(), currentPlayer.getName(), completedObjectives);
                         setGlobalUpdate(ServerEvent.Update(update));
                     }else{
                         for(Player p : game.getPlayers()){
