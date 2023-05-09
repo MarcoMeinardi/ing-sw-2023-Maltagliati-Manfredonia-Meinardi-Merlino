@@ -61,7 +61,6 @@ public class LobbyController extends Thread {
                             } else {
                                 if (client.get().isDisconnected()) {
                                     leaveLobby(players.get(i));
-                                    client.get().setStatus(ClientStatus.Disconnected);
                                     client.get().setCallHandler(LobbyController.getInstance()::handleLobbySearch);
                                     i--;
                                 }
@@ -253,6 +252,7 @@ public class LobbyController extends Thread {
         synchronized (lobby) {
             GameController game = new GameController(lobby);
             games.add(game);
+            lobbies.remove(lobby.getName());
         }
         return true;
     }
