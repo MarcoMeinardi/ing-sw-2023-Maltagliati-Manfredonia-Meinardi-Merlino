@@ -151,16 +151,6 @@ public class CLIGame {
 		boolean left = y >= 0 && x > 0 && TableTop.PLAYER_NUMBER_MASK[y][x - 1] <= nPlayers;
 		boolean up = y < TableTop.SIZE - 1 && x < TableTop.SIZE && TableTop.PLAYER_NUMBER_MASK[y + 1][x] <= nPlayers;
 		boolean upLeft = y < TableTop.SIZE - 1 && x > 0 && TableTop.PLAYER_NUMBER_MASK[y + 1][x - 1] <= nPlayers;
-		// return " ";
-		// return "┌";
-		// return "┬";
-		// return "┐";
-		// return "├";
-		// return "┼";
-		// return "┤";
-		// return "└";
-		// return "┴";
-		// return "┘";
 
 		if (here) {
 			if (left) {
