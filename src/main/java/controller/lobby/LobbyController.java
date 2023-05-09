@@ -2,6 +2,7 @@ package controller.lobby;
 
 import controller.game.GameController;
 import network.*;
+import network.parameters.LobbyCreateInfo;
 import network.parameters.Message;
 import network.parameters.WrongParametersException;
 import network.rpc.server.Client;
@@ -172,10 +173,10 @@ public class LobbyController extends Thread {
         try {
             switch (call.service()) {
                 case LobbyCreate -> {
-                    if (!(call.params() instanceof String)) {
-                        throw new WrongParametersException("NewLobby", call.params().getClass().getName(), "LobbyCreate");
+                    if (!(call.params() instanceof LobbyCreateInfo)) {
+                        throw new WrongParametersException("LobbyCreateInfo", call.params().getClass().getName(), "LobbyCreate");
                     }
-                    Lobby created = createLobby(((String)call.params()), client.getUsername());
+                    Lobby created = createLobby(((LobbyCreateInfo)call.params()).name(), client.getUsername());
                     client.setStatus(ClientStatus.InLobby);
                     client.setCallHandler(this::handleInLobby);
                     result = Result.ok(created, call.id());

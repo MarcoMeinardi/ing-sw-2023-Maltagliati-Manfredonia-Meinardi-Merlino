@@ -2,6 +2,7 @@ package network;
 
 import controller.lobby.Lobby;
 import network.parameters.CardSelect;
+import network.parameters.LobbyCreateInfo;
 import network.parameters.Login;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public interface NetworkManagerInterface {
     public Optional<ServerEvent> getEvent();
     public boolean hasEvent();
     public Function<Boolean, ArrayList<Lobby>> lobbyList() throws Exception;
-    public Function<String, Lobby> lobbyCreate(String lobbyName) throws Exception;
+    public Function<LobbyCreateInfo, Lobby> lobbyCreate(LobbyCreateInfo lobbyName) throws Exception;
     public Function<String, Lobby> lobbyJoin(String lobbyName) throws Exception;
     public Function<Boolean, Boolean> lobbyLeave() throws Exception;
     public Function<Boolean, Lobby> updateLobby() throws Exception;

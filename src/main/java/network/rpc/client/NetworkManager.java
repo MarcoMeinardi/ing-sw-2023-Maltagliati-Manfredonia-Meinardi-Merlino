@@ -3,6 +3,7 @@ package network.rpc.client;
 import controller.lobby.Lobby;
 import network.*;
 import network.parameters.CardSelect;
+import network.parameters.LobbyCreateInfo;
 import network.parameters.Login;
 
 import java.io.Serializable;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class NetworkManager extends Thread{
+public class NetworkManager extends Thread implements NetworkManagerInterface {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -184,9 +185,8 @@ public class NetworkManager extends Thread{
         lobbyList.call(out);
         return lobbyList;
     }
-
-    public Function<String, Lobby> lobbyCreate(String lobby) throws Exception {
-        Function<String, Lobby> lobbyCreate = new Function<String, Lobby>(lobby, Service.LobbyCreate);
+    public Function<LobbyCreateInfo, Lobby> lobbyCreate(LobbyCreateInfo info) throws Exception {
+        Function<LobbyCreateInfo, Lobby> lobbyCreate = new Function<LobbyCreateInfo, Lobby>(info, Service.LobbyCreate);
         callQueue.put(lobbyCreate.id(), lobbyCreate);
         lobbyCreate.call(out);
         return lobbyCreate;

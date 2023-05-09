@@ -1,12 +1,8 @@
 package cli;
 
+import network.parameters.*;
 import network.rpc.client.NetworkManager;
 import network.Server;
-import network.parameters.CardSelect;
-import network.parameters.Login;
-import network.parameters.Message;
-import network.parameters.StartingInfo;
-import network.parameters.Update;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -114,7 +110,7 @@ public class CLI {
 			switch (option) {
 				case CREATE_LOBBY -> {
 					lobbyName = Utils.askString("Lobby name: ");
-					result = networkManager.lobbyCreate(lobbyName).waitResult();
+					result = networkManager.lobbyCreate(new LobbyCreateInfo(lobbyName)).waitResult();
 					if (result.isOk()) {
 						lobby = ((Result<Lobby>)result).unwrap();
 						return ClientStatus.InLobby;

@@ -20,9 +20,8 @@ public class Function<P extends Serializable,R extends Serializable>{
     }
 
     public Function call(ObjectOutputStream stream) throws Exception{
-        Call<P> call = new Call(params, service, id);
         synchronized (stream){
-            stream.writeObject(call);
+            stream.writeObject(getCall());
         }
         return this;
     }
@@ -31,6 +30,10 @@ public class Function<P extends Serializable,R extends Serializable>{
         synchronized (resultLock) {
             return result;
         }
+    }
+
+    public Call<P> getCall(){
+        return new Call(params, service, id);
     }
 
     public P getParams() {

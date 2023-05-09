@@ -2,6 +2,7 @@ package network.rmi.server;
 
 import network.ClientInterface;
 import network.ClientManagerInterface;
+import network.parameters.Login;
 import network.rmi.LoginService;
 
 import java.rmi.RemoteException;
@@ -63,7 +64,8 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
     }
 
     @Override
-    public boolean login(String username) throws RemoteException {
+    public boolean login(Login info) throws RemoteException {
+        String username = info.username();
         if(clients.containsKey(username) || username.equals("LoginService")){
             return false;
         }
