@@ -36,6 +36,7 @@ public class CLI {
 	boolean doPrint;
 	boolean gameStarted;
 	boolean yourTurn;
+	boolean paused;
 
 	CLIGame game;
 
@@ -251,7 +252,9 @@ public class CLI {
 			// }
 		}
 
-		if (yourTurn) {
+		if (paused) {
+			return inGameNoTurn();
+		} else if (yourTurn) {
 			return inGameTurn();
 		} else {
 			return inGameNoTurn();
@@ -524,6 +527,12 @@ public class CLI {
 				if (!message.idPlayer().equals(username)) {
 					System.out.format("%s: %s%n", message.idPlayer(), message.message());
 				}
+			} case Pause -> {
+				System.out.println("[WARNING] Someone has disconnected");
+				paused = true;
+			} case Resume -> {
+				System.out.println("Game resumed");
+				paused = false;
 			}
 			default -> throw new RuntimeException("Unhandled event");
 		}

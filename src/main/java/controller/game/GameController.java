@@ -213,7 +213,7 @@ public class GameController {
                 Optional<ClientInterface> client = clientManager.getClient(player);
                 if(client.isPresent()){
                     try{
-                        client.get().send(ServerEvent.Pause("waiting for all players to connect"));
+                        client.get().send(ServerEvent.Pause("Waiting for all players to connect"));
                     }catch (Exception e){
                         logger.warning("Error while sending pause event to client" + e.getMessage());
                     }
