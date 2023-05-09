@@ -146,6 +146,12 @@ public class GameController {
             throw new InvalidMoveException("Invalid number of picked cards");
         }
 
+        for (int i = 0; i < positions.size(); i++) {
+            if (player.getShelf().getCard(Shelf.ROWS - i - 1, column).isPresent()) {
+                throw new InvalidMoveException("Not enough space in column");
+            }
+        }
+
         // Check that all the cards are adjacent
         for (int i = 0; i < positions.size() - 1; i++) {
             for (int j = i + 1; j < positions.size(); j++) {
