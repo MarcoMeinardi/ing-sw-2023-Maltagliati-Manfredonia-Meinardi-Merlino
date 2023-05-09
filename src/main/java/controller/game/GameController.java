@@ -98,11 +98,16 @@ public class GameController {
      * @param player The player
      */
 
-    private void addCommonCockade(Player player) {
+    private ArrayList<Cockade> addCommonCockade(Player player) {
+        ArrayList<Cockade> result = new ArrayList<>();
+
         for (CommonObjective objective : game.getCommonObjectives()) {
-            Optional<Cockade> helpCockadeCommon = objective.isCompleted(player.getShelf());
-            helpCockadeCommon.ifPresent(player::addCockade);
+            Optional<Cockade> cockade = objective.isCompleted(player.getShelf());
+            cockade.ifPresent(player::addCockade);
+            cockade.ifPresent(result::add);
         }
+
+        return result;
     }
 
     /**
@@ -261,11 +266,11 @@ public class GameController {
                         throw new NotYourTurnException();
                     }
                     doMove(player, cardSelect.selectedCards(), cardSelect.column());
-                    addCommonCockade(player);
+                    ArrayList<Cockade> completedObjectives = addCommonCockade(player);
                     refillTable();
                     if(playerIterator.hasNext()){
 						currentPlayer = playerIterator.next();
-                        Update update = new Update(username, game.getTabletop().getSerializable(), player.getShelf().getSerializable(), currentPlayer.getName());
+                        Update update = new Update(username, game.getTabletop().getSerializable(), player.getShelf().getSerializable(), currentPlayer.getName(), completedObjectives);
                         setGlobalUpdate(ServerEvent.Update(update));
                     }else{
                         for(Player p : game.getPlayers()){

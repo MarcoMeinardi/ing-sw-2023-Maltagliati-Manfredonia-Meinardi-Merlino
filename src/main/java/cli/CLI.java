@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import controller.lobby.Lobby;
+import model.Cockade;
 import model.Point;
 import model.Shelf;
 import model.TableTop;
@@ -485,6 +486,13 @@ public class CLI {
 			}
 			case Update -> {
 				Update update = (Update)event.get().getData();
+				for (Cockade commonObjective : update.commonObjectives()) {
+					if (update.idPlayer().equals(username)) {
+						System.out.format("You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
+					} else {
+						System.out.format("%s completed %s getting %d points%n", update.idPlayer(), commonObjective.name(), commonObjective.points());
+					}
+				}
 				game.update(update);
 				doPrint = true;
 				if (update.nextPlayer().equals(username)) {
