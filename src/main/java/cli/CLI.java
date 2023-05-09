@@ -16,6 +16,8 @@ import java.util.Optional;
 import controller.lobby.Lobby;
 import model.Cockade;
 import model.Point;
+import model.Score;
+import model.ScoreBoard;
 import model.Shelf;
 import model.TableTop;
 import network.Result;
@@ -300,8 +302,7 @@ public class CLI {
 				return ClientStatus.InGame;
 			}
 			case PICK_CARDS -> {
-				handlePickCard();
-				return ClientStatus.InGame;
+				return handlePickCard();
 			}
 			case LEAVE_GAME -> {
 				throw new RuntimeException("Not implemented");
@@ -374,7 +375,7 @@ public class CLI {
 		return new Point(y, x);
 	}
 
-	private void handlePickCard() {
+	private ClientStatus handlePickCard() {
 		ArrayList<Point> selectedCards = new ArrayList<>();
 		int column;
 
@@ -405,7 +406,7 @@ public class CLI {
 			if (!ok) {
 				if (i == 0) {
 					System.out.println("No cards selected, aborting");
-					return;
+					return ClientStatus.InGame;
 				}
 				break;
 			}
@@ -417,7 +418,7 @@ public class CLI {
 			column = Utils.askInt() - 1;
 			if (column == -2) {
 				System.out.println("Aborted");
-				return;
+				return ClientStatus.InGame;
 			} else if (column < 0 || column >= Shelf.COLUMNS) {
 				System.out.println("Invalid column");
 			} else {
@@ -430,23 +431,24 @@ public class CLI {
 			if (result.isErr()) {
 				System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
 			} else {
-				waitGlobalUpdate();
+				return waitGlobalUpdate();
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] " + e.getMessage());
 		}
 
+		return ClientStatus.InGame;
 	}
 
-	public void waitGlobalUpdate() {
+	public ClientStatus waitGlobalUpdate() {
 		try {
-			while (!networkManager.hasEvent()) {
-				Thread.sleep(50);
+			synchronized (networkManager) {
+				while (!networkManager.hasEvent()) {
+					networkManager.wait();
+				}
 			}
 		} catch (InterruptedException e) {}
-		if (handleEvent() != ClientStatus.InGame) {
-			throw new RuntimeException("Invalid status");
-		}
+		return handleEvent();
 	}
 
 	private ClientStatus handleEvent() {
@@ -503,13 +505,27 @@ public class CLI {
 					System.out.println("It's " + update.nextPlayer() + "'s turn");
 				}
 			}
+			case End -> {
+				ScoreBoard scoreboard = (ScoreBoard)event.get().getData();
+				System.out.println("Game over!");
+				System.out.println();
+				System.out.println("Leaderboard:");
+				int position = 1;
+				for (Score score : scoreboard) {
+					System.out.format("[%d] %s: %d points %n", position++, score.username(), score.score());
+				}
+				System.out.println();
+				Utils.askString("Press enter to continue");
+				doPrint = true;
+				return ClientStatus.InLobbySearch;
+			}
 			case NewMessage -> {
 				Message message = (Message)event.get().getData();
 				if (!message.idPlayer().equals(username)) {
 					System.out.format("%s: %s%n", message.idPlayer(), message.message());
 				}
 			}
-			default -> throw new RuntimeException("Unhandled exception");
+			default -> throw new RuntimeException("Unhandled event");
 		}
 		return state;
 	}
