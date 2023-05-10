@@ -5,7 +5,7 @@ import model.*;
 import network.*;
 import network.parameters.CardSelect;
 import network.parameters.Message;
-import network.parameters.StartingInfo;
+import network.parameters.GameInfo;
 import network.parameters.Update;
 import network.parameters.WrongParametersException;
 import network.rpc.server.ClientManager;
@@ -93,21 +93,23 @@ public class GameController {
 
     /**
      * Adds the common cockade to the player's shelf if the player has completed the common objective.
+     * Also save the cocades and the new objective values to be returned to the client.
      *
      * @param player The player
-     * @author Ludovico
+     * @param completedObjectives The list of completed objectives
+     * @param newCommonObjectivesScores The list of new common objectives scores
+     * @author Ludovico, Marco
      */
 
-    private ArrayList<Cockade> addCommonCockade(Player player) {
-        ArrayList<Cockade> result = new ArrayList<>();
-
+    private void addCommonCockade(Player player, ArrayList<Cockade> completedObjectives, ArrayList<Integer> newCommonObjectivesScores) {
         for (CommonObjective objective : game.getCommonObjectives()) {
             Optional<Cockade> cockade = objective.isCompleted(player.getShelf());
-            cockade.ifPresent(player::addCockade);
-            cockade.ifPresent(result::add);
+            if (cockade.isPresent()) {
+                player.addCockade(cockade.get());
+                completedObjectives.add(cockade.get());
+                newCommonObjectivesScores.add(objective.getValue());
+            }
         }
-
-        return result;
     }
 
     /**
@@ -299,11 +301,20 @@ public class GameController {
                         throw new NotYourTurnException();
                     }
                     doMove(player, cardSelect.selectedCards(), cardSelect.column());
-                    ArrayList<Cockade> completedObjectives = addCommonCockade(player);
+                    ArrayList<Cockade> completedObjectives = new ArrayList<>();
+                    ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
+                    addCommonCockade(player, completedObjectives, newCommonObjectivesScores);
                     refillTable();
                     if(playerIterator.hasNext()){
-						currentPlayer = playerIterator.next();
-                        Update update = new Update(username, game.getTabletop().getSerializable(), player.getShelf().getSerializable(), currentPlayer.getName(), completedObjectives);
+                        currentPlayer = playerIterator.next();
+                        Update update = new Update(
+                            username,
+                            game.getTabletop().getSerializable(),
+                            player.getShelf().getSerializable(),
+                            currentPlayer.getName(),
+                            completedObjectives,
+                            newCommonObjectivesScores
+                        );
                         setGlobalUpdate(ServerEvent.Update(update));
                     }else{
                         for(Player p : game.getPlayers()){
@@ -403,11 +414,13 @@ public class GameController {
         ArrayList<Card[][]> shelves = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> players = game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> commonObjectives = game.getCommonObjectives().stream().map(CommonObjective::getName).collect(Collectors.toCollection(ArrayList::new));
-        ServerEvent toSend = ServerEvent.Start(new StartingInfo(
+        ArrayList<Integer> commonObjectivesPoints = game.getCommonObjectives().stream().map(CommonObjective::getValue).collect(Collectors.toCollection(ArrayList::new));
+        ServerEvent toSend = ServerEvent.Start(new GameInfo(
             game.getTabletop().getSerializable(),
             players,
             shelves,
             commonObjectives,
+            commonObjectivesPoints,
             player.getPersonalObjective().getName()
         ));
         ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();

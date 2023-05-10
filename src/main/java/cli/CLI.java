@@ -5,8 +5,6 @@ import network.rpc.client.NetworkManager;
 import network.Server;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 
 import controller.lobby.Lobby;
@@ -234,22 +232,7 @@ public class CLI {
 
 	private ClientStatus inGame() {
 		if (!gameStarted) {
-			try {  // Wait to receive game start event before prompting to abort
-				for (int i = 0; i < 20; i++) {
-					Thread.sleep(50);
-					if (networkManager.hasEvent()) {
-						return handleEvent();
-					}
-				}
-			} catch (InterruptedException e) {}
-
-			System.out.println("Waiting for other players...");
-			// TODO ask to abort
-			throw new RuntimeException("Abort not implemented");
-			// Optional<InLobbyOptions> option = Utils.askOptionOrEvent(EarlyAbortOptions.class, true);
-			// if (option.isEmpty()) {
-			// 	return handleEvent();
-			// }
+			return waitGlobalUpdate();
 		}
 
 		if (paused) {
@@ -479,7 +462,7 @@ public class CLI {
 			case Start -> {
 				gameStarted = true;
 				doPrint = true;
-				game = new CLIGame((StartingInfo)event.get().getData(), username);
+				game = new CLIGame((GameInfo)event.get().getData(), username);
 				yourTurn = game.players.get(0).equals(username);
 				System.out.println("Game has started");
 				if (yourTurn) {

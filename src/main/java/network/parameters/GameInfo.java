@@ -5,11 +5,12 @@ import java.util.ArrayList;
 
 import model.Card;
 
-public record StartingInfo(
+public record GameInfo(
 	Card[][] tableTop,
 	ArrayList<String> players,
 	ArrayList<Card[][]> shelves,
 	ArrayList<String> commonObjectives,
+	ArrayList<Integer> commonObjectivesPoints,
 	String personalObjective
 ) implements Serializable {
 }
