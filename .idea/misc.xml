@@ -9,7 +9,7 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/gui/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/view/gui/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/view/gui/pom.xml" />
       </list>
     </option>
   </component>
