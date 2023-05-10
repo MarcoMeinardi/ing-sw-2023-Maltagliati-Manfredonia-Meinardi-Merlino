@@ -52,7 +52,8 @@ public class GameController {
         for (Player player : game.getPlayers()) {
             ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
             client.setCallHandler(this::handleGame);
-            sendStartInfo(player);
+            GameInfo toSend = getGameInfo(player);
+            client.send(ServerEvent.Start(toSend));
         }
     }
 
@@ -388,6 +389,38 @@ public class GameController {
     }
 
     /**
+     * return the players of the game
+     *
+     * @return the players of the game
+     * @author marco
+     */
+    public ArrayList<Player> getPlayers() {
+        synchronized (game.getPlayers()) {
+            return game.getPlayers();
+        }
+    }
+
+    /**
+     * return the player with the given username
+     *
+     * @assumes the player is in the game
+     * @param username The username of the player to search
+     * @return the player with the given username
+     * @throws RuntimeException if the player is not found
+     * @author marco
+     */
+    public Player getPlayer(String username) {
+        synchronized (game.getPlayers()) {
+            for (Player player : game.getPlayers()) {
+                if (player.getName().equals(username)) {
+                    return player;
+                }
+            }
+        }
+        throw new RuntimeException("Player not found");
+    }
+
+    /**
      * Return the order of the players
      * @return
      * @author Lorenzo
@@ -410,20 +443,19 @@ public class GameController {
      * @author Marco, Lorenzo
      */
 
-    private void sendStartInfo(Player player) throws Exception {
+    public GameInfo getGameInfo(Player player) throws Exception {
         ArrayList<Card[][]> shelves = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> players = game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> commonObjectives = game.getCommonObjectives().stream().map(CommonObjective::getName).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<Integer> commonObjectivesPoints = game.getCommonObjectives().stream().map(CommonObjective::getValue).collect(Collectors.toCollection(ArrayList::new));
-        ServerEvent toSend = ServerEvent.Start(new GameInfo(
+        return new GameInfo(
             game.getTabletop().getSerializable(),
             players,
             shelves,
             commonObjectives,
             commonObjectivesPoints,
-            player.getPersonalObjective().getName()
-        ));
-        ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
-        client.send(toSend);
+            player.getPersonalObjective().getName(),
+            currentPlayer.getName()
+        );
     }
 }

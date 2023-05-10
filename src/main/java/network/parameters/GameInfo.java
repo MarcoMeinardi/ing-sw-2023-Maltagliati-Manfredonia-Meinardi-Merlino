@@ -11,6 +11,7 @@ public record GameInfo(
 	ArrayList<Card[][]> shelves,
 	ArrayList<String> commonObjectives,
 	ArrayList<Integer> commonObjectivesPoints,
-	String personalObjective
+	String personalObjective,
+	String currentPlayer
 ) implements Serializable {
 }

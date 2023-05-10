@@ -91,6 +91,10 @@ public class CLIGame {
 		}
 	}
 
+	public int getNumberOfPlayers() {
+		return nPlayers;
+	}
+
 	private Shelf convertShelf(Card[][] shelf) {
 		Optional<Card>[][] optionalShelf = new Optional[Shelf.ROWS][Shelf.COLUMNS];
 

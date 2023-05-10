@@ -94,7 +94,14 @@ public class CLI {
 		try {
 			Result result = networkManager.login(new Login(username)).waitResult();
 			if (result.isOk()) {
-				return ClientStatus.InLobbySearch;
+				if (result.unwrap().equals(Boolean.TRUE)) {
+					return ClientStatus.InLobbySearch;
+				} else {
+					game = new CLIGame((GameInfo)result.unwrap(), username);
+					yourTurn = game.players.get(0).equals(username);
+					gameStarted = true;
+					return ClientStatus.InGame;
+				}
 			}
 			System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
 		} catch (Exception e) {
@@ -354,7 +361,7 @@ public class CLI {
 			y = line.charAt(1) - '1';
 			x = line.charAt(0) - 'a';
 		}
-		if (lobby.getNumberOfPlayers() == 2) {
+		if (game.getNumberOfPlayers() == 2) {
 			y++;
 			x++;
 		}
@@ -511,11 +518,15 @@ public class CLI {
 					System.out.format("%s: %s%n", message.idPlayer(), message.message());
 				}
 			} case Pause -> {
-				System.out.println("[WARNING] Someone has disconnected");
+				if (!paused) {
+					System.out.println("[WARNING] Someone has disconnected");
+					doPrint = true;
+				}
 				paused = true;
 			} case Resume -> {
 				System.out.println("Game resumed");
 				paused = false;
+				doPrint = true;
 			}
 			default -> throw new RuntimeException("Unhandled event");
 		}
