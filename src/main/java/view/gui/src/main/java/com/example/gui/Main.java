@@ -13,7 +13,9 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("login.fxml"));
         Scene sceneLogin = new Scene(fxmlLoader.load());
         stage.setTitle("MyShelfie!");
+        stage.setFullScreen(true);
         stage.setScene(sceneLogin);
+
         stage.show();
     }
 

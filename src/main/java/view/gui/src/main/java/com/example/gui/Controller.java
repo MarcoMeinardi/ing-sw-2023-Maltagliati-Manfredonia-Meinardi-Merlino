@@ -1,14 +1,32 @@
 package com.example.gui;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 
 public class Controller {
-    @FXML
-    private Label welcomeText;
 
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+    private ToggleGroup Server;
+
+    @FXML
+    private Button btnPlay1;
+
+    @FXML
+    private TextField nameIP;
+
+    @FXML
+    private TextField namePlayer;
+
+    @FXML
+    private TextField namePort;
+
+    @FXML
+    void btnPlayOnClick1(ActionEvent event) {
+
+
     }
+
 }
