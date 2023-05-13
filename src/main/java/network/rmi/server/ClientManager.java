@@ -3,6 +3,7 @@ package network.rmi.server;
 import network.ClientInterface;
 import network.ClientManagerInterface;
 import network.ClientStatus;
+import network.GlobalClientManager;
 import network.parameters.Login;
 import network.rmi.LoginService;
 
@@ -65,10 +66,12 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
     }
 
     @Override
-    public boolean login(Login info) throws RemoteException {
+    public boolean login(Login info) throws Exception {
         String username = info.username();
-        if(clients.containsKey(username) || username.equals("LoginService")){
-            return false;
+        if(GlobalClientManager.getInstance().isUsernameTaken(username)){
+            if(!clients.containsKey(username) || !clients.get(username).isDisconnected()){
+                return false;
+            }
         }
         synchronized (availablePortLock){
             Client client = new Client(username, registry, availablePort);
