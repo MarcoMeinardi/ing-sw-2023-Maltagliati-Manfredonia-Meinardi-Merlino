@@ -30,7 +30,7 @@ public class CommonObjective extends Objective {
 		super(name);
 		this.name = name;
 		value = INITIAL_VALUE;
-		pointDecrement = nPlayers > 2 ? POINT_DECREMENT_2_PLAYERS : POINT_DECREMENT;
+		pointDecrement = nPlayers == 2 ? POINT_DECREMENT_2_PLAYERS : POINT_DECREMENT;
 		this.checkCompleted = checkCompleted;
 	}
 
@@ -81,6 +81,15 @@ public class CommonObjective extends Objective {
 		return cockade;
 	}
 
+	/**
+	 * Getter for the value attribute
+	 *
+	 * @return The current value of the objective
+	 * @author Marco
+	 */
+	public int getValue() {
+		return value;
+	}
 
 	// Common objectives functions
 

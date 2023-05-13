@@ -1,6 +1,7 @@
 package network.rpc.server;
 
 import controller.lobby.LobbyController;
+import controller.game.GameController;
 import network.*;
 import network.errors.ClientAlreadyConnectedExeption;
 import network.errors.ClientNotIdentifiedException;
@@ -44,17 +45,25 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         this.acceptConnectionsThread = new Thread(this::acceptConnections);
     }
 
-    private Result<Serializable> registerService(Call<Serializable> call, ClientInterface client){
-        if(call.service() != Service.Login){
+    private Result<Serializable> registerService(Call<Serializable> call, ClientInterface client) {
+        if(call.service() != Service.Login) {
             return Result.err(new ClientNotIdentifiedException(), call.id());
         }
-        if(!(call.params() instanceof Login)){
+        if(!(call.params() instanceof Login)) {
             return Result.err(new WrongParametersException("Login",call.params().getClass().getName(),"call.param()"), call.id());
         }
         Login login = (Login) call.params();
         try{
-            addIdentifiedClient(login.username(), client);
-            return Result.empty(call.id());//change handler to lobby handler
+            if (addIdentifiedClient(login.username(), client)) {
+                Optional<GameController> game = LobbyController.getInstance().searchGame(login.username());
+				if (game.isPresent()) {
+					return Result.ok(game.get().getGameInfo(game.get().getPlayer(login.username())), call.id());
+				} else {
+					return Result.empty(call.id());
+				}
+            } else {
+                return Result.empty(call.id());
+            }
         }catch (Exception e){
             return Result.err(e, call.id());
         }
@@ -77,6 +86,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
     }
 
     private void addIdentifiedClient(String username, ClientInterface client) throws Exception {
+            boolean wasConnected = false;
         synchronized (identifiedClients) {
             ClientManagerInterface globalManager = GlobalClientManager.getInstance();
             if(globalManager.isUsernameTaken(username)){
@@ -85,6 +95,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
                 }
             }
             if(identifiedClients.containsKey(username)){
+                wasConnected = true;
                 identifiedClients.get(username).disconnect();
                 ClientInterface lastClient = identifiedClients.get(username);
                 if (lastClient.getLastValidStatus().equals(ClientStatus.Disconnected)) {
@@ -100,6 +111,8 @@ public class ClientManager extends Thread implements ClientManagerInterface{
             identifiedClients.put(username, (Client)client);
             unidentifiedClients.remove(client);
         }
+
+        return wasConnected;
     }
 
     public void run(){

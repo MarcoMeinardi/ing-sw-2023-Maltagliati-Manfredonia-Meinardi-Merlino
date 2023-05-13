@@ -11,7 +11,7 @@ import model.InvalidMoveException;
 import model.PersonalObjective;
 import model.Shelf;
 import model.TableTop;
-import network.parameters.StartingInfo;
+import network.parameters.GameInfo;
 import network.parameters.Update;
 
 public class CLIGame {
@@ -23,12 +23,14 @@ public class CLIGame {
 	ArrayList<Shelf> shelves;
 	Shelf myShelf;
 	ArrayList<String> commonObjectives;
+	ArrayList<Integer> commonObjectivesPoints;
 	PersonalObjective personalObjective;
 
-	public CLIGame(StartingInfo data, String me) {
+	public CLIGame(GameInfo data, String me) {
 		this.me = me;
 		this.players = data.players();
 		this.commonObjectives = data.commonObjectives();
+		this.commonObjectivesPoints = data.commonObjectivesPoints();
 		this.nPlayers = this.players.size();
 
 		String personalObjectiveName = data.personalObjective();
@@ -66,6 +68,15 @@ public class CLIGame {
 				break;
 			}
 		}
+
+		for (int i = 0; i < update.commonObjectives().size(); i++) {
+			for (int j = 0; j < commonObjectives.size(); j++) {
+				if (update.commonObjectives().get(i).name().equals(commonObjectives.get(j))) {
+					commonObjectivesPoints.set(j, update.newCommonObjectivesScores().get(i));
+					break;
+				}
+			}
+		}
 	}
 
 	private void updateTableTop(Card[][] tableTop) {
@@ -78,6 +89,10 @@ public class CLIGame {
 					Optional.empty();
 			}
 		}
+	}
+
+	public int getNumberOfPlayers() {
+		return nPlayers;
 	}
 
 	private Shelf convertShelf(Card[][] shelf) {
@@ -277,7 +292,7 @@ public class CLIGame {
 
 	public void printCommonObjectives() {
 		for (int i = 0; i < CommonObjective.N_COMMON_OBJECTIVES; i++) {
-			System.out.format("%d: %s%n", i + 1, commonObjectives.get(i));
+			System.out.format("%d: %s ( %d points )%n", i + 1, commonObjectives.get(i), commonObjectivesPoints.get(i));
 		}
 	}
 }

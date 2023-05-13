@@ -262,6 +262,17 @@ public class LobbyController extends Thread {
         }
     }
 
+    public Optional<GameController> searchGame(String username) {
+        synchronized (games) {
+            for (GameController game : games) {
+                if (game.getPlayers().stream().filter(p -> p.getName().equals(username)).findAny().isPresent()) {
+                    return Optional.of(game);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
     /**
      * Sends a global update event to all clients in the specified lobby.
      * @param lobby the Lobby object to send the update event to

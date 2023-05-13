@@ -5,8 +5,6 @@ import network.parameters.*;
 import network.rpc.client.NetworkManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 
 import controller.lobby.Lobby;
@@ -37,6 +35,7 @@ public class CLI {
 	boolean doPrint;
 	boolean gameStarted;
 	boolean yourTurn;
+	boolean paused;
 
 	CLIGame game;
 
@@ -101,7 +100,14 @@ public class CLI {
 		try {
 			Result result = networkManager.login(new Login(username)).waitResult();
 			if (result.isOk()) {
-				return ClientStatus.InLobbySearch;
+				if (result.unwrap().equals(Boolean.TRUE)) {
+					return ClientStatus.InLobbySearch;
+				} else {
+					game = new CLIGame((GameInfo)result.unwrap(), username);
+					yourTurn = game.players.get(0).equals(username);
+					gameStarted = true;
+					return ClientStatus.InGame;
+				}
 			}
 			System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
 		} catch (Exception e) {
@@ -239,25 +245,12 @@ public class CLI {
 
 	private ClientStatus inGame() {
 		if (!gameStarted) {
-			try {  // Wait to receive game start event before prompting to abort
-				for (int i = 0; i < 20; i++) {
-					Thread.sleep(50);
-					if (networkManager.hasEvent()) {
-						return handleEvent();
-					}
-				}
-			} catch (InterruptedException e) {}
-
-			System.out.println("Waiting for other players...");
-			// TODO ask to abort
-			throw new RuntimeException("Abort not implemented");
-			// Optional<InLobbyOptions> option = Utils.askOptionOrEvent(EarlyAbortOptions.class, true);
-			// if (option.isEmpty()) {
-			// 	return handleEvent();
-			// }
+			return waitGlobalUpdate();
 		}
 
-		if (yourTurn) {
+		if (paused) {
+			return inGameNoTurn();
+		} else if (yourTurn) {
 			return inGameTurn();
 		} else {
 			return inGameNoTurn();
@@ -270,6 +263,8 @@ public class CLI {
 			doPrint = false;
 			return handleEvent();
 		}
+		doPrint = true;
+
 		switch (option.get()) {
 			case SHOW_YOUR_SHELF -> {
 				game.printYourShelf();
@@ -320,6 +315,8 @@ public class CLI {
 			doPrint = false;
 			return handleEvent();
 		}
+		doPrint = true;
+
 		switch (option.get()) {
 			case SHOW_YOUR_SHELF -> {
 				game.printYourShelf();
@@ -370,7 +367,7 @@ public class CLI {
 			y = line.charAt(1) - '1';
 			x = line.charAt(0) - 'a';
 		}
-		if (lobby.getNumberOfPlayers() == 2) {
+		if (game.getNumberOfPlayers() == 2) {
 			y++;
 			x++;
 		}
@@ -478,7 +475,7 @@ public class CLI {
 			case Start -> {
 				gameStarted = true;
 				doPrint = true;
-				game = new CLIGame((StartingInfo)event.get().getData(), username);
+				game = new CLIGame((GameInfo)event.get().getData(), username);
 				yourTurn = game.players.get(0).equals(username);
 				System.out.println("Game has started");
 				if (yourTurn) {
@@ -526,6 +523,16 @@ public class CLI {
 				if (!message.idPlayer().equals(username)) {
 					System.out.format("%s: %s%n", message.idPlayer(), message.message());
 				}
+			} case Pause -> {
+				if (!paused) {
+					System.out.println("[WARNING] Someone has disconnected");
+					doPrint = true;
+				}
+				paused = true;
+			} case Resume -> {
+				System.out.println("Game resumed");
+				paused = false;
+				doPrint = true;
 			}
 			default -> throw new RuntimeException("Unhandled event");
 		}
