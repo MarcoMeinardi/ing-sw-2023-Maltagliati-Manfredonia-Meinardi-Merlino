@@ -2,12 +2,12 @@ package it.polimi.ingsw;
 
 import controller.lobby.LobbyController;
 import network.ClientManagerInterface;
-import network.rpc.server.ClientManager;
+import network.GlobalClientManager;
 
 public class Server {
 
 	static public void main(String[] args) throws Exception {
-		ClientManagerInterface clientManager = ClientManager.getInstance();
+		ClientManagerInterface clientManager = GlobalClientManager.getInstance();
 		LobbyController lobbyController = LobbyController.getInstance();
 		clientManager.waitAndClose();
 	}

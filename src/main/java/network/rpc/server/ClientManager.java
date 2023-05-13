@@ -85,12 +85,14 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         }
     }
 
-    private boolean addIdentifiedClient(String username, ClientInterface client) throws ClientAlreadyConnectedExeption {
+    private boolean addIdentifiedClient(String username, ClientInterface client) throws Exception {
         boolean wasConnected = false;
-
         synchronized (identifiedClients) {
-            if(identifiedClients.containsKey(username) && identifiedClients.get(username).getStatus() != ClientStatus.Disconnected){
-                throw new ClientAlreadyConnectedExeption();
+            ClientManagerInterface globalManager = GlobalClientManager.getInstance();
+            if(globalManager.isUsernameTaken(username)){
+                if(!identifiedClients.containsKey(username) || !identifiedClients.get(username).isDisconnected()) {
+                    throw new ClientAlreadyConnectedExeption();
+                }
             }
             if(identifiedClients.containsKey(username)){
                 wasConnected = true;
@@ -183,6 +185,12 @@ public class ClientManager extends Thread implements ClientManagerInterface{
     public boolean isClientConnected(String username){
         synchronized (identifiedClients) {
             return identifiedClients.containsKey(username) && identifiedClients.get(username).getStatus() != ClientStatus.Disconnected;
+        }
+    }
+
+    public boolean isUsernameTaken(String username){
+        synchronized (identifiedClients) {
+            return identifiedClients.containsKey(username);
         }
     }
 }

@@ -8,7 +8,6 @@ import network.parameters.Message;
 import network.parameters.GameInfo;
 import network.parameters.Update;
 import network.parameters.WrongParametersException;
-import network.rpc.server.ClientManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,7 +47,7 @@ public class GameController {
         game = new Game(lobby.getPlayers());
         playerIterator = game.iterator();
         currentPlayer = playerIterator.next();
-        clientManager = ClientManager.getInstance();
+        clientManager = GlobalClientManager.getInstance();
         for (Player player : game.getPlayers()) {
             ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
             client.setCallHandler(this::handleGame);

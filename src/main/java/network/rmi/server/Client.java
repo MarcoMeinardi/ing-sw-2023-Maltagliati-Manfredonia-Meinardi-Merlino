@@ -1,5 +1,6 @@
 package network.rmi.server;
 
+import controller.lobby.LobbyController;
 import network.*;
 import network.errors.ClientNotIdentifiedException;
 import network.errors.DisconnectedClientException;
@@ -29,7 +30,9 @@ public class Client implements ClientService, ClientInterface {
 
     public Client(String username , Registry registry, int port) throws RemoteException {
         this.username = username;
+        statusHandler = new ClientStatusHandler();
         stub = (ClientService) UnicastRemoteObject.exportObject(this, port);
+        setCallHandler(LobbyController.getInstance()::handleLobbySearch);
         registry.rebind(username, stub);
     }
     @Override
@@ -112,8 +115,15 @@ public class Client implements ClientService, ClientInterface {
     }
 
     @Override
+    public Boolean hasEvent() throws RemoteException {
+        synchronized (serverEvents){
+            return !serverEvents.isEmpty();
+        }
+    }
+
+    @Override
     public boolean checkPing(){
-        if(getStatus() == ClientStatus.Disconnected){
+        if(statusHandler.getStatus() == ClientStatus.Disconnected){
             return false;
         }
         synchronized (lastMessageTimeLock) {

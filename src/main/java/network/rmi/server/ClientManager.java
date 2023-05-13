@@ -2,6 +2,8 @@ package network.rmi.server;
 
 import network.ClientInterface;
 import network.ClientManagerInterface;
+import network.ClientStatus;
+import network.GlobalClientManager;
 import network.parameters.Login;
 import network.rmi.LoginService;
 
@@ -14,7 +16,7 @@ import java.util.Optional;
 
 public class ClientManager extends Thread implements ClientManagerInterface, LoginService {
     HashMap <String, Client> clients;
-    public static int port = 8000;
+    public static int port = 8001;
     private int availablePort = 10000;
     private Object availablePortLock;
     private final Registry registry;
@@ -31,7 +33,7 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
         registry.rebind("LoginService", stub);
     }
 
-    public ClientManagerInterface getInstance() throws Exception{
+    public static ClientManagerInterface getInstance() throws Exception{
         synchronized (instanceLock) {
             if (instance == null) {
                 instance = new ClientManager();
@@ -64,10 +66,12 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
     }
 
     @Override
-    public boolean login(Login info) throws RemoteException {
+    public boolean login(Login info) throws Exception {
         String username = info.username();
-        if(clients.containsKey(username) || username.equals("LoginService")){
-            return false;
+        if(GlobalClientManager.getInstance().isUsernameTaken(username)){
+            if(!clients.containsKey(username) || !clients.get(username).isDisconnected()){
+                return false;
+            }
         }
         synchronized (availablePortLock){
             Client client = new Client(username, registry, availablePort);
@@ -90,13 +94,20 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
                 e.printStackTrace();
             }
             for(Client client : clients.values()){
-                if(client.checkPing()){
-
+                if(!client.checkPing()){
+                    client.setStatus(ClientStatus.Disconnected);
                 }
             }
             synchronized (instanceLock){
                 running = instance != null;
             }
+        }
+    }
+
+    @Override
+    public boolean isUsernameTaken(String username) {
+        synchronized (clients){
+            return clients.containsKey(username);
         }
     }
 }

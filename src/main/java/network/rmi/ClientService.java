@@ -4,8 +4,10 @@ import network.Result;
 import network.ServerEvent;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 public interface ClientService extends Remote {
-    Result requestService(Call call);
-    ServerEvent pollEvent();
+    Result requestService(Call call) throws RemoteException;
+    ServerEvent pollEvent() throws RemoteException;
+    Boolean hasEvent() throws  RemoteException;
 }

@@ -1,8 +1,8 @@
 package cli;
 
+import network.*;
 import network.parameters.*;
 import network.rpc.client.NetworkManager;
-import network.Server;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -14,17 +14,18 @@ import model.Score;
 import model.ScoreBoard;
 import model.Shelf;
 import model.TableTop;
-import network.Result;
-import network.ServerEvent;
-import network.ClientStatus;
 
 public class CLI {
 	private static CLI instance;
-	private static NetworkManager networkManager = NetworkManager.getInstance();
-
+	public static NetworkManagerInterface networkManager;
 	private ClientStatus state;
 	private Lobby lobby;
 	boolean hasConnected;
+
+	private enum ConnectionMode{
+		RMI,
+		RPC
+	}
 
 	private String ip;
 	private int port;
@@ -70,9 +71,10 @@ public class CLI {
 	}
 
 	private ClientStatus connect() {
-		// askIpPort();
-		this.ip = "localhost";
-		this.port = 8000;
+		askIpPort();
+		//this.ip = "localhost";
+		//this.port = 8000;
+
 		try {
 			networkManager.connect(new Server(this.ip, this.port));
 			hasConnected = true;
@@ -86,6 +88,10 @@ public class CLI {
 	private void askIpPort() {
 		this.ip = Utils.askString("Server IP: ");
 		this.port = Utils.askInt("Server port: ");
+		switch (Utils.askOption(CLI.ConnectionMode.class)){
+			case RMI -> networkManager = network.rmi.client.NetworkManager.getInstance();
+			case RPC -> networkManager = network.rpc.client.NetworkManager.getInstance();
+		}
 	}
 
 	// TODO we need to receive the previous status in case of a reconnection
