@@ -10,6 +10,7 @@ import network.parameters.LobbyCreateInfo;
 import network.parameters.Login;
 import network.rmi.ClientService;
 import network.rmi.LoginService;
+import network.rmi.server.Client;
 
 import java.io.Serializable;
 import java.rmi.registry.LocateRegistry;
@@ -19,14 +20,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class NetworkManager extends Thread implements NetworkManagerInterface {
+    private Logger logger = Logger.getLogger(this.getClass().getName());
     private static NetworkManager instance = null;
     private Registry registry;
     private Optional<ClientService> clientService;
     private LoginService loginService;
-    private LinkedList<ServerEvent> eventQueue;
-
     private boolean connected;
     private final Object connectedLock = new Object();
 
@@ -34,14 +35,12 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     private final Object lastMessageLock = new Object();
     private final Function<Boolean,Boolean> ping = new Function(Boolean.TRUE,Service.Ping);
     private final int PING_TIMEOUT = 60;
-
     private Server serverInfo;
     @Override
     public void connect(Server server) throws Exception {
         registry = LocateRegistry.getRegistry(server.ip(), server.port());
         clientService = Optional.empty();
         loginService = (LoginService) registry.lookup("LoginService");
-        eventQueue = new LinkedList<>();
         setConnected(true);
         lastMessage = LocalDateTime.now();
         serverInfo = server;
@@ -52,6 +51,13 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         synchronized (connectedLock){
             this.connected = connected;
         }
+    }
+
+    public static NetworkManagerInterface getInstance(){
+        if(instance == null){
+            instance = new NetworkManager();
+        }
+        return instance;
     }
 
     private void setLastMessage(){
@@ -79,15 +85,6 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
                                 disconnect();
                             }
                         }
-                    }
-                }
-                if(clientService.isPresent()){
-                    ServerEvent e = clientService.get().pollEvent();
-                    while(e != null){
-                        synchronized (eventQueue){
-                            eventQueue.add(e);
-                        }
-                        e = clientService.get().pollEvent();
                     }
                 }
             }catch(Exception e){
@@ -119,19 +116,26 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     @Override
     public Optional<ServerEvent> getEvent() {
         Optional<ServerEvent> event = Optional.empty();
-        synchronized (eventQueue){
-            if(!eventQueue.isEmpty()){
-                event = Optional.of(eventQueue.poll());
+        try{
+            if(clientService.isPresent()){
+                    return Optional.of(clientService.get().pollEvent());
             }
+        }catch (Exception e){
+            disconnect();
         }
         return event;
     }
 
     @Override
     public boolean hasEvent() {
-        synchronized (eventQueue){
-            return !eventQueue.isEmpty();
+        try{
+            if(clientService.isPresent()){
+                return clientService.get().hasEvent();
+            }
+        }catch (Exception e){
+            disconnect();
         }
+        return false;
     }
 
     @Override
@@ -186,7 +190,17 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         return fn;
     }
 
+    @Override
+    public Function<String, Boolean> chat(String message) throws Exception {
+        return handleService(new Function(message, Service.GameChatSend));
+    }
+
     public Function handleService(Function fn){
+        if(hasEvent()){
+            logger.info("Client has events");
+        }else{
+            logger.info("Client has no events");
+        }
         Result<Serializable> result;
         try{
             if(clientService.isEmpty()){
@@ -197,6 +211,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
             result = Result.err(e,fn.id());
         }
         fn.setResult(result);
+        setLastMessage();
         return fn;
     }
 

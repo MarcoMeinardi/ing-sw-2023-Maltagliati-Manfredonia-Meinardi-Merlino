@@ -26,4 +26,6 @@ public interface NetworkManagerInterface {
     public Function<Boolean,Boolean> gameStart() throws Exception;
     public Function<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception;
     public Function<Login, Boolean> login(Login username) throws Exception;
+    public void join() throws Exception;
+    public Function<String, Boolean> chat(String message) throws Exception;
 }

@@ -5,8 +5,6 @@ import network.*;
 import network.parameters.LobbyCreateInfo;
 import network.parameters.Message;
 import network.parameters.WrongParametersException;
-import network.rpc.server.Client;
-import network.rpc.server.ClientManager;
 import network.errors.ClientNotFoundException;
 
 import java.io.Serializable;
@@ -56,7 +54,7 @@ public class LobbyController extends Thread {
                     for (Lobby lobby : lobbies.values()) {
                         ArrayList<String> players = lobby.getPlayers();
                         for (int i = 0; i < players.size(); i++) {
-                            Optional<ClientInterface> client = ClientManager.getInstance().getClient(players.get(i));
+                            Optional<ClientInterface> client = GlobalClientManager.getInstance().getClient(players.get(i));
                             if (client.isEmpty()) {
                                 throw new ClientNotFoundException();
                             } else {
@@ -274,7 +272,7 @@ public class LobbyController extends Thread {
         synchronized (lobby) {
             for(String player : lobby.getPlayers()) {
                 try {
-                    Optional<ClientInterface> client = ClientManager.getInstance().getClient(player);
+                    Optional<ClientInterface> client = GlobalClientManager.getInstance().getClient(player);
                     if(client.isPresent()) {
                         client.get().send(event);
                     }
