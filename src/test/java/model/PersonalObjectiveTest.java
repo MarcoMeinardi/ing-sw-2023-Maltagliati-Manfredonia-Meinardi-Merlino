@@ -18,6 +18,7 @@ public class PersonalObjectiveTest {
      * Test for the IsCompleted() method. Checks if optional of cockade
      * id empty first; checks that, in all the cases of possible acquired points,
      * that the method returns the optional with right points.
+     * @author Ludovico
      */
 
     @Test

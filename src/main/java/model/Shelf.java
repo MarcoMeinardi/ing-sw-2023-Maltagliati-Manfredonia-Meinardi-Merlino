@@ -197,6 +197,11 @@ public class Shelf {
 	/**
 	 * Method created to test isCompleted() method of PersonalObjective class.
 	 * Inserts the card in the desired position, disregarding the rules of the game.
+	 *
+	 * @param column The column in which the card will be inserted
+	 * @param row The row in which the card will be inserted
+	 * @param card The card to be inserted
+	 * @author Ludovico
 	 */
 
 	public void insertTest(int column, int row, Card card){
