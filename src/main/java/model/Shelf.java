@@ -193,4 +193,14 @@ public class Shelf {
 
 		return result;
 	}
+
+	/**
+	 * Method created to test isCompleted() method of PersonalObjective class.
+	 * Inserts the card in the desired position, disregarding the rules of the game.
+	 */
+
+	public void insertTest(int column, int row, Card card){
+		slots[row][column] = Optional.of(card);
+		return;
+	}
 }
