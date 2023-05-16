@@ -15,6 +15,37 @@ import java.util.Optional;
 public class PersonalObjectiveTest {
 
     /**
+     * Test for the constructor. Checks that the cells are correctly
+     * initialized and that the name is correctly setted.
+     *
+     * @author Ludovico
+     */
+    @Test
+    public void testConstructor(){
+
+        PersonalObjective objective = new PersonalObjective("test", new Cell[]{
+                new Cell(5, 0, Card.Pianta),
+                new Cell(5, 1, Card.Gatto),
+                new Cell(4, 4, Card.Gatto),
+                new Cell(3, 3, Card.Libro),
+                new Cell(2, 1, Card.Gioco),
+                new Cell(0, 2, Card.Trofeo)
+        });
+
+        assertEquals(objective.getCellsCheck(), new Cell[]{
+                new Cell(5, 0, Card.Pianta),
+                new Cell(5, 1, Card.Gatto),
+                new Cell(4, 4, Card.Gatto),
+                new Cell(3, 3, Card.Libro),
+                new Cell(2, 1, Card.Gioco),
+                new Cell(0, 2, Card.Trofeo)
+        });
+
+        assertEquals(objective.getName(), "test");
+
+    }
+
+    /**
      * Test for the IsCompleted() method. Checks if optional of cockade
      * id empty first; checks that, in all the cases of possible acquired points,
      * that the method returns the optional with right points.

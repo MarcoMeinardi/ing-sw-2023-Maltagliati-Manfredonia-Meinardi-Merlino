@@ -8,8 +8,28 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
+
 public class CommonObjectiveTest {
 
+    /**
+     * Test the constructor of CommonObjective
+     *
+     * @author Ludovico
+     */
+    @Test
+    public void testConstructor() {
+
+        CommonObjective objective = new CommonObjective("test", 2, CommonObjective::fiveCardsInDiagonal);
+        assertEquals("test", objective.getName());
+        assertEquals(8, objective.getValue());
+
+    }
+
+    /**
+     * Test the method generateCommonObjectives
+     *
+     * @autor: Ludovico, Marco
+     */
     @Test
     public void testGenerateCommonObjectives() {
 
@@ -23,6 +43,13 @@ public class CommonObjectiveTest {
         assertEquals(2, commonObjectives.size());
 
     }
+
+    /**
+     * Test the objective "FiveCardsInDiagonal"
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
 
     @Test
     public void testFiveCardsInDiagonal() throws InvalidMoveException{
@@ -47,6 +74,13 @@ public class CommonObjectiveTest {
 
     };
 
+    /**
+     * Test the objective "isEqualsCorners"
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
+
     @Test
     public void isEqualsCorners() throws InvalidMoveException{
         int nPlayers = 2;
@@ -64,6 +98,13 @@ public class CommonObjectiveTest {
         cockade = objective.isCompleted(shelf);
         assertTrue(cockade.isPresent());
     }
+
+    /**
+     * Test the objective "fourRowsOfAtMostThreeDifferentCards"
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
 
     @Test
     public void testFourRowsOfAtMostThreeDifferentCards() throws InvalidMoveException{
@@ -89,6 +130,13 @@ public class CommonObjectiveTest {
         assertTrue(cockade.isPresent());
     }
 
+    /**
+     * Test the objective "fourGroupsOfFourCards"
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
+
     @Test
     public void testFourGroupsOfFourCards() throws InvalidMoveException{
         int nPlayers = 2;
@@ -111,6 +159,13 @@ public class CommonObjectiveTest {
         assertTrue(cockade.isPresent());
     }
 
+    /**
+     * Test the objective "twoColumnsOfSixDifferentCards"
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
+
     @Test
     public void testTwoColumnsOfSixDifferentCards() throws InvalidMoveException{
         int nPlayers = 2;
@@ -128,6 +183,13 @@ public class CommonObjectiveTest {
         cockade = objective.isCompleted(shelf);
         assertTrue(cockade.isPresent());
     }
+
+    /**
+     * Test the objective "twoSquareGroups"
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
 
     @Test
     public void testTwoSquareGroups() throws InvalidMoveException{
@@ -147,6 +209,13 @@ public class CommonObjectiveTest {
         assertTrue(cockade.isPresent());
     }
 
+    /**
+     * Test the objective "twoRowsWithFiveDifferentCards
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
+
     @Test
     public void testTwoRowsWithFIveDifferentCards() throws InvalidMoveException{
         int nPlayers = 2;
@@ -165,6 +234,13 @@ public class CommonObjectiveTest {
         cockade = objective.isCompleted(shelf);
         assertTrue(cockade.isPresent());
     }
+
+    /**
+     * Test the objective "threeColumnsOfAtMostThreeDifferentCards
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
 
     @Test
     public void testThreeColumnsOfAtMostThreeDifferentCards() throws InvalidMoveException{
@@ -186,6 +262,13 @@ public class CommonObjectiveTest {
         assertTrue(cockade.isPresent());
     }
 
+    /**
+     * Test the objective "equalsX"
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
+
     @Test
     public void testEqualsX() throws InvalidMoveException{
         int nPlayers = 2;
@@ -203,6 +286,13 @@ public class CommonObjectiveTest {
         assertTrue(cockade.isPresent());
     }
 
+    /**
+     * Test the objective "eightEquals"
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
+
     @Test
     public void testEightEquals() throws InvalidMoveException{
         int nPlayers = 2;
@@ -219,6 +309,13 @@ public class CommonObjectiveTest {
         cockade = objective.isCompleted(shelf);
         assertTrue(cockade.isPresent());
     }
+
+    /**
+     * Test the objective "stairsShape"
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
 
     @Test
     public void testStairsShape() throws InvalidMoveException{
@@ -241,6 +338,12 @@ public class CommonObjectiveTest {
         assertTrue(cockade.isPresent());
     }
 
+    /**
+     * Test the objective "6 groups of 2 cards"
+     *
+     * @throws InvalidMoveException
+     * @autor: Ludovico
+     */
 
     @Test
     public void testSixGroupOfTwoCards() throws InvalidMoveException {
