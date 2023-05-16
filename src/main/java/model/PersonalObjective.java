@@ -11,10 +11,10 @@ public class PersonalObjective extends Objective {
     /**
      * Constructor that creates a new personal objective with a specified name and
      * array of cells to check for completion.
-     * @author Marco, Ludovico, Lorenzo, Riccardo
      *
      * @param name The name of the personal objective
      * @param cellsCheck An array of cells to check for completion of the objective
+     * @author Marco, Ludovico, Lorenzo, Riccardo
      */
     public PersonalObjective(String name, Cell[] cellsCheck) {
         super(name);
@@ -23,9 +23,9 @@ public class PersonalObjective extends Objective {
 
     /**
      * Returns the array of cells to check for completion of the objective.
-     * @Author Marco
      *
-     * @return The array of cells to check for completion of the objective
+     * @return The array of cells to check for completion of the objectives
+     * @Author Marco
      */
     public Cell[] getCellsCheck() {
         return cellsCheck;
@@ -63,9 +63,9 @@ public class PersonalObjective extends Objective {
 
     /**
      * Generates an ArrayList with all the existing personal objectives.
-     * @author Ludovico
      *
      * @return An array of personal objectives
+     * @author Ludovico
      */
 
     public static ArrayList<PersonalObjective> generateAllPersonalObjectives() {
