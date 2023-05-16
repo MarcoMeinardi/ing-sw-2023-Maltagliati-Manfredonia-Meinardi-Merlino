@@ -11,62 +11,62 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<Pane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fitHeight="1080.0" fitWidth="1617.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="1080.0" fitWidth="1920.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@/img/Publisher material/Display_2.jpg" />
+            <Image url="@/img/Publisher material/Display_1.jpg" />
          </image>
          <effect>
             <BoxBlur width="16.92" />
          </effect>
       </ImageView>
-      <TextField fx:id="namePort" alignment="CENTER" layoutX="530.0" layoutY="586.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="8080" style="-fx-background-color: white; -fx-opacity: 80%;">
+      <TextField fx:id="namePort" alignment="CENTER" layoutX="530.0" layoutY="516.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="8000" style="-fx-background-color: white; -fx-opacity: 80%;">
          <font>
             <Font name="Franklin Gothic Medium Cond" size="26.0" />
          </font>
       </TextField>
-      <Button fx:id="btnPlay1" alignment="CENTER" contentDisplay="CENTER" layoutX="939.0" layoutY="832.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: white;" text="Play">
+      <Button fx:id="btnPlay1" alignment="CENTER" contentDisplay="CENTER" layoutX="929.0" layoutY="772.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: white;" text="Play">
          <font>
             <Font name="Franklin Gothic Demi Cond" size="33.0" />
          </font>
       </Button>
-      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="1396.0" layoutY="722.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="1396.0" layoutY="652.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@/img/Publisher material/Publisher.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="200.0" fitWidth="596.0" layoutX="517.0" layoutY="137.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="200.0" fitWidth="596.0" layoutX="517.0" layoutY="67.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@/img/Publisher material/Title 2000x618px.png" />
          </image>
       </ImageView>
-      <Text layoutX="697.0" layoutY="712.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Insert your Name" textAlignment="CENTER" textOrigin="CENTER">
+      <Text fill="#bc9712" layoutX="697.0" layoutY="642.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Insert your Name" textAlignment="CENTER" textOrigin="CENTER">
          <font>
             <Font name="Franklin Gothic Medium Cond" size="41.0" />
          </font>
       </Text>
-      <Text layoutX="726.0" layoutY="390.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IP Address" textAlignment="CENTER" textOrigin="CENTER">
+      <Text fill="#bc9712" layoutX="726.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IP Address" textAlignment="CENTER" textOrigin="CENTER">
          <font>
             <Font name="Franklin Gothic Medium Cond" size="41.0" />
          </font>
       </Text>
-      <Text layoutX="773.0" layoutY="559.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Port" textAlignment="CENTER" textOrigin="CENTER">
+      <Text fill="#bc9712" layoutX="773.0" layoutY="489.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Port" textAlignment="CENTER" textOrigin="CENTER">
          <font>
             <Font name="Franklin Gothic Medium Cond" size="41.0" />
          </font>
       </Text>
-      <TextField fx:id="nameIP" alignment="CENTER" layoutX="525.0" layoutY="421.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="192.168.0.1" style="-fx-background-color: white; -fx-opacity: 80%;">
+      <TextField fx:id="nameIP" alignment="CENTER" layoutX="515.0" layoutY="361.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="192.168.0.1" style="-fx-background-color: white; -fx-opacity: 80%;">
          <font>
             <Font name="Franklin Gothic Medium Cond" size="26.0" />
          </font>
       </TextField>
-      <TextField fx:id="namePlayer" alignment="CENTER" layoutX="538.0" layoutY="738.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="PlayerName" style="-fx-background-color: white; -fx-opacity: 80%;">
+      <TextField fx:id="namePlayer" alignment="CENTER" layoutX="538.0" layoutY="668.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="PlayerName" style="-fx-background-color: white; -fx-opacity: 80%;">
          <font>
             <Font name="Franklin Gothic Medium Cond" size="26.0" />
          </font>
       </TextField>
-      <RadioButton layoutX="619.0" layoutY="840.0" mnemonicParsing="false" selected="true" text="RMI">
+      <RadioButton layoutX="619.0" layoutY="770.0" mnemonicParsing="false" selected="true" text="RMI" textFill="#bc9712">
          <font>
             <Font name="Franklin Gothic Medium" size="26.0" />
          </font>
@@ -74,7 +74,7 @@
             <ToggleGroup fx:id="Server" />
          </toggleGroup>
       </RadioButton>
-      <RadioButton layoutX="750.0" layoutY="839.0" mnemonicParsing="false" text="Socket" toggleGroup="$Server">
+      <RadioButton layoutX="750.0" layoutY="770.0" mnemonicParsing="false" text="Socket" textFill="#bc9712" toggleGroup="$Server">
          <font>
             <Font name="Franklin Gothic Medium" size="26.0" />
          </font>

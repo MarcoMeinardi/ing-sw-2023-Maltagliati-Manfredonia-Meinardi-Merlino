@@ -24,7 +24,7 @@ public class LoginController {
     private TextField namePort;
 
     @FXML
-    void btnPlayOnClick1(ActionEvent event) {
+    public void btnPlayOnClick1(ActionEvent event) {
         btnPlay1.setDisable(true);
         String namePlayer = this.namePlayer.getText();
         String nameIP = this.nameIP.getText();

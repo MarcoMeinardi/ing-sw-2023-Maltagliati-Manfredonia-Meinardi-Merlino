@@ -14,7 +14,7 @@
    <children>
       <ImageView fitHeight="1078.0" fitWidth="1617.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@/img/Publisher material/Display_2.jpg" />
+            <Image url="@/img/Publisher material/Display_1.jpg" />
          </image>
       </ImageView>
       <Text fx:id="nameUser" fill="WHITE" layoutX="78.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" underline="true" wrappingWidth="210.0911102294922">
