@@ -1,6 +1,5 @@
-package com.example.gui;
+package view.gui;
 
-import com.example.gui.LobbyController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

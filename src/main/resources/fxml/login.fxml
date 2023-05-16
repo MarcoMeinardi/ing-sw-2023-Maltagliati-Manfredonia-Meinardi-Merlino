@@ -19,7 +19,7 @@
          <children>
             <ImageView pickOnBounds="true">
                <image>
-                  <Image url="@/assets/Publisher material/Display_2.jpg" />
+                  <Image url="@/img/Publisher material/Display_2.jpg" />
                </image>
                <cursor>
                   <Cursor fx:constant="DEFAULT" />
@@ -32,7 +32,7 @@
                <children>
                   <ImageView fitHeight="264.0" fitWidth="474.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@/assets/Publisher material/Title 2000x618px.png" />
+                        <Image url="@/img/Publisher material/Title 2000x618px.png" />
                      </image>
                   </ImageView>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert your Name" textAlignment="CENTER" wrappingWidth="304.80001220703116">
@@ -57,7 +57,7 @@
                      <children>
                         <ImageView fitHeight="130.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/assets/Publisher material/Publisher.png" />
+                              <Image url="@/img/Publisher material/Publisher.png" />
                            </image>
                         </ImageView>
                      </children>
