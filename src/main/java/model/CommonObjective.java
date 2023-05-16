@@ -103,7 +103,7 @@ public class CommonObjective extends Objective {
 	 * @author Marco
 	 *
 	 */
-	private static int groupsOfNCards(Shelf shelf, int n) {
+	private static int groupsOfAtLeastCards(Shelf shelf, int n) {
 		boolean[][] visited = new boolean[Shelf.ROWS][Shelf.COLUMNS];
 		int groups = 0;
 
@@ -111,7 +111,7 @@ public class CommonObjective extends Objective {
 			for (int y = 0; y < Shelf.ROWS; y++) {
 				for (int x = 0; x < Shelf.COLUMNS; x++) {
 					if (shelf.getCard(y, x).isPresent()) {
-						groups += shelf.getGroupSize(y, x, shelf.getCard(y, x).get(), visited) / n;
+						groups += shelf.getGroupSize(y, x, shelf.getCard(y, x).get(), visited) >= n ? 1 : 0;
 					}
 				}
 			}
@@ -130,7 +130,7 @@ public class CommonObjective extends Objective {
 	 * @author Marco
 	 */
 	public static Boolean fourGroupsOfFourCards(Shelf shelf) {
-		return groupsOfNCards(shelf, 4) >= 4;
+		return groupsOfAtLeastCards(shelf, 4) >= 4;
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class CommonObjective extends Objective {
 	 * @author Marco
 	 */
 	public static Boolean sixGroupsOfTwoCards(Shelf shelf) {
-		return groupsOfNCards(shelf, 2) >= 6;
+		return groupsOfAtLeastCards(shelf, 2) >= 6;
 	}
 
 	/**
