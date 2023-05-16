@@ -11,11 +11,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gui.LoginController">
+<Pane minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fitHeight="1080.0" fitWidth="1617.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../assets/Publisher material/Display_2.jpg" />
+            <Image url="@/img/Publisher material/Display_2.jpg" />
          </image>
          <effect>
             <BoxBlur width="16.92" />
@@ -26,19 +26,19 @@
             <Font name="Franklin Gothic Medium Cond" size="26.0" />
          </font>
       </TextField>
-      <Button fx:id="btnPlay1" alignment="CENTER" contentDisplay="CENTER" layoutX="939.0" layoutY="832.0" mnemonicParsing="false" onAction="#btnPlayOnClick1" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: white;" text="Play">
+      <Button fx:id="btnPlay1" alignment="CENTER" contentDisplay="CENTER" layoutX="939.0" layoutY="832.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: white;" text="Play">
          <font>
             <Font name="Franklin Gothic Demi Cond" size="33.0" />
          </font>
       </Button>
       <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="1396.0" layoutY="722.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../assets/Publisher material/Publisher.png" />
+            <Image url="@/img/Publisher material/Publisher.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="200.0" fitWidth="596.0" layoutX="517.0" layoutY="137.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../assets/Publisher material/Title 2000x618px.png" />
+            <Image url="@/img/Publisher material/Title 2000x618px.png" />
          </image>
       </ImageView>
       <Text layoutX="697.0" layoutY="712.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Insert your Name" textAlignment="CENTER" textOrigin="CENTER">
