@@ -1,11 +1,10 @@
 package view.gui;
+
 import javafx.application.Application;
 import javafx.scene.*;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
-import network.parameters.Login;
 
-import java.awt.*;
 import java.net.URL;
 
 public class Main extends Application {
@@ -22,8 +21,8 @@ public class Main extends Application {
     @Override
     public void start(Stage stage){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getResource("/fxml/login.fxml"));
-            Scene sceneLogin = new Scene(fxmlLoader.load());
+            Parent root= FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
+            Scene sceneLogin = new Scene(root);
             stage.setTitle("MyShelfie!");
             stage.setResizable(true);
             stage.setFullScreen(true);
@@ -31,9 +30,6 @@ public class Main extends Application {
             stage.setScene(sceneLogin);
             stage.show();
 
-           if (btnPlay1) {
-               SceneController.changeScene(sceneLogin, "lobby.fxml");
-           }
         } catch (Exception e) {
             e.printStackTrace();
         }
