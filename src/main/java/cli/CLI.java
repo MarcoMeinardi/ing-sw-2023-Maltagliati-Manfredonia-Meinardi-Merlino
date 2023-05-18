@@ -84,7 +84,6 @@ public class CLI {
 			return ClientStatus.Disconnected;
 		}
 	}
-
 	private void askIpPort() {
 		this.ip = Utils.askString("Server IP: ");
 		this.port = Utils.askInt("Server port: ");
