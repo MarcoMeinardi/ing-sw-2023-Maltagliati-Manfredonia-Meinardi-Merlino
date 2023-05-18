@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.scene.*;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.net.URL;
 
@@ -22,11 +23,11 @@ public class Main extends Application {
     public void start(Stage stage){
         try {
             Parent root= FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
-            Scene sceneLogin = new Scene(root);
+            int width = 1140;
+            int height = 760;
+            Scene sceneLogin = new Scene(root, width, height);
             stage.setTitle("MyShelfie!");
-            stage.setResizable(true);
-            stage.setFullScreen(true);
-            stage.setMaximized(true);
+            stage.setResizable(false);
             stage.setScene(sceneLogin);
             stage.show();
 
