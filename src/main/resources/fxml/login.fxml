@@ -47,7 +47,7 @@
             <Font name="Franklin Gothic Medium Cond" size="26.0" />
          </font>
       </TextField>
-      <RadioButton layoutX="28.0" layoutY="683.0" mnemonicParsing="false" selected="true" text="RMI">
+      <RadioButton fx:id="RMIButton" layoutX="28.0" layoutY="683.0" mnemonicParsing="false" selected="true" text="RMI">
          <font>
             <Font name="Franklin Gothic Medium" size="26.0" />
          </font>
@@ -55,7 +55,7 @@
             <ToggleGroup fx:id="Server" />
          </toggleGroup>
       </RadioButton>
-      <RadioButton layoutX="137.0" layoutY="683.0" mnemonicParsing="false" text="Socket" toggleGroup="$Server">
+      <RadioButton fx:id="serverButton" layoutX="137.0" layoutY="683.0" mnemonicParsing="false" text="Socket" toggleGroup="$Server">
          <font>
             <Font name="Franklin Gothic Medium" size="26.0" />
          </font>

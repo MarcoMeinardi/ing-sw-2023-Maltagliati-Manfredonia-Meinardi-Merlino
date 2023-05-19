@@ -23,16 +23,12 @@ public class LobbyViewController implements Initializable {
     @FXML
     private ListView<String> listView;
 
-    private String currentLobby;
-
-    public static NetworkManagerInterface networkManager;
-
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         nameUser.setText(SceneController.username);
 
         try {
-            Result<ArrayList<Lobby>> result = networkManager.lobbyList().waitResult();
+            Result<ArrayList<Lobby>> result = SceneController.networkManager.lobbyList().waitResult();
             if (result.isOk()) {
                 ArrayList<Lobby> lobbies = ((Result<ArrayList<Lobby>>) result).unwrap();
                 if (lobbies.isEmpty()) {
