@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +27,7 @@ public class CommonObjectiveTest {
     /**
      * Test the method generateCommonObjectives
      *
-     * @autor: Ludovico, Marco
+     * @autor: Ludovico
      */
     @Test
     public void testGenerateCommonObjectives() {
@@ -45,34 +44,80 @@ public class CommonObjectiveTest {
     }
 
     /**
-     * Test the objective "FiveCardsInDiagonal"
+     * Test the Objective.equals method
+     *
+     * @autor: Marco
+     */
+    @Test
+    public void testEquals() {
+        ArrayList<CommonObjective> commonObjectives = CommonObjective.generateCommonObjectives(2);
+
+        assertTrue(commonObjectives.get(0).equals(commonObjectives.get(0)));
+        assertFalse(commonObjectives.get(0).equals(commonObjectives.get(1)));
+        assertFalse(commonObjectives.get(0).equals("Foo"));
+    }
+
+    /**
+     * Test the objective "FiveCardsInDiagonal" sud-west to nord-east
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @autor: Ludovico, Marco
      */
 
     @Test
-    public void testFiveCardsInDiagonal() throws InvalidMoveException{
+    public void testFiveCardsInDiagonal1() throws InvalidMoveException {
         int nPlayers = 2;
         Shelf shelf = new Shelf();
         CommonObjective objective = new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonal);
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
-
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(3,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(3,  new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(4,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(4,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta)));
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
+    }
 
+    /**
+     * Test the objective "FiveCardsInDiagonal" nor-west to sud-east
+     *
+     * @throws InvalidMoveException
+     * @autor: Marco
+     */
 
-    };
+    @Test
+    public void testFiveCardsInDiagonal2() throws InvalidMoveException {
+        int nPlayers = 2;
+        Shelf shelf = new Shelf();
+        CommonObjective objective = new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonal);
+
+        assertFalse(objective.isCompleted(shelf).isPresent());
+
+        shelf.insert(4,  new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
+        shelf.insert(3,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
+        shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
+        shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
+        shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
+        shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
+        shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta)));
+
+        assertTrue(objective.isCompleted(shelf).isPresent());
+    }
 
     /**
      * Test the objective "isEqualsCorners"
@@ -87,16 +132,17 @@ public class CommonObjectiveTest {
         Shelf shelf = new Shelf();
         CommonObjective objective = new CommonObjective("all equal corners", nPlayers, CommonObjective::equalCorners);
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
+        assertFalse(objective.isCompleted(shelf).isPresent());
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(4,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(4,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
     }
 
     /**
@@ -112,22 +158,29 @@ public class CommonObjectiveTest {
         Shelf shelf = new Shelf();
         CommonObjective objective = (new CommonObjective("4 rows of at most 3 different cards", nPlayers, CommonObjective::fourRowsOfAtMostThreeDifferentCards));
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
+        assertFalse(objective.isCompleted(shelf).isPresent());
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(3,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(3,  new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(4,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(4,  new ArrayList<Card>(Arrays.asList(Card.Pianta)));
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
     }
 
     /**
@@ -143,20 +196,25 @@ public class CommonObjectiveTest {
         Shelf shelf = new Shelf();
         CommonObjective objective = (new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCards));
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
+        assertFalse(objective.isCompleted(shelf).isPresent());
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gatto)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(3,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gatto)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Gioco, Card.Gioco)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Gioco, Card.Gioco)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Libro, Card.Libro)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(3,  new ArrayList<Card>(Arrays.asList(Card.Libro, Card.Libro)));
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
     }
 
     /**
@@ -172,16 +230,17 @@ public class CommonObjectiveTest {
         Shelf shelf = new Shelf();
         CommonObjective objective = (new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCards));
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
+        assertFalse(objective.isCompleted(shelf).isPresent());
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Gatto, Card.Gioco)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Libro, Card.Trofeo, Card.Cornice)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Gatto, Card.Gioco)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Libro, Card.Trofeo, Card.Cornice)));
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
     }
 
     /**
@@ -197,16 +256,17 @@ public class CommonObjectiveTest {
         Shelf shelf = new Shelf();
         CommonObjective objective = (new CommonObjective("2 square-shaped groups", nPlayers, CommonObjective::twoSquareGroups));
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
+        assertFalse(objective.isCompleted(shelf).isPresent());
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gatto)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(3,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gatto)));
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
     }
 
     /**
@@ -222,17 +282,19 @@ public class CommonObjectiveTest {
         Shelf shelf = new Shelf();
         CommonObjective objective = (new CommonObjective("2 rows with 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCards));
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
+        assertFalse(objective.isCompleted(shelf).isPresent());
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gatto)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Gioco, Card.Gioco)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(3,  new ArrayList<Card>(Arrays.asList(Card.Libro, Card.Libro)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(4,  new ArrayList<Card>(Arrays.asList(Card.Trofeo, Card.Trofeo)));
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
     }
 
     /**
@@ -248,18 +310,21 @@ public class CommonObjectiveTest {
         Shelf shelf = new Shelf();
         CommonObjective objective = (new CommonObjective("3 columns of at most 3 different cards", nPlayers, CommonObjective::threeColumnsOfAtMostThreeDifferentCards));
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
+        assertFalse(objective.isCompleted(shelf).isPresent());
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Gioco, Card.Gatto)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gatto, Card.Gatto)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Pianta,Card.Gioco, Card.Gatto)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Gatto, Card.Gioco)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gatto, Card.Gatto)));
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
     }
 
     /**
@@ -275,15 +340,15 @@ public class CommonObjectiveTest {
         Shelf shelf = new Shelf();
         CommonObjective objective = (new CommonObjective("X shape group", nPlayers, CommonObjective::equalsX));
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
+        assertFalse(objective.isCompleted(shelf).isPresent());
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Gatto, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Pianta, Card.Gatto)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2, new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Gatto, Card.Pianta)));;
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
     }
 
     /**
@@ -299,15 +364,15 @@ public class CommonObjectiveTest {
         Shelf shelf = new Shelf();
         CommonObjective objective = (new CommonObjective("eight equal cards", nPlayers, CommonObjective::eightEquals));
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
+        assertFalse(objective.isCompleted(shelf).isPresent());
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
     }
 
     /**
@@ -323,19 +388,23 @@ public class CommonObjectiveTest {
         Shelf shelf = new Shelf();
         CommonObjective objective = (new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShape));
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
+        assertFalse(objective.isCompleted(shelf).isPresent());
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Gatto, Card.Gioco)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gioco)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gioco, Card.Libro)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1,  new ArrayList<Card>(Arrays.asList(Card.Gioco)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2,  new ArrayList<Card>(Arrays.asList(Card.Gioco, Card.Libro, Card.Trofeo)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(3,  new ArrayList<Card>(Arrays.asList(Card.Libro, Card.Trofeo)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(4,  new ArrayList<Card>(Arrays.asList(Card.Trofeo)));
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
     }
 
     /**
@@ -351,18 +420,21 @@ public class CommonObjectiveTest {
         Shelf shelf = new Shelf();
         CommonObjective objective = new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCards);
 
-        Optional<Cockade> cockade = objective.isCompleted(shelf);
-        assertFalse(cockade.isPresent());
+        assertFalse(objective.isCompleted(shelf).isPresent());
 
         shelf.insert(0, new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(1, new ArrayList<Card>(Arrays.asList(Card.Gatto, Card.Gatto)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(2, new ArrayList<Card>(Arrays.asList(Card.Gioco, Card.Gioco)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(3, new ArrayList<Card>(Arrays.asList(Card.Libro, Card.Libro)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(4, new ArrayList<Card>(Arrays.asList(Card.Trofeo, Card.Trofeo)));
+        assertFalse(objective.isCompleted(shelf).isPresent());
         shelf.insert(4, new ArrayList<Card>(Arrays.asList(Card.Cornice, Card.Cornice)));
 
-        cockade = objective.isCompleted(shelf);
-        assertTrue(cockade.isPresent());
+        assertTrue(objective.isCompleted(shelf).isPresent());
 
     }
 }
