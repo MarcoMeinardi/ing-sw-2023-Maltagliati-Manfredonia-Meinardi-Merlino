@@ -18,7 +18,7 @@ public class CommonObjectiveTest {
     @Test
     public void testConstructor() {
 
-        CommonObjective objective = new CommonObjective("test", 2, CommonObjective::fiveCardsInDiagonal);
+        CommonObjective objective = new CommonObjective("test", 2, CommonObjective::fiveCardsInDiagonalTest);
         assertEquals("test", objective.getName());
         assertEquals(8, objective.getValue());
 
@@ -68,7 +68,7 @@ public class CommonObjectiveTest {
     public void testFiveCardsInDiagonal1() throws InvalidMoveException {
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonal);
+        CommonObjective objective = new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonalTest);
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(Card.Pianta)));
         assertFalse(objective.isCompleted(shelf).isPresent());
@@ -98,7 +98,7 @@ public class CommonObjectiveTest {
     public void testFiveCardsInDiagonal2() throws InvalidMoveException {
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonal);
+        CommonObjective objective = new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonalTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -130,7 +130,7 @@ public class CommonObjectiveTest {
     public void isEqualsCorners() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("all equal corners", nPlayers, CommonObjective::equalCorners);
+        CommonObjective objective = new CommonObjective("all equal corners", nPlayers, CommonObjective::equalCornersTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -156,7 +156,7 @@ public class CommonObjectiveTest {
     public void testFourRowsOfAtMostThreeDifferentCards() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = (new CommonObjective("4 rows of at most 3 different cards", nPlayers, CommonObjective::fourRowsOfAtMostThreeDifferentCards));
+        CommonObjective objective = new CommonObjective("4 rows of at most 3 different cards", nPlayers, CommonObjective::fourRowsOfAtMostThreeDifferentCardsTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -194,7 +194,7 @@ public class CommonObjectiveTest {
     public void testFourGroupsOfFourCards() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = (new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCards));
+        CommonObjective objective = new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCardsTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -228,7 +228,7 @@ public class CommonObjectiveTest {
     public void testTwoColumnsOfSixDifferentCards() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = (new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCards));
+        CommonObjective objective = new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCardsTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -254,7 +254,7 @@ public class CommonObjectiveTest {
     public void testTwoSquareGroups() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = (new CommonObjective("2 square-shaped groups", nPlayers, CommonObjective::twoSquareGroups));
+        CommonObjective objective = new CommonObjective("2 square-shaped groups", nPlayers, CommonObjective::twoSquareGroupsTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -280,7 +280,7 @@ public class CommonObjectiveTest {
     public void testTwoRowsWithFIveDifferentCards() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = (new CommonObjective("2 rows with 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCards));
+        CommonObjective objective = new CommonObjective("2 rows with 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCardsTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -308,7 +308,7 @@ public class CommonObjectiveTest {
     public void testThreeColumnsOfAtMostThreeDifferentCards() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = (new CommonObjective("3 columns of at most 3 different cards", nPlayers, CommonObjective::threeColumnsOfAtMostThreeDifferentCards));
+        CommonObjective objective = new CommonObjective("3 columns of at most 3 different cards", nPlayers, CommonObjective::threeColumnsOfAtMostThreeDifferentCardsTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -338,7 +338,7 @@ public class CommonObjectiveTest {
     public void testEqualsX() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = (new CommonObjective("X shape group", nPlayers, CommonObjective::equalsX));
+        CommonObjective objective = new CommonObjective("X shape group", nPlayers, CommonObjective::equalsXTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -362,7 +362,7 @@ public class CommonObjectiveTest {
     public void testEightEquals() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = (new CommonObjective("eight equal cards", nPlayers, CommonObjective::eightEquals));
+        CommonObjective objective = new CommonObjective("eight equal cards", nPlayers, CommonObjective::eightEqualsTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -386,7 +386,7 @@ public class CommonObjectiveTest {
     public void testStairsShape() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = (new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShape));
+        CommonObjective objective = new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShapeTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -418,7 +418,7 @@ public class CommonObjectiveTest {
     public void testSixGroupOfTwoCards() throws InvalidMoveException {
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCards);
+        CommonObjective objective = new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCardsTest);
 
         assertFalse(objective.isCompleted(shelf).isPresent());
 
@@ -435,6 +435,5 @@ public class CommonObjectiveTest {
         shelf.insert(4, new ArrayList<Card>(Arrays.asList(Card.Cornice, Card.Cornice)));
 
         assertTrue(objective.isCompleted(shelf).isPresent());
-
     }
 }

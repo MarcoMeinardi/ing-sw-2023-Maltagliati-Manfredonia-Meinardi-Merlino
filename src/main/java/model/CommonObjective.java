@@ -103,7 +103,7 @@ public class CommonObjective extends Objective {
 	 * @author Marco
 	 *
 	 */
-	private static int groupsOfAtLeastCards(Shelf shelf, int n) {
+	private static int groupsOfAtLeastNCards(Shelf shelf, int n) {
 		boolean[][] visited = new boolean[Shelf.ROWS][Shelf.COLUMNS];
 		int groups = 0;
 
@@ -129,8 +129,18 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
-	public static Boolean fourGroupsOfFourCards(Shelf shelf) {
-		return groupsOfAtLeastCards(shelf, 4) >= 4;
+	private static Boolean fourGroupsOfFourCards(Shelf shelf) {
+		return groupsOfAtLeastNCards(shelf, 4) >= 4;
+	}
+	/**
+	 * public wrapper for fourGroupsOfFourCards method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean fourGroupsOfFourCardsTest(Shelf shelf) {
+		return fourGroupsOfFourCards(shelf);
 	}
 
 	/**
@@ -140,8 +150,18 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
-	public static Boolean sixGroupsOfTwoCards(Shelf shelf) {
-		return groupsOfAtLeastCards(shelf, 2) >= 6;
+	private static Boolean sixGroupsOfTwoCards(Shelf shelf) {
+		return groupsOfAtLeastNCards(shelf, 2) >= 6;
+	}
+	/**
+	 * public wrapper for sixGroupsOfTwoCards method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean sixGroupsOfTwoCardsTest(Shelf shelf) {
+		return sixGroupsOfTwoCards(shelf);
 	}
 
 	/**
@@ -152,7 +172,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Lorenzo
 	 */
-	public static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
+	private static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
 		boolean firstCol = false;
 		HashSet<Card> cards = new HashSet<>();
 
@@ -178,6 +198,16 @@ public class CommonObjective extends Objective {
 
 		return false;
 	}
+	/**
+	 * public wrapper for twoColumnsOfSixDifferentCards method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean twoColumnsOfSixDifferentCardsTest(Shelf shelf) {
+		return twoColumnsOfSixDifferentCards(shelf);
+	}
 
 	/**
 	 * Method that checks if the objective "five cards in diagonal" is done.
@@ -187,7 +217,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco, Lorenzo
 	 */
-	public static Boolean fiveCardsInDiagonal(Shelf shelf) {
+	private static Boolean fiveCardsInDiagonal(Shelf shelf) {
 		boolean fullDiagonal;
 		Card reference;
 
@@ -227,6 +257,16 @@ public class CommonObjective extends Objective {
 
 		return false;
 	}
+	/**
+	 * public wrapper for fiveCardsInDiagonal method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean fiveCardsInDiagonalTest(Shelf shelf) {
+		return fiveCardsInDiagonal(shelf);
+	}
 
 	/**
 	 * Method that check if the objective "four rows such that each row has at most three different cards" is done.
@@ -236,7 +276,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Ludovico, Marco
 	 */
-	public static Boolean fourRowsOfAtMostThreeDifferentCards(Shelf shelf) {
+	private static Boolean fourRowsOfAtMostThreeDifferentCards(Shelf shelf) {
 		int count = 0;
 		HashSet<Card> cards = new HashSet<>();
 
@@ -261,6 +301,16 @@ public class CommonObjective extends Objective {
 
 		return count == 4;
 	}
+	/**
+	 * public wrapper for fourRowsOfAtMostThreeDifferentCards method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean fourRowsOfAtMostThreeDifferentCardsTest(Shelf shelf) {
+		return fourRowsOfAtMostThreeDifferentCards(shelf);
+	}
 
 	private static final int[] cornersX = {0, 0, Shelf.COLUMNS - 1, Shelf.COLUMNS - 1};
 	private static final int[] cornersY = {0, Shelf.ROWS - 1, 0, Shelf.ROWS - 1};
@@ -272,7 +322,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Ludovico, Marco
 	 */
-	public static Boolean equalCorners(Shelf shelf) {
+	private static Boolean equalCorners(Shelf shelf) {
 		try {
 			Optional<Card> reference = shelf.getCard(cornersY[0], cornersX[0]);
 			if (reference.isEmpty()) {
@@ -290,6 +340,16 @@ public class CommonObjective extends Objective {
 
 		return true;
 	}
+	/**
+	 * public wrapper for equalCorners method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean equalCornersTest(Shelf shelf) {
+		return equalCorners(shelf);
+	}
 
 	/**
 	 * Method that checks if the objective "two rows contains 5 different cards" is done.
@@ -299,7 +359,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Riccardo, Marco
 	 */
-	public static Boolean twoRowsWithFiveDifferentCards(Shelf shelf) {
+	private static Boolean twoRowsWithFiveDifferentCards(Shelf shelf) {
 		boolean firstRow = false;
 		HashSet<Card> cards = new HashSet<>();
 
@@ -324,6 +384,16 @@ public class CommonObjective extends Objective {
 		}
 
 		return false;
+	}
+	/**
+	 * public wrapper for twoRowsWithFiveDifferentCards method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean twoRowsWithFiveDifferentCardsTest(Shelf shelf) {
+		return twoRowsWithFiveDifferentCards(shelf);
 	}
 
 	private static final int[] squareDx = {0, 1, 1};
@@ -373,6 +443,16 @@ public class CommonObjective extends Objective {
 
 		return false;
 	}
+	/**
+	 * public wrapper for twoSquareGroups method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean twoSquareGroupsTest(Shelf shelf) {
+		return twoSquareGroups(shelf);
+	}
 
 	/**
 	 * Method that checks if the objective "X-shaped equal cards" is done.
@@ -382,7 +462,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Riccardo,Marco
 	 */
-	public static Boolean equalsX(Shelf shelf) {
+	private static Boolean equalsX(Shelf shelf) {
 		try {
 			for (int y = 1; y < Shelf.ROWS - 1; y++) {
 				for (int x = 1; x < Shelf.COLUMNS - 1; x++) {
@@ -403,6 +483,16 @@ public class CommonObjective extends Objective {
 
 		return false;
 	}
+	/**
+	 * public wrapper for equalsX method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean equalsXTest(Shelf shelf) {
+		return equalsX(shelf);
+	}
 
 	/**
 	 * Method that checks if the objective "stair shaped cards" is done.
@@ -412,7 +502,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Riccardo,Marco
 	 */
-	public static Boolean stairsShape(Shelf shelf) {
+	private static Boolean stairsShape(Shelf shelf) {
 		int h = 0;
 
 		try {
@@ -438,6 +528,16 @@ public class CommonObjective extends Objective {
 
 		return true;
 	}
+	/**
+	 * public wrapper for stairsShape method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean stairsShapeTest(Shelf shelf) {
+		return stairsShape(shelf);
+	}
 
 	/**
 	 * Method that checks if the objective "8 equal cards" is done.
@@ -447,7 +547,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
-	public static Boolean eightEquals(Shelf shelf) {
+	private static Boolean eightEquals(Shelf shelf) {
 		HashMap<Card, Integer> cardCount = new HashMap<>();
 
 		try {
@@ -469,6 +569,16 @@ public class CommonObjective extends Objective {
 
 		return false;
 	}
+	/**
+	 * public wrapper for eightEquals method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean eightEqualsTest(Shelf shelf) {
+		return eightEquals(shelf);
+	}
 
 	/**
 	 * Method that checks if the objective "three columns where each column has at most three different cards" is done.
@@ -478,7 +588,7 @@ public class CommonObjective extends Objective {
 	 * @return true if the objective is done, false otherwise
 	 * @author Marco
 	 */
-	public static Boolean threeColumnsOfAtMostThreeDifferentCards(Shelf shelf) {
+	private static Boolean threeColumnsOfAtMostThreeDifferentCards(Shelf shelf) {
 		int count = 0;
 		HashSet<Card> cards = new HashSet<>();
 
@@ -502,6 +612,16 @@ public class CommonObjective extends Objective {
 		}
 
 		return count == 3;
+	}
+	/**
+	 * public wrapper for threeColumnsOfAtMostThreeDifferentCards method, only used for testing
+	 *
+	 * @param shelf The shelf object
+	 * @return true if the objective is done, false otherwise
+	 * @author Marco
+	 */
+	public static Boolean threeColumnsOfAtMostThreeDifferentCardsTest(Shelf shelf) {
+		return threeColumnsOfAtMostThreeDifferentCards(shelf);
 	}
 
 }
