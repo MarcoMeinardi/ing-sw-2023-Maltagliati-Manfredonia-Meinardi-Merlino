@@ -1,6 +1,8 @@
 package model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -18,6 +20,18 @@ public class ShelfTest {
 			}
 		}
     }
+
+	@Test
+	public void testCLIConstructor() throws InvalidMoveException {
+		Optional<Card>[][] cards = new Optional[Shelf.ROWS][Shelf.COLUMNS];
+		cards[0][0] = Optional.of(Card.Pianta);
+		cards[2][1] = Optional.of(Card.Gatto);
+		Shelf shelf = new Shelf(cards);
+
+		assertEquals(shelf.getCard(0, 0).get(), Card.Pianta);
+		assertEquals(shelf.getCard(2, 1).get(), Card.Gatto);
+		assertEquals(shelf.getCard(0, 1), null);
+	}
 
 	@Test(expected = InvalidMoveException.class)
 	public void testGetter() throws InvalidMoveException {
@@ -147,5 +161,47 @@ public class ShelfTest {
 			),
 			shelf.getGroupsCockades()
 		);
+	}
+
+	@Test
+	public void testIsFull() throws InvalidMoveException {
+		Optional<Card>[][] cards = new Optional[Shelf.ROWS][Shelf.COLUMNS];
+		for (int y = 0; y < Shelf.ROWS; y++) {
+			for (int x = 0; x < Shelf.COLUMNS; x++) {
+				cards[y][x] = Optional.of(Card.values()[(int)Math.floor(Math.random() * Card.values().length)]);
+			}
+		}
+		cards[Shelf.ROWS - 1][Shelf.COLUMNS - 1] = Optional.empty();
+		Shelf shelf = new Shelf(cards);
+
+		assertFalse(shelf.isFull());
+		shelf.insert(Shelf.COLUMNS - 1, new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+		assertTrue(shelf.isFull());
+	}
+
+	@Test
+	public void testGetSerializable() throws InvalidMoveException {
+		Optional<Card>[][] cards = new Optional[Shelf.ROWS][Shelf.COLUMNS];
+		for (int y = 0; y < Shelf.ROWS; y++) {
+			for (int x = 0; x < Shelf.COLUMNS; x++) {
+				if (Math.random() < 0.9) {
+					cards[y][x] = Optional.of(Card.values()[(int)Math.floor(Math.random() * Card.values().length)]);
+				} else {
+					cards[y][x] = Optional.empty();
+				}
+			}
+		}
+		Shelf shelf = new Shelf(cards);
+		Card[][] serializableCards = shelf.getSerializable();
+
+		for (int y = 0; y < Shelf.ROWS; y++) {
+			for (int x = 0; x < Shelf.COLUMNS; x++) {
+				if (cards[y][x].isPresent()) {
+					assertEquals(serializableCards[y][x], cards[y][x].get());
+				} else {
+					assertEquals(serializableCards[y][x], null);
+				}
+			}
+		}
 	}
 }

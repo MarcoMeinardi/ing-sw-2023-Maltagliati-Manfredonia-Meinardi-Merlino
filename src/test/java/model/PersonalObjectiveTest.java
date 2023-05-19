@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -32,14 +31,14 @@ public class PersonalObjectiveTest {
                 new Cell(0, 2, Card.Trofeo)
         });
 
-        assertEquals(objective.getCellsCheck(), new Cell[]{
+        assertTrue(Arrays.equals(objective.getCellsCheck(), new Cell[]{
                 new Cell(5, 0, Card.Pianta),
                 new Cell(5, 1, Card.Gatto),
                 new Cell(4, 4, Card.Gatto),
                 new Cell(3, 3, Card.Libro),
                 new Cell(2, 1, Card.Gioco),
                 new Cell(0, 2, Card.Trofeo)
-        });
+        }));
 
         assertEquals(objective.getName(), "test");
 
