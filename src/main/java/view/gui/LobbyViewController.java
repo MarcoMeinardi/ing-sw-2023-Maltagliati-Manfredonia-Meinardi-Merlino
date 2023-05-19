@@ -24,6 +24,7 @@ public class LobbyViewController implements Initializable {
     private ListView<String> listView;
 
 
+
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         nameUser.setText(SceneController.username);
 
@@ -45,4 +46,7 @@ public class LobbyViewController implements Initializable {
             throw new RuntimeException(e);
         }
     }
+
+
+
 }

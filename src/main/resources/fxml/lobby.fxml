@@ -37,7 +37,7 @@
          </image>
       </ImageView>
       <ListView fx:id="listView" layoutX="369.0" layoutY="250.0" prefHeight="280.0" prefWidth="387.0" />
-      <Label fx:id="noFound" layoutX="443.0" layoutY="181.0" prefHeight="47.0" prefWidth="254.0" textFill="#a1ff00">
+      <Label fx:id="noFound" layoutX="780.0" layoutY="72.0" prefHeight="47.0" prefWidth="254.0" textFill="#a1ff00">
          <font>
             <Font size="31.0" />
          </font>

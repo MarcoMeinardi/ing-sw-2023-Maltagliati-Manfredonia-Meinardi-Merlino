@@ -110,9 +110,11 @@ public class SceneController {
                         System.out.println("Login successful");
                         state = ClientStatus.InLobbySearch;
                     }
+                    else{
+                        //TODO mettere messaggio frontend e gestire caso di una continuazione di partita
+                        System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
+                    }
                 }
-                //TODO mettere messaggio frontend
-                System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
             } catch (Exception e) {
                 //TODO mettere messaggio frontend
                 System.out.println("[ERROR] " + e.getMessage());
