@@ -12,7 +12,7 @@ public class ScoreBoard implements Serializable, Iterable<Score>  {
             Score score = new Score(player.getName(),player.getPoints());
             scores.add(score);
         }
-        Collections.sort((List)scores);
+        Collections.sort(scores);
     }
 
     @Override

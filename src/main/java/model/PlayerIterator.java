@@ -16,7 +16,7 @@ public class PlayerIterator implements Iterator<Player> {
 
     @Override
     public boolean hasNext() {
-        if (index == maxIndex) {
+        if (index == 0) {
             if (game.getPlayers().stream().anyMatch((player) -> player.getShelf().isFull())) {
                 return false;
             }
