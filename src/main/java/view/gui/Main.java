@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.scene.*;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.net.URL;
 
@@ -22,7 +21,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage){
         try {
-            Parent root= FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
+            Parent root= FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
             int width = 1140;
             int height = 760;
             Scene sceneLogin = new Scene(root, width, height);

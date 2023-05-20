@@ -1,12 +1,12 @@
 package view.gui;
 
-import cli.CLIGame;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
@@ -15,13 +15,11 @@ import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.Server;
-import network.parameters.GameInfo;
 import network.parameters.Login;
-import network.rpc.server.Client;
 
 import java.io.IOException;
 
-public class SceneController {
+public class LoginController {
 
     private Stage stage;
     private Scene scene;
@@ -37,6 +35,8 @@ public class SceneController {
     private Label errorLabel2;
     @FXML
     private RadioButton RMIButton, serverButton;
+    @FXML
+    private Button btnPlay1;
 
     public static String username;
     public static NetworkManagerInterface networkManager;
@@ -44,21 +44,7 @@ public class SceneController {
     public static String ip;
     public static int port;
 
-    public void switchToLogin(ActionEvent event) {
-
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
-            stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void switchToLobby(javafx.event.ActionEvent actionEvent) {
+    public void switchToMainMenu(javafx.event.ActionEvent actionEvent) {
 
         try {
             errorLabel.setText("");
@@ -121,7 +107,7 @@ public class SceneController {
             }
 
             //Creation of scene
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/lobby.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
             int width = 1140;
             int height = 760;
@@ -135,4 +121,6 @@ public class SceneController {
         }
 
     }
+
+
 }

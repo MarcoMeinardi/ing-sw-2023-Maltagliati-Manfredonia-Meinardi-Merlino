@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.SceneController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.LoginController">
    <children>
       <ImageView fitHeight="760.0" fitWidth="1140.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -22,7 +22,7 @@
             <Font name="Franklin Gothic Medium Cond" size="26.0" />
          </font>
       </TextField>
-      <Button fx:id="btnPlay1" alignment="CENTER" contentDisplay="CENTER" layoutX="527.0" layoutY="645.0" mnemonicParsing="false" onAction="#switchToLobby" prefHeight="50.0" prefWidth="111.0" style="-fx-background-color: white;" text="Play">
+      <Button fx:id="btnPlay1" alignment="CENTER" contentDisplay="CENTER" layoutX="527.0" layoutY="645.0" mnemonicParsing="false" onAction="#switchToMainMenu" prefHeight="50.0" prefWidth="111.0" style="-fx-background-color: white;" text="Play">
          <font>
             <Font name="Franklin Gothic Demi Cond" size="33.0" />
          </font>

@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1077.0" prefWidth="1620.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.LobbyViewController">
+<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1077.0" prefWidth="1620.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.CreateLobbyController">
     <children>
         <ImageView fitHeight="760.0" fitWidth="1140.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -21,8 +21,11 @@
                 <Font name="Franklin Gothic Medium" size="35.0" />
             </font>
         </Text>
-      <TextField fx:id="nameLobby" alignment="CENTER" layoutX="393.0" layoutY="367.0" prefHeight="40.0" prefWidth="322.0" promptText="Name Lobby" style="-fx-background-color: white; -fx-opacity: 80%;" />
-        <Button fx:id="btnSelect" layoutX="472.0" layoutY="475.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="164.0" text="Select" onAction="#createLobby">
+      <TextField fx:id="lobbyName" alignment="CENTER" layoutX="393.0" layoutY="367.0" prefHeight="40.0" prefWidth="322.0" promptText="Lobby Name" style="-fx-background-color: white; -fx-opacity: 80%;">
+         <font>
+            <Font size="24.0" />
+         </font></TextField>
+        <Button fx:id="btnSelect" layoutX="472.0" layoutY="475.0" mnemonicParsing="false" onAction="#createLobby" prefHeight="40.0" prefWidth="164.0" text="Select">
             <font>
                 <Font name="Franklin Gothic Medium" size="20.0" />
             </font>
@@ -37,5 +40,10 @@
                 <Font size="31.0" />
             </font>
         </Label>
+      <Label layoutX="600.0" layoutY="68.0" prefHeight="56.0" prefWidth="515.0" text=" Choose the name of the lobby" textFill="#a1ff00">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
     </children>
 </Pane>
