@@ -1,6 +1,6 @@
 package view.gui;
 
-import javafx.event.ActionEvent;
+import controller.lobby.Lobby;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -43,6 +43,7 @@ public class LoginController {
     public static ClientStatus state;
     public static String ip;
     public static int port;
+    public static Lobby lobby;
 
     public void switchToMainMenu(javafx.event.ActionEvent actionEvent) {
 

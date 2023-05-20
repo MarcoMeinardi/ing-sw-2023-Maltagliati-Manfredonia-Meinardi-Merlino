@@ -10,11 +10,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import network.ClientStatus;
 import network.Result;
 import network.parameters.LobbyCreateInfo;
 
 import java.io.IOException;
 
+import static view.gui.LoginController.lobby;
 import static view.gui.LoginController.networkManager;
 
 public class CreateLobbyController implements Initializable {
@@ -35,13 +37,17 @@ public class CreateLobbyController implements Initializable {
 
         String lobbyName = nameLobby.getText();
         Result<Lobby> result = networkManager.lobbyCreate(new LobbyCreateInfo(lobbyName)).waitResult();
+
         if (result.isOk()) {
-            Lobby lobby = ((Result<Lobby>) result).unwrap();
-            System.out.println("Lobby created: " + lobby.getName());
+            LoginController.lobby = ((Result<Lobby>) result).unwrap();
+            LoginController.state = ClientStatus.InLobby;
+            System.out.println("Lobby created: " + LoginController.lobby.getName());
+        } else {
+            System.out.println("[ERROR] " + result.getException());
         }
 
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/something.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/Lobby.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
             int width = 1140;
             int height = 760;

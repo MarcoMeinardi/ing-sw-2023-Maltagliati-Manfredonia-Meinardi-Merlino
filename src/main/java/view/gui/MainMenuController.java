@@ -11,7 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import network.ClientStatus;
 import network.Result;
+import network.parameters.LobbyCreateInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -69,6 +71,34 @@ public class MainMenuController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    public void switchToLobby(javafx.event.ActionEvent actionEvent ) {
+        //TODO prende il nome dalla lista
+        String lobbyName = "prova";
+
+        try {
+            Result result = networkManager.lobbyCreate(new LobbyCreateInfo(lobbyName)).waitResult();
+            if (result.isOk()) {
+                LoginController.lobby = ((Result<Lobby>)result).unwrap();
+                LoginController.state = ClientStatus.InLobby;
+            } else {
+                System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
+            }
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/Lobby.fxml"));
+            stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+            int width = 1140;
+            int height = 760;
+            scene = new Scene(root, width, height);
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("[ERROR] " + e.getMessage());
         }
 
     }
