@@ -9,7 +9,6 @@ public class LobbyThread implements Runnable {
     public void run() {
         while (HostLobbyController.state != ClientStatus.Disconnected || HostLobbyController.gameStarted) {
             handleEvent();
-            System.out.println("LobbyThread running");
         }
     }
 
@@ -23,6 +22,7 @@ public class LobbyThread implements Runnable {
                 String joinedPlayer = (String)event.get().getData();
                 try {
                     HostLobbyController.lobby.addPlayer(joinedPlayer);
+                    HostLobbyController.setIsLobbyChanged(true);
                 } catch (Exception e) {}  // Cannot happen
                 if (!joinedPlayer.equals(HostLobbyController.username)) {
                     System.out.println(joinedPlayer + " joined the lobby");
@@ -32,6 +32,7 @@ public class LobbyThread implements Runnable {
                 String leftPlayer = (String)event.get().getData();
                 try {
                     HostLobbyController.lobby.removePlayer(leftPlayer);
+                    HostLobbyController.setIsLobbyChanged(true);
                 } catch (Exception e) {}  // Cannot happen
                 System.out.format("%s left the %s%n", leftPlayer, HostLobbyController.state == ClientStatus.InLobby ? "lobby" : "game");
             }

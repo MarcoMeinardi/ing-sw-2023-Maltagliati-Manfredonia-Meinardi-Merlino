@@ -1,6 +1,11 @@
 package view.gui;
 
 import controller.lobby.Lobby;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -27,6 +32,8 @@ public class HostLobbyController implements Initializable{
     static String username;
     static boolean gameStarted;
 
+    public static BooleanProperty isLobbyChanged = new SimpleBooleanProperty(false);
+
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         username = LoginController.username;
@@ -34,8 +41,13 @@ public class HostLobbyController implements Initializable{
         lobby = LoginController.lobby;
         networkManager = LoginController.networkManager;
         gameStarted = false;
-        System.out.println(player0);
         player0.setText(username);
+        isLobbyChanged.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                updateLobby();
+            }
+        });
         Runnable runnable = new LobbyThread();
         Thread lobbyThread = new Thread(runnable);
         lobbyThread.start();
@@ -60,8 +72,9 @@ public class HostLobbyController implements Initializable{
         }
     }
 
-
-
+    public static void setIsLobbyChanged(boolean value){
+        isLobbyChanged.set(value);
+    }
 
 
 }
