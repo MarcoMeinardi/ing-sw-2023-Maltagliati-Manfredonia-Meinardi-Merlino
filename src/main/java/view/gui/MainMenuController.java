@@ -73,15 +73,16 @@ public class MainMenuController implements Initializable {
 
     }
 
-    public void switchToLobby(javafx.event.ActionEvent actionEvent ) {
-        //TODO prende il nome dalla lista
-        String lobbyName = "prova";
+    public void joinLobby(javafx.event.ActionEvent actionEvent ) {
+
+        String lobbyName = listView.getSelectionModel().getSelectedItem();
 
         try {
-            Result result = networkManager.lobbyCreate(new LobbyCreateInfo(lobbyName)).waitResult();
+            Result 	result = networkManager.lobbyJoin(lobbyName).waitResult();
             if (result.isOk()) {
                 LoginController.lobby = ((Result<Lobby>)result).unwrap();
                 LoginController.state = ClientStatus.InLobby;
+                System.out.println(LoginController.username + " joined: " + LoginController.lobby.getName());
             } else {
                 System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
             }

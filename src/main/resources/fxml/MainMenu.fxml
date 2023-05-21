@@ -21,7 +21,7 @@
             <Font name="Franklin Gothic Medium" size="35.0" />
          </font>
       </Text>
-      <Button fx:id="btnSelectLobby" layoutX="594.0" layoutY="597.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="164.0" text="Select Lobby">
+      <Button fx:id="btnSelectLobby" layoutX="594.0" layoutY="597.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="164.0" text="Select Lobby" onAction="#joinLobby">
          <font>
             <Font name="Franklin Gothic Medium" size="20.0" />
          </font>
