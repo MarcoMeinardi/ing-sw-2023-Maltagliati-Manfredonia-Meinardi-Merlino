@@ -6,20 +6,29 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 
+import javafx.stage.Stage;
 import model.Player;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.ServerEvent;
 
+import java.io.IOException;
 import java.util.Optional;
 
 
-public class HostLobbyController implements Initializable{
+public class LobbyViewController implements Initializable{
+    private static final int WIDTH = 1140;
+    private static final int HEIGHT = 760;
     @FXML
     public Label player0;
     @FXML
@@ -36,6 +45,8 @@ public class HostLobbyController implements Initializable{
     static boolean gameStarted;
 
     public static BooleanProperty isLobbyChanged = new SimpleBooleanProperty(false);
+    private Scene scene;
+    private Stage stage;
 
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
@@ -48,7 +59,7 @@ public class HostLobbyController implements Initializable{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (HostLobbyController.state != ClientStatus.Disconnected || HostLobbyController.gameStarted) {
+                while (state != ClientStatus.Disconnected || gameStarted) {
                     handleEvent();
                 }
             }
@@ -96,10 +107,20 @@ public class HostLobbyController implements Initializable{
         }
     }
 
-    public void quitLobby() throws Exception {
+    public void quitLobby(ActionEvent actionEvent) throws Exception {
         Result result = networkManager.lobbyLeave().waitResult();
         if (result.isOk()) {
             LoginController.state = ClientStatus.InLobbySearch;
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
+                stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+                scene = new Scene(root, WIDTH, HEIGHT);
+                stage.setResizable(false);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             System.out.println("[ERROR] " + result.getException().orElse("Leave lobby failed"));
         }
@@ -108,7 +129,7 @@ public class HostLobbyController implements Initializable{
 
 
     private void handleEvent() {
-        Optional<ServerEvent> event = HostLobbyController.networkManager.getEvent();
+        Optional<ServerEvent> event = networkManager.getEvent();
         if (event.isEmpty()) {
             return; // No event
         }
@@ -116,7 +137,7 @@ public class HostLobbyController implements Initializable{
             case Join -> {
                 String joinedPlayer = (String)event.get().getData();
                 try {
-                    HostLobbyController.lobby.addPlayer(joinedPlayer);
+                    lobby.addPlayer(joinedPlayer);
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -124,14 +145,14 @@ public class HostLobbyController implements Initializable{
                         }
                     });
                 } catch (Exception e) {}  // Cannot happen
-                if (!joinedPlayer.equals(HostLobbyController.username)) {
+                if (!joinedPlayer.equals(username)) {
                     System.out.println(joinedPlayer + " joined the lobby");
                 }
             }
             case Leave -> {
                 String leftPlayer = (String)event.get().getData();
                 try {
-                    HostLobbyController.lobby.removePlayer(leftPlayer);
+                    lobby.removePlayer(leftPlayer);
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -139,7 +160,7 @@ public class HostLobbyController implements Initializable{
                         }
                     });
                 } catch (Exception e) {}  // Cannot happen
-                System.out.format("%s left the %s%n", leftPlayer, HostLobbyController.state == ClientStatus.InLobby ? "lobby" : "game");
+                System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
             }
             case Start -> {
                 //TODO Fare il game che inizia

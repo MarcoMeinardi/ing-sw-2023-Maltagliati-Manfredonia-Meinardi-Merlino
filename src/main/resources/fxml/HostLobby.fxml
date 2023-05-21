@@ -28,11 +28,6 @@
             <Font size="33.0" />
          </font>
       </Button>
-      <Button layoutX="470.0" layoutY="53.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="175.0" text="See who is here" onAction="#updateLobby">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Button>
       <Label fx:id="player0" alignment="CENTER" layoutX="477.0" layoutY="123.0" prefHeight="52.0" prefWidth="159.0" textFill="#2f00ff">
          <font>
             <Font size="18.0" />
