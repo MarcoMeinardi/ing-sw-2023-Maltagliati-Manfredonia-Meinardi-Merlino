@@ -20,7 +20,8 @@ import network.parameters.Login;
 import java.io.IOException;
 
 public class LoginController {
-
+    private static final int WIDTH = 1140;
+    private static final int HEIGHT = 760;
     private Stage stage;
     private Scene scene;
     @FXML
@@ -110,9 +111,7 @@ public class LoginController {
             //Creation of scene
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-            int width = 1140;
-            int height = 760;
-            scene = new Scene(root, width, height);
+            scene = new Scene(root, WIDTH, HEIGHT);
             stage.setResizable(false);
             stage.setScene(scene);
             stage.show();

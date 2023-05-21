@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import network.ClientStatus;
@@ -16,17 +17,17 @@ import network.parameters.LobbyCreateInfo;
 
 import java.io.IOException;
 
-import static view.gui.LoginController.lobby;
 import static view.gui.LoginController.networkManager;
 
 public class CreateLobbyController implements Initializable {
-
+    private static final int WIDTH = 1140;
+    private static final int HEIGHT = 760;
     private Stage stage;
     private Scene scene;
     @FXML
     private Text nameUser;
     @FXML
-    private static Text nameLobby;
+    private TextField nameLobby;
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         nameUser.setText(LoginController.username);
@@ -49,9 +50,7 @@ public class CreateLobbyController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/Lobby.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-            int width = 1140;
-            int height = 760;
-            scene = new Scene(root, width, height);
+            scene = new Scene(root, WIDTH, HEIGHT);
             stage.setResizable(false);
             stage.setScene(scene);
             stage.show();

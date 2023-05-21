@@ -22,7 +22,8 @@ import static view.gui.LoginController.networkManager;
 
 
 public class MainMenuController implements Initializable {
-
+    private static final int WIDTH = 1140;
+    private static final int HEIGHT = 760;
     private Stage stage;
     private Scene scene;
     @FXML
@@ -57,15 +58,12 @@ public class MainMenuController implements Initializable {
     }
 
 
-    //non dovrebbe essere qui
     public void switchToCreateLobby(javafx.event.ActionEvent actionEvent ) {
 
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/CreateLobby.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-            int width = 1140;
-            int height = 760;
-            scene = new Scene(root, width, height);
+            scene = new Scene(root, WIDTH, HEIGHT);
             stage.setResizable(false);
             stage.setScene(scene);
             stage.show();
@@ -89,9 +87,7 @@ public class MainMenuController implements Initializable {
             }
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/Lobby.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-            int width = 1140;
-            int height = 760;
-            scene = new Scene(root, width, height);
+            scene = new Scene(root, WIDTH, HEIGHT);
             stage.setResizable(false);
             stage.setScene(scene);
             stage.show();
