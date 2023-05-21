@@ -4,8 +4,6 @@ import controller.lobby.Lobby;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,10 +11,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import javafx.stage.Stage;
-import model.Player;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
@@ -37,6 +35,9 @@ public class LobbyViewController implements Initializable{
     public  Label player2;
     @FXML
     public  Label player3;
+    @FXML
+    public Button startButton;
+    private Label[] players;
 
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
@@ -44,7 +45,6 @@ public class LobbyViewController implements Initializable{
     static String username;
     static boolean gameStarted;
 
-    public static BooleanProperty isLobbyChanged = new SimpleBooleanProperty(false);
     private Scene scene;
     private Stage stage;
 
@@ -55,55 +55,36 @@ public class LobbyViewController implements Initializable{
         lobby = LoginController.lobby;
         networkManager = LoginController.networkManager;
         gameStarted = false;
+        players = new Label[]{player0, player1, player2, player3};
         updateLobby();
+        showStart();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (state != ClientStatus.Disconnected || gameStarted) {
-                    handleEvent();
+
+                        handleEvent();
+
                 }
             }
         }).start();
     }
 
-    public static void setIsLobbyChanged(boolean value){
-        isLobbyChanged.set(value);
+    public void updateLobby() {
+        for(int i = 0; i<4;i++){
+            players[i].setText("");
+        }
+        for(int i = 0; i < lobby.getNumberOfPlayers();i++){
+            players[i].setText(lobby.getPlayers().get(i));
+        }
     }
 
-    public void updateLobby() {
-        int j = 0;
-        for(int i = 0; i < lobby.getPlayers().size(); i++){
-            switch (i){
-                case 0:
-                    player0.setText(lobby.getPlayers().get(0));
-                    break;
-                case 1:
-                    player1.setText(lobby.getPlayers().get(1));
-                    break;
-                case 2:
-                    player2.setText(lobby.getPlayers().get(2));
-                    break;
-                case 3:
-                    player3.setText(lobby.getPlayers().get(3));
-                    break;
-            }
-            j++;
+    public void showStart(){
+        if(username.equals(lobby.getPlayers().get(0))) {
+            startButton.setVisible(true);
         }
-        for(int i = j; i < 4; i++){
-            switch (i){
-                case 0:
-                    player0.setText("");
-                    break;
-                case 1:
-                    player1.setText("");
-                    break;
-                case 2:
-                    player2.setText("");
-                    break;
-                case 3:
-                    player3.setText("");
-                    break;
-            }
+        else {
+            startButton.setVisible(false);
         }
     }
 
@@ -126,8 +107,6 @@ public class LobbyViewController implements Initializable{
         }
     }
 
-
-
     private void handleEvent() {
         Optional<ServerEvent> event = networkManager.getEvent();
         if (event.isEmpty()) {
@@ -142,6 +121,7 @@ public class LobbyViewController implements Initializable{
                         @Override
                         public void run() {
                             updateLobby();
+                            showStart();
                         }
                     });
                 } catch (Exception e) {}  // Cannot happen
@@ -157,6 +137,7 @@ public class LobbyViewController implements Initializable{
                         @Override
                         public void run() {
                             updateLobby();
+                            showStart();
                         }
                     });
                 } catch (Exception e) {}  // Cannot happen

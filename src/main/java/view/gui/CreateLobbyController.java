@@ -48,7 +48,7 @@ public class CreateLobbyController implements Initializable {
         }
 
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/HostLobby.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/Lobby.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root, WIDTH, HEIGHT);
             stage.setResizable(false);
