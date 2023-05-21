@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="1140.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.HostLobbyController">
+    <children>
+        <ImageView fitHeight="760.0" fitWidth="1140.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../img/misc/sfondo parquet.jpg" />
+            </image>
+            <viewport>
+                <Rectangle2D height="760.0" width="1140.0" />
+            </viewport>
+        </ImageView>
+        <Label layoutX="306.0" layoutY="318.0" prefHeight="199.0" prefWidth="504.0" text="Waiting for the others to start..." textFill="#d4ff00">
+            <font>
+                <Font size="36.0" />
+            </font>
+        </Label>
+      <Button layoutX="494.0" layoutY="504.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="125.0" text="Start!">
+         <font>
+            <Font size="33.0" />
+         </font>
+      </Button>
+      <Button layoutX="470.0" layoutY="53.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="175.0" text="See who is here" onAction="#updateLobby">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Button>
+      <Label fx:id="player0" alignment="CENTER" layoutX="477.0" layoutY="123.0" prefHeight="52.0" prefWidth="159.0" textFill="#2f00ff">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="player1" alignment="CENTER" layoutX="477.0" layoutY="173.0" prefHeight="52.0" prefWidth="159.0" textFill="#2f00ff">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="player2" alignment="CENTER" layoutX="477.0" layoutY="223.0" prefHeight="52.0" prefWidth="159.0" textFill="#2f00ff">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="player3" alignment="CENTER" layoutX="478.0" layoutY="273.0" prefHeight="52.0" prefWidth="159.0" textFill="#2f00ff">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+    </children>
+</Pane>

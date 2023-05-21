@@ -13,7 +13,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import network.ClientStatus;
 import network.Result;
-import network.parameters.LobbyCreateInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
