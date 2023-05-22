@@ -58,14 +58,18 @@ public class LobbyViewController implements Initializable{
         players = new Label[]{player0, player1, player2, player3};
         updateLobby();
         showStart();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (state != ClientStatus.Disconnected || gameStarted) {
-
-                        handleEvent();
-
+        new Thread(() -> {
+            while (state != ClientStatus.Disconnected || gameStarted) {
+                synchronized (networkManager) {
+                    try {
+                        while (!networkManager.hasEvent()) {
+                            networkManager.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                handleEvent();
             }
         }).start();
     }
