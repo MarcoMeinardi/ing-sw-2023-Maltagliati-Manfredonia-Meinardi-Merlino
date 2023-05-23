@@ -13,6 +13,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class ClientManager extends Thread implements ClientManagerInterface, LoginService {
     HashMap <String, Client> clients;
@@ -23,6 +24,7 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
     private final LoginService stub;
     private static ClientManager instance = null;
     private static final Object instanceLock = new Object();
+    private static final Logger logger = Logger.getLogger(ClientManager.class.getName());
 
     private ClientManager() throws Exception{
         clients = new HashMap<>();
@@ -95,6 +97,7 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
             }
             for(Client client : clients.values()){
                 if(!client.checkPing()){
+                    logger.info("Client " + client.username + " timed out");
                     client.setStatus(ClientStatus.Disconnected);
                 }
             }

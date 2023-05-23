@@ -54,7 +54,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         }
         Login login = (Login) call.params();
         try{
-            if (addIdentifiedClient(login.username(), client)) {
+            if (addIdentifiedClient(login.username(), (Client) client)) {
                 Optional<GameController> game = LobbyController.getInstance().searchGame(login.username());
 				if (game.isPresent()) {
 					return Result.ok(game.get().getGameInfo(game.get().getPlayer(login.username())), call.id());
@@ -85,7 +85,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         }
     }
 
-    private boolean addIdentifiedClient(String username, ClientInterface client) throws Exception {
+    private boolean addIdentifiedClient(String username, Client client) throws Exception {
         boolean wasConnected = false;
         synchronized (identifiedClients) {
             ClientManagerInterface globalManager = GlobalClientManager.getInstance();
@@ -97,18 +97,13 @@ public class ClientManager extends Thread implements ClientManagerInterface{
             if(identifiedClients.containsKey(username)){
                 wasConnected = true;
                 identifiedClients.get(username).disconnect();
-                ClientInterface lastClient = identifiedClients.get(username);
-                if (lastClient.getLastValidStatus().equals(ClientStatus.Disconnected)) {
-                    client.setStatus(ClientStatus.Idle);
-                } else {
-                    client.setStatus(lastClient.getLastValidStatus());
-                }
-                client.setCallHandler(lastClient.getCallHandler());
+                Client lastClient = identifiedClients.get(username);
+                (client).from(lastClient);
             }else{
                 client.setCallHandler(LobbyController.getInstance()::handleLobbySearch);
             }
-            ((Client)client).setUsername(username);
-            identifiedClients.put(username, (Client)client);
+            (client).setUsername(username);
+            identifiedClients.put(username, client);
             unidentifiedClients.remove(client);
         }
 
