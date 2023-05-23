@@ -23,8 +23,8 @@ public class CLI {
 	boolean hasConnected;
 
 	private enum ConnectionMode{
-		RMI,
-		RPC
+		SOCKET,
+		RMI
 	}
 
 	private String ip;
@@ -86,10 +86,15 @@ public class CLI {
 	}
 	private void askIpPort() {
 		this.ip = Utils.askString("Server IP: ");
-		this.port = Utils.askInt("Server port: ");
 		switch (Utils.askOption(CLI.ConnectionMode.class)){
-			case RMI -> networkManager = network.rmi.client.NetworkManager.getInstance();
-			case RPC -> networkManager = network.rpc.client.NetworkManager.getInstance();
+			case SOCKET:
+				this.port = 8000;
+				networkManager = network.rpc.client.NetworkManager.getInstance();
+				break;
+			case RMI:
+				this.port = 8001;
+				networkManager = network.rmi.client.NetworkManager.getInstance();
+				break;
 		}
 	}
 

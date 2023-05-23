@@ -285,7 +285,7 @@ public class LobbyController extends Thread {
                 try {
                     Optional<ClientInterface> client = GlobalClientManager.getInstance().getClient(player);
                     if(client.isPresent()) {
-                        client.get().send(event);
+                        client.get().sendEvent(event);
                     }
                 } catch (Exception e) {
                     Logger.getLogger(LobbyController.class.getName()).warning("Error while sending global update event to client" + player + " " + e.getMessage());

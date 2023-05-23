@@ -31,10 +31,9 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     private boolean connected;
     private final Object connectedLock = new Object();
 
-    private LocalDateTime lastMessage;
+    private LocalDateTime pingTime = LocalDateTime.now();
     private final Object lastMessageLock = new Object();
-    private final Function<Boolean,Boolean> ping = new Function(Boolean.TRUE,Service.Ping);
-    private final int PING_TIMEOUT = 60;
+    private final int PING_TIMEOUT = 1;
     private Server serverInfo;
     @Override
     public void connect(Server server) throws Exception {
@@ -42,7 +41,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         clientService = Optional.empty();
         loginService = (LoginService) registry.lookup("LoginService");
         setConnected(true);
-        lastMessage = LocalDateTime.now();
+        pingTime = LocalDateTime.now();
         serverInfo = server;
         this.start();
     }
@@ -62,30 +61,24 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     private void setLastMessage(){
         synchronized (lastMessageLock){
-            this.lastMessage = LocalDateTime.now();
+            this.pingTime = LocalDateTime.now();
         }
     }
 
     private long getElapsedTimeSinceLastMessage(){
         synchronized (lastMessageLock){
-            return Duration.between(lastMessage, LocalDateTime.now()).getSeconds();
+            return Duration.between(pingTime, LocalDateTime.now()).getSeconds();
         }
     }
 
     @Override
     public void run(){
+        logger.info("NetworkManager: running");
         while(isConnected()){
             try{
-                if(getElapsedTimeSinceLastMessage() > PING_TIMEOUT/2){
-                    if(ping.checkResult().isPresent()){
-                        if(clientService.isPresent()){
-                            ping.setResult(clientService.get().requestService(ping.getCall()));
-                        }else{
-                            if(getElapsedTimeSinceLastMessage() > PING_TIMEOUT){
-                                disconnect();
-                            }
-                        }
-                    }
+                if(clientService.isPresent() && getElapsedTimeSinceLastMessage() > PING_TIMEOUT/2){
+                    clientService.get().requestService(new Call("rust better than java", Service.Ping, null));
+                    setLastMessage();
                 }
             }catch(Exception e){
                 disconnect();

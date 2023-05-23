@@ -11,7 +11,6 @@ import network.parameters.WrongParametersException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -33,7 +32,6 @@ public class GameController {
     private Boolean gamePaused = false;
     private final Iterator<Player> playerIterator;
     private Player currentPlayer;
-	private Thread globalUpdateThread = null;
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
     private final ClientManagerInterface clientManager;
@@ -52,7 +50,7 @@ public class GameController {
             ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
             client.setCallHandler(this::handleGame);
             GameInfo toSend = getGameInfo(player);
-            client.send(ServerEvent.Start(toSend));
+            client.sendEvent(ServerEvent.Start(toSend));
         }
     }
 
@@ -200,75 +198,38 @@ public class GameController {
      * @author Ludovico, Lorenzo, Marco, Riccardo
      */
 
-    public void checkDisconnection() {
-        int count = 0;
-        while (true) {
-            List<String> connectedPlayers = game.getPlayers().stream().filter(p -> clientManager.isClientConnected(p.getName())).map(Player::getName).toList();
-            if (connectedPlayers.size() == game.getPlayers().size()) {
-                try {
-                    for(Player player: game.getPlayers()){
-                        Optional<ClientInterface> client = clientManager.getClient(player.getName());
-                        if(client.isEmpty()){
-                            throw new RuntimeException("Client not found" + player.getName());
-                        }
-                        client.get().send(ServerEvent.Resume(null));
-                    }
-                    return;
-                }catch (Exception e){
-                    logger.warning("Error while sending resume event to client" + e.getMessage());
-                }
-            }
-            for (String player:  connectedPlayers) {
-                Optional<ClientInterface> client = clientManager.getClient(player);
-                if(client.isPresent()){
-                    try{
-                        client.get().send(ServerEvent.Pause("Waiting for all players to connect"));
-                    }catch (Exception e){
-                        logger.warning("Error while sending pause event to client" + e.getMessage());
-                    }
-                }
-            }
-
-            try {
-                Thread.sleep(DISCONNECTION_TIMOUT);
-            } catch (InterruptedException e) {
-                logger.warning("Error while sleeping" + e.getMessage());
-            }
-
-            count++;
-
-            if (count == MAX_DISCONNECTION_TRIES) {
-                exitGame();
-            }
-
-        }
-
-    }
-
     /**
      * Sends the global update event to all the clients.
      * @param event
-     * @author Ludovico, Lorenzo, Marco, Riccardo
+     * @author Ludovico, Lorenzo, Marco, Riccardo, Momo
      */
-
     public void globalUpdate(ServerEvent event) {
-        while (true) {
+        for(Player player : game.getPlayers()){
             try {
-                for(Player player : game.getPlayers()) {
-                    Optional<ClientInterface> client = clientManager.getClient(player.getName());
-                    if(client.isEmpty()) {
-                        throw new RuntimeException("Client not found" + player.getName());
-                    }
-                    client.get().send(event);
-                }
-                break;
-            } catch (Exception e) {
-                logger.warning("Error while sending global update event to client" + e.getMessage());
-                checkDisconnection();
+                ClientInterface client = clientManager.getClient(player.getName()).get();
+                client.sendEvent(event);
+            } catch(Exception e) {
+                logger.warning("oopsy doopsy we got an exceptionussy");
+                e.printStackTrace();
             }
         }
     }
 
+    private Optional<Player> nextNotDisconnected(){
+        Optional<Player> nextPlayer = Optional.empty();
+        int count = 0;
+        while(playerIterator.hasNext()){
+            Player player = playerIterator.next();
+            if(clientManager.getClient(player.getName()).isPresent()){
+                return Optional.of(player);
+            }
+            count++;
+            if(count == game.getPlayers().size()){
+                break;
+            }
+        }
+        return nextPlayer;
+    }
     /**
      * Handles the game send by the client. Executes all the methods in this class that are needed to process
      * the turns. Utilizes iterator to iterate over the players. Every turn of every player the method checks if
@@ -282,13 +243,9 @@ public class GameController {
      * @return The result of the call
      * @author Ludovico, Lorenzo
      */
-
     public Result handleGame(Call call, ClientInterface client){
         Result result;
         try{
-            if(globalUpdateOnGoing()){
-                throw new WaitingForUpdateException();
-            }
             switch (call.service()){
                 case CardSelect -> {
                     if(!(call.params() instanceof CardSelect)){
@@ -305,8 +262,9 @@ public class GameController {
                     ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
                     addCommonCockade(player, completedObjectives, newCommonObjectivesScores);
                     refillTable();
-                    if(playerIterator.hasNext()){
-                        currentPlayer = playerIterator.next();
+                    Optional<Player> nextPlayer = nextNotDisconnected();
+                    if(nextPlayer.isPresent()){
+                        currentPlayer = nextPlayer.get();
                         Update update = new Update(
                             username,
                             game.getTabletop().getSerializable(),
@@ -315,13 +273,13 @@ public class GameController {
                             completedObjectives,
                             newCommonObjectivesScores
                         );
-                        setGlobalUpdate(ServerEvent.Update(update));
+                        globalUpdate(ServerEvent.Update(update));
                     }else{
                         for(Player p : game.getPlayers()){
                             addPersonalCockade(player);
                         }
                         ScoreBoard scoreBoard = new ScoreBoard(game);
-						setGlobalUpdate(ServerEvent.End(scoreBoard));
+						globalUpdate(ServerEvent.End(scoreBoard));
                         exitGame();
                     }
                     result = Result.empty(call.id());
@@ -332,7 +290,7 @@ public class GameController {
                     }
                     Message message = new Message(client.getUsername(), (String) call.params());
                     ServerEvent event = ServerEvent.NewMessage(message);
-                    setGlobalUpdate(event);
+                    globalUpdate(event);
                     result = Result.empty(call.id());
                 }
                 default -> {
@@ -344,32 +302,6 @@ public class GameController {
         }
         return result;
     }
-
-    /**
-     * Checks if a global update is ongoing
-     * @return
-     * @author Marco
-     */
-
-	private boolean globalUpdateOnGoing() {
-		return globalUpdateThread != null && globalUpdateThread.isAlive();
-	}
-
-    /**
-     * Sets a global update
-     * @param event The event to send
-     * @throws Exception If a global update is already ongoing
-     * @author Lorenzo, Marco
-     */
-
-	private void setGlobalUpdate(ServerEvent event) throws Exception{
-        if(globalUpdateThread != null && globalUpdateThread.isAlive()){
-            throw new GlobalUpdateAlreadyOngoingException();
-        }
-		globalUpdateThread = new Thread(() -> globalUpdate(event));
-		globalUpdateThread.start();
-	}
-
     /**
      * makes the player exit the game
      * and ends the game

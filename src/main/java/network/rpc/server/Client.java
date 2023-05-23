@@ -11,6 +11,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
@@ -42,18 +44,12 @@ public class Client extends Thread implements ClientInterface {
 		statusHandler.setStatus(status);
 	}
 
-	public ClientStatus getLastValidStatus() {
-		return statusHandler.getLastValidStatus();
+	public void from(Client old_client){
+		setCallHandler(old_client.getCallHandler());
+		setStatus(old_client.statusHandler.getLastValidStatus());
 	}
 
-	public void setLastValidStatus(ClientStatus status) {
-		statusHandler.setLastValidStatus(status);
-	}
-
-	public <T extends Serializable> void send(ServerEvent<T> message) throws DisconnectedClientException {
-		if(getStatus() == ClientStatus.Disconnected){
-			throw new DisconnectedClientException();
-		}
+	public <T extends Serializable> void sendEvent(ServerEvent<T> message){
 		synchronized (this.outcomingMessages){
 			try{
 				outcomingMessages.reset();
@@ -62,7 +58,6 @@ public class Client extends Thread implements ClientInterface {
 			}catch(Exception e){
 				Logger.getLogger(Client.class.getName()).warning(e.getMessage());
 				disconnect();
-				throw new DisconnectedClientException();
 			}
 		}
 	}

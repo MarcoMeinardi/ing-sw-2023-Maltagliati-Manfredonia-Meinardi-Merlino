@@ -10,10 +10,15 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.BiFunction;
+import java.util.logging.Logger;
 
 public class Client implements ClientService, ClientInterface {
     ClientStatusHandler statusHandler;
@@ -24,6 +29,8 @@ public class Client implements ClientService, ClientInterface {
     LocalDateTime lastMessageTime = LocalDateTime.now();
     Object messageTimeLock = new Object();
     ClientService stub;
+    private static final DateTimeFormatter format = new DateTimeFormatterBuilder().appendPattern("HH:mm:ss").toFormatter();
+    private static final Logger logger = Logger.getLogger(Client.class.getName());
     private Object lastMessageTimeLock = new Object();
 
     public static final int TIMEOUT = 60;
@@ -42,16 +49,11 @@ public class Client implements ClientService, ClientInterface {
 
     @Override
     public void setStatus(ClientStatus status) {
+        logger.info("Setting status of " + username + " to " + status.toString());
         statusHandler.setStatus(status);
     }
-
     @Override
-    public ClientStatus getLastValidStatus() {
-        return statusHandler.getLastValidStatus();
-    }
-
-    @Override
-    public <T extends Serializable> void send(ServerEvent<T> message) throws Exception {
+    public <T extends Serializable> void sendEvent(ServerEvent<T> message){
         serverEvents.add(message);
     }
     @Override
@@ -90,6 +92,7 @@ public class Client implements ClientService, ClientInterface {
 
     @Override
     public Result requestService(Call call) {
+        logger.info("Received call " + call.toString() + " from " + username);
         if(statusHandler.getStatus() == ClientStatus.Disconnected){
             statusHandler.setStatus(statusHandler.getLastValidStatus());
         }
