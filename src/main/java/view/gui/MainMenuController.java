@@ -36,7 +36,15 @@ public class MainMenuController implements Initializable {
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         nameUser.setText(LoginController.username);
+        askNetForLobbies();
+    }
 
+    public void refreshLobbies(javafx.event.ActionEvent actionEvent){
+        listView.getItems().clear();
+        askNetForLobbies();
+    }
+
+    public void askNetForLobbies(){
         try {
             Result<ArrayList<Lobby>> result = networkManager.lobbyList().waitResult();
             if (result.isOk()) {
@@ -55,7 +63,6 @@ public class MainMenuController implements Initializable {
             throw new RuntimeException(e);
         }
     }
-
 
     public void switchToCreateLobby(javafx.event.ActionEvent actionEvent ) {
 

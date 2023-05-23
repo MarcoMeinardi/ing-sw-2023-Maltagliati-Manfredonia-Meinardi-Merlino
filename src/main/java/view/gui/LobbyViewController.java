@@ -2,8 +2,6 @@ package view.gui;
 
 import controller.lobby.Lobby;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -59,7 +57,7 @@ public class LobbyViewController implements Initializable{
         updateLobby();
         showStart();
         new Thread(() -> {
-            while (state != ClientStatus.Disconnected || gameStarted) {
+            while (state != ClientStatus.Disconnected && !gameStarted) {
                 synchronized (networkManager) {
                     try {
                         while (!networkManager.hasEvent()) {
