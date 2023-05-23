@@ -57,7 +57,7 @@ public class LobbyViewController implements Initializable{
         updateLobby();
         showStart();
         new Thread(() -> {
-            while (state != ClientStatus.Disconnected && !gameStarted) {
+            while (state != ClientStatus.Disconnected || gameStarted) {
                 synchronized (networkManager) {
                     try {
                         while (!networkManager.hasEvent()) {
