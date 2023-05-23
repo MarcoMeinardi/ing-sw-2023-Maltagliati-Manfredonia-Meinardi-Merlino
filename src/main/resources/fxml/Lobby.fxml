@@ -3,6 +3,8 @@
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
@@ -48,10 +50,22 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Button fx:id="startButton1" layoutX="494.0" layoutY="609.0" mnemonicParsing="false" onAction="#quitLobby" prefHeight="71.0" prefWidth="125.0" text="Quit">
+      <Button fx:id="startButton1" layoutX="494.0" layoutY="630.0" mnemonicParsing="false" onAction="#quitLobby" prefHeight="71.0" prefWidth="125.0" text="Quit">
          <font>
             <Font size="33.0" />
          </font>
       </Button>
+      <ListView fx:id="chat" layoutX="778.0" layoutY="504.0" prefHeight="71.0" prefWidth="327.0" />
+      <Button fx:id="showChatButton" layoutX="778.0" layoutY="630.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="125.0" text="Show chat">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Button>
+      <Button fx:id="sendMessageButton" layoutX="980.0" layoutY="630.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="125.0" text="Send message">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <TextField fx:id="messageInput" layoutX="778.0" layoutY="575.0" prefHeight="37.0" prefWidth="327.0" promptText="Your message..." />
     </children>
 </Pane>

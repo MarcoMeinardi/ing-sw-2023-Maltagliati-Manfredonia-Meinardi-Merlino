@@ -32,7 +32,8 @@ public class MainMenuController implements Initializable {
     @FXML
     private ListView<String> listView;
 
-
+    public void MainMenuController() {
+    }
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         nameUser.setText(LoginController.username);

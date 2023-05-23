@@ -29,6 +29,9 @@ public class CreateLobbyController implements Initializable {
     @FXML
     private TextField nameLobby;
 
+    public CreateLobbyController() {
+    }
+
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         nameUser.setText(LoginController.username);
     }

@@ -45,6 +45,7 @@ public class LobbyViewController implements Initializable{
 
     private Scene scene;
     private Stage stage;
+    private Thread serverThread;
 
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
@@ -56,20 +57,21 @@ public class LobbyViewController implements Initializable{
         players = new Label[]{player0, player1, player2, player3};
         updateLobby();
         showStart();
-        new Thread(() -> {
-            while (state != ClientStatus.Disconnected && !gameStarted) {
+        serverThread = new Thread(() -> {
+            while (state != ClientStatus.Disconnected || !gameStarted) {
                 synchronized (networkManager) {
                     try {
                         while (!networkManager.hasEvent()) {
                             networkManager.wait();
                         }
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        break;
                     }
                 }
                 handleEvent();
             }
-        }).start();
+        });
+        serverThread.start();
     }
 
     public void updateLobby() {
@@ -95,6 +97,7 @@ public class LobbyViewController implements Initializable{
         if (result.isOk()) {
             LoginController.state = ClientStatus.InLobbySearch;
             try {
+                serverThread.interrupt();
                 Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
                 stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
                 scene = new Scene(root, WIDTH, HEIGHT);
