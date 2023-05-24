@@ -110,6 +110,7 @@ public class CLIGame {
 	}
 
 	private void printShelf(Shelf shelf) {
+		System.out.println();
 		System.out.println("┌───┬───┬───┬───┬───┐");
 		for (int y = Shelf.ROWS - 1; y >= 0; y--) {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
@@ -225,6 +226,7 @@ public class CLIGame {
 		int lastColumn = nPlayers == 2 ? TableTop.SIZE - 2 : TableTop.SIZE - 1;
 		int offset = nPlayers == 2 ? 1 : 0;
 
+		System.out.println();
 		for (int y = firstRow; y >= lastRow - 1; y--) {
 			System.out.print("  ");
 			for (int x = firstColumn; x <= lastColumn + 1; x++) {
@@ -280,10 +282,10 @@ public class CLIGame {
 		
 		Optional<Cockade> cockade = personalObjective.isCompleted(myShelf);
 		if (cockade.isEmpty()) {
-			System.out.println("You won't get any point for your personal objective");
+			System.out.println("[*] You haven't completed any part of your personal objective yet");
 		} else {
 			System.out.format(
-				"You will get %d %s for your personal objective%n",
+				"[*] You will get %d %s for your personal objective%n",
 				cockade.get().points(),
 				cockade.get().points() == 1 ? "point" : "points"
 			);
@@ -291,8 +293,9 @@ public class CLIGame {
 	}
 
 	public void printCommonObjectives() {
+		System.out.println("[*] Common objectives:");
 		for (int i = 0; i < CommonObjective.N_COMMON_OBJECTIVES; i++) {
-			System.out.format("%d: %s ( %d points )%n", i + 1, commonObjectives.get(i), commonObjectivesPoints.get(i));
+			System.out.format(" %d: %s ( %d points )%n", i + 1, commonObjectives.get(i), commonObjectivesPoints.get(i));
 		}
 	}
 }

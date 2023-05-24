@@ -87,6 +87,7 @@ public class Utils {
 		while (true) {
 			E[] options = enumClass.getEnumConstants();
 			int ind = 0;
+			System.out.println();
 			for (E option : options) {
 				if ((option.needHost() && !isHost) || (option.needTurn() && !isTurn)) {
 					continue;
@@ -116,6 +117,7 @@ public class Utils {
 			int ind;
 			if (doPrint) {
 				ind = 0;
+				System.out.println();
 				for (E option : options) {
 					if ((option.needHost() && !isHost) || (option.needTurn() && !isTurn)) {
 						continue;

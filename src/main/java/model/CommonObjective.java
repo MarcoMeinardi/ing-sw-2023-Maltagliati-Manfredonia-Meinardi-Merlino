@@ -53,7 +53,7 @@ public class CommonObjective extends Objective {
 		allObjectives.add(new CommonObjective("2 square-shaped groups", nPlayers, CommonObjective::twoSquareGroups));
 		allObjectives.add(new CommonObjective("2 rows with 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCards));
 		allObjectives.add(new CommonObjective("3 columns of at most 3 different cards", nPlayers, CommonObjective::threeColumnsOfAtMostThreeDifferentCards));
-		allObjectives.add(new CommonObjective("X shape group", nPlayers, CommonObjective::equalsX));
+		allObjectives.add(new CommonObjective("X shapes group", nPlayers, CommonObjective::equalsX));
 		allObjectives.add(new CommonObjective("eight equal cards", nPlayers, CommonObjective::eightEquals));
 		allObjectives.add(new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShape));
 
