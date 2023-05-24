@@ -20,37 +20,18 @@
                 <Rectangle2D height="760.0" width="1140.0" />
             </viewport>
         </ImageView>
-        <Label layoutX="306.0" layoutY="318.0" prefHeight="199.0" prefWidth="504.0" text="Waiting for the others to start..." textFill="#d4ff00">
+        <Label layoutX="305.0" layoutY="281.0" prefHeight="199.0" prefWidth="504.0" text="Waiting for the others to start..." textFill="#d4ff00">
             <font>
                 <Font size="36.0" />
             </font>
         </Label>
-      <Button fx:id="startButton" layoutX="494.0" layoutY="504.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="125.0" text="Start!">
+        <TextField fx:id="messageInput" layoutX="778.0" layoutY="575.0" prefHeight="37.0" prefWidth="327.0" promptText="Your message..." />
+        <Button fx:id="startButton" layoutX="494.0" layoutY="504.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="125.0" text="Start!">
          <font>
             <Font size="33.0" />
          </font>
       </Button>
-      <Label fx:id="player0" alignment="CENTER" layoutX="477.0" layoutY="121.0" prefHeight="52.0" prefWidth="159.0" textFill="#2f00ff">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Label fx:id="player1" alignment="CENTER" layoutX="477.0" layoutY="173.0" prefHeight="52.0" prefWidth="159.0" textFill="#2f00ff">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Label fx:id="player2" alignment="CENTER" layoutX="477.0" layoutY="223.0" prefHeight="52.0" prefWidth="159.0" textFill="#2f00ff">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Label fx:id="player3" alignment="CENTER" layoutX="478.0" layoutY="273.0" prefHeight="52.0" prefWidth="159.0" textFill="#2f00ff">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Button fx:id="startButton1" layoutX="494.0" layoutY="630.0" mnemonicParsing="false" onAction="#quitLobby" prefHeight="71.0" prefWidth="125.0" text="Quit">
+      <Button fx:id="quitLobby" layoutX="494.0" layoutY="630.0" mnemonicParsing="false" onAction="#quitLobby" prefHeight="71.0" prefWidth="125.0" text="Quit">
          <font>
             <Font size="33.0" />
          </font>
@@ -61,6 +42,11 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <TextField fx:id="messageInput" layoutX="778.0" layoutY="575.0" prefHeight="37.0" prefWidth="327.0" promptText="Your message..." />
+      <ListView fx:id="players" layoutX="435.0" layoutY="136.0" prefHeight="94.0" prefWidth="271.0" />
+      <Label alignment="CENTER" layoutX="433.0" layoutY="74.0" prefHeight="44.0" prefWidth="271.0" text="Players in lobby:" textAlignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
     </children>
 </Pane>

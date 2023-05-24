@@ -1,6 +1,7 @@
 package view.gui;
 
 import controller.lobby.Lobby;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,11 +11,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
@@ -23,7 +23,6 @@ import network.parameters.Message;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 
@@ -32,13 +31,7 @@ public class LobbyViewController implements Initializable{
     private static final int WIDTH = 1140;
     private static final int HEIGHT = 760;
     @FXML
-    public Label player0;
-    @FXML
-    public Label player1;
-    @FXML
-    public  Label player2;
-    @FXML
-    public  Label player3;
+    public TextField messageInput;
     @FXML
     public Button startButton;
     @FXML
@@ -46,8 +39,9 @@ public class LobbyViewController implements Initializable{
     @FXML
     private ListView chat;
     @FXML
-    public TextField messageInput;
-    private Label[] players;
+    public Button quitLobby;
+    @FXML
+    public ListView players;
 
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
@@ -64,8 +58,9 @@ public class LobbyViewController implements Initializable{
         state = ClientStatus.InLobby;
         lobby = LoginController.lobby;
         networkManager = LoginController.networkManager;
-        players = new Label[]{player0, player1, player2, player3};
-        updateLobby();
+        sendMessageButton.setDefaultButton(true);
+        quitLobby.setCancelButton(true);
+        startLobby();
         showStart();
         serverThread = new Thread(() -> {
             while (state != ClientStatus.Disconnected) {
@@ -84,12 +79,19 @@ public class LobbyViewController implements Initializable{
         serverThread.start();
     }
 
+    public void startLobby(){
+        for (int i = 0; i < 4; i++) {
+            players.getItems().add("");
+        }
+        updateLobby();
+    }
+
     public void updateLobby() {
         for(int i = 0; i<4;i++){
-            players[i].setText("");
+            players.getItems().set(i,"");
         }
-        for(int i = 0; i < lobby.getNumberOfPlayers();i++){
-            players[i].setText(lobby.getPlayers().get(i));
+        for(int i = 0; i < lobby.getNumberOfPlayers() ;i++){
+            players.getItems().set(i, lobby.getPlayers().get(i));
         }
     }
 
@@ -149,6 +151,7 @@ public class LobbyViewController implements Initializable{
             if (result.isErr()) {
                 System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
                 chat.getItems().add("We could not send your message, please try again later");
+                chat.scrollTo(chat.getItems().size()-1);
                 return;
             }
             Message message = new Message(username, messageText);
@@ -160,14 +163,11 @@ public class LobbyViewController implements Initializable{
     }
 
     public void addMessageToChat(Message message){
-        if(message.message().contains("Cannot send message")){
-            chat.getItems().add("We could not send your message, please try again later");
-            return;
-        }
         Calendar calendar = GregorianCalendar.getInstance();
         String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
         String minute = String.valueOf(calendar.get(Calendar.MINUTE));
         chat.getItems().add("[" + hour + ":"+minute+ "] " +message.idPlayer()+ ": " + message.message());
+        chat.scrollTo(chat.getItems().size()-1);
     }
 
     private void handleEvent() {
