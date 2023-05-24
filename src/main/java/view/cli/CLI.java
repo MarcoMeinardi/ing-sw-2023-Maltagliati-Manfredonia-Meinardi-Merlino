@@ -1,8 +1,7 @@
-package cli;
+package view.cli;
 
 import network.*;
 import network.parameters.*;
-import network.rpc.client.NetworkManager;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -22,7 +21,7 @@ public class CLI {
 	private Lobby lobby;
 	boolean hasConnected;
 
-	private enum ConnectionMode{
+	private enum ConnectionMode {
 		SOCKET,
 		RMI
 	}
@@ -71,9 +70,7 @@ public class CLI {
 	}
 
 	private ClientStatus connect() {
-		askIpPort();
-		//this.ip = "localhost";
-		//this.port = 8000;
+		askIpAndMethod();
 
 		try {
 			networkManager.connect(new Server(this.ip, this.port));
@@ -84,7 +81,7 @@ public class CLI {
 			return ClientStatus.Disconnected;
 		}
 	}
-	private void askIpPort() {
+	private void askIpAndMethod() {
 		this.ip = Utils.askString("Server IP: ");
 		switch (Utils.askOption(CLI.ConnectionMode.class)){
 			case SOCKET:
@@ -98,7 +95,6 @@ public class CLI {
 		}
 	}
 
-	// TODO we need to receive the previous status in case of a reconnection
 	private ClientStatus login() {
 		username = Utils.askString("Username: ");
 		try {
