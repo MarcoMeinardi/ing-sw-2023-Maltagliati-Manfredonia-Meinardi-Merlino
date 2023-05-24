@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -42,7 +43,8 @@ public class LobbyViewController implements Initializable{
     public Button quitLobby;
     @FXML
     public ListView players;
-
+    @FXML
+    public Label descriptorLabel;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
     public static Lobby lobby;
@@ -120,11 +122,18 @@ public class LobbyViewController implements Initializable{
                 e.printStackTrace();
             }
         } else {
+            descriptorLabel.setText("");
+            descriptorLabel.setText("Leave lobby failed");
             System.out.println("[ERROR] " + result.getException().orElse("Leave lobby failed"));
         }
     }
 
     public void startGame(ActionEvent actionEvent) throws Exception{
+        if(lobby.getPlayers().size() < 2){
+            descriptorLabel.setText("");
+            descriptorLabel.setText("Not enough players");
+            return;
+        }
         Result result = networkManager.gameStart().waitResult();
         if (result.isOk()) {
             LoginController.state = ClientStatus.InGame;
@@ -139,6 +148,11 @@ public class LobbyViewController implements Initializable{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        else{
+            descriptorLabel.setText("");
+            descriptorLabel.setText("Start game failed");
+            System.out.println("[ERROR] " + result.getException().orElse("Start game failed"));
         }
     }
 
