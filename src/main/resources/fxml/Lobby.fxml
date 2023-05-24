@@ -20,7 +20,7 @@
                 <Rectangle2D height="760.0" width="1140.0" />
             </viewport>
         </ImageView>
-        <Label fx:id="descriptorLabel" layoutX="305.0" layoutY="281.0" prefHeight="199.0" prefWidth="504.0" text="Waiting for the others to start..." textFill="#d4ff00">
+        <Label fx:id="descriptorLabel" alignment="CENTER" layoutX="305.0" layoutY="281.0" prefHeight="199.0" prefWidth="504.0" text="Waiting for the others to start..." textFill="#d4ff00">
             <font>
                 <Font size="36.0" />
             </font>

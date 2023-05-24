@@ -36,6 +36,8 @@ public class LoginController implements Initializable {
     private RadioButton RMIButton, serverButton;
     @FXML
     private Button loginButton;
+    @FXML
+    private TextField selectedIp;
     public static String username;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
@@ -65,12 +67,12 @@ public class LoginController implements Initializable {
             //connection to server
             if(RMIButton.isSelected()){
                 networkManager = network.rmi.client.NetworkManager.getInstance();
-                this.ip = "localhost";
+                this.ip = selectedIp.getText();
                 this.port = 8001;
             }
             else{
                 networkManager = network.rpc.client.NetworkManager.getInstance();
-                this.ip = "localhost";
+                this.ip = selectedIp.getText();
                 this.port = 8000;
             }
             try{

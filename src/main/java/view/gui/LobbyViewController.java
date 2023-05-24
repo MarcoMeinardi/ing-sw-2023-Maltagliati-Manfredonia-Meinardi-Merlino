@@ -129,6 +129,11 @@ public class LobbyViewController implements Initializable{
     }
 
     public void startGame(ActionEvent actionEvent) throws Exception{
+        if(lobby.getPlayers().size() < 2){
+            descriptorLabel.setText("");
+            descriptorLabel.setText("Not enough players");
+            return;
+        }
         Result result = networkManager.gameStart().waitResult();
         if (result.isOk()) {
             LoginController.state = ClientStatus.InGame;
