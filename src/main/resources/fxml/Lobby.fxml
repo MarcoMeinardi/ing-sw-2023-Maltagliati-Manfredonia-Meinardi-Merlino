@@ -14,7 +14,7 @@
     <children>
         <ImageView fitHeight="760.0" fitWidth="1140.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../../img/misc/sfondo parquet.jpg" />
+                <Image url="@../img/misc/sfondo parquet.jpg" />
             </image>
             <viewport>
                 <Rectangle2D height="760.0" width="1140.0" />
@@ -56,12 +56,7 @@
          </font>
       </Button>
       <ListView fx:id="chat" layoutX="778.0" layoutY="504.0" prefHeight="71.0" prefWidth="327.0" />
-      <Button fx:id="showChatButton" layoutX="778.0" layoutY="630.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="125.0" text="Show chat">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Button>
-      <Button fx:id="sendMessageButton" layoutX="980.0" layoutY="630.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="125.0" text="Send message">
+      <Button fx:id="sendMessageButton" layoutX="879.0" layoutY="630.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="71.0" prefWidth="125.0" text="Send message">
          <font>
             <Font size="16.0" />
          </font>
