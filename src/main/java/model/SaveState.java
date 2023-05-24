@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public record SaveState(
@@ -7,4 +8,4 @@ public record SaveState(
 	ArrayList<SavePlayer> players,
 	ArrayList<String> commonObjectives,
 	PlayerIterator playerIterator
-) {}
+) implements Serializable {}
