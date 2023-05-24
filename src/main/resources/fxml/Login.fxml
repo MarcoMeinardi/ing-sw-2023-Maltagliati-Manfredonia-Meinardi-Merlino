@@ -17,12 +17,7 @@
             <Image url="@/img/Publisher material/Display_2.jpg" />
          </image>
       </ImageView>
-      <TextField fx:id="namePort" alignment="CENTER" layoutX="307.0" layoutY="380.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="Port" style="-fx-background-color: white; -fx-opacity: 80%;">
-         <font>
-            <Font name="Franklin Gothic Medium Cond" size="26.0" />
-         </font>
-      </TextField>
-      <Button fx:id="btnPlay1" alignment="CENTER" contentDisplay="CENTER" layoutX="527.0" layoutY="645.0" mnemonicParsing="false" onAction="#switchToMainMenu" prefHeight="50.0" prefWidth="111.0" style="-fx-background-color: white;" text="Play">
+      <Button fx:id="loginButton" alignment="CENTER" contentDisplay="CENTER" layoutX="515.0" layoutY="630.0" mnemonicParsing="false" onAction="#switchToMainMenu" prefHeight="50.0" prefWidth="111.0" style="-fx-background-color: white;" text="Play">
          <font>
             <Font name="Franklin Gothic Demi Cond" size="33.0" />
          </font>
@@ -32,22 +27,17 @@
             <Image url="@/img/Publisher material/Publisher.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="119.0" fitWidth="503.0" layoutX="400.0" layoutY="60.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="119.0" fitWidth="503.0" layoutX="377.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@/img/Publisher material/Title 2000x618px.png" />
+            <Image url="@../img/Publisher material/Title 2000x618px.png" />
          </image>
       </ImageView>
-      <TextField fx:id="nameIP" alignment="CENTER" layoutX="307.0" layoutY="241.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="IP Address" style="-fx-background-color: white; -fx-opacity: 80%;">
+      <TextField fx:id="namePlayer" alignment="CENTER" layoutX="295.0" layoutY="350.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="Select your name" style="-fx-background-color: white; -fx-opacity: 80%;">
          <font>
             <Font name="Franklin Gothic Medium Cond" size="26.0" />
          </font>
       </TextField>
-      <TextField fx:id="namePlayer" alignment="CENTER" layoutX="307.0" layoutY="540.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="Insert your name" style="-fx-background-color: white; -fx-opacity: 80%;">
-         <font>
-            <Font name="Franklin Gothic Medium Cond" size="26.0" />
-         </font>
-      </TextField>
-      <RadioButton fx:id="RMIButton" layoutX="28.0" layoutY="683.0" mnemonicParsing="false" selected="true" text="RMI">
+      <RadioButton fx:id="RMIButton" layoutX="74.0" layoutY="648.0" mnemonicParsing="false" selected="true" text="RMI">
          <font>
             <Font name="Franklin Gothic Medium" size="26.0" />
          </font>
@@ -55,7 +45,7 @@
             <ToggleGroup fx:id="Server" />
          </toggleGroup>
       </RadioButton>
-      <RadioButton fx:id="serverButton" layoutX="137.0" layoutY="683.0" mnemonicParsing="false" text="Socket" toggleGroup="$Server">
+      <RadioButton fx:id="serverButton" layoutX="201.0" layoutY="648.0" mnemonicParsing="false" selected="true" text="Socket" toggleGroup="$Server">
          <font>
             <Font name="Franklin Gothic Medium" size="26.0" />
          </font>
@@ -65,7 +55,7 @@
             <Font size="39.0" />
          </font>
       </Label>
-      <Label fx:id="errorLabel2" layoutX="400.0" layoutY="162.0" prefHeight="71.0" prefWidth="404.0" textAlignment="CENTER" textFill="#d4ff00">
+      <Label fx:id="errorLabel2" layoutX="368.0" layoutY="198.0" prefHeight="71.0" prefWidth="404.0" textAlignment="CENTER" textFill="#d4ff00">
          <font>
             <Font size="39.0" />
          </font>

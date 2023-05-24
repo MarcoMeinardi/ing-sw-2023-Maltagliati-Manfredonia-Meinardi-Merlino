@@ -1,8 +1,10 @@
 package view.gui;
 
 import controller.lobby.Lobby;
+import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,15 +21,11 @@ import network.parameters.Login;
 
 import java.io.IOException;
 
-public class LoginController {
+public class LoginController implements Initializable {
     private static final int WIDTH = 1140;
     private static final int HEIGHT = 760;
     private Stage stage;
     private Scene scene;
-    @FXML
-    private TextField namePort;
-    @FXML
-    private TextField nameIP;
     @FXML
     private TextField namePlayer;
     @FXML
@@ -37,8 +35,7 @@ public class LoginController {
     @FXML
     private RadioButton RMIButton, serverButton;
     @FXML
-    private Button btnPlay1;
-
+    private Button loginButton;
     public static String username;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
@@ -46,14 +43,15 @@ public class LoginController {
     public static int port;
     public static Lobby lobby;
 
+    public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
+        loginButton.setDefaultButton(true);
+    }
     public void switchToMainMenu(javafx.event.ActionEvent actionEvent) {
 
         try {
             errorLabel.setText("");
             errorLabel2.setText("");
             username = namePlayer.getText();
-            String port = namePort.getText();
-            String ip = nameIP.getText();
 
             //check if the input is valid
             if(username == null || username.equals("") ){
@@ -63,23 +61,17 @@ public class LoginController {
                 errorLabel2.setText("max 8 letters in name!");
                 return;
             }
-            if(port == null || port.equals("") ){
-                errorLabel.setText("Invalid port!");
-                return;
-            }
-            if(ip == null || ip.equals("") ){
-                errorLabel.setText("Invalid ip!");
-                return;
-            }
 
             //connection to server
-            this.ip = ip;
-            this.port = Integer.parseInt(port);
             if(RMIButton.isSelected()){
                 networkManager = network.rmi.client.NetworkManager.getInstance();
+                this.ip = "localhost";
+                this.port = 8001;
             }
             else{
                 networkManager = network.rpc.client.NetworkManager.getInstance();
+                this.ip = "localhost";
+                this.port = 8000;
             }
             try{
                 networkManager.connect(new Server(this.ip, this.port));
