@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import cli.CLI;
+import view.cli.CLI;
 
 public class Client {
 	private static CLI cli = CLI.getInstance();

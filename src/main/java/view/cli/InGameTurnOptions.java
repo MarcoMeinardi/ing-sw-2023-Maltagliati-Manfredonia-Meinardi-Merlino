@@ -1,4 +1,4 @@
-package cli;
+package view.cli;
 
 public enum InGameTurnOptions {
 	SHOW_YOUR_SHELF,

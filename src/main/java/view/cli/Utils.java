@@ -1,4 +1,4 @@
-package cli;
+package view.cli;
 
 import java.util.Optional;
 
