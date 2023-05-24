@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class CardsDeck {
+public class CardsDeck implements Serializable {
     private Stack<Card> cards;
 	public static final int CARDS_PER_TYPE = 22;
 	public static final int TOTAL_CARDS = CARDS_PER_TYPE * Card.values().length;

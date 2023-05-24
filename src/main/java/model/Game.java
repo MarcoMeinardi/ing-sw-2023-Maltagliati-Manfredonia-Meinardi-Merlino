@@ -9,6 +9,7 @@ public class Game implements Iterable<Player> {
     private TableTop tabletop;
     private ArrayList<Player> players;
     private ArrayList<CommonObjective> commonObjectives;
+    private PlayerIterator playerIterator;
 
     public Game(ArrayList<String> playersNames) {
         this.tabletop = new TableTop(playersNames.size());
@@ -23,7 +24,8 @@ public class Game implements Iterable<Player> {
 
     @Override
     public Iterator<Player> iterator() {
-        return new PlayerIterator(this);
+        playerIterator = new PlayerIterator(this);
+        return playerIterator;
     }
 
     /**

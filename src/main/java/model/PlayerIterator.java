@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
-public class PlayerIterator implements Iterator<Player> {
+public class PlayerIterator implements Iterator<Player>, Serializable {
 
     private int index;
     private int maxIndex;
