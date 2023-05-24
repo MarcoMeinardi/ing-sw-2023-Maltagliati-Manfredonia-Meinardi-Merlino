@@ -12,13 +12,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.ServerEvent;
+import network.parameters.Message;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Optional;
 
 
@@ -35,13 +41,18 @@ public class LobbyViewController implements Initializable{
     public  Label player3;
     @FXML
     public Button startButton;
+    @FXML
+    public Button sendMessageButton;
+    @FXML
+    private ListView chat;
+    @FXML
+    public TextField messageInput;
     private Label[] players;
 
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
     public static Lobby lobby;
     static String username;
-    static boolean gameStarted;
 
     private Scene scene;
     private Stage stage;
@@ -53,12 +64,11 @@ public class LobbyViewController implements Initializable{
         state = ClientStatus.InLobby;
         lobby = LoginController.lobby;
         networkManager = LoginController.networkManager;
-        gameStarted = false;
         players = new Label[]{player0, player1, player2, player3};
         updateLobby();
         showStart();
         serverThread = new Thread(() -> {
-            while (state != ClientStatus.Disconnected || !gameStarted) {
+            while (state != ClientStatus.Disconnected) {
                 synchronized (networkManager) {
                     try {
                         while (!networkManager.hasEvent()) {
@@ -112,6 +122,54 @@ public class LobbyViewController implements Initializable{
         }
     }
 
+    public void startGame(ActionEvent actionEvent) throws Exception{
+        //TODO create to start a game
+    }
+
+    public void sendMessage(ActionEvent actionEvent) throws Exception{
+        String messageText = messageInput.getText();
+        messageInput.clear();
+
+        //check message integrity and return if not valid
+        if (messageText.isEmpty()) {
+            return;
+        }
+        if (messageText.length() > 100) {
+            System.out.println("[ERROR] Message too long");
+            return;
+        }
+        if (messageText.startsWith("/") || messageText.startsWith("!") || messageText.startsWith(".") || messageText.startsWith("?")) {
+            System.out.println("[ERROR] Commands not supported");
+            return;
+        }
+
+        //try to send it to the server and add it to chat
+        try{
+            Result result = networkManager.chat(messageText).waitResult();
+            if (result.isErr()) {
+                System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
+                chat.getItems().add("We could not send your message, please try again later");
+                return;
+            }
+            Message message = new Message(username, messageText);
+            addMessageToChat(message);
+        } catch (Exception e) {
+            System.out.println("[ERROR] " + e.getMessage());
+        }
+
+    }
+
+    public void addMessageToChat(Message message){
+        if(message.message().contains("Cannot send message")){
+            chat.getItems().add("We could not send your message, please try again later");
+            return;
+        }
+        Calendar calendar = GregorianCalendar.getInstance();
+        String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
+        String minute = String.valueOf(calendar.get(Calendar.MINUTE));
+        chat.getItems().add("[" + hour + ":"+minute+ "] " +message.idPlayer()+ ": " + message.message());
+    }
+
     private void handleEvent() {
         Optional<ServerEvent> event = networkManager.getEvent();
         if (event.isEmpty()) {
@@ -148,21 +206,17 @@ public class LobbyViewController implements Initializable{
                 } catch (Exception e) {}  // Cannot happen
                 System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
             }
-            case Start -> {
-                //TODO Fare il game che inizia
-            }
-            case Update -> {
-                //TODO update
-            }
-            case End -> {
-                //TODO end
-            }
             case NewMessage -> {
-                //TODO new message
-            } case Pause -> {
-                //TODO pause
-            } case Resume -> {
-                //TODO resume
+                Message message = (Message)event.get().getData();
+                if (!message.idPlayer().equals(username)) {
+                    System.out.format("%s: %s%n", message.idPlayer(), message.message());
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            addMessageToChat(message);
+                        }
+                    });
+                }
             }
             default -> throw new RuntimeException("Unhandled event");
         }

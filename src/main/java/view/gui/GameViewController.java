@@ -10,15 +10,14 @@ public class GameViewController {
     static boolean gameStarted;
 
 
-
-
     public void inizialize(java.net.URL location, java.util.ResourceBundle resources) {
         state = ClientStatus.InGame;
         networkManager = LoginController.networkManager;
         gameStarted = true;
         handleEvents();
-}
+    }
 
 
     private void handleEvents() {
     }
+}
