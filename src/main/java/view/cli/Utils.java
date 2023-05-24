@@ -75,43 +75,75 @@ public class Utils {
 		return askIntOrEvent();
 	}
 
-	private static <E extends Enum<E>> String enumToOption(E e) {
+	private static <E extends Enum<E> & OptionsInterface> String enumToOption(E e) {
 		String repr = e.toString();
 		return repr.substring(0, 1).toUpperCase() + repr.substring(1).toLowerCase().replace('_', ' ');
 	}
 
-	public static <E extends Enum<E>> E askOption(Class<E> enumClass) {
-		while (true) {
-			E[] options = enumClass.getEnumConstants();
-			for (int i = 0; i < options.length; i++) {
-				System.out.println(String.format("[%d] %s", i + 1, enumToOption(options[i])));
-			}
-			int selected = askInt() - 1;
-			if (selected >= 0 && selected < options.length) {
-				return options[selected];
-			} else {
-				System.out.println("[!] Invalid option");
-			}
-		}
+	public static <E extends Enum<E> & OptionsInterface> E askOption(Class<E> enumClass) {
+		return askOption(enumClass, false, false);
 	}
-	public static <E extends Enum<E>> Optional<E> askOptionOrEvent(Class<E> enumClass, boolean doPrint) {
+	public static <E extends Enum<E> & OptionsInterface> E askOption(Class<E> enumClass, boolean isHost, boolean isTurn) {
 		while (true) {
 			E[] options = enumClass.getEnumConstants();
-			if (doPrint) {
-				for (int i = 0; i < options.length; i++) {
-					System.out.println(String.format("[%d] %s", i + 1, enumToOption(options[i])));
+			int ind = 0;
+			System.out.println();
+			for (E option : options) {
+				if ((option.needHost() && !isHost) || (option.needTurn() && !isTurn)) {
+					continue;
+				}
+				ind++;
+				System.out.println(String.format("[%d] %s", ind, enumToOption(option)));
+			}
+			int selected = askInt();
+
+			// Because not all the options are choosable, we need to find it by iterating through them all again
+			ind = 0;
+			for (E option : options) {
+				if ((option.needHost() && !isHost) || (option.needTurn() && !isTurn)) {
+					continue;
+				}
+				ind++;
+				if (ind == selected) {
+					return option;
 				}
 			}
-			Optional<Integer> option = askIntOrEvent();
-			if (option.isEmpty()) {
+			System.out.println("[!] Invalid option");
+		}
+	}
+	public static <E extends Enum<E> & OptionsInterface> Optional<E> askOptionOrEvent(Class<E> enumClass, boolean doPrint, boolean isHost, boolean isTurn) {
+		while (true) {
+			E[] options = enumClass.getEnumConstants();
+			int ind;
+			if (doPrint) {
+				ind = 0;
+				System.out.println();
+				for (E option : options) {
+					if ((option.needHost() && !isHost) || (option.needTurn() && !isTurn)) {
+						continue;
+					}
+					ind++;
+					System.out.println(String.format("[%d] %s", ind, enumToOption(option)));
+				}
+			}
+			Optional<Integer> selected = askIntOrEvent();
+			if (selected.isEmpty()) {
 				return Optional.empty();
 			}
-			int selected = option.get() - 1;
-			if (selected >= 0 && selected < options.length) {
-				return Optional.of(options[selected]);
-			} else {
-				System.out.println("[!] Invalid option");
+
+			// Because not all the options are choosable, we need to find it by iterating through them all again
+			ind = 0;
+			for (E option : options) {
+				if ((option.needHost() && !isHost) || (option.needTurn() && !isTurn)) {
+					continue;
+				}
+				ind++;
+				if (ind == selected.get()) {
+					return Optional.of(option);
+				}
 			}
+			System.out.println("[!] Invalid option");
+			doPrint = true;
 		}
 	}
 }
