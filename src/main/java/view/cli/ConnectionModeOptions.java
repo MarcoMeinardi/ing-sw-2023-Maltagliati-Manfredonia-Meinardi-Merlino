@@ -1,12 +1,9 @@
 package view.cli;
 
 // To use the `askOption` method, we need to implement this interface
-public enum SelectLobbyOptions implements OptionsInterface {
-	CREATE_LOBBY,
-	JOIN_LOBBY,
-	LIST_LOBBIES,
-	QUIT;
-
+public enum ConnectionModeOptions implements OptionsInterface {
+	SOCKET,
+	RMI;
 	private final boolean needHost = false;
 	private final boolean needTurn = false;
 

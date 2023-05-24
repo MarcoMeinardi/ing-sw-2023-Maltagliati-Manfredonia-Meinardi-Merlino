@@ -19,24 +19,20 @@ public class CLI {
 	public static NetworkManagerInterface networkManager;
 	private ClientStatus state;
 	private Lobby lobby;
-	boolean hasConnected;
-
-	private enum ConnectionMode {
-		SOCKET,
-		RMI
-	}
+	private boolean hasConnected;
 
 	private String ip;
 	private int port;
 
-	String username;
+	private String username;
 
-	boolean doPrint;
-	boolean gameStarted;
-	boolean yourTurn;
-	boolean paused;
+	private boolean isHost;
+	private boolean doPrint;
+	private boolean gameStarted;
+	private boolean yourTurn;
+	private boolean isPaused;
 
-	CLIGame game;
+	private CLIGame game;
 
 	private CLI() {
 		state = ClientStatus.Disconnected;
@@ -82,8 +78,8 @@ public class CLI {
 		}
 	}
 	private void askIpAndMethod() {
-		this.ip = Utils.askString("Server IP: ");
-		switch (Utils.askOption(CLI.ConnectionMode.class)){
+		this.ip = Utils.askString("[+] Server IP: ");
+		switch (Utils.askOption(ConnectionModeOptions.class)) {
 			case SOCKET:
 				this.port = 8000;
 				networkManager = network.rpc.client.NetworkManager.getInstance();
@@ -93,10 +89,13 @@ public class CLI {
 				networkManager = network.rmi.client.NetworkManager.getInstance();
 				break;
 		}
+		// this.ip = "localhost";
+		// this.port = 8000;
+		// networkManager = network.rpc.client.NetworkManager.getInstance();
 	}
 
 	private ClientStatus login() {
-		username = Utils.askString("Username: ");
+		username = Utils.askString("[+] Username: ");
 		try {
 			Result result = networkManager.login(new Login(username)).waitResult();
 			if (result.isOk()) {
@@ -123,10 +122,11 @@ public class CLI {
 		try {
 			switch (option) {
 				case CREATE_LOBBY -> {
-					lobbyName = Utils.askString("Lobby name: ");
+					lobbyName = Utils.askString("[+] Lobby name: ");
 					result = networkManager.lobbyCreate(new LobbyCreateInfo(lobbyName)).waitResult();
 					if (result.isOk()) {
 						lobby = ((Result<Lobby>)result).unwrap();
+						isHost = true;
 						return ClientStatus.InLobby;
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
@@ -134,10 +134,11 @@ public class CLI {
 					}
 				}
 				case JOIN_LOBBY -> {
-					lobbyName = Utils.askString("Lobby name: ");
+					lobbyName = Utils.askString("[+] Lobby name: ");
 					result = networkManager.lobbyJoin(lobbyName).waitResult();
 					if (result.isOk()) {
 						lobby = ((Result<Lobby>)result).unwrap();
+						isHost = false;
 						return ClientStatus.InLobby;
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("Join failed"));
@@ -149,7 +150,7 @@ public class CLI {
 					if (result.isOk()) {
 						ArrayList<Lobby> lobbies = ((Result<ArrayList<Lobby>>) result).unwrap();
 						if (lobbies.isEmpty()) {
-							System.out.println("No lobbies available");
+							System.out.println("[!] No lobbies available");
 						} else {
 							for (Lobby lobby : ((Result<ArrayList<Lobby>>) result).unwrap()) {
 								System.out.println(String.format(" - %s ( %d players )", lobby.getName(), lobby.getNumberOfPlayers()));
@@ -163,7 +164,7 @@ public class CLI {
 				case QUIT -> {
 					networkManager.disconnect();
 					networkManager.join();
-					System.out.println("Bye bye!");
+					System.out.println("[*] Bye bye!");
 					return ClientStatus.Disconnected;
 				}
 				default -> throw new RuntimeException("Invalid option");
@@ -174,19 +175,8 @@ public class CLI {
 		}
 	}
 
-	boolean checkCanStartGame() {
-		if (!lobby.isHost(username)) {
-			System.out.println("[ERROR] You are not the lobby's host");
-			return false;
-		} else if (lobby.getNumberOfPlayers() < 2) {
-			System.out.println("[ERROR] Not enough players to start the game");
-			return false;
-		}
-		return true;
-	}
-
 	private ClientStatus inLobby() {
-		Optional<InLobbyOptions> option = Utils.askOptionOrEvent(InLobbyOptions.class, doPrint);
+		Optional<InLobbyOptions> option = Utils.askOptionOrEvent(InLobbyOptions.class, doPrint, isHost, false);
 		if (option.isEmpty()) {
 			doPrint = false;
 			return handleEvent();
@@ -201,7 +191,7 @@ public class CLI {
 					}
 					result = networkManager.gameStart().waitResult();
 					if (result.isOk()) {
-						System.out.println("Starting game");
+						System.out.println("[*] Starting game");
 						return ClientStatus.InGame;
 					} else {
 						System.out.println("[ERROR] " + result.getException().orElse("Start game failed"));
@@ -228,11 +218,7 @@ public class CLI {
 					return ClientStatus.InLobby;
 				}
 				case SEND_MESSAGE -> {
-					String message = Utils.askString("Message: ");
-					result = networkManager.chat(message).waitResult();
-					if (result.isErr()) {
-						System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-					}
+					sendMessage();
 					return ClientStatus.InLobby;
 				}
 				default -> throw new RuntimeException("Invalid option");
@@ -248,17 +234,7 @@ public class CLI {
 			return waitGlobalUpdate();
 		}
 
-		if (paused) {
-			return inGameNoTurn();
-		} else if (yourTurn) {
-			return inGameTurn();
-		} else {
-			return inGameNoTurn();
-		}
-	}
-
-	private ClientStatus inGameTurn() {
-		Optional<InGameTurnOptions> option = Utils.askOptionOrEvent(InGameTurnOptions.class, doPrint);
+		Optional<InGameOptions> option = Utils.askOptionOrEvent(InGameOptions.class, doPrint, isHost, yourTurn && !isPaused);
 		if (option.isEmpty()) {
 			doPrint = false;
 			return handleEvent();
@@ -287,75 +263,25 @@ public class CLI {
 				return ClientStatus.InGame;
 			}
 			case SEND_MESSAGE -> {
-				String message = Utils.askString("Message: ");
-				try {
-					Result result = networkManager.chat(message).waitResult();
-					if (result.isErr()) {
-						System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-					}
-				} catch (Exception e) {
-					System.out.println("[ERROR] " + e.getMessage());
-				}
+				sendMessage();
 				return ClientStatus.InGame;
 			}
 			case PICK_CARDS -> {
 				return handlePickCard();
 			}
-			case LEAVE_GAME -> {
-				throw new RuntimeException("Not implemented");
-				// return ClientStatus.InLobbySearch;
-			}
 			default -> throw new RuntimeException("Invalid option");
 		}
 	}
 
-	private ClientStatus inGameNoTurn() {
-		Optional<InGameNoTurnOptions> option = Utils.askOptionOrEvent(InGameNoTurnOptions.class, doPrint);
-		if (option.isEmpty()) {
-			doPrint = false;
-			return handleEvent();
+	private boolean checkCanStartGame() {
+		if (!lobby.isHost(username)) {  // This is not needed
+			System.out.println("[ERROR] You are not the lobby's host");
+			return false;
+		} else if (lobby.getNumberOfPlayers() < 2) {
+			System.out.println("[ERROR] Not enough players to start the game");
+			return false;
 		}
-		doPrint = true;
-
-		switch (option.get()) {
-			case SHOW_YOUR_SHELF -> {
-				game.printYourShelf();
-				return ClientStatus.InGame;
-			}
-			case SHOW_ALL_SHELVES -> {
-				game.printAllShelves();
-				return ClientStatus.InGame;
-			}
-			case SHOW_TABLETOP -> {
-				game.printTableTop();
-				return ClientStatus.InGame;
-			}
-			case SHOW_PERSONAL_OBJECTIVE -> {
-				game.printPersonalObjective();
-				return ClientStatus.InGame;
-			}
-			case SHOW_COMMON_OBJECTIVES -> {
-				game.printCommonObjectives();
-				return ClientStatus.InGame;
-			}
-			case SEND_MESSAGE -> {
-				String message = Utils.askString("Message: ");
-				try {
-					Result result = networkManager.chat(message).waitResult();
-					if (result.isErr()) {
-						System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-					}
-				} catch (Exception e) {
-					System.out.println("[ERROR] " + e.getMessage());
-				}
-				return ClientStatus.InGame;
-			}
-			case LEAVE_GAME -> {
-				throw new RuntimeException("Not implemented");
-				// return ClientStatus.InLobbySearch;
-			}
-			default -> throw new RuntimeException("Invalid option");
-		}
+		return true;
 	}
 
 	private Point stringToPoint(String line) {
@@ -379,7 +305,7 @@ public class CLI {
 		int column;
 
 		game.printTableTop();
-		System.out.println("Enter the coordinates of the cards you want to pick");
+		System.out.println("[+] Enter the coordinates of the cards you want to pick");
 		for (int i = 0; i < 3; i++) {
 			boolean ok = false;
 			while (!ok) {
@@ -389,13 +315,13 @@ public class CLI {
 					break;
 				}
 				if (line.length() != 2) {
-					System.out.println("Invalid coordinates");
+					System.out.println("[!] Invalid coordinates");
 				} else {
 					Point p = stringToPoint(line);
 					if (p.x() < 0 || p.x() >= TableTop.SIZE || p.y() < 0 || p.y() >= TableTop.SIZE) {
-						System.out.println("Invalid coordinates");
+						System.out.println("[!] Invalid coordinates");
 					} else if (game.tableTop[p.y()][p.x()].isEmpty()) {
-						System.out.println("Cannot pick card from empty slot");
+						System.out.println("[!] Cannot pick card from empty slot");
 					} else {
 						selectedCards.add(p);
 						ok = true;
@@ -404,7 +330,7 @@ public class CLI {
 			}
 			if (!ok) {
 				if (i == 0) {
-					System.out.println("No cards selected, aborting");
+					System.out.println("[*] No cards selected, aborting");
 					return ClientStatus.InGame;
 				}
 				break;
@@ -412,14 +338,14 @@ public class CLI {
 		}
 
 		game.printYourShelf();
-		System.out.println("Enter the column where you want to place the cards (-1 to abort)");
+		System.out.println("[+] Enter the column where you want to place the cards (-1 to abort)");
 		while (true) {
 			column = Utils.askInt() - 1;
 			if (column == -2) {
-				System.out.println("Aborted");
+				System.out.println("[*] Aborted");
 				return ClientStatus.InGame;
 			} else if (column < 0 || column >= Shelf.COLUMNS) {
-				System.out.println("Invalid column");
+				System.out.println("[!] Invalid column");
 			} else {
 				break;
 			}
@@ -439,7 +365,19 @@ public class CLI {
 		return ClientStatus.InGame;
 	}
 
-	public ClientStatus waitGlobalUpdate() {
+	private void sendMessage() {
+		String message = Utils.askString("[+] Message: ");
+		try {
+			Result result = networkManager.chat(message).waitResult();
+			if (result.isErr()) {
+				System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
+			}
+		} catch (Exception e) {
+			System.out.println("[ERROR] " + e.getMessage());
+		}
+	}
+
+	private ClientStatus waitGlobalUpdate() {
 		try {
 			synchronized (networkManager) {
 				while (!networkManager.hasEvent()) {
@@ -458,30 +396,41 @@ public class CLI {
 		switch (event.get().getType()) {
 			case Join -> {
 				String joinedPlayer = (String)event.get().getData();
-				try {
-					lobby.addPlayer(joinedPlayer);
-				} catch (Exception e) {}  // Cannot happen
 				if (!joinedPlayer.equals(username)) {
-					System.out.println(joinedPlayer + " joined the lobby");
+					try {
+						lobby.addPlayer(joinedPlayer);
+					} catch (Exception e) {  // Cannot happen
+						throw new RuntimeException("Added already existing player to lobby");
+					}
+					System.out.println("[*] " + joinedPlayer + " joined the lobby");
 				}
 			}
 			case Leave -> {
 				String leftPlayer = (String)event.get().getData();
+				boolean wasHost;
 				try {
+					wasHost = isHost;
 					lobby.removePlayer(leftPlayer);
-				} catch (Exception e) {}  // Cannot happen
-				System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
+					isHost = lobby.isHost(username);
+				} catch (Exception e) {  // Cannot happen
+					throw new RuntimeException("Removed non existing player from lobby");
+				}
+				System.out.format("[*] %s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
+				if (!wasHost && isHost) {
+					System.out.println("[*] You are now the host");
+					doPrint = true;
+				}
 			}
 			case Start -> {
 				gameStarted = true;
 				doPrint = true;
 				game = new CLIGame((GameInfo)event.get().getData(), username);
 				yourTurn = game.players.get(0).equals(username);
-				System.out.println("Game has started");
+				System.out.println("[*] Game has started");
 				if (yourTurn) {
-					System.out.println("It's your turn");
+					System.out.println("[*] It's your turn");
 				} else {
-					System.out.println("It's " + game.players.get(0) + "'s turn");
+					System.out.println("[*] It's " + game.players.get(0) + "'s turn");
 				}
 				return ClientStatus.InGame;
 			}
@@ -489,49 +438,49 @@ public class CLI {
 				Update update = (Update)event.get().getData();
 				for (Cockade commonObjective : update.commonObjectives()) {
 					if (update.idPlayer().equals(username)) {
-						System.out.format("You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
+						System.out.format("[*] You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
 					} else {
-						System.out.format("%s completed %s getting %d points%n", update.idPlayer(), commonObjective.name(), commonObjective.points());
+						System.out.format("[*] %s completed %s getting %d points%n", update.idPlayer(), commonObjective.name(), commonObjective.points());
 					}
 				}
 				game.update(update);
 				doPrint = true;
 				if (update.nextPlayer().equals(username)) {
 					yourTurn = true;
-					System.out.println("It's your turn");
+					System.out.println("[*] It's your turn");
 				} else {
 					yourTurn = false;
-					System.out.println("It's " + update.nextPlayer() + "'s turn");
+					System.out.println("[*] It's " + update.nextPlayer() + "'s turn");
 				}
 			}
 			case End -> {
 				ScoreBoard scoreboard = (ScoreBoard)event.get().getData();
-				System.out.println("Game over!");
+				System.out.println("[*] Game over!");
 				System.out.println();
 				System.out.println("Leaderboard:");
 				int position = 1;
 				for (Score score : scoreboard) {
-					System.out.format("[%d] %s: %d points %n", position++, score.username(), score.score());
+					System.out.format(" [%d] %s: %d points %n", position++, score.username(), score.score());
 				}
 				System.out.println();
-				Utils.askString("Press enter to continue");
+				Utils.askString("[+] Press enter to continue");
 				doPrint = true;
 				return ClientStatus.InLobbySearch;
 			}
 			case NewMessage -> {
 				Message message = (Message)event.get().getData();
 				if (!message.idPlayer().equals(username)) {
-					System.out.format("%s: %s%n", message.idPlayer(), message.message());
+					System.out.format("[*] %s: %s%n", message.idPlayer(), message.message());
 				}
 			} case Pause -> {
-				if (!paused) {
+				if (!isPaused) {
 					System.out.println("[WARNING] Someone has disconnected");
 					doPrint = true;
 				}
-				paused = true;
+				isPaused = true;
 			} case Resume -> {
 				System.out.println("Game resumed");
-				paused = false;
+				isPaused = false;
 				doPrint = true;
 			}
 			default -> throw new RuntimeException("Unhandled event");
