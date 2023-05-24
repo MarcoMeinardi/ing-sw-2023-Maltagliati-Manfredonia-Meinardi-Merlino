@@ -33,23 +33,13 @@ public class CLIGame {
 		this.commonObjectivesPoints = data.commonObjectivesPoints();
 		this.nPlayers = this.players.size();
 
-		String personalObjectiveName = data.personalObjective();
-		ArrayList<PersonalObjective> allObjectives = PersonalObjective.generateAllPersonalObjectives();
-		for (PersonalObjective objective : allObjectives) {
-			if (objective.getName().equals(personalObjectiveName)) {
-				this.personalObjective = objective;
-				break;
-			}
-		}
-		if (this.personalObjective == null) {
-			throw new RuntimeException("Unknown personal objective found");
-		}
+		this.personalObjective = new PersonalObjective(data.personalObjective());
 
 		updateTableTop(data.tableTop());
 
 		shelves = new ArrayList<>();
 		for (int i = 0; i < nPlayers; i++) {
-			shelves.add(convertShelf(data.shelves().get(i)));
+			shelves.add(new Shelf(data.shelves().get(i)));
 			if (players.get(i).equals(me)) {
 				myShelf = shelves.get(i);
 			}
@@ -61,7 +51,7 @@ public class CLIGame {
 
 		for (int i = 0; i < nPlayers; i++) {
 			if (players.get(i).equals(update.idPlayer())) {
-				shelves.set(i, convertShelf(update.shelf()));
+				shelves.set(i, new Shelf(update.shelf()));
 				if (players.get(i).equals(me)) {
 					myShelf = shelves.get(i);
 				}
@@ -93,20 +83,6 @@ public class CLIGame {
 
 	public int getNumberOfPlayers() {
 		return nPlayers;
-	}
-
-	private Shelf convertShelf(Card[][] shelf) {
-		Optional<Card>[][] optionalShelf = new Optional[Shelf.ROWS][Shelf.COLUMNS];
-
-		for (int y = 0;  y < Shelf.ROWS; y++) {
-			for (int x = 0; x < Shelf.COLUMNS; x++) {
-				optionalShelf[y][x] = shelf[y][x] != null ?
-					Optional.of(shelf[y][x]) :
-					Optional.empty();
-			}
-		}
-
-		return new Shelf(optionalShelf);
 	}
 
 	private void printShelf(Shelf shelf) {
