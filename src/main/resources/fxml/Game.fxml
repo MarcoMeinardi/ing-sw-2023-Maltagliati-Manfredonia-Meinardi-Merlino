@@ -25,11 +25,11 @@
             <Image url="@../img/boards/livingroom.png" />
          </image>
       </ImageView>
-      <Button layoutX="415.0" layoutY="14.0" mnemonicParsing="false" text="Show Personal Obj" />
-      <Button layoutX="473.0" layoutY="215.0" mnemonicParsing="false" text="Show All Shelfs" />
-      <Button layoutX="413.0" layoutY="250.0" mnemonicParsing="false" text="Show Common Obj" />
-      <ListView editable="true" layoutX="373.0" layoutY="280.0" prefHeight="105.0" prefWidth="200.0" />
-      <Button layoutX="525.0" layoutY="353.0" mnemonicParsing="false" text="Send" />
-      <TextField layoutX="378.0" layoutY="353.0" />
+      <Button layoutX="415.0" layoutY="14.0" mnemonicParsing="false" text="Show Personal Obj" onAction="#printPersonalObjective" />
+      <Button layoutX="473.0" layoutY="215.0" mnemonicParsing="false" text="Show All Shelfs" onAction="#printAllShelves" />
+      <Button layoutX="413.0" layoutY="250.0" mnemonicParsing="false" text="Show Common Obj" onAction="#printCommonObjectives" />
+      <ListView fx:id="chat" editable="true" layoutX="373.0" layoutY="280.0" prefHeight="105.0" prefWidth="200.0" />
+      <Button fx:id="sendMessageButton" layoutX="525.0" layoutY="353.0" onAction="#sendMessage" mnemonicParsing="false" text="Send" />
+      <TextField fx:id="messageInput" layoutX="378.0" layoutY="353.0" />
    </children>
 </AnchorPane>

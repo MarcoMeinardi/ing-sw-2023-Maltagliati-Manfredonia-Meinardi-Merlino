@@ -125,7 +125,21 @@ public class LobbyViewController implements Initializable{
     }
 
     public void startGame(ActionEvent actionEvent) throws Exception{
-        //TODO create to start a game
+        Result result = networkManager.gameStart().waitResult();
+        if (result.isOk()) {
+            LoginController.state = ClientStatus.InGame;
+            try {
+                serverThread.interrupt();
+                Parent root = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
+                stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+                scene = new Scene(root, WIDTH, HEIGHT);
+                stage.setResizable(false);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void sendMessage(ActionEvent actionEvent) throws Exception{

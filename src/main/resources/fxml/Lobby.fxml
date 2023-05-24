@@ -26,7 +26,7 @@
             </font>
         </Label>
         <TextField fx:id="messageInput" layoutX="778.0" layoutY="575.0" prefHeight="37.0" prefWidth="327.0" promptText="Your message..." />
-        <Button fx:id="startButton" layoutX="494.0" layoutY="504.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="125.0" text="Start!">
+        <Button fx:id="startButton" layoutX="494.0" layoutY="504.0" mnemonicParsing="false" onAction="#startGame" prefHeight="71.0" prefWidth="125.0" text="Start!">
          <font>
             <Font size="33.0" />
          </font>
