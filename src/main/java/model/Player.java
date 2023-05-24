@@ -26,6 +26,14 @@ public class Player {
 		points = 0;
 	}
 
+	public Player(SavePlayer savePlayer) {
+		this.name = savePlayer.name();
+		this.personalObjective = new PersonalObjective(savePlayer.personalObjective());
+		this.shelf = new Shelf(savePlayer.shelf());
+		this.cockades = savePlayer.cockades();
+		this.points = savePlayer.points();
+	}
+
     public Shelf getShelf() {
         return shelf;
     }
@@ -49,5 +57,15 @@ public class Player {
 
 	public PersonalObjective getPersonalObjective() {
 		return personalObjective;
+	}
+
+	public SavePlayer getSavePlayer() {
+		return new SavePlayer(
+			name,
+			personalObjective.getName(),
+			shelf.getSerializable(),
+			cockades,
+			points
+		);
 	}
 }

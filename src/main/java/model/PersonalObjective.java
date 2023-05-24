@@ -21,6 +21,19 @@ public class PersonalObjective extends Objective {
         this.cellsCheck = cellsCheck;
     }
 
+    public PersonalObjective(String name) {
+        // super objective must be the first statement
+        super(generateAllPersonalObjectives().stream().filter(objective -> objective.getName().equals(name)).findFirst().get().getName());
+
+        for (PersonalObjective objective : generateAllPersonalObjectives()) {
+            if (objective.getName().equals(name)) {
+                this.cellsCheck = objective.cellsCheck;
+                return;
+            }
+        }
+        throw new RuntimeException("Objective not found");
+    }
+
     /**
      * Returns the array of cells to check for completion of the objective.
      *

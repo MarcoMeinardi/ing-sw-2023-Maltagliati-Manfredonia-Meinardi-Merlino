@@ -34,14 +34,29 @@ public class CommonObjective extends Objective {
 		this.checkCompleted = checkCompleted;
 	}
 
+	public CommonObjective(String name, int nPlayers) {
+		// super constructor must be the first statement
+		super(generateAllCommonObjectives(nPlayers).stream().filter(o -> o.name.equals(name)).findFirst().get().name);
+		value = INITIAL_VALUE;
+		pointDecrement = nPlayers == 2 ? POINT_DECREMENT_2_PLAYERS : POINT_DECREMENT;
+
+		for (CommonObjective objective : generateAllCommonObjectives(nPlayers)) {
+			if (objective.getName().equals(name)) {
+				this.checkCompleted = objective.checkCompleted;
+				return;
+			}
+		}
+		throw new RuntimeException("Objective not found");
+	}
+
 	/**
-	 * Method that generates a list of common objectives based on the number of players.
+	 * Generate the list of all the common objectives
 	 *
 	 * @param nPlayers The number of players in the game
-	 * @return An array of two randomly selected common objectives
+	 * @return An array list containing all the common objectives
 	 * @author Marco, Lorenzo, Ludovico, Riccardo
 	 */
-	public static ArrayList<CommonObjective> generateCommonObjectives(int nPlayers) {
+	private static ArrayList<CommonObjective> generateAllCommonObjectives(int nPlayers) {
 		ArrayList<CommonObjective> allObjectives = new ArrayList<>();
 
 		allObjectives.add(new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCards));
@@ -57,6 +72,18 @@ public class CommonObjective extends Objective {
 		allObjectives.add(new CommonObjective("eight equal cards", nPlayers, CommonObjective::eightEquals));
 		allObjectives.add(new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShape));
 
+		return allObjectives;
+	}
+
+	/**
+	 * Method that generates a list of common objectives based on the number of players.
+	 *
+	 * @param nPlayers The number of players in the game
+	 * @return An array list of two randomly selected common objectives
+	 * @author Marco, Lorenzo, Ludovico, Riccardo
+	 */
+	public static ArrayList<CommonObjective> generateCommonObjectives(int nPlayers) {
+		ArrayList<CommonObjective> allObjectives = generateAllCommonObjectives(nPlayers);
 		Collections.shuffle(allObjectives);
 		return allObjectives.stream().limit(N_COMMON_OBJECTIVES).collect(Collectors.toCollection(ArrayList::new));
 	}

@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 public class Game implements Iterable<Player> {
 
@@ -22,9 +23,18 @@ public class Game implements Iterable<Player> {
         this.commonObjectives = CommonObjective.generateCommonObjectives(players.size());
     }
 
+    public Game(SaveState saveState) {
+        this.tabletop = new TableTop(saveState.tabletop(), saveState.players().size());
+        this.players = saveState.players().stream().map(Player::new).collect(Collectors.toCollection(ArrayList::new));
+        this.commonObjectives = saveState.commonObjectives().stream().map(o -> new CommonObjective(o, saveState.players().size())).collect(Collectors.toCollection(ArrayList::new));
+        this.playerIterator = saveState.playerIterator();
+    }
+
     @Override
     public Iterator<Player> iterator() {
-        playerIterator = new PlayerIterator(this);
+        if (playerIterator == null) {
+            playerIterator = new PlayerIterator(this);
+        }
         return playerIterator;
     }
 
@@ -59,4 +69,14 @@ public class Game implements Iterable<Player> {
     }
 
 
+    public SaveState getSaveState() {
+        SaveTableTop tableTop = this.tabletop.getSaveTableTop();
+        ArrayList<SavePlayer> savePlayers = new ArrayList<>();
+        for (Player player : this.players) {
+            savePlayers.add(player.getSavePlayer());
+        }
+        ArrayList<String> saveCommonObjectives = commonObjectives.stream().map(CommonObjective::getName).collect(Collectors.toCollection(ArrayList::new));
+
+        return new SaveState(tableTop, savePlayers, saveCommonObjectives, playerIterator);
+    }
 }

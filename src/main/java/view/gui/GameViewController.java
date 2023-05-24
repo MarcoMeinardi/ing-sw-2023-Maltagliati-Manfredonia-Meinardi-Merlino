@@ -1,6 +1,5 @@
 package view.gui;
 
-import com.sun.media.jfxmedia.events.AudioSpectrumEvent;
 import controller.lobby.Lobby;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

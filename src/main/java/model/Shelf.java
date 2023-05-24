@@ -28,6 +28,19 @@ public class Shelf {
         }
     }
 
+    public Shelf(Card[][] cards) {
+        slots = new Optional[ROWS][COLUMNS];
+        for (int y = 0; y < ROWS; y++) {
+            for (int x = 0; x < COLUMNS; x++) {
+                if (cards[y][x] != null) {
+                    slots[y][x] = Optional.of(cards[y][x]);
+                } else {
+                    slots[y][x] = Optional.empty();
+                }
+            }
+        }
+    }
+
     /**
      * Constructor to initialize a shelf with a specified two-dimensional array of cards.
      * Note: this game must not be used by the controller it has to be used only for testing or for the CLI

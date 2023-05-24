@@ -10,7 +10,7 @@ public class TableTop {
     private CardsDeck deck;
 	private Optional<Card>[][] table;
 
-	private final int player_count;
+	private final int nPlayers;
 
 	private static final int[] dx = {-1, 0, 1, 0};
 	private static final int[] dy = {0, -1, 0, 1};
@@ -36,7 +36,7 @@ public class TableTop {
 	 * @return The card at the specified position.
 	 */
 	private boolean isUsed(int y, int x) {
-		return PLAYER_NUMBER_MASK[y][x] <= player_count;
+		return PLAYER_NUMBER_MASK[y][x] <= nPlayers;
 	}
 
 	/**
@@ -54,8 +54,24 @@ public class TableTop {
 				table[y][x] = Optional.empty();
 			}
 		}
-		this.player_count = nPlayers;
+		this.nPlayers = nPlayers;
 		deck = new CardsDeck();
+		fillTable();
+	}
+
+	public TableTop(SaveTableTop tableTop, int nPlayers) {
+		table = new Optional[SIZE][SIZE];
+		for (int y = 0; y < SIZE; y++){
+			for (int x = 0; x < SIZE; x++){
+				if (tableTop.grid()[y][x] == null) {
+					table[y][x] = Optional.empty();
+				} else {
+					table[y][x] = Optional.of(tableTop.grid()[y][x]);
+				}
+			}
+		}
+		this.nPlayers = nPlayers;
+		deck = tableTop.deck();
 		fillTable();
 	}
 
@@ -174,6 +190,10 @@ public class TableTop {
 		}
 
 		return result;
+	}
+
+	public SaveTableTop getSaveTableTop() {
+		return new SaveTableTop(getSerializable(), deck);
 	}
 }
 
