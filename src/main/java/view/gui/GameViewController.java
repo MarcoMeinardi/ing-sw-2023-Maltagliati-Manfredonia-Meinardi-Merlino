@@ -169,7 +169,7 @@ public class GameViewController implements Initializable {
                     System.out.format(" [%d] %s: %d points %n", position++, score.username(), score.score());
                 }
                 System.out.println();
-                Utils.askString("[+] Press enter to continue");
+                // Utils.askString("[+] Press enter to continue");
                 doPrint = true;
                 return ClientStatus.InLobbySearch;
             }

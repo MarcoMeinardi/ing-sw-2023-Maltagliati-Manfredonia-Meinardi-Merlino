@@ -2,11 +2,23 @@ package view.cli;
 
 import java.util.Optional;
 
+import network.NetworkManagerInterface;
+
 
 public class Utils {
-	private static NonBlockingIO IO = NonBlockingIO.getInstance();
+	private NetworkManagerInterface networkManager = null;
+	private final NonBlockingIO IO;
 
-	public static String askString() {
+	public Utils() {
+		this.IO = NonBlockingIO.getInstance();
+	}
+
+	public void setNetworkManager(NetworkManagerInterface networkManager) {
+		this.networkManager = networkManager;
+		IO.setNetworkManager(networkManager);
+	}
+
+	public String askString() {
 		IO.ask();
 		try {
 			while (!IO.isAvailable()) {
@@ -17,23 +29,21 @@ public class Utils {
 		}
 		return IO.getResult();
 	}
-	public static String askString(String message) {
+	public String askString(String message) {
 		System.out.print(message);
 		return askString();
 	}
-	public static Optional<String> askStringOrEvent() {
-		if (NetworkManager.getInstance().hasEvent()) {
+	public Optional<String> askStringOrEvent() {
+		if (networkManager.hasEvent()) {
 			return Optional.empty();
 		}
 		IO.ask();
-		NetworkManager networkManager = NetworkManager.getInstance();
 		try {
 			synchronized (networkManager) {
 				while (!IO.isAvailable() && !networkManager.hasEvent()) {
 					networkManager.wait();
-					logger.info("Woken up");
 				}
-				if (!IO.isAvailable() && NetworkManager.getInstance().hasEvent()) {
+				if (!IO.isAvailable() && networkManager.hasEvent()) {
 					return Optional.empty();
 				}
 			}
@@ -42,12 +52,12 @@ public class Utils {
 		}
 		return Optional.of(IO.getResult());
 	}
-	public static Optional<String> askStringOrEvent(String message) {
+	public Optional<String> askStringOrEvent(String message) {
 		System.out.print(message);
 		return askStringOrEvent();
 	}
 
-	public static int askInt() {
+	public int askInt() {
 		int result = -1;
 		String line = askString();
 		try {
@@ -55,11 +65,11 @@ public class Utils {
 		} catch (Exception e) {}
 		return result;
 	}
-	public static int askInt(String message) {
+	public int askInt(String message) {
 		System.out.print(message);
 		return askInt();
 	}
-	public static Optional<Integer> askIntOrEvent() {
+	public Optional<Integer> askIntOrEvent() {
 		Optional<String> line = askStringOrEvent();
 		if (line.isPresent()) {
 			try {
@@ -70,20 +80,20 @@ public class Utils {
 		}
 		return Optional.empty();
 	}
-	public static Optional<Integer> askIntOrEvent(String message) {
+	public Optional<Integer> askIntOrEvent(String message) {
 		System.out.print(message);
 		return askIntOrEvent();
 	}
 
-	private static <E extends Enum<E> & OptionsInterface> String enumToOption(E e) {
+	private <E extends Enum<E> & OptionsInterface> String enumToOption(E e) {
 		String repr = e.toString();
 		return repr.substring(0, 1).toUpperCase() + repr.substring(1).toLowerCase().replace('_', ' ');
 	}
 
-	public static <E extends Enum<E> & OptionsInterface> E askOption(Class<E> enumClass) {
+	public <E extends Enum<E> & OptionsInterface> E askOption(Class<E> enumClass) {
 		return askOption(enumClass, false, false);
 	}
-	public static <E extends Enum<E> & OptionsInterface> E askOption(Class<E> enumClass, boolean isHost, boolean isTurn) {
+	public <E extends Enum<E> & OptionsInterface> E askOption(Class<E> enumClass, boolean isHost, boolean isTurn) {
 		while (true) {
 			E[] options = enumClass.getEnumConstants();
 			int ind = 0;
@@ -111,7 +121,7 @@ public class Utils {
 			System.out.println("[!] Invalid option");
 		}
 	}
-	public static <E extends Enum<E> & OptionsInterface> Optional<E> askOptionOrEvent(Class<E> enumClass, boolean doPrint, boolean isHost, boolean isTurn) {
+	public <E extends Enum<E> & OptionsInterface> Optional<E> askOptionOrEvent(Class<E> enumClass, boolean doPrint, boolean isHost, boolean isTurn) {
 		while (true) {
 			E[] options = enumClass.getEnumConstants();
 			int ind;
