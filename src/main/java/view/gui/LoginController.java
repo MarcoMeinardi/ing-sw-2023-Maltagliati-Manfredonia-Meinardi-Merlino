@@ -95,7 +95,7 @@ public class LoginController implements Initializable {
                         state = ClientStatus.InLobbySearch;
                     }
                     else{
-                        errorLabel.setText("Login failed"); //TODO check if it's bc user with same name already exists
+                        errorLabel.setText("Name already taken");
                         System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
                     }
                 }

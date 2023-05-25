@@ -265,19 +265,25 @@ public class LobbyViewController implements Initializable{
         if (messageText.isEmpty()) {
             System.out.println("[ERROR] Empty message");
             chat.getItems().add("[ERROR] Empty message");
-            chat.scrollTo(chat.getItems().size()-1);
+            if(chat.getItems().size() != 3){
+                chat.scrollTo(chat.getItems().size()-1);
+            }
             return;
         }
         if (messageText.length() > 100) {
             System.out.println("[ERROR] Message too long");
             chat.getItems().add("[ERROR] Message too long");
-            chat.scrollTo(chat.getItems().size()-1);
+            if(chat.getItems().size() != 3){
+                chat.scrollTo(chat.getItems().size()-1);
+            }
             return;
         }
         if (messageText.startsWith("/") || messageText.startsWith("!") || messageText.startsWith(".") || messageText.startsWith("?")) {
             System.out.println("[ERROR] Commands not supported");
             chat.getItems().add("[ERROR] Commands not supported");
-            chat.scrollTo(chat.getItems().size()-1);
+            if(chat.getItems().size() != 3){
+                chat.scrollTo(chat.getItems().size()-1);
+            }
             return;
         }
 
@@ -287,7 +293,9 @@ public class LobbyViewController implements Initializable{
             if (result.isErr()) {
                 System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
                 chat.getItems().add("[ERROR] We could not send your message, please try again later");
-                chat.scrollTo(chat.getItems().size()-1);
+                if(chat.getItems().size() != 3){
+                    chat.scrollTo(chat.getItems().size()-1);
+                }
                 return;
             }
             Message message = new Message(username, messageText);
@@ -314,7 +322,9 @@ public class LobbyViewController implements Initializable{
         String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
         String minute = String.valueOf(calendar.get(Calendar.MINUTE));
         chat.getItems().add("[" + hour + ":"+minute+ "] " +message.idPlayer()+ ": " + message.message());
-        chat.scrollTo(chat.getItems().size()-1);
+        if(chat.getItems().size() != 3){
+            chat.scrollTo(chat.getItems().size()-1);
+        }
     }
 
     /**

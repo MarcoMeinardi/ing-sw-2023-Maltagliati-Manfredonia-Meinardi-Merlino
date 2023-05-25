@@ -55,7 +55,7 @@ public class CreateLobbyController implements Initializable {
             LoginController.state = ClientStatus.InLobby;
             System.out.println("Lobby created: " + LoginController.lobby.getName());
         } else {
-            messageDisplay.setText("Could not create lobby"); //TODO check if it's bc lobby with same name already exists
+            messageDisplay.setText("Lobby name already exists");
             System.out.println("[ERROR] " + result.getException());
         }
 
