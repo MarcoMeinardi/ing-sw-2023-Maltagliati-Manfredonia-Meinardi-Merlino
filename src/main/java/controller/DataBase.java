@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class DataBase extends HashMap<HashSet<String>, File> {
-	private static DataBase instance;
+	private static DataBase instance = null;
 	private static final String DB_NAME = "db.srl";
 
 	private DataBase() {
@@ -23,20 +23,18 @@ public class DataBase extends HashMap<HashSet<String>, File> {
 	}
 	public static DataBase getInstance() {
 		if (instance == null) {
-			instance = new DataBase();
+			new DataBase();
 		}
 		return instance;
 	}
 
 	private DataBase loadDb() throws IOException, ClassNotFoundException {
 		DataBase savedDb;
-		synchronized(instance) {
-			FileInputStream inputFile = new FileInputStream(DB_NAME);
-			ObjectInputStream objectInputStream = new ObjectInputStream(inputFile);
-			savedDb = (DataBase)objectInputStream.readObject();
-			objectInputStream.close();
-			inputFile.close();
-		}
+		FileInputStream inputFile = new FileInputStream(DB_NAME);
+		ObjectInputStream objectInputStream = new ObjectInputStream(inputFile);
+		savedDb = (DataBase)objectInputStream.readObject();
+		objectInputStream.close();
+		inputFile.close();
 
 		return savedDb;
 	}

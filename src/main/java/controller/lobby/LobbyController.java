@@ -267,12 +267,17 @@ public class LobbyController extends Thread {
                 throw new Exception("Save directory (" + SAVESTATES_DIRECTORY + ") exists and is not a directory");
             }
 
-            File saveFile = File.createTempFile(SAVESTATES_PREFIX, ".srl", new File(SAVESTATES_DIRECTORY));
-            db.put(lobby.getPlayers().stream().collect(Collectors.toCollection(HashSet::new)), saveFile);
-            try {
-                db.write();
-            } catch (Exception e) {
-                Logger.getLogger(LobbyController.class.getName()).warning("Cannot save db " + e.getMessage());
+            HashSet<String> dbKey =lobby.getPlayers().stream().collect(Collectors.toCollection(HashSet::new)); 
+            System.out.println(dbKey.hashCode());
+            System.out.println(db.containsKey(dbKey));
+            if (!db.containsKey(dbKey)) {
+                File saveFile = File.createTempFile(SAVESTATES_PREFIX, ".srl", new File(SAVESTATES_DIRECTORY));
+                db.put(dbKey, saveFile);
+                try {
+                    db.write();
+                } catch (Exception e) {
+                    Logger.getLogger(LobbyController.class.getName()).warning("Cannot save db " + e.getMessage());
+                }
             }
             GameController game = new GameController(lobby);
             games.add(game);
@@ -283,7 +288,7 @@ public class LobbyController extends Thread {
     public void endGame(GameController game) {
         synchronized (games){
             games.remove(game);
-            db.remove(game.getGame().getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new)));
+            db.remove(game.getGame().getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(HashSet::new)));
             try {
                 db.write();
             } catch (Exception e) {
