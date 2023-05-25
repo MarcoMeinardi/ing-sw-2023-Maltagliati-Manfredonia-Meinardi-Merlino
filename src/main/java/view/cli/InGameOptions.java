@@ -1,12 +1,12 @@
 package view.cli;
 
 public enum InGameOptions implements OptionsInterface {
+	SEND_MESSAGE,
 	SHOW_YOUR_SHELF,
 	SHOW_ALL_SHELVES,
 	SHOW_TABLETOP,
 	SHOW_PERSONAL_OBJECTIVE,
 	SHOW_COMMON_OBJECTIVES,
-	SEND_MESSAGE,
 	PICK_CARDS(true);
 
 	private final boolean needHost = false;

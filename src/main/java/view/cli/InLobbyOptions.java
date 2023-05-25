@@ -1,10 +1,10 @@
 package view.cli;
 
 public enum InLobbyOptions implements OptionsInterface {
-	START_GAME(true),
-	LEAVE_LOBBY,
+	SEND_MESSAGE,
 	LIST_PLAYERS,
-	SEND_MESSAGE;
+	LEAVE_LOBBY,
+	START_GAME(true);
 
 	private final boolean needHost;
 	private final boolean needTurn = false;

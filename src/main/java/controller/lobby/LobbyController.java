@@ -268,8 +268,6 @@ public class LobbyController extends Thread {
             }
 
             HashSet<String> dbKey =lobby.getPlayers().stream().collect(Collectors.toCollection(HashSet::new)); 
-            System.out.println(dbKey.hashCode());
-            System.out.println(db.containsKey(dbKey));
             if (!db.containsKey(dbKey)) {
                 File saveFile = File.createTempFile(SAVESTATES_PREFIX, ".srl", new File(SAVESTATES_DIRECTORY));
                 db.put(dbKey, saveFile);
