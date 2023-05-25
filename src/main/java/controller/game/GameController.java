@@ -276,7 +276,7 @@ public class GameController {
                         globalUpdate(ServerEvent.Update(update));
                     }else{
                         for(Player p : game.getPlayers()){
-                            addPersonalCockade(player);
+                            addPersonalCockade(p);
                         }
                         ScoreBoard scoreBoard = new ScoreBoard(game);
 						globalUpdate(ServerEvent.End(scoreBoard));
