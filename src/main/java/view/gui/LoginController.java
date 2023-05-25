@@ -31,8 +31,6 @@ public class LoginController implements Initializable {
     @FXML
     private Label errorLabel;
     @FXML
-    private Label errorLabel2;
-    @FXML
     private RadioButton RMIButton, serverButton;
     @FXML
     private Button loginButton;
@@ -52,7 +50,6 @@ public class LoginController implements Initializable {
 
         try {
             errorLabel.setText("");
-            errorLabel2.setText("");
             username = namePlayer.getText();
 
             //check if the input is valid
@@ -60,7 +57,12 @@ public class LoginController implements Initializable {
                 errorLabel.setText("Invalid name!");
                 return;
             } else if (username.length() > 8) {
-                errorLabel2.setText("max 8 letters in name!");
+                errorLabel.setText("max 8 letters in name!");
+                return;
+            }
+
+            if (selectedIp.getText().equals("")) {
+                errorLabel.setText("Insert an IP address!");
                 return;
             }
 
@@ -79,9 +81,9 @@ public class LoginController implements Initializable {
                 networkManager.connect(new Server(this.ip, this.port));
                 state = ClientStatus.Idle;
             }catch (Exception e) {
-                //TODO mettere messaggio frontend
+                errorLabel.setText("Connection failed");
                 System.out.println("[ERROR] " + e.getMessage());
-                 state = ClientStatus.Disconnected;
+                state = ClientStatus.Disconnected;
             }
 
             //login
@@ -93,12 +95,12 @@ public class LoginController implements Initializable {
                         state = ClientStatus.InLobbySearch;
                     }
                     else{
-                        //TODO mettere messaggio frontend e gestire caso di una continuazione di partita
+                        errorLabel.setText("Login failed"); //TODO check if it's bc user with same name already exists
                         System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
                     }
                 }
             } catch (Exception e) {
-                //TODO mettere messaggio frontend
+                errorLabel.setText("Login failed");
                 System.out.println("[ERROR] " + e.getMessage());
             }
 

@@ -83,6 +83,11 @@ public class MainMenuController implements Initializable {
     public void joinLobby(javafx.event.ActionEvent actionEvent ) {
 
         String lobbyName = listView.getSelectionModel().getSelectedItem();
+        if(lobbyName == null) {
+            System.out.println("[ERROR] No lobby selected");
+            noFound.setText("No lobby selected");
+            return;
+        }
 
         try {
             Result 	result = networkManager.lobbyJoin(lobbyName).waitResult();
@@ -91,6 +96,7 @@ public class MainMenuController implements Initializable {
                 LoginController.state = ClientStatus.InLobby;
                 System.out.println(LoginController.username + " joined: " + LoginController.lobby.getName());
             } else {
+                noFound.setText("Login failed");
                 System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
             }
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/Lobby.fxml"));

@@ -55,11 +55,6 @@
             <Font size="39.0" />
          </font>
       </Label>
-      <Label fx:id="errorLabel2" alignment="CENTER" layoutX="368.0" layoutY="198.0" prefHeight="71.0" prefWidth="404.0" textAlignment="CENTER" textFill="#d4ff00">
-         <font>
-            <Font size="39.0" />
-         </font>
-      </Label>
       <TextField fx:id="selectedIp" alignment="CENTER" layoutX="296.0" layoutY="419.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="Ip" style="-fx-background-color: white; -fx-opacity: 80%;">
          <font>
             <Font name="Franklin Gothic Medium Cond" size="26.0" />
