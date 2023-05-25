@@ -1,4 +1,5 @@
 package controller.game;
+import controller.DataBase;
 import controller.lobby.Lobby;
 import controller.lobby.LobbyController;
 import model.*;
@@ -9,6 +10,8 @@ import network.parameters.GameInfo;
 import network.parameters.Update;
 import network.parameters.WrongParametersException;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Optional;
@@ -25,16 +28,14 @@ public class GameController {
 
     private final Game game;
 
-    private static final int DISCONNECTION_TIMOUT = 10000;
-
-    private static final int MAX_DISCONNECTION_TRIES = 18;
-
-    private Boolean gamePaused = false;
     private final Iterator<Player> playerIterator;
     private Player currentPlayer;
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
     private final ClientManagerInterface clientManager;
+
+    private final DataBase db = DataBase.getInstance();
+    File saveFile;
 
     /**
      * Constructor that creates a new game with the specified players.
@@ -52,6 +53,12 @@ public class GameController {
             GameInfo toSend = getGameInfo(player);
             client.sendEvent(ServerEvent.Start(toSend));
         }
+
+        saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new)));
+    }
+
+    public Game getGame() {
+        return game;
     }
 
     /**
@@ -274,12 +281,14 @@ public class GameController {
                             newCommonObjectivesScores
                         );
                         globalUpdate(ServerEvent.Update(update));
+                        saveGame();
                     }else{
                         for(Player p : game.getPlayers()){
                             addPersonalCockade(p);
                         }
                         ScoreBoard scoreBoard = new ScoreBoard(game);
-						globalUpdate(ServerEvent.End(scoreBoard));
+                        globalUpdate(ServerEvent.End(scoreBoard));
+                        deleteSave();
                         exitGame();
                     }
                     result = Result.empty(call.id());
@@ -388,5 +397,15 @@ public class GameController {
             player.getPersonalObjective().getName(),
             currentPlayer.getName()
         );
+    }
+
+    private void saveGame() throws IOException {
+        game.saveGame(saveFile);
+    }
+
+    private void deleteSave() {
+        if (!saveFile.delete()) {
+            logger.warning("Failed to delete save file (" + saveFile + ")");
+        }
     }
 }

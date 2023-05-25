@@ -92,7 +92,6 @@ public class Client implements ClientService, ClientInterface {
 
     @Override
     public Result requestService(Call call) {
-        logger.info("Received call " + call.toString() + " from " + username);
         if(statusHandler.getStatus() == ClientStatus.Disconnected){
             statusHandler.setStatus(statusHandler.getLastValidStatus());
         }

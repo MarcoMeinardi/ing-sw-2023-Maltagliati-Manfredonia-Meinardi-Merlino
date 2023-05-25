@@ -91,6 +91,8 @@ fabric.properties
 .classpath
 .settings/
 
+db.srl
+save-states/
 
 # Chino
 .ctags*

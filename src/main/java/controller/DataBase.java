@@ -1,22 +1,25 @@
 package controller;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DataBase extends HashMap<ArrayList<String>, String> {
+public class DataBase extends HashMap<ArrayList<String>, File> {
 	private static DataBase instance;
 	private static final String DB_NAME = "db.srl";
 
 	private DataBase() {
 		super();
-		instance = this;
 		try {
 			instance = loadDb();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			instance = this;
+		}
 	}
 	public static DataBase getInstance() {
 		if (instance == null) {
@@ -25,7 +28,7 @@ public class DataBase extends HashMap<ArrayList<String>, String> {
 		return instance;
 	}
 
-	private DataBase loadDb() throws Exception {
+	private DataBase loadDb() throws IOException, ClassNotFoundException {
 		DataBase savedDb;
 		synchronized(instance) {
 			FileInputStream inputFile = new FileInputStream(DB_NAME);
@@ -38,7 +41,7 @@ public class DataBase extends HashMap<ArrayList<String>, String> {
 		return savedDb;
 	}
 
-	public void write() throws Exception {
+	public void write() throws IOException {
 		synchronized(instance) {
 			FileOutputStream outputFile = new FileOutputStream(DB_NAME);
 			ObjectOutputStream outputStream = new ObjectOutputStream(outputFile);

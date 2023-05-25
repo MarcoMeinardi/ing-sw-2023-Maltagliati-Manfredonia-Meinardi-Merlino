@@ -1,22 +1,30 @@
 package controller.lobby;
 
+import controller.DataBase;
 import controller.game.GameController;
+import model.Player;
 import network.*;
 import network.parameters.LobbyCreateInfo;
 import network.parameters.Message;
 import network.parameters.WrongParametersException;
 import network.errors.ClientNotFoundException;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class LobbyController extends Thread {
     private static LobbyController instance = null;
     private HashMap<String, Lobby> lobbies = new HashMap<>();
     private ArrayList<GameController> games = new ArrayList<>();
+    private DataBase db = DataBase.getInstance();
+
+    private static final String SAVESTATES_DIRECTORY = "save-states";
+    private static final String SAVESTATES_PREFIX = "save_";
 
     private LobbyController() {}
 
@@ -155,8 +163,8 @@ public class LobbyController extends Thread {
                 lobbies.remove(lobby.getName());
             }
         } else {
-			globalUpdate(lobby, ServerEvent.Leave(player));
-		}
+            globalUpdate(lobby, ServerEvent.Leave(player));
+        }
     }
 
     /**
@@ -247,18 +255,39 @@ public class LobbyController extends Thread {
         return result;
     }
 
-    public boolean startGame(Lobby lobby) throws Exception {
+    public void startGame(Lobby lobby) throws Exception {
         synchronized (lobby) {
+            File saveDirectory = new File(SAVESTATES_DIRECTORY);
+            if (!saveDirectory.exists()) {
+                if (!saveDirectory.mkdir()) {
+                    throw new Exception("Cannot create save directory");
+                }
+            } else if (!saveDirectory.isDirectory()) {
+                throw new Exception("Save directory (" + SAVESTATES_DIRECTORY + ") exists and is not a directory");
+            }
+
+            File saveFile = File.createTempFile(SAVESTATES_PREFIX, ".srl", new File(SAVESTATES_DIRECTORY));
+            db.put(lobby.getPlayers(), saveFile);
+            try {
+                db.write();
+            } catch (Exception e) {
+                Logger.getLogger(LobbyController.class.getName()).warning("Cannot save db " + e.getMessage());
+            }
             GameController game = new GameController(lobby);
             games.add(game);
             lobbies.remove(lobby.getName());
         }
-        return true;
     }
 
     public void endGame(GameController game) {
         synchronized (games){
             games.remove(game);
+            db.remove(game.getGame().getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new)));
+            try {
+                db.write();
+            } catch (Exception e) {
+                Logger.getLogger(LobbyController.class.getName()).warning("Cannot save db " + e.getMessage());
+            }
         }
     }
 

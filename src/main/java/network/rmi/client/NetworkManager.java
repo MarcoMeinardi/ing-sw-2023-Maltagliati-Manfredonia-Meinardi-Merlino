@@ -77,7 +77,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         while(isConnected()){
             try{
                 if(clientService.isPresent() && getElapsedTimeSinceLastMessage() > PING_TIMEOUT/2){
-                    clientService.get().requestService(new Call("rust better than java", Service.Ping, null));
+                    clientService.get().requestService(new Call(null, Service.Ping, null));
                     setLastMessage();
                 }
             }catch(Exception e){
