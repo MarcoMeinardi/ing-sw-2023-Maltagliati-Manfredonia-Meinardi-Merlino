@@ -2,12 +2,14 @@ package view.cli;
 
 import java.util.Scanner;
 
-import network.rpc.client.NetworkManager;
+import network.NetworkManagerInterface;
 
 public class NonBlockingIO extends Thread {
 	private static Scanner scanner = new Scanner(System.in);
 
 	private static NonBlockingIO instance = null;
+
+	private NetworkManagerInterface networkManager = null;
 
 	private boolean isAsking = false;
 	private boolean isAvailable = false;
@@ -29,6 +31,9 @@ public class NonBlockingIO extends Thread {
 		return instance;
 	}
 
+	public void setNetworkManager(NetworkManagerInterface networkManager) {
+		this.networkManager = networkManager;
+	}
 
 	public void run() {
 		try {
@@ -41,8 +46,10 @@ public class NonBlockingIO extends Thread {
 				result = scanner.nextLine();
 				synchronized (isAvailableLock) {
 					isAvailable = true;
-					synchronized (NetworkManager.getInstance()) {
-						NetworkManager.getInstance().notifyAll();
+					if (networkManager != null) {
+						synchronized (networkManager) {
+							networkManager.notifyAll();
+						}
 					}
 					while (isAvailable) {
 						isAvailableLock.wait();

@@ -26,7 +26,7 @@ public class Client extends Thread implements ClientInterface {
 	private LocalDateTime lastMessageTime = LocalDateTime.now();
 	private Object lastMessageTimeLock = new Object();
 	private String username = null;
-	protected static final int TIMEOUT = 60;
+	protected static final int TIMEOUT = 5;
 
 	public Client(Socket socket, BiFunction<Call<Serializable>,ClientInterface,Result<Serializable>> handler) throws Exception {
 		this.socket = socket;

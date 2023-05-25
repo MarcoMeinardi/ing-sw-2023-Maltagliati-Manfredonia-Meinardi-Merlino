@@ -17,6 +17,8 @@ import model.TableTop;
 public class CLI {
 	private static CLI instance;
 	public static NetworkManagerInterface networkManager;
+	private Utils IO;
+
 	private ClientStatus state;
 	private Lobby lobby;
 	private boolean hasConnected;
@@ -35,10 +37,12 @@ public class CLI {
 	private CLIGame game;
 
 	private CLI() {
+		IO = new Utils();
 		state = ClientStatus.Disconnected;
 		hasConnected = false;
 		doPrint = true;
 		gameStarted = false;
+
 	}
 	public static CLI getInstance() {
 		if(instance == null){
@@ -78,8 +82,8 @@ public class CLI {
 		}
 	}
 	private void askIpAndMethod() {
-		this.ip = Utils.askString("[+] Server IP: ");
-		switch (Utils.askOption(ConnectionModeOptions.class)) {
+		this.ip = IO.askString("[+] Server IP: ");
+		switch (IO.askOption(ConnectionModeOptions.class)) {
 			case SOCKET:
 				this.port = 8000;
 				networkManager = network.rpc.client.NetworkManager.getInstance();
@@ -89,13 +93,14 @@ public class CLI {
 				networkManager = network.rmi.client.NetworkManager.getInstance();
 				break;
 		}
+		IO.setNetworkManager(networkManager);
 		// this.ip = "localhost";
 		// this.port = 8000;
 		// networkManager = network.rpc.client.NetworkManager.getInstance();
 	}
 
 	private ClientStatus login() {
-		username = Utils.askString("[+] Username: ");
+		username = IO.askString("[+] Username: ");
 		try {
 			Result result = networkManager.login(new Login(username)).waitResult();
 			if (result.isOk()) {
@@ -116,13 +121,13 @@ public class CLI {
 	}
 
 	private ClientStatus searchLobby() {
-		SelectLobbyOptions option = Utils.askOption(SelectLobbyOptions.class);
+		SelectLobbyOptions option = IO.askOption(SelectLobbyOptions.class);
 		String lobbyName;
 		Result result;
 		try {
 			switch (option) {
 				case CREATE_LOBBY -> {
-					lobbyName = Utils.askString("[+] Lobby name: ");
+					lobbyName = IO.askString("[+] Lobby name: ");
 					result = networkManager.lobbyCreate(new LobbyCreateInfo(lobbyName)).waitResult();
 					if (result.isOk()) {
 						lobby = ((Result<Lobby>)result).unwrap();
@@ -134,7 +139,7 @@ public class CLI {
 					}
 				}
 				case JOIN_LOBBY -> {
-					lobbyName = Utils.askString("[+] Lobby name: ");
+					lobbyName = IO.askString("[+] Lobby name: ");
 					result = networkManager.lobbyJoin(lobbyName).waitResult();
 					if (result.isOk()) {
 						lobby = ((Result<Lobby>)result).unwrap();
@@ -176,7 +181,7 @@ public class CLI {
 	}
 
 	private ClientStatus inLobby() {
-		Optional<InLobbyOptions> option = Utils.askOptionOrEvent(InLobbyOptions.class, doPrint, isHost, false);
+		Optional<InLobbyOptions> option = IO.askOptionOrEvent(InLobbyOptions.class, doPrint, isHost, false);
 		if (option.isEmpty()) {
 			doPrint = false;
 			return handleEvent();
@@ -234,7 +239,7 @@ public class CLI {
 			return waitGlobalUpdate();
 		}
 
-		Optional<InGameOptions> option = Utils.askOptionOrEvent(InGameOptions.class, doPrint, isHost, yourTurn && !isPaused);
+		Optional<InGameOptions> option = IO.askOptionOrEvent(InGameOptions.class, doPrint, isHost, yourTurn && !isPaused);
 		if (option.isEmpty()) {
 			doPrint = false;
 			return handleEvent();
@@ -309,7 +314,7 @@ public class CLI {
 		for (int i = 0; i < 3; i++) {
 			boolean ok = false;
 			while (!ok) {
-				String line = Utils.askString();
+				String line = IO.askString();
 				line = line.toLowerCase().replaceAll("\\W", "");
 				if (line.isEmpty()) {
 					break;
@@ -340,7 +345,7 @@ public class CLI {
 		game.printYourShelf();
 		System.out.println("[+] Enter the column where you want to place the cards (-1 to abort)");
 		while (true) {
-			column = Utils.askInt() - 1;
+			column = IO.askInt() - 1;
 			if (column == -2) {
 				System.out.println("[*] Aborted");
 				return ClientStatus.InGame;
@@ -366,7 +371,7 @@ public class CLI {
 	}
 
 	private void sendMessage() {
-		String message = Utils.askString("[+] Message: ");
+		String message = IO.askString("[+] Message: ");
 		try {
 			Result result = networkManager.chat(message).waitResult();
 			if (result.isErr()) {
@@ -463,7 +468,7 @@ public class CLI {
 					System.out.format(" [%d] %s: %d points %n", position++, score.username(), score.score());
 				}
 				System.out.println();
-				Utils.askString("[+] Press enter to continue");
+				IO.askString("[+] Press enter to continue");
 				doPrint = true;
 				return ClientStatus.InLobbySearch;
 			}
