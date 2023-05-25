@@ -13,6 +13,7 @@ import network.parameters.WrongParametersException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -54,7 +55,7 @@ public class GameController {
             client.sendEvent(ServerEvent.Start(toSend));
         }
 
-        saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new)));
+        saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(HashSet::new)));
     }
 
     public Game getGame() {

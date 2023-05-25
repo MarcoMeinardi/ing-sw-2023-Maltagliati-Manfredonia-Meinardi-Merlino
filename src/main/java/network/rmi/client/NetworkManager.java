@@ -85,7 +85,6 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
                         setLastMessage();
                     }
                     if(clientService.get().hasEvent()){
-                        logger.info("Found event");
                         ServerEvent event = clientService.get().pollEvent();
                         while(event != null){
                             synchronized (eventQueue){
@@ -93,7 +92,6 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
                             }
                             event = clientService.get().pollEvent();
                         }
-                        logger.info(eventQueue.size() + " events in queue");
                         synchronized (NetworkManager.instance){
                             NetworkManager.instance.notifyAll();
                         }

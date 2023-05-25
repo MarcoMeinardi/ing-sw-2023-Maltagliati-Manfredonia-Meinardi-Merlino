@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -267,7 +268,7 @@ public class LobbyController extends Thread {
             }
 
             File saveFile = File.createTempFile(SAVESTATES_PREFIX, ".srl", new File(SAVESTATES_DIRECTORY));
-            db.put(lobby.getPlayers(), saveFile);
+            db.put(lobby.getPlayers().stream().collect(Collectors.toCollection(HashSet::new)), saveFile);
             try {
                 db.write();
             } catch (Exception e) {

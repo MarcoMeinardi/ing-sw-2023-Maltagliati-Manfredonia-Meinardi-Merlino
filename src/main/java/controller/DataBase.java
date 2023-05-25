@@ -6,10 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
-public class DataBase extends HashMap<ArrayList<String>, File> {
+public class DataBase extends HashMap<HashSet<String>, File> {
 	private static DataBase instance;
 	private static final String DB_NAME = "db.srl";
 
