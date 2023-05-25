@@ -2,7 +2,6 @@ package model;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Game implements Iterable<Player> {
@@ -18,6 +18,7 @@ public class Game implements Iterable<Player> {
     private ArrayList<Player> players;
     private ArrayList<CommonObjective> commonObjectives;
     private PlayerIterator playerIterator;
+    private Optional<Integer> iteratorIndex = Optional.empty();
 
     public Game(ArrayList<String> playersNames) {
         this.tabletop = new TableTop(playersNames.size());
@@ -34,13 +35,15 @@ public class Game implements Iterable<Player> {
         this.tabletop = new TableTop(saveState.tabletop(), saveState.players().size());
         this.players = saveState.players().stream().map(Player::new).collect(Collectors.toCollection(ArrayList::new));
         this.commonObjectives = saveState.commonObjectives().stream().map(o -> new CommonObjective(o, saveState.players().size())).collect(Collectors.toCollection(ArrayList::new));
-        this.playerIterator = saveState.playerIterator();
+        this.iteratorIndex = Optional.of(saveState.playerIteratorIndex());
     }
 
     @Override
     public Iterator<Player> iterator() {
-        if (playerIterator == null) {
+        if (iteratorIndex.isEmpty()) {
             playerIterator = new PlayerIterator(this);
+        } else {
+            playerIterator = new PlayerIterator(this, iteratorIndex.get());
         }
         return playerIterator;
     }
@@ -83,8 +86,10 @@ public class Game implements Iterable<Player> {
             savePlayers.add(player.getSavePlayer());
         }
         ArrayList<String> saveCommonObjectives = commonObjectives.stream().map(CommonObjective::getName).collect(Collectors.toCollection(ArrayList::new));
+        int index = playerIterator.getIndex();
+        // index = index == 0 ? players.size() - 1 : index - 1;
 
-        return new SaveState(tableTop, savePlayers, saveCommonObjectives, playerIterator);
+        return new SaveState(tableTop, savePlayers, saveCommonObjectives, index);
     }
 
     public void saveGame(File file) throws IOException {

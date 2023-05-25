@@ -23,7 +23,8 @@ public interface NetworkManagerInterface {
     public Function<String, Lobby> lobbyJoin(String lobbyName) throws Exception;
     public Function<Boolean, Boolean> lobbyLeave() throws Exception;
     public Function<Boolean, Lobby> updateLobby() throws Exception;
-    public Function<Boolean,Boolean> gameStart() throws Exception;
+    public Function<Boolean, Boolean> gameStart() throws Exception;
+    public Function<Boolean, Boolean> gameLoad() throws Exception;
     public Function<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception;
     public Function<Login, Boolean> login(Login username) throws Exception;
     public void join() throws Exception;

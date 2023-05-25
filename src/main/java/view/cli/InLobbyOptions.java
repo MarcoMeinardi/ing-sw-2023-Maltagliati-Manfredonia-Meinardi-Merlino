@@ -4,7 +4,8 @@ public enum InLobbyOptions implements OptionsInterface {
 	SEND_MESSAGE,
 	LIST_PLAYERS,
 	LEAVE_LOBBY,
-	START_GAME(true);
+	START_GAME(true),
+	LOAD_GAME(true);
 
 	private final boolean needHost;
 	private final boolean needTurn = false;

@@ -213,11 +213,18 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         return lobbyUpdate;
     }
 
-    public Function<Boolean,Boolean> gameStart() throws Exception{
-        Function<Boolean,Boolean> gameStart = new Function<Boolean,Boolean>(true, Service.GameStart);
+    public Function<Boolean, Boolean> gameStart() throws Exception {
+        Function<Boolean, Boolean> gameStart = new Function<Boolean, Boolean>(true, Service.GameStart);
         callQueue.put(gameStart.id(), gameStart);
         gameStart.call(out);
         return gameStart;
+    }
+
+    public Function<Boolean, Boolean> gameLoad() throws Exception {
+        Function<Boolean, Boolean> gameLoad = new Function<Boolean, Boolean>(true, Service.GameLoad);
+        callQueue.put(gameLoad.id(), gameLoad);
+        gameLoad.call(out);
+        return gameLoad;
     }
 
     public Function<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception{

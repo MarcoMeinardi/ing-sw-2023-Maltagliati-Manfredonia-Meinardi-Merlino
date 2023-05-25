@@ -10,7 +10,6 @@ import network.parameters.LobbyCreateInfo;
 import network.parameters.Login;
 import network.rmi.ClientService;
 import network.rmi.LoginService;
-import network.rmi.server.Client;
 
 import java.io.Serializable;
 import java.rmi.registry.LocateRegistry;
@@ -165,6 +164,11 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     @Override
     public Function<Boolean, Boolean> gameStart() throws Exception {
         return handleService(new Function(Boolean.TRUE, Service.GameStart));
+    }
+
+    @Override
+    public Function<Boolean, Boolean> gameLoad() throws Exception {
+        return handleService(new Function(Boolean.TRUE, Service.GameLoad));
     }
 
     @Override

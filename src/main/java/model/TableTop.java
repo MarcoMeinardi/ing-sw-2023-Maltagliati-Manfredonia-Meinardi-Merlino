@@ -63,16 +63,11 @@ public class TableTop {
 		table = new Optional[SIZE][SIZE];
 		for (int y = 0; y < SIZE; y++){
 			for (int x = 0; x < SIZE; x++){
-				if (tableTop.grid()[y][x] == null) {
-					table[y][x] = Optional.empty();
-				} else {
-					table[y][x] = Optional.of(tableTop.grid()[y][x]);
-				}
+				table[y][x] = Optional.ofNullable(tableTop.grid()[y][x]);
 			}
 		}
 		this.nPlayers = nPlayers;
 		deck = tableTop.deck();
-		fillTable();
 	}
 
 	/**

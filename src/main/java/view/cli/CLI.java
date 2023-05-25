@@ -93,10 +93,10 @@ public class CLI {
 				networkManager = network.rmi.client.NetworkManager.getInstance();
 				break;
 		}
-		IO.setNetworkManager(networkManager);
 		// this.ip = "localhost";
 		// this.port = 8000;
 		// networkManager = network.rpc.client.NetworkManager.getInstance();
+		IO.setNetworkManager(networkManager);
 	}
 
 	private ClientStatus login() {
@@ -190,6 +190,29 @@ public class CLI {
 		Result result;
 		try {
 			switch (option.get()) {
+				case SEND_MESSAGE -> {
+					sendMessage();
+					return ClientStatus.InLobby;
+				}
+				case LIST_PLAYERS -> {
+					for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {
+						if (i == 0) {
+							System.out.println(String.format(" + %s", lobby.getPlayers().get(i)));
+						} else {
+							System.out.println(String.format(" - %s", lobby.getPlayers().get(i)));
+						}
+					}
+					return ClientStatus.InLobby;
+				}
+				case LEAVE_LOBBY -> {
+					result = networkManager.lobbyLeave().waitResult();
+					if (result.isOk()) {
+						return ClientStatus.InLobbySearch;
+					} else {
+						System.out.println("[ERROR] " + result.getException().orElse("Leave lobby failed"));
+						return ClientStatus.InLobby;
+					}
+				}
 				case START_GAME -> {
 					if (!checkCanStartGame()) {
 						return ClientStatus.InLobby;
@@ -203,28 +226,18 @@ public class CLI {
 						return ClientStatus.InLobby;
 					}
 				}
-				case LEAVE_LOBBY -> {
-					result = networkManager.lobbyLeave().waitResult();
-					if (result.isOk()) {
-						return ClientStatus.InLobbySearch;
-					} else {
-						System.out.println("[ERROR] " + result.getException().orElse("Leave lobby failed"));
+				case LOAD_GAME -> {
+					if (!checkCanStartGame()) {
 						return ClientStatus.InLobby;
 					}
-				}
-				case LIST_PLAYERS -> {
-					for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {
-						if (i == 0) {
-							System.out.println(String.format(" + %s", lobby.getPlayers().get(i)));
-						} else {
-							System.out.println(String.format(" - %s", lobby.getPlayers().get(i)));
-						}
+					result = networkManager.gameLoad().waitResult();
+					if (result.isOk()) {
+						System.out.println("[*] Loading game");
+						return ClientStatus.InGame;
+					} else {
+						System.out.println("[ERROR] " + result.getException().orElse("Load game failed"));
+						return ClientStatus.InLobby;
 					}
-					return ClientStatus.InLobby;
-				}
-				case SEND_MESSAGE -> {
-					sendMessage();
-					return ClientStatus.InLobby;
 				}
 				default -> throw new RuntimeException("Invalid option");
 			}
@@ -247,6 +260,10 @@ public class CLI {
 		doPrint = true;
 
 		switch (option.get()) {
+			case SEND_MESSAGE -> {
+				sendMessage();
+				return ClientStatus.InGame;
+			}
 			case SHOW_YOUR_SHELF -> {
 				game.printYourShelf();
 				return ClientStatus.InGame;
@@ -265,10 +282,6 @@ public class CLI {
 			}
 			case SHOW_COMMON_OBJECTIVES -> {
 				game.printCommonObjectives();
-				return ClientStatus.InGame;
-			}
-			case SEND_MESSAGE -> {
-				sendMessage();
 				return ClientStatus.InGame;
 			}
 			case PICK_CARDS -> {
@@ -429,8 +442,9 @@ public class CLI {
 			case Start -> {
 				gameStarted = true;
 				doPrint = true;
-				game = new CLIGame((GameInfo)event.get().getData(), username);
-				yourTurn = game.players.get(0).equals(username);
+				GameInfo gameInfo = (GameInfo)event.get().getData();
+				game = new CLIGame(gameInfo, username);
+				yourTurn = gameInfo.currentPlayer().equals(username);
 				System.out.println("[*] Game has started");
 				if (yourTurn) {
 					System.out.println("[*] It's your turn");

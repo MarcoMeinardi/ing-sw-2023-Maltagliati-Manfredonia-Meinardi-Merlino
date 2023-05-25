@@ -9,6 +9,7 @@ public enum Service {
     LobbyLeave,
     LobbyUpdate,
     GameStart,
+    GameLoad,
     CardSelect,
     GameChatSend,
 }

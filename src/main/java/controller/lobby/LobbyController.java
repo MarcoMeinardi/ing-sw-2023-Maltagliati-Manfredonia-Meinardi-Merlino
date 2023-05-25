@@ -239,6 +239,18 @@ public class LobbyController extends Thread {
                     client.setStatus(ClientStatus.InGame);
                     result = Result.empty(call.id());
                 }
+                case GameLoad -> {
+                    HashSet<String> dbKey = new HashSet<>(lobby.getPlayers());
+                    if (!db.containsKey(dbKey)) {
+                        throw new GameNotFoundException();
+                    }
+                    if (!lobby.isHost(client.getUsername())) {
+                        throw new NotHostException();
+                    }
+                    loadGame(lobby);
+                    client.setStatus(ClientStatus.InGame);
+                    result = Result.empty(call.id());
+                }
                 case GameChatSend -> {
                     if(!(call.params() instanceof String)){
                         throw new WrongParametersException("String", call.params().getClass().getName(), "GameChatSend");
@@ -267,7 +279,7 @@ public class LobbyController extends Thread {
                 throw new Exception("Save directory (" + SAVESTATES_DIRECTORY + ") exists and is not a directory");
             }
 
-            HashSet<String> dbKey =lobby.getPlayers().stream().collect(Collectors.toCollection(HashSet::new)); 
+            HashSet<String> dbKey = new HashSet<>(lobby.getPlayers());
             if (!db.containsKey(dbKey)) {
                 File saveFile = File.createTempFile(SAVESTATES_PREFIX, ".srl", new File(SAVESTATES_DIRECTORY));
                 db.put(dbKey, saveFile);
@@ -278,6 +290,16 @@ public class LobbyController extends Thread {
                 }
             }
             GameController game = new GameController(lobby);
+            games.add(game);
+            lobbies.remove(lobby.getName());
+        }
+    }
+
+	private void loadGame(Lobby lobby) throws Exception {
+        synchronized (lobby) {
+            HashSet<String> dbKey = new HashSet<>(lobby.getPlayers());
+            File saveFile = db.get(dbKey);
+            GameController game = new GameController(saveFile);
             games.add(game);
             lobbies.remove(lobby.getName());
         }

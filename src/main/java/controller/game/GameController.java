@@ -58,6 +58,21 @@ public class GameController {
         saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(HashSet::new)));
     }
 
+    public GameController(File saveFile) throws Exception {
+        game = Game.loadGame(saveFile);
+        clientManager = GlobalClientManager.getInstance();
+        playerIterator = game.iterator();
+        currentPlayer = playerIterator.next();
+        for (Player player : game.getPlayers()) {
+            ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
+            client.setCallHandler(this::handleGame);
+            GameInfo toSend = getGameInfo(player);
+            client.sendEvent(ServerEvent.Start(toSend));
+        }
+
+        this.saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(HashSet::new)));
+    }
+
     public Game getGame() {
         return game;
     }
