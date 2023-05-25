@@ -64,7 +64,7 @@ public class PersonalObjective extends Objective {
                 }
             }
         } catch (InvalidMoveException e) {
-            // TODO add log
+            throw new RuntimeException("Broken common objective");
         }
 
         if (count > 0) {

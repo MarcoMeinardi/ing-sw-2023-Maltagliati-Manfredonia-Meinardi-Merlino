@@ -6,6 +6,6 @@ import java.util.ArrayList;
 public record SaveState(
 	SaveTableTop tabletop,
 	ArrayList<SavePlayer> players,
-	ArrayList<String> commonObjectives,
+	ArrayList<SaveCommonObjective> commonObjectives,
 	int playerIteratorIndex
 ) implements Serializable {}

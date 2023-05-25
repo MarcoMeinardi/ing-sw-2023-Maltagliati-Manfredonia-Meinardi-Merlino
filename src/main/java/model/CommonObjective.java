@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 
 public class CommonObjective extends Objective {
-	String name;
 	int value;
 	int pointDecrement;
 	Function<Shelf, Boolean> checkCompleted;
@@ -28,21 +27,20 @@ public class CommonObjective extends Objective {
 	 */
 	public CommonObjective(String name, int nPlayers, Function<Shelf, Boolean> checkCompleted) {
 		super(name);
-		this.name = name;
 		value = INITIAL_VALUE;
 		pointDecrement = nPlayers == 2 ? POINT_DECREMENT_2_PLAYERS : POINT_DECREMENT;
 		this.checkCompleted = checkCompleted;
 	}
 
-	public CommonObjective(String name, int nPlayers) {
+	public CommonObjective(SaveCommonObjective objective, int nPlayers) {
 		// super constructor must be the first statement
-		super(generateAllCommonObjectives(nPlayers).stream().filter(o -> o.name.equals(name)).findFirst().get().name);
-		value = INITIAL_VALUE;
+		super(generateAllCommonObjectives(nPlayers).stream().filter(o -> o.getName().equals(objective.name())).findFirst().get().getName());
+		value = objective.points();
 		pointDecrement = nPlayers == 2 ? POINT_DECREMENT_2_PLAYERS : POINT_DECREMENT;
 
-		for (CommonObjective objective : generateAllCommonObjectives(nPlayers)) {
-			if (objective.getName().equals(name)) {
-				this.checkCompleted = objective.checkCompleted;
+		for (CommonObjective obj : generateAllCommonObjectives(nPlayers)) {
+			if (obj.getName().equals(this.name)) {
+				this.checkCompleted = obj.checkCompleted;
 				return;
 			}
 		}
