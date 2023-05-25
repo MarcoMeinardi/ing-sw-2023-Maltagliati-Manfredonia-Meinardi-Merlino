@@ -20,7 +20,9 @@ import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.ServerEvent;
+import network.parameters.GameInfo;
 import network.parameters.Message;
+import view.cli.CLIGame;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -205,13 +207,7 @@ public class LobbyViewController implements Initializable{
         if (result.isOk()) {
             LoginController.state = ClientStatus.InGame;
             try {
-                serverThread.interrupt();
-                Parent root = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
-                stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-                scene = new Scene(root, WIDTH, HEIGHT);
-                stage.setResizable(false);
-                stage.setScene(scene);
-                stage.show();
+                switchToGame();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -220,6 +216,29 @@ public class LobbyViewController implements Initializable{
             descriptorLabel.setText("");
             descriptorLabel.setText("Start game failed");
             System.out.println("[ERROR] " + result.getException().orElse("Start game failed"));
+        }
+    }
+
+    /**
+     * method called to switch to the game scene.
+     *
+     * @throws IOException
+     * @autor: Ludovico
+     */
+
+    public void switchToGame() throws IOException{
+        LoginController.state = ClientStatus.InGame;
+        try {
+            serverThread.interrupt();
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
+            //get stage from an element in the scene. Could be anything else
+            stage = (Stage) ((Node)startButton).getScene().getWindow();
+            scene = new Scene(root, WIDTH, HEIGHT);
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -362,6 +381,23 @@ public class LobbyViewController implements Initializable{
                         }
                     });
                 }
+            }
+            case Start -> {
+                System.out.println("[*] Game has started");
+                state = ClientStatus.InGame;
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if(!username.equals(lobby.getPlayers().get(0))) {
+                                switchToGame();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
             }
             default -> throw new RuntimeException("Unhandled event");
         }

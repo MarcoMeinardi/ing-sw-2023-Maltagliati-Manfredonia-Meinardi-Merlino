@@ -25,9 +25,9 @@
             <Image url="@../img/boards/livingroom.png" />
          </image>
       </ImageView>
-      <Button layoutX="442.0" layoutY="13.0" mnemonicParsing="false" onAction="#printPersonalObjective" text="Show Personal Obj" />
-      <Button layoutX="454.0" layoutY="205.0" mnemonicParsing="false" onAction="#printAllShelves" text="Show All Shelfs" />
-      <Button layoutX="444.0" layoutY="239.0" mnemonicParsing="false" onAction="#printCommonObjectives" text="Show Common Obj" />
+      <Button fx:id="printPersonalObjectivesButton" layoutX="442.0" layoutY="13.0" mnemonicParsing="false" onAction="#printPersonalObjective" text="Show Personal Obj" />
+      <Button fx:id="printAllShelvesButton" layoutX="454.0" layoutY="205.0" mnemonicParsing="false" onAction="#printAllShelves" text="Show All Shelfs" />
+      <Button fx:id="printCommonObjectivesButton" layoutX="444.0" layoutY="239.0" mnemonicParsing="false" onAction="#printCommonObjectives" text="Show Common Obj" />
       <ListView fx:id="chat" editable="true" layoutX="428.0" layoutY="275.0" prefHeight="70.0" prefWidth="150.0" />
       <Button fx:id="sendMessageButton" layoutX="480.0" layoutY="366.0" mnemonicParsing="false" onAction="#sendMessage" text="Send" />
       <TextField fx:id="messageInput" layoutX="428.0" layoutY="345.0" prefHeight="20.0" prefWidth="150.0" promptText="Type your message...">

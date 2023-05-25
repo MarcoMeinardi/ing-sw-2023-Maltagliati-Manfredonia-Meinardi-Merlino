@@ -35,6 +35,12 @@ public class GameViewController implements Initializable {
     public Button sendMessageButton;
     @FXML
     private ListView chat;
+    @FXML
+    private Button printCommonObjectivesButton;
+    @FXML
+    private Button printPersonalObjectivesButton;
+    @FXML
+    private Button printAllShelvesButton;
 
   /*  @FXML
     public ListView players;*/
@@ -61,6 +67,9 @@ public class GameViewController implements Initializable {
     ArrayList<String> commonObjectives;
     ArrayList<Integer> commonObjectivesPoints;
     PersonalObjective personalObjective;
+
+    public void GameViewController(){
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
