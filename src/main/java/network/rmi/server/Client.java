@@ -33,7 +33,7 @@ public class Client implements ClientService, ClientInterface {
     private static final Logger logger = Logger.getLogger(Client.class.getName());
     private Object lastMessageTimeLock = new Object();
 
-    public static final int TIMEOUT = 60;
+    public static final int TIMEOUT = 5;
 
     public Client(String username , Registry registry, int port) throws RemoteException {
         this.username = username;

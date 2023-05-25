@@ -27,7 +27,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     private Queue<ServerEvent> eventQueue = new LinkedList<ServerEvent>();
     private Logger logger = Logger.getLogger(NetworkManager.class.getName());
     private Function<LocalDateTime,Boolean> lastPing = null;
-    private static final int PING_TIMEOUT = 60;
+    private static final int PING_TIMEOUT = 1;
     private Thread checkPingThread;
     private NetworkManager(){}
 

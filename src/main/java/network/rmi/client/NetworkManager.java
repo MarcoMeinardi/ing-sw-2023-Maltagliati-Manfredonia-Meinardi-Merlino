@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.logging.Logger;
 
 public class NetworkManager extends Thread implements NetworkManagerInterface {
@@ -35,6 +36,8 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     private final Object lastMessageLock = new Object();
     private final int PING_TIMEOUT = 1;
     private Server serverInfo;
+
+    private Queue<ServerEvent> eventQueue = new LinkedList<>();
     @Override
     public void connect(Server server) throws Exception {
         registry = LocateRegistry.getRegistry(server.ip(), server.port());
@@ -76,9 +79,25 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         logger.info("NetworkManager: running");
         while(isConnected()){
             try{
-                if(clientService.isPresent() && getElapsedTimeSinceLastMessage() > PING_TIMEOUT/2){
-                    clientService.get().requestService(new Call(null, Service.Ping, null));
-                    setLastMessage();
+                if(clientService.isPresent()) {
+                    if (getElapsedTimeSinceLastMessage() > PING_TIMEOUT / 2) {
+                        clientService.get().requestService(new Call(null, Service.Ping, null));
+                        setLastMessage();
+                    }
+                    if(clientService.get().hasEvent()){
+                        logger.info("Found event");
+                        ServerEvent event = clientService.get().pollEvent();
+                        while(event != null){
+                            synchronized (eventQueue){
+                                eventQueue.add(event);
+                            }
+                            event = clientService.get().pollEvent();
+                        }
+                        logger.info(eventQueue.size() + " events in queue");
+                        synchronized (NetworkManager.instance){
+                            NetworkManager.instance.notifyAll();
+                        }
+                    }
                 }
             }catch(Exception e){
                 disconnect();
@@ -108,27 +127,16 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public Optional<ServerEvent> getEvent() {
-        Optional<ServerEvent> event = Optional.empty();
-        try{
-            if(clientService.isPresent()){
-                    return Optional.of(clientService.get().pollEvent());
-            }
-        }catch (Exception e){
-            disconnect();
+        synchronized (eventQueue){
+            return Optional.ofNullable(eventQueue.poll());
         }
-        return event;
     }
 
     @Override
     public boolean hasEvent() {
-        try{
-            if(clientService.isPresent()){
-                return clientService.get().hasEvent();
-            }
-        }catch (Exception e){
-            disconnect();
+        synchronized (eventQueue){
+            return !eventQueue.isEmpty();
         }
-        return false;
     }
 
     @Override
@@ -189,11 +197,6 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     }
 
     public Function handleService(Function fn){
-        if(hasEvent()){
-            logger.info("Client has events");
-        }else{
-            logger.info("Client has no events");
-        }
         Result<Serializable> result;
         try{
             if(clientService.isEmpty()){

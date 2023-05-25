@@ -2,7 +2,6 @@ package view.cli;
 
 import java.util.Optional;
 
-import network.rpc.client.NetworkManager;
 
 public class Utils {
 	private static NonBlockingIO IO = NonBlockingIO.getInstance();
@@ -32,6 +31,7 @@ public class Utils {
 			synchronized (networkManager) {
 				while (!IO.isAvailable() && !networkManager.hasEvent()) {
 					networkManager.wait();
+					logger.info("Woken up");
 				}
 				if (!IO.isAvailable() && NetworkManager.getInstance().hasEvent()) {
 					return Optional.empty();
