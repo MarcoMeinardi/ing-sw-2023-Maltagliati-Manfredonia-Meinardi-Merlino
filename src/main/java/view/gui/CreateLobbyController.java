@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -28,6 +29,8 @@ public class CreateLobbyController implements Initializable {
     private Text nameUser;
     @FXML
     private TextField nameLobby;
+    @FXML
+    private Label messageDisplay;
 
     public CreateLobbyController() {
     }
@@ -40,13 +43,19 @@ public class CreateLobbyController implements Initializable {
     public void createLobby(ActionEvent actionEvent) throws Exception {
 
         String lobbyName = nameLobby.getText();
-        Result<Lobby> result = networkManager.lobbyCreate(new LobbyCreateInfo(lobbyName)).waitResult();
+        if(lobbyName.isEmpty()) {
+            System.out.println("[ERROR] Lobby name is empty");
+            messageDisplay.setText("Lobby name is empty");
+            return;
+        }
 
+        Result<Lobby> result = networkManager.lobbyCreate(new LobbyCreateInfo(lobbyName)).waitResult();
         if (result.isOk()) {
             LoginController.lobby = ((Result<Lobby>) result).unwrap();
             LoginController.state = ClientStatus.InLobby;
             System.out.println("Lobby created: " + LoginController.lobby.getName());
         } else {
+            messageDisplay.setText("Could not create lobby"); //TODO check if it's bc lobby with same name already exists
             System.out.println("[ERROR] " + result.getException());
         }
 
