@@ -1,5 +1,12 @@
 package model;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -69,7 +76,7 @@ public class Game implements Iterable<Player> {
     }
 
 
-    public SaveState getSaveState() {
+    private SaveState getSaveState() {
         SaveTableTop tableTop = this.tabletop.getSaveTableTop();
         ArrayList<SavePlayer> savePlayers = new ArrayList<>();
         for (Player player : this.players) {
@@ -78,5 +85,24 @@ public class Game implements Iterable<Player> {
         ArrayList<String> saveCommonObjectives = commonObjectives.stream().map(CommonObjective::getName).collect(Collectors.toCollection(ArrayList::new));
 
         return new SaveState(tableTop, savePlayers, saveCommonObjectives, playerIterator);
+    }
+
+    public void saveGame(File file) throws IOException {
+        SaveState saveState = getSaveState();
+        FileOutputStream outputFile = new FileOutputStream(file);
+        ObjectOutputStream outputStream = new ObjectOutputStream(outputFile);
+        outputStream.writeObject(saveState);
+        outputStream.close();
+        outputFile.close();
+    }
+
+    public static Game loadGame(File file) throws IOException, ClassNotFoundException {
+        FileInputStream inputFile = new FileInputStream(file);
+        ObjectInputStream objectInputStream = new ObjectInputStream(inputFile);
+        SaveState saveState = (SaveState)objectInputStream.readObject();
+        objectInputStream.close();
+        inputFile.close();
+
+        return new Game(saveState);
     }
 }
