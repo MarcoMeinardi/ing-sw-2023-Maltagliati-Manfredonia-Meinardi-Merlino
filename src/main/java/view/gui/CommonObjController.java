@@ -15,7 +15,6 @@ public class CommonObjController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // TODO Create the scene showing all the shelves
     }
 
 
