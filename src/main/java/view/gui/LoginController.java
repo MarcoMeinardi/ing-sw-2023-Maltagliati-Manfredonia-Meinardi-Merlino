@@ -53,13 +53,14 @@ public class LoginController implements Initializable {
             username = namePlayer.getText();
 
             //check if the input is valid
-            if(username == null || username.equals("") ){
+            if(username == null || username.equals("") || username.equals(" ")){
                 errorLabel.setText("Invalid name!");
                 return;
             } else if (username.length() > 8) {
                 errorLabel.setText("max 8 letters in name!");
                 return;
             }
+
 
             if (selectedIp.getText().equals("")) {
                 errorLabel.setText("Insert an IP address!");

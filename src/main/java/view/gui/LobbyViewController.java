@@ -20,9 +20,7 @@ import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.ServerEvent;
-import network.parameters.GameInfo;
 import network.parameters.Message;
-import view.cli.CLIGame;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -117,6 +115,9 @@ public class LobbyViewController implements Initializable{
         for (int i = 0; i < 4; i++) {
             players.getItems().add("");
         }
+        //add messages to the chat
+        chat.getItems().add("[Type /help to see the list of commands]");
+        //call method to fill the list view with the names of the players
         updateLobby();
     }
 
@@ -278,9 +279,18 @@ public class LobbyViewController implements Initializable{
             }
             return;
         }
-        if (messageText.startsWith("/") || messageText.startsWith("!") || messageText.startsWith(".") || messageText.startsWith("?")) {
-            System.out.println("[ERROR] Commands not supported");
-            chat.getItems().add("[ERROR] Commands not supported");
+        if (messageText.startsWith(".") || messageText.startsWith("?")) {
+            System.out.println("[ERROR] Commands not supported, use /help for more info");
+            chat.getItems().add("[ERROR] Commands not supported. Use /help for more info");
+            if(chat.getItems().size() != 3){
+                chat.scrollTo(chat.getItems().size()-1);
+            }
+            return;
+        }
+        if(messageText.startsWith("/help")){
+            chat.getItems().add("[-Select a name from the list above to send a private message]");
+            chat.getItems().add("[-Specific commands supported:]");
+            chat.getItems().add("[/help: shows this message]");
             if(chat.getItems().size() != 3){
                 chat.scrollTo(chat.getItems().size()-1);
             }
@@ -289,7 +299,22 @@ public class LobbyViewController implements Initializable{
 
         //try to send it to the server and add it to chat
         try{
-            Result result = networkManager.chat(messageText).waitResult();
+            if(players.getSelectionModel().getSelectedItem() != null && !players.getSelectionModel().getSelectedItem().toString().equals("")){
+                Result result = networkManager.chat(new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString())).waitResult();
+                if (result.isErr()) {
+                    System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
+                    chat.getItems().add("[ERROR] We could not send your message, please try again later");
+                    if(chat.getItems().size() != 3){
+                        chat.scrollTo(chat.getItems().size()-1);
+                    }
+                    return;
+                }
+                Message message = new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString());
+                players.getSelectionModel().clearSelection();
+                addMessageToChat(message);
+                return;
+            }
+            Result result = networkManager.chat(new Message(username, messageText)).waitResult();
             if (result.isErr()) {
                 System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
                 chat.getItems().add("[ERROR] We could not send your message, please try again later");
@@ -321,7 +346,27 @@ public class LobbyViewController implements Initializable{
         Calendar calendar = GregorianCalendar.getInstance();
         String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
         String minute = String.valueOf(calendar.get(Calendar.MINUTE));
-        chat.getItems().add("[" + hour + ":"+minute+ "] " +message.idSender()+ ": " + message.message());
+        if(hour.length() == 1){
+            hour = "0" + hour;
+        }
+        if(minute.length() == 1){
+            minute = "0" + minute;
+        }
+        if (message.idReceiver().isEmpty()) {
+            chat.getItems().add(String.format("[%s:%s] %s to everyone: %s", hour, minute, message.idSender(), message.message()));
+        } else {
+            if(!message.idSender().equals(username)) {
+                chat.getItems().add(String.format("[%s:%s] %s to you: %s", hour, minute, message.idSender(), message.message()));
+            }
+            else{
+                if(message.idReceiver().get().equals(message.idSender())){
+                    chat.getItems().add(String.format("[%s:%s] %s to himself: you are a schizo", hour, minute, message.idSender()));
+                }
+                else {
+                    chat.getItems().add(String.format("[%s:%s] you to %s: %s", hour, minute, message.idReceiver().get(), message.message()));
+                }
+            }
+        }
         if(chat.getItems().size() != 3){
             chat.scrollTo(chat.getItems().size()-1);
         }
@@ -343,7 +388,6 @@ public class LobbyViewController implements Initializable{
      *
      * @autor: Ludovico
      */
-
     private void handleEvent() {
         Optional<ServerEvent> event = networkManager.getEvent();
         if (event.isEmpty()) {
@@ -382,8 +426,8 @@ public class LobbyViewController implements Initializable{
             }
             case NewMessage -> {
                 Message message = (Message)event.get().getData();
-                if (!message.idPlayer().equals(username)) {
-                    System.out.format("%s: %s%n", message.idPlayer(), message.message());
+                if (!message.idSender().equals(username)) {
+                    System.out.format("%s: %s%n", message.idSender(), message.message());
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {

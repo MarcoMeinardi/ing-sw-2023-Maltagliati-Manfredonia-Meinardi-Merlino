@@ -175,9 +175,9 @@ public class GameViewController implements Initializable {
             }
             case NewMessage -> {
                 Message message = (Message)event.get().getData();
-                if (!message.idPlayer().equals(username)) {
-                    System.out.format("[*] %s: %s%n", message.idPlayer(), message.message());
-                }
+                // if (!message.idPlayer().equals(username)) {
+                //     System.out.format("[*] %s: %s%n", message.idPlayer(), message.message());
+                // }
             } case Pause -> {
                 if (!isPaused) {
                     System.out.println("[WARNING] Someone has disconnected");
@@ -212,13 +212,13 @@ public class GameViewController implements Initializable {
         }
 
         try{
-            Result result = networkManager.chat(messageText).waitResult();
-            if (result.isErr()) {
-                System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-                chat.getItems().add("We could not send your message, please try again later");
-                chat.scrollTo(chat.getItems().size()-1);
-                return;
-            }
+            // Result result = networkManager.chat(messageText).waitResult();
+            // if (result.isErr()) {
+            //     System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
+            //     chat.getItems().add("We could not send your message, please try again later");
+            //     chat.scrollTo(chat.getItems().size()-1);
+            //     return;
+            // }
             Message message = new Message(username, messageText);
             addMessageToChat(message);
         } catch (Exception e) {
@@ -227,12 +227,16 @@ public class GameViewController implements Initializable {
 
     }
 
-    public void addMessageToChat(Message message){
+    public void addMessageToChat(Message message) {
         Calendar calendar = GregorianCalendar.getInstance();
         String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
         String minute = String.valueOf(calendar.get(Calendar.MINUTE));
-        chat.getItems().add("[" + hour + ":"+minute+ "] " +message.idPlayer()+ ": " + message.message());
-        chat.scrollTo(chat.getItems().size()-1);
+        if (message.idReceiver().isEmpty()) {
+            chat.getItems().add(String.format("[%s:%s] %s to everyone: %s", hour, minute, message.idSender(), message.message()));
+        } else {
+            chat.getItems().add(String.format("[%s:%s] %s to everyone: %s", hour, minute, message.idSender(), message.message()));
+        }
+        chat.scrollTo(chat.getItems().size() - 1);
     }
 
     public GameViewController(GameInfo data, String me) {
