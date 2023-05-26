@@ -4,6 +4,7 @@ import controller.lobby.Lobby;
 import network.parameters.CardSelect;
 import network.parameters.LobbyCreateInfo;
 import network.parameters.Login;
+import network.parameters.Message;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -28,5 +29,5 @@ public interface NetworkManagerInterface {
     public Function<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception;
     public Function<Login, Boolean> login(Login username) throws Exception;
     public void join() throws Exception;
-    public Function<String, Boolean> chat(String message) throws Exception;
+    public Function<Message, Boolean> chat(Message message) throws Exception;
 }

@@ -8,6 +8,7 @@ import network.errors.ClientNotIdentifiedException;
 import network.parameters.CardSelect;
 import network.parameters.LobbyCreateInfo;
 import network.parameters.Login;
+import network.parameters.Message;
 import network.rmi.ClientService;
 import network.rmi.LoginService;
 
@@ -194,7 +195,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     }
 
     @Override
-    public Function<String, Boolean> chat(String message) throws Exception {
+    public Function<Message, Boolean> chat(Message message) throws Exception {
         return handleService(new Function(message, Service.GameChatSend));
     }
 

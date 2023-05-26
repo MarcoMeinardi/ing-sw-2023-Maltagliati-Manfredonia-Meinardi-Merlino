@@ -321,7 +321,7 @@ public class LobbyViewController implements Initializable{
         Calendar calendar = GregorianCalendar.getInstance();
         String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
         String minute = String.valueOf(calendar.get(Calendar.MINUTE));
-        chat.getItems().add("[" + hour + ":"+minute+ "] " +message.idPlayer()+ ": " + message.message());
+        chat.getItems().add("[" + hour + ":"+minute+ "] " +message.idSender()+ ": " + message.message());
         if(chat.getItems().size() != 3){
             chat.scrollTo(chat.getItems().size()-1);
         }
