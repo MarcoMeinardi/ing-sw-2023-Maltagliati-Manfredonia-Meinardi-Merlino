@@ -208,15 +208,7 @@ public class LobbyViewController implements Initializable{
             return;
         }
         Result result = networkManager.gameStart().waitResult();
-        if (result.isOk()) {
-            LoginController.state = ClientStatus.InGame;
-            try {
-                switchToGame();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else{
+        if (!result.isOk()) {
             descriptorLabel.setText("");
             descriptorLabel.setText("Start game failed");
             System.out.println("[ERROR] " + result.getException().orElse("Start game failed"));
@@ -232,6 +224,7 @@ public class LobbyViewController implements Initializable{
 
     public void switchToGame() throws IOException{
         LoginController.state = ClientStatus.InGame;
+        state = ClientStatus.InGame;
         try {
             serverThread.interrupt();
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
@@ -448,9 +441,9 @@ public class LobbyViewController implements Initializable{
                     @Override
                     public void run() {
                         try {
-                            if(!username.equals(lobby.getPlayers().get(0))) {
-                                switchToGame();
-                            }
+
+                            switchToGame();
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
