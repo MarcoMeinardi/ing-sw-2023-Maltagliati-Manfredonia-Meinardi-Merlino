@@ -6,5 +6,9 @@ public enum Card {
     Gioco,
     Cornice,
     Trofeo,
-    Pianta
+    Pianta;
+
+    public boolean equals(Card card) {
+        return this.ordinal() == card.ordinal();
+    }
 }

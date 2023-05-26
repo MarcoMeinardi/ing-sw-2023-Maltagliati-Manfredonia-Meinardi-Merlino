@@ -221,4 +221,23 @@ public class Shelf {
 		slots[row][column] = Optional.of(card);
 		return;
 	}
+
+	/**
+	 * Count the number of cards of a certain type in the shelf
+	 * @param card the type of card to count
+	 * @return the number of cards of a certain type in the shelf
+	 * @Author Lorenzo
+	 */
+	public int countCard(Card card){
+		int count = 0;
+		for(int y = 0; y < ROWS; y++){
+			for(int x = 0; x < COLUMNS; x++){
+				if(slots[y][x].isPresent() && slots[y][x].get().equals(card)){
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
 }
