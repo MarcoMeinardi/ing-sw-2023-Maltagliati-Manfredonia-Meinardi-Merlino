@@ -1,5 +1,6 @@
 package view.cli;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import network.NetworkManagerInterface;

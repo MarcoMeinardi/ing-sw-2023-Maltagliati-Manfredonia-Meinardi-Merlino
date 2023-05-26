@@ -384,9 +384,34 @@ public class CLI {
 	}
 
 	private void sendMessage() {
+		System.out.println();
+		int cnt = 0;
+		for (String player : lobby.getPlayers()) {
+			if (!player.equals(username)) {
+				System.out.format("[%d] %s%n", ++cnt, player);
+			}
+		}
+		int selected = IO.askInt("Receiver (0 for everyone): ");
+		if (selected < 0 || selected >= lobby.getNumberOfPlayers()) {
+			System.out.println("[*] Aborted");
+			return;
+		}
+		cnt = 0;
+		String receiver = null;
+		if (selected > 0) {
+			for (String player : lobby.getPlayers()) {
+				if (!player.equals(username)) {
+					if (++cnt == selected) {
+						receiver = player;
+						break;
+					}
+				}
+			}
+		}
+
 		String message = IO.askString("[+] Message: ");
 		try {
-			Result result = networkManager.chat(new Message(username, message)).waitResult();
+			Result result = networkManager.chat(new Message(username, message, receiver)).waitResult();
 			if (result.isErr()) {
 				System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
 			}
