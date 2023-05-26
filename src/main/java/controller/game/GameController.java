@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
  * @author Ludovico, Marco, Lorenzo
  *
  */
-
 public class GameController {
 
     private final Game game;
@@ -83,7 +82,6 @@ public class GameController {
      * @return True if refill needed, false otherwise
      * @author Ludovico
      */
-
     private boolean checkRefillTable() {
         return game.getTabletop().needRefill();
     }
@@ -93,7 +91,6 @@ public class GameController {
      * @author Ludovico
      *
      */
-
     private void refillTable() {
         if (checkRefillTable()) {
             game.getTabletop().fillTable();
@@ -106,7 +103,6 @@ public class GameController {
      * @param player The player
      * @author Ludovico
      */
-
     private void addPersonalCockade(Player player) {
         Optional<Cockade> helpCockadePersonal = player.getPersonalObjective().isCompleted(player.getShelf());
         helpCockadePersonal.ifPresent(player::addCockade);
@@ -121,7 +117,6 @@ public class GameController {
      * @param newCommonObjectivesScores The list of new common objectives scores
      * @author Ludovico, Marco
      */
-
     private void addCommonCockade(Player player, ArrayList<Cockade> completedObjectives, ArrayList<Integer> newCommonObjectivesScores) {
         for (CommonObjective objective : game.getCommonObjectives()) {
             Optional<Cockade> cockade = objective.isCompleted(player.getShelf());
@@ -140,7 +135,6 @@ public class GameController {
      * @return The final ranks of the players
      * @author Ludovico
      */
-
     private ArrayList<Player> finalRanks() {
         ArrayList<Player> players = game.getPlayers();
 
@@ -215,11 +209,6 @@ public class GameController {
         }
         player.getShelf().insert(column, cards);
     }
-
-    /**
-     * checks for disconnected players in the game and sends a resume event to the clients if all the players are connected
-     * @author Ludovico, Lorenzo, Marco, Riccardo
-     */
 
     /**
      * Sends the global update event to all the clients.
@@ -329,18 +318,18 @@ public class GameController {
         }
         return result;
     }
+
     /**
      * makes the player exit the game
      * and ends the game
      * @author Ludovico, Lorenzo, Marco
      */
-
     public void exitGame() {
         LobbyController lobbyController = LobbyController.getInstance();
         for(Player player: game.getPlayers()){
             Optional<ClientInterface> client = clientManager.getClient(player.getName());
             if(client.isPresent()){
-                client.get().setCallHandler(lobbyController::handleLobbySearch);  // TODO block toxic boys
+                client.get().setCallHandler(lobbyController::handleLobbySearch);
             }
         }
         lobbyController.endGame(this);
@@ -383,11 +372,10 @@ public class GameController {
      * @return
      * @author Lorenzo
      */
-
-    public ArrayList<String> getPlayersOrder(){
+    public ArrayList<String> getPlayersOrder() {
         ArrayList<String> playersOrder = new ArrayList<>();
-        synchronized (game.getPlayers()){
-            for(Player player: game.getPlayers()){
+        synchronized (game.getPlayers()) {
+            for (Player player: game.getPlayers()) {
                 playersOrder.add(player.getName());
             }
         }

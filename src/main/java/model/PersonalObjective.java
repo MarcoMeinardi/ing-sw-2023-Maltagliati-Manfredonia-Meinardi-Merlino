@@ -50,8 +50,8 @@ public class PersonalObjective extends Objective {
         *
         * @param shelf The shelf of the player
         * @returns An optional containing the cockade if the objective is completed, an empty optional otherwise
+        * @throws RuntimeException if the logic is broken
      */
-    // TODO doc post invalidMoveException
     @Override
     public Optional<Cockade> isCompleted(Shelf shelf) {
         int count = 0;

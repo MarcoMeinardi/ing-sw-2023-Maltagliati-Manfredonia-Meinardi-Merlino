@@ -9,7 +9,7 @@ import junit.framework.TestSuite;
  */
 public class AppTest 
     extends TestCase
-{ // TODO cambiare ad optional tabletop , aggiungere il docstring ,
+{
     /**
      * Create the test case
      *
