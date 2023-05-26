@@ -1,8 +1,6 @@
 package network;
 
 
-import network.rmi.server.ClientManager;
-
 import java.util.Optional;
 
 public class GlobalClientManager implements ClientManagerInterface{

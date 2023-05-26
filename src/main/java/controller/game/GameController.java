@@ -238,21 +238,22 @@ public class GameController {
         }
     }
 
-    private Optional<Player> nextNotDisconnected(){
+    private Optional<Player> nextNotDisconnected() {
         Optional<Player> nextPlayer = Optional.empty();
         int count = 0;
-        while(playerIterator.hasNext()){
+        while (playerIterator.hasNext()) {
             Player player = playerIterator.next();
-            if(clientManager.getClient(player.getName()).isPresent()){
+            if (clientManager.getClient(player.getName()).isPresent()) {
                 return Optional.of(player);
             }
             count++;
-            if(count == game.getPlayers().size()){
+            if (count == game.getPlayers().size()) {
                 break;
             }
         }
         return nextPlayer;
     }
+
     /**
      * Handles the game send by the client. Executes all the methods in this class that are needed to process
      * the turns. Utilizes iterator to iterate over the players. Every turn of every player the method checks if
@@ -266,10 +267,10 @@ public class GameController {
      * @return The result of the call
      * @author Ludovico, Lorenzo
      */
-    public Result handleGame(Call call, ClientInterface client){
+    public Result handleGame(Call call, ClientInterface client) {
         Result result;
-        try{
-            switch (call.service()){
+        try {
+            switch (call.service()) {
                 case CardSelect -> {
                     if(!(call.params() instanceof CardSelect)){
                         throw new WrongParametersException("CardSelect", call.params().getClass().getName(), "CardSelect");
@@ -277,7 +278,7 @@ public class GameController {
                     CardSelect cardSelect = (CardSelect) call.params();
                     String username = client.getUsername();
                     Player player = game.getPlayers().stream().filter(p -> p.getName().equals(username)).findFirst().orElseThrow();
-                    if(!currentPlayer.equals(player)){
+                    if (!currentPlayer.equals(player)) {
                         throw new NotYourTurnException();
                     }
                     doMove(player, cardSelect.selectedCards(), cardSelect.column());
@@ -286,7 +287,8 @@ public class GameController {
                     addCommonCockade(player, completedObjectives, newCommonObjectivesScores);
                     refillTable();
                     Optional<Player> nextPlayer = nextNotDisconnected();
-                    if(nextPlayer.isPresent()){
+                    if (nextPlayer.isPresent()) {
+                        // TODO if (nextPlayer.get().equals(currentPlayer)) { pause, timeout, end game }
                         currentPlayer = nextPlayer.get();
                         Update update = new Update(
                             username,
@@ -298,8 +300,8 @@ public class GameController {
                         );
                         globalUpdate(ServerEvent.Update(update));
                         saveGame();
-                    }else{
-                        for(Player p : game.getPlayers()){
+                    } else {
+                        for (Player p : game.getPlayers()) {
                             addPersonalCockade(p);
                         }
                         ScoreBoard scoreBoard = new ScoreBoard(game);
@@ -310,7 +312,7 @@ public class GameController {
                     result = Result.empty(call.id());
                 }
                 case GameChatSend -> {
-                    if(!(call.params() instanceof String)){
+                    if(!(call.params() instanceof String)) {
                         throw new WrongParametersException("String", call.params().getClass().getName(), "GameChatSend");
                     }
                     Message message = new Message(client.getUsername(), (String) call.params());
