@@ -499,13 +499,18 @@ public class CLI {
 			}
 			case End -> {
 				ScoreBoard scoreboard = (ScoreBoard)event.get().getData();
+				String your_title = "HEY! Where is my title?";
 				System.out.println("[*] Game over!");
 				System.out.println();
 				System.out.println("Leaderboard:");
 				int position = 1;
 				for (Score score : scoreboard) {
 					System.out.format(" [%d] %s: %d points %n", position++, score.username(), score.score());
+					if (score.username().equals(username)) {
+						your_title = score.title();
+					}
 				}
+				System.out.println("Your final grade: "+your_title);
 				System.out.println();
 				IO.askString("[+] Press enter to continue");
 				doPrint = true;
