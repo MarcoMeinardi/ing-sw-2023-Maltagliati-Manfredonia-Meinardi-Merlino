@@ -6,7 +6,7 @@ import model.Player;
 import network.*;
 import network.parameters.LobbyCreateInfo;
 import network.parameters.Message;
-import network.parameters.WrongParametersException;
+import network.errors.WrongParametersException;
 import network.errors.ClientNotFoundException;
 
 import java.io.File;

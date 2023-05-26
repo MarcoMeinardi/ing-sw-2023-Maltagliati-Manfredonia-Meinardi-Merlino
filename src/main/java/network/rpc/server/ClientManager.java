@@ -6,7 +6,7 @@ import network.*;
 import network.errors.ClientAlreadyConnectedExeption;
 import network.errors.ClientNotIdentifiedException;
 import network.parameters.Login;
-import network.parameters.WrongParametersException;
+import network.errors.WrongParametersException;
 
 import java.io.Serializable;
 import java.net.ServerSocket;

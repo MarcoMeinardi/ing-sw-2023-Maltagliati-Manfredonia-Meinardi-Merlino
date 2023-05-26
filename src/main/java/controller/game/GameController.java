@@ -9,7 +9,7 @@ import network.parameters.CardSelect;
 import network.parameters.Message;
 import network.parameters.GameInfo;
 import network.parameters.Update;
-import network.parameters.WrongParametersException;
+import network.errors.WrongParametersException;
 
 import java.io.File;
 import java.io.IOException;
