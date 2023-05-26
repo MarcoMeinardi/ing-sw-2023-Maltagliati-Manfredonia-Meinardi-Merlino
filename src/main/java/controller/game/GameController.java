@@ -14,6 +14,7 @@ import network.parameters.WrongParametersException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -55,7 +56,22 @@ public class GameController {
             client.sendEvent(ServerEvent.Start(toSend));
         }
 
-        saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new)));
+        saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(HashSet::new)));
+    }
+
+    public GameController(File saveFile) throws Exception {
+        game = Game.loadGame(saveFile);
+        clientManager = GlobalClientManager.getInstance();
+        playerIterator = game.iterator();
+        currentPlayer = playerIterator.next();
+        for (Player player : game.getPlayers()) {
+            ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
+            client.setCallHandler(this::handleGame);
+            GameInfo toSend = getGameInfo(player);
+            client.sendEvent(ServerEvent.Start(toSend));
+        }
+
+        this.saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(HashSet::new)));
     }
 
     public Game getGame() {
@@ -68,7 +84,6 @@ public class GameController {
      * @return True if refill needed, false otherwise
      * @author Ludovico
      */
-
     private boolean checkRefillTable() {
         return game.getTabletop().needRefill();
     }
@@ -78,7 +93,6 @@ public class GameController {
      * @author Ludovico
      *
      */
-
     private void refillTable() {
         if (checkRefillTable()) {
             game.getTabletop().fillTable();
@@ -91,7 +105,6 @@ public class GameController {
      * @param player The player
      * @author Ludovico
      */
-
     private void addPersonalCockade(Player player) {
         Optional<Cockade> helpCockadePersonal = player.getPersonalObjective().isCompleted(player.getShelf());
         helpCockadePersonal.ifPresent(player::addCockade);
@@ -106,7 +119,6 @@ public class GameController {
      * @param newCommonObjectivesScores The list of new common objectives scores
      * @author Ludovico, Marco
      */
-
     private void addCommonCockade(Player player, ArrayList<Cockade> completedObjectives, ArrayList<Integer> newCommonObjectivesScores) {
         for (CommonObjective objective : game.getCommonObjectives()) {
             Optional<Cockade> cockade = objective.isCompleted(player.getShelf());
@@ -125,7 +137,6 @@ public class GameController {
      * @return The final ranks of the players
      * @author Ludovico
      */
-
     private ArrayList<Player> finalRanks() {
         ArrayList<Player> players = game.getPlayers();
 
@@ -202,17 +213,12 @@ public class GameController {
     }
 
     /**
-     * checks for disconnected players in the game and sends a resume event to the clients if all the players are connected
-     * @author Ludovico, Lorenzo, Marco, Riccardo
-     */
-
-    /**
      * Sends the global update event to all the clients.
      * @param event
      * @author Ludovico, Lorenzo, Marco, Riccardo, Momo
      */
     public void globalUpdate(ServerEvent event) {
-        for(Player player : game.getPlayers()){
+        for (Player player : game.getPlayers()) {
             try {
                 ClientInterface client = clientManager.getClient(player.getName()).get();
                 client.sendEvent(event);
@@ -223,21 +229,22 @@ public class GameController {
         }
     }
 
-    private Optional<Player> nextNotDisconnected(){
+    private Optional<Player> nextNotDisconnected() {
         Optional<Player> nextPlayer = Optional.empty();
         int count = 0;
-        while(playerIterator.hasNext()){
+        while (playerIterator.hasNext()) {
             Player player = playerIterator.next();
-            if(clientManager.getClient(player.getName()).isPresent()){
+            if (clientManager.getClient(player.getName()).isPresent()) {
                 return Optional.of(player);
             }
             count++;
-            if(count == game.getPlayers().size()){
+            if (count == game.getPlayers().size()) {
                 break;
             }
         }
         return nextPlayer;
     }
+
     /**
      * Handles the game send by the client. Executes all the methods in this class that are needed to process
      * the turns. Utilizes iterator to iterate over the players. Every turn of every player the method checks if
@@ -251,18 +258,18 @@ public class GameController {
      * @return The result of the call
      * @author Ludovico, Lorenzo
      */
-    public Result handleGame(Call call, ClientInterface client){
+    public Result handleGame(Call call, ClientInterface client) {
         Result result;
         try{
-            switch (call.service()){
+            switch (call.service()) {
                 case CardSelect -> {
-                    if(!(call.params() instanceof CardSelect)){
+                    if(!(call.params() instanceof CardSelect)) {
                         throw new WrongParametersException("CardSelect", call.params().getClass().getName(), "CardSelect");
                     }
                     CardSelect cardSelect = (CardSelect) call.params();
                     String username = client.getUsername();
                     Player player = game.getPlayers().stream().filter(p -> p.getName().equals(username)).findFirst().orElseThrow();
-                    if(!currentPlayer.equals(player)){
+                    if (!currentPlayer.equals(player)) {
                         throw new NotYourTurnException();
                     }
                     doMove(player, cardSelect.selectedCards(), cardSelect.column());
@@ -271,7 +278,7 @@ public class GameController {
                     addCommonCockade(player, completedObjectives, newCommonObjectivesScores);
                     refillTable();
                     Optional<Player> nextPlayer = nextNotDisconnected();
-                    if(nextPlayer.isPresent()){
+                    if (nextPlayer.isPresent()) {
                         currentPlayer = nextPlayer.get();
                         Update update = new Update(
                             username,
@@ -283,8 +290,8 @@ public class GameController {
                         );
                         globalUpdate(ServerEvent.Update(update));
                         saveGame();
-                    }else{
-                        for(Player p : game.getPlayers()){
+                    } else {
+                        for (Player p : game.getPlayers()) {
                             addPersonalCockade(p);
                         }
                         ScoreBoard scoreBoard = new ScoreBoard(game);
@@ -295,14 +302,14 @@ public class GameController {
                     result = Result.empty(call.id());
                 }
                 case GameChatSend -> {
-                    if(!(call.params() instanceof Message)){
+                    if (!(call.params() instanceof Message)) {
                         throw new WrongParametersException("Message", call.params().getClass().getName(), "GameChatSend");
                     }
                     Message new_chat_message = (Message) call.params();
                     ServerEvent event = ServerEvent.NewMessage(new_chat_message);
-                    if(new_chat_message.idReceiver().isEmpty()){
+                    if (new_chat_message.idReceiver().isEmpty()) {
                         globalUpdate(event);
-                    }else{
+                    } else {
                         Optional<ClientInterface> receiver = clientManager.getClient(new_chat_message.idReceiver().get());
                         if(receiver.isEmpty()){
                             throw new ClientNotFoundException();
@@ -316,17 +323,17 @@ public class GameController {
                     throw new WrongThreadException();
                 }
             }
-        }catch(Exception e){
+        } catch(Exception e) {
             result = Result.err(e, call.id());
         }
         return result;
     }
+
     /**
      * makes the player exit the game
      * and ends the game
      * @author Ludovico, Lorenzo, Marco
      */
-
     public void exitGame() {
         LobbyController lobbyController = LobbyController.getInstance();
         for(Player player: game.getPlayers()){
@@ -375,11 +382,10 @@ public class GameController {
      * @return
      * @author Lorenzo
      */
-
-    public ArrayList<String> getPlayersOrder(){
+    public ArrayList<String> getPlayersOrder() {
         ArrayList<String> playersOrder = new ArrayList<>();
-        synchronized (game.getPlayers()){
-            for(Player player: game.getPlayers()){
+        synchronized (game.getPlayers()) {
+            for (Player player: game.getPlayers()) {
                 playersOrder.add(player.getName());
             }
         }
@@ -392,7 +398,6 @@ public class GameController {
      * @throws Exception
      * @author Marco, Lorenzo
      */
-
     public GameInfo getGameInfo(Player player) throws Exception {
         ArrayList<Card[][]> shelves = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> players = game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new));
