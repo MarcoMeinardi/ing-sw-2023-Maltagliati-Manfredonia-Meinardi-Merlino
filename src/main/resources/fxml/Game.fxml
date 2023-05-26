@@ -8,31 +8,35 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.GameViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="1140.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.GameViewController">
    <children>
-      <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true">
+      <ImageView fitHeight="760.0" fitWidth="1140.0" pickOnBounds="true">
          <image>
             <Image url="@../img/misc/sfondo parquet.jpg" />
          </image>
       </ImageView>
-      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="430.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="252.0" fitWidth="218.0" layoutX="763.0" layoutY="55.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/boards/bookshelf.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="400.0" fitWidth="400.0" pickOnBounds="true">
+      <ImageView fitHeight="600.0" fitWidth="600.0" pickOnBounds="true">
          <image>
             <Image url="@../img/boards/livingroom.png" />
          </image>
       </ImageView>
-      <Button fx:id="printPersonalObjectivesButton" layoutX="442.0" layoutY="13.0" mnemonicParsing="false" onAction="#printPersonalObjective" text="Show Personal Obj" />
-      <Button fx:id="printAllShelvesButton" layoutX="454.0" layoutY="205.0" mnemonicParsing="false" onAction="#printAllShelves" text="Show All Shelfs" />
-      <Button fx:id="printCommonObjectivesButton" layoutX="444.0" layoutY="239.0" mnemonicParsing="false" onAction="#printCommonObjectives" text="Show Common Obj" />
-      <ListView fx:id="chat" editable="true" layoutX="428.0" layoutY="275.0" prefHeight="70.0" prefWidth="150.0" />
-      <Button fx:id="sendMessageButton" layoutX="480.0" layoutY="366.0" mnemonicParsing="false" onAction="#sendMessage" text="Send" />
-      <TextField fx:id="messageInput" layoutX="428.0" layoutY="345.0" prefHeight="20.0" prefWidth="150.0" promptText="Type your message...">
+      <Button fx:id="printPersonalObjectivesButton" layoutX="446.0" layoutY="673.0" mnemonicParsing="false" onAction="#printPersonalObjectivesButton" text="Show Personal Obj" />
+      <Button fx:id="printAllShelvesButton" layoutX="43.0" layoutY="673.0" mnemonicParsing="false" onAction="#printAllShelvesObjectivesButton" text="Show All Shelfs" />
+      <Button fx:id="printCommonObjectivesButton" layoutX="240.0" layoutY="673.0" mnemonicParsing="false" onAction="#printCommonObjectivesButton" text="Show Common Obj" />
+      <ListView fx:id="chat" editable="true" layoutX="715.0" layoutY="510.0" prefHeight="71.0" prefWidth="327.0" />
+      <Button fx:id="sendMessageButton" layoutX="816.0" layoutY="619.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="71.0" prefWidth="125.0" text="Send message">
+         <font>
+            <Font size="16.0" />
+         </font></Button>
+      <TextField fx:id="messageInput" layoutX="715.0" layoutY="582.0" prefHeight="37.0" prefWidth="327.0" promptText="Type your message...">
          <font>
             <Font size="10.0" />
          </font></TextField>
+      <ListView fx:id="players" layoutX="743.0" layoutY="349.0" prefHeight="94.0" prefWidth="271.0" />
    </children>
 </AnchorPane>
