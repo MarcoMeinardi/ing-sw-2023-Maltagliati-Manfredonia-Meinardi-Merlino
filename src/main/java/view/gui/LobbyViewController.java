@@ -289,7 +289,7 @@ public class LobbyViewController implements Initializable{
 
         //try to send it to the server and add it to chat
         try{
-            Result result = networkManager.chat(messageText).waitResult();
+            Result result = networkManager.chat(new Message(username, messageText)).waitResult();
             if (result.isErr()) {
                 System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
                 chat.getItems().add("[ERROR] We could not send your message, please try again later");
@@ -321,7 +321,11 @@ public class LobbyViewController implements Initializable{
         Calendar calendar = GregorianCalendar.getInstance();
         String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
         String minute = String.valueOf(calendar.get(Calendar.MINUTE));
-        chat.getItems().add("[" + hour + ":"+minute+ "] " +message.idSender()+ ": " + message.message());
+        if (message.idReceiver().isEmpty()) {
+            chat.getItems().add(String.format("[%s:%s] %s to everyone: %s", hour, minute, message.idSender(), message.message()));
+        } else {
+            chat.getItems().add(String.format("[%s:%s] %s to everyone: %s", hour, minute, message.idSender(), message.message()));
+        }
         if(chat.getItems().size() != 3){
             chat.scrollTo(chat.getItems().size()-1);
         }
@@ -343,7 +347,6 @@ public class LobbyViewController implements Initializable{
      *
      * @autor: Ludovico
      */
-
     private void handleEvent() {
         Optional<ServerEvent> event = networkManager.getEvent();
         if (event.isEmpty()) {
@@ -382,8 +385,8 @@ public class LobbyViewController implements Initializable{
             }
             case NewMessage -> {
                 Message message = (Message)event.get().getData();
-                if (!message.idPlayer().equals(username)) {
-                    System.out.format("%s: %s%n", message.idPlayer(), message.message());
+                if (!message.idSender().equals(username)) {
+                    System.out.format("%s: %s%n", message.idSender(), message.message());
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {

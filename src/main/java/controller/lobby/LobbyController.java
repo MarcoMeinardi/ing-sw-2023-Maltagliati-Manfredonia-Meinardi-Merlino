@@ -23,11 +23,18 @@ public class LobbyController extends Thread {
     private HashMap<String, Lobby> lobbies = new HashMap<>();
     private ArrayList<GameController> games = new ArrayList<>();
     private DataBase db = DataBase.getInstance();
+    private final ClientManagerInterface clientManager;
 
     private static final String SAVESTATES_DIRECTORY = "save-states";
     private static final String SAVESTATES_PREFIX = "save_";
 
-    private LobbyController() {}
+    private LobbyController() {
+        try {
+            clientManager = GlobalClientManager.getInstance();
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot get client manager instance");
+        }
+    }
 
     /**
      * Singleton pattern, if the instance is null, it creates a new one and starts it
@@ -63,7 +70,7 @@ public class LobbyController extends Thread {
                     for (Lobby lobby : lobbies.values()) {
                         ArrayList<String> players = lobby.getPlayers();
                         for (int i = 0; i < players.size(); i++) {
-                            Optional<ClientInterface> client = GlobalClientManager.getInstance().getClient(players.get(i));
+                            Optional<ClientInterface> client = clientManager.getClient(players.get(i));
                             if (client.isEmpty()) {
                                 throw new ClientNotFoundException();
                             } else {
@@ -252,12 +259,21 @@ public class LobbyController extends Thread {
                     result = Result.empty(call.id());
                 }
                 case GameChatSend -> {
-                    if(!(call.params() instanceof String)){
-                        throw new WrongParametersException("String", call.params().getClass().getName(), "GameChatSend");
+                    if (!(call.params() instanceof Message)) {
+                        throw new WrongParametersException("Message", call.params().getClass().getName(), "GameChatSend");
                     }
-                    Message message = new Message(client.getUsername(), (String) call.params());
-                    ServerEvent event = ServerEvent.NewMessage(message);
-                    globalUpdate(lobby, event);
+                    Message new_chat_message = (Message)call.params();
+                    ServerEvent event = ServerEvent.NewMessage(new_chat_message);
+                    if (new_chat_message.idReceiver().isEmpty()) {
+                        globalUpdate(lobby, event);
+                    } else {
+                        Optional<ClientInterface> receiver = clientManager.getClient(new_chat_message.idReceiver().get());
+                        if(receiver.isEmpty()){
+                            throw new ClientNotFoundException();
+                        }
+                        receiver.get().sendEvent(event);
+                    }
+
                     result = Result.empty(call.id());
                 }
                 default -> result = Result.err(new WrongServiceException(), call.id());
@@ -338,7 +354,7 @@ public class LobbyController extends Thread {
         synchronized (lobby) {
             for(String player : lobby.getPlayers()) {
                 try {
-                    Optional<ClientInterface> client = GlobalClientManager.getInstance().getClient(player);
+                    Optional<ClientInterface> client = clientManager.getClient(player);
                     if(client.isPresent()) {
                         client.get().sendEvent(event);
                     }

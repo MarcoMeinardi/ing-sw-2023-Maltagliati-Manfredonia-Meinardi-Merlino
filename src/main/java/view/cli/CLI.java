@@ -386,7 +386,7 @@ public class CLI {
 	private void sendMessage() {
 		String message = IO.askString("[+] Message: ");
 		try {
-			Result result = networkManager.chat(message).waitResult();
+			Result result = networkManager.chat(new Message(username, message)).waitResult();
 			if (result.isErr()) {
 				System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
 			}
@@ -488,8 +488,12 @@ public class CLI {
 			}
 			case NewMessage -> {
 				Message message = (Message)event.get().getData();
-				if (!message.idPlayer().equals(username)) {
-					System.out.format("[*] %s: %s%n", message.idPlayer(), message.message());
+				if (!message.idSender().equals(username)) {
+					if (message.idReceiver().isEmpty()) {
+						System.out.format("[%s to everyone]: %s%n", message.idSender(), message.message());
+					} else {
+						System.out.format("[%s to you]: %s%n", message.idSender(), message.idReceiver().get(), message.message());
+					}
 				}
 			} case Pause -> {
 				if (!isPaused) {

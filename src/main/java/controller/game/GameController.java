@@ -305,7 +305,7 @@ public class GameController {
                     if (!(call.params() instanceof Message)) {
                         throw new WrongParametersException("Message", call.params().getClass().getName(), "GameChatSend");
                     }
-                    Message new_chat_message = (Message) call.params();
+                    Message new_chat_message = (Message)call.params();
                     ServerEvent event = ServerEvent.NewMessage(new_chat_message);
                     if (new_chat_message.idReceiver().isEmpty()) {
                         globalUpdate(event);
@@ -319,9 +319,7 @@ public class GameController {
 
                     result = Result.empty(call.id());
                 }
-                default -> {
-                    throw new WrongThreadException();
-                }
+                default -> throw new WrongThreadException();
             }
         } catch(Exception e) {
             result = Result.err(e, call.id());
