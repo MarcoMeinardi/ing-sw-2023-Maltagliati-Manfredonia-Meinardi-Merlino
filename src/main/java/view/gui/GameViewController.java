@@ -44,6 +44,8 @@ public class GameViewController implements Initializable {
     private Thread serverThread;
     static String username;
     private static ArrayList<Shelf> shelves;
+    private static ArrayList<String> commonObjectives;
+    private static ArrayList<String> personalObjectives;
     private ArrayList<String> playersNames;
     private String me;
     private Shelf myShelf;
@@ -282,5 +284,10 @@ public class GameViewController implements Initializable {
     public static ArrayList<Shelf> getShelves(){
         return shelves;
     }
-
+    public static ArrayList<String> getPersonalObjectives(){
+        return personalObjectives;
+    }
+    public static ArrayList<String> getCommonObjectives(){
+        return commonObjectives;
+    }
 }
