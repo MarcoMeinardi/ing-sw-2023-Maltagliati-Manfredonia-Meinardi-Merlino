@@ -86,7 +86,7 @@ public class PersonalObjective extends Objective {
 
         allObjectives.add(new PersonalObjective("First", new Cell[]{
                 new Cell(5, 0, Card.Pianta),
-                new Cell(5, 1, Card.Gatto),
+                new Cell(5, 2, Card.Cornice),
                 new Cell(4, 4, Card.Gatto),
                 new Cell(3, 3, Card.Libro),
                 new Cell(2, 1, Card.Gioco),

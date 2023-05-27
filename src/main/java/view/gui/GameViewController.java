@@ -14,12 +14,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 import javafx.stage.Stage;
-import model.Shelf;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.ServerEvent;
-import network.parameters.GameInfo;
 import network.parameters.Message;
 
 import java.io.IOException;
@@ -43,7 +41,6 @@ public class GameViewController implements Initializable {
     public static ClientStatus state;
     public static Lobby lobby;
     private Thread serverThread;
-
     public static GameData gameData;
     private String username;
 
@@ -53,6 +50,7 @@ public class GameViewController implements Initializable {
         username = LobbyViewController.username;
         networkManager = LobbyViewController.networkManager;
         lobby = LobbyViewController.lobby;
+        state = ClientStatus.InGame;
         startLobby();
         serverThread = new Thread(() -> {
             while (state != ClientStatus.Disconnected) {

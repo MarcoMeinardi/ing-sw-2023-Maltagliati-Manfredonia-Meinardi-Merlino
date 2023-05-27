@@ -38,5 +38,10 @@
             <Font size="10.0" />
          </font></TextField>
       <ListView fx:id="players" layoutX="743.0" layoutY="349.0" prefHeight="94.0" prefWidth="271.0" />
+      <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="208.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/item tiles/Gatti1.1.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

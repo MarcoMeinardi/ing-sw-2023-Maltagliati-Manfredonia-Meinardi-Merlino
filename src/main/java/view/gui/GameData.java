@@ -8,6 +8,7 @@ import model.PersonalObjective;
 import model.Shelf;
 import model.TableTop;
 import network.parameters.GameInfo;
+import network.parameters.Update;
 
 public class GameData {
     private static ArrayList<Shelf> shelves;
@@ -17,18 +18,47 @@ public class GameData {
     private static PersonalObjective myPersonalObjective;
     private static String me;
     private Optional[][] tableTop;
+    private int nPlayers;
+    private ArrayList<Integer> commonObjectivesPoints;
 
     public GameData(GameInfo data, String me){
         this.me = me;
         this.playersNames = data.players();
+        this.nPlayers = this.playersNames.size();
         this.commonObjectives = data.commonObjectives();
         this.myPersonalObjective = new PersonalObjective(data.personalObjective());
         this.shelves = new ArrayList<>();
+        this.commonObjectivesPoints = data.commonObjectivesPoints();
+
         updateTableTop(data.tableTop());
+
         for (int i = 0; i < playersNames.size(); i++) {
             shelves.add(new Shelf(data.shelves().get(i)));
             if (playersNames.get(i).equals(me)) {
                 myShelf = shelves.get(i);
+            }
+        }
+    }
+
+    public void update(Update update) {
+        updateTableTop(update.tableTop());
+
+        for (int i = 0; i < nPlayers; i++) {
+            if (playersNames.get(i).equals(update.idPlayer())) {
+                shelves.set(i, new Shelf(update.shelf()));
+                if (playersNames.get(i).equals(me)) {
+                    myShelf = shelves.get(i);
+                }
+                break;
+            }
+        }
+
+        for (int i = 0; i < update.commonObjectives().size(); i++) {
+            for (int j = 0; j < commonObjectives.size(); j++) {
+                if (update.commonObjectives().get(i).name().equals(commonObjectives.get(j))) {
+                    commonObjectivesPoints.set(j, update.newCommonObjectivesScores().get(i));
+                    break;
+                }
             }
         }
     }
@@ -45,10 +75,11 @@ public class GameData {
         }
     }
 
+
+
     public static ArrayList<String> getPlayersNames(){
         return playersNames;
     }
-
     public static ArrayList<String> getCommonObjectives(){
         return commonObjectives;
     }
@@ -57,5 +88,8 @@ public class GameData {
     }
     public static ArrayList<Shelf> getShelves(){
         return shelves;
+    }
+    public static Shelf getMyShelf(){
+        return myShelf;
     }
 }
