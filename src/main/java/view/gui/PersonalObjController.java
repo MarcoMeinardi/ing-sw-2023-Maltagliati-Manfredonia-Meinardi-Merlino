@@ -7,21 +7,16 @@ import javafx.scene.image.ImageView;
 import model.PersonalObjective;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class PersonalObjController implements Initializable {
-    private ArrayList<String> players;
     private String personalObjective;
     private GameData gameData;
-    private static PersonalObjective myPersonalObjective;
-    private static String me;
-
     @FXML
     private ImageView imageContainer;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        GameData gameData = GameViewController.getGameData();
+        gameData = GameViewController.getGameData();
         personalObjective = gameData.getMyPersonalObjective().getName();
         String imageName;
         String imagePath;
