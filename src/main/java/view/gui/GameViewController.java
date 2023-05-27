@@ -19,6 +19,7 @@ import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.ServerEvent;
+import network.parameters.GameInfo;
 import network.parameters.Message;
 
 import java.io.IOException;
@@ -42,31 +43,16 @@ public class GameViewController implements Initializable {
     public static ClientStatus state;
     public static Lobby lobby;
     private Thread serverThread;
-    static String username;
-    private static ArrayList<Shelf> shelves;
-    private static ArrayList<String> commonObjectives;
-    private static ArrayList<String> personalObjectives;
-    private ArrayList<String> playersNames;
-    private String me;
-    private Shelf myShelf;
 
+    public static GameData gameData;
+    private String username;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        state = ClientStatus.InGame;
+        gameData = new GameData(LobbyViewController.gameInfo, LobbyViewController.username);
+        username = LobbyViewController.username;
         networkManager = LobbyViewController.networkManager;
         lobby = LobbyViewController.lobby;
-        username = LobbyViewController.username;
-        sendMessageButton.setDefaultButton(true);
-        playersNames = LobbyViewController.gameInfo.players();
-        shelves = new ArrayList<>();
-        me = username;
-        for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {
-            shelves.add(new Shelf(LobbyViewController.gameInfo.shelves().get(i)));
-            if (playersNames.get(i).equals(me)) {
-                myShelf = shelves.get(i);
-            }
-        }
         startLobby();
         serverThread = new Thread(() -> {
             while (state != ClientStatus.Disconnected) {
@@ -281,13 +267,8 @@ public class GameViewController implements Initializable {
         }
     }
 
-    public static ArrayList<Shelf> getShelves(){
-        return shelves;
+    public static GameData getGameData(){
+        return gameData;
     }
-    public static ArrayList<String> getPersonalObjectives(){
-        return personalObjectives;
-    }
-    public static ArrayList<String> getCommonObjectives(){
-        return commonObjectives;
-    }
+
 }

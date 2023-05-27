@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import model.Cockade;
 import model.CommonObjective;
+import model.Game;
 import model.Shelf;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
@@ -14,59 +15,13 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class CommonObjController implements Initializable {
-    private ArrayList<Shelf> shelves;
-    public CommonObjController() {
-        this.shelves = GameViewController.getShelves();
-        this.commonObjectives = GameViewController.getCommonObjectives();
-    }
-
-    public static NetworkManagerInterface networkManager;
-    public static ClientStatus state;
-    public static Lobby lobby;
-    private Thread serverThread;
-    static String username;
-    private ArrayList<String> playersNames;
     private ArrayList<String> commonObjectives;
-    @FXML
-    private String myCommonObjectives;
-
-    private String me;
-
-
+    private GameData gameData;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        state = ClientStatus.InGame;
-        networkManager = LobbyViewController.networkManager;
-        lobby = LobbyViewController.lobby;
-        username = LobbyViewController.username;
-        playersNames = LobbyViewController.gameInfo.players();
-        me = username;
-        for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {
-            commonObjectives.add(this.commonObjectives.get(i));
-            if (playersNames.get(i).equals(me)) {
-                myCommonObjectives = commonObjectives.get(i);
-            }
-        }
-        loadCommonObjectives();
-        serverThread = new Thread(() -> {
-            while (state != ClientStatus.Disconnected) {
-                synchronized (networkManager) {
-                    try {
-                        while (!networkManager.hasEvent()) {
-                            networkManager.wait();
-                        }
-                    } catch (InterruptedException e) {
-                        break;
-                    }
-                }
-            }
-        });
-        serverThread.start();
+         GameData gameData = GameViewController.getGameData();
+         commonObjectives = gameData.getCommonObjectives();
+         //TODO scorri le common objectives e crea un'immagine per ognuna. Usa i nomi delle common objectives per caricare le immagini, ES: "all equal corners"--> 8.jpg. Usa chatgpt per capire come mettere una immagine nel fxml
     }
 
-    public void loadCommonObjectives() {
-        for (int i = 0; i < CommonObjective.N_COMMON_OBJECTIVES; i++) {
-            myCommonObjectives = commonObjectives.get(i);
-            }
-    }
 }
