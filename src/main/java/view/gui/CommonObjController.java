@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class CommonObjController implements Initializable {
     private ArrayList<String> commonObjectives;
     private GameData gameData;
     @FXML
-    private VBox imageContainer;
+    private HBox imageContainer;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GameData gameData = GameViewController.getGameData();

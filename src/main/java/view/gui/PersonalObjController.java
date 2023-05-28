@@ -28,8 +28,8 @@ public class PersonalObjController implements Initializable {
                 imagePath = getClass().getResource(imageName).toExternalForm();
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
             case "Second":
@@ -37,8 +37,8 @@ public class PersonalObjController implements Initializable {
                 imagePath = getClass().getResource(imageName).toExternalForm();
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
             case "Third":
@@ -46,8 +46,8 @@ public class PersonalObjController implements Initializable {
                 imagePath = getClass().getResource(imageName).toExternalForm();
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
             case "Fourth":
@@ -55,8 +55,8 @@ public class PersonalObjController implements Initializable {
                 imagePath = getClass().getResource(imageName).toExternalForm();
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
             case "Fifth":
@@ -64,8 +64,8 @@ public class PersonalObjController implements Initializable {
                 imagePath = getClass().getResource(imageName).toExternalForm();
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
             case "Sixth":
@@ -73,8 +73,8 @@ public class PersonalObjController implements Initializable {
                 imagePath = getClass().getResource(imageName).toExternalForm();
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
             case "Seventh":
@@ -82,8 +82,8 @@ public class PersonalObjController implements Initializable {
                 imagePath = getClass().getResource(imageName).toExternalForm();
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
             case "Eighth":
@@ -91,8 +91,8 @@ public class PersonalObjController implements Initializable {
                 imagePath = getClass().getResource(imageName).toExternalForm();
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
             case "Ninth":
@@ -100,8 +100,8 @@ public class PersonalObjController implements Initializable {
                 imagePath = getClass().getResource(imageName).toExternalForm();
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
             case "Tenth":
@@ -110,8 +110,8 @@ public class PersonalObjController implements Initializable {
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
                 imageView.setPreserveRatio(true);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
             case "Eleventh":
@@ -120,8 +120,8 @@ public class PersonalObjController implements Initializable {
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
                 imageView.setPreserveRatio(true);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
             case "Twelfth":
@@ -130,8 +130,8 @@ public class PersonalObjController implements Initializable {
                 image = new Image(imagePath);
                 imageView = new ImageView(image);
                 imageView.setPreserveRatio(true);
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
+                imageView.setFitWidth(400);
+                imageView.setFitHeight(500);
                 imageContainer.setImage(image);
                 break;
         }

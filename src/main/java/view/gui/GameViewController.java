@@ -28,7 +28,7 @@ import java.util.*;
 public class GameViewController implements Initializable {
 
     private  static final int POPUP_WIDTH = 400;
-    private static final int POPUP_HEIGHT = 200;
+    private static final int POPUP_HEIGHT = 500;
     @FXML
     public Button sendMessageButton;
     @FXML
