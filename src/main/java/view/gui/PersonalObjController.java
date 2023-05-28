@@ -50,6 +50,90 @@ public class PersonalObjController implements Initializable {
                 imageView.setFitHeight(100);
                 imageContainer.setImage(image);
                 break;
+            case "Fourth":
+                imageName = "/img/personal goal cards/Personal_Goals4.png";
+                imagePath = getClass().getResource(imageName).toExternalForm();
+                image = new Image(imagePath);
+                imageView = new ImageView(image);
+                imageView.setFitWidth(100);
+                imageView.setFitHeight(100);
+                imageContainer.setImage(image);
+                break;
+            case "Fifth":
+                imageName = "/img/personal goal cards/Personal_Goals5.png";
+                imagePath = getClass().getResource(imageName).toExternalForm();
+                image = new Image(imagePath);
+                imageView = new ImageView(image);
+                imageView.setFitWidth(100);
+                imageView.setFitHeight(100);
+                imageContainer.setImage(image);
+                break;
+            case "Sixth":
+                imageName = "/img/personal goal cards/Personal_Goals6.png";
+                imagePath = getClass().getResource(imageName).toExternalForm();
+                image = new Image(imagePath);
+                imageView = new ImageView(image);
+                imageView.setFitWidth(100);
+                imageView.setFitHeight(100);
+                imageContainer.setImage(image);
+                break;
+            case "Seventh":
+                imageName = "/img/personal goal cards/Personal_Goals7.png";
+                imagePath = getClass().getResource(imageName).toExternalForm();
+                image = new Image(imagePath);
+                imageView = new ImageView(image);
+                imageView.setFitWidth(100);
+                imageView.setFitHeight(100);
+                imageContainer.setImage(image);
+                break;
+            case "Eighth":
+                imageName = "/img/personal goal cards/Personal_Goals8.png";
+                imagePath = getClass().getResource(imageName).toExternalForm();
+                image = new Image(imagePath);
+                imageView = new ImageView(image);
+                imageView.setFitWidth(100);
+                imageView.setFitHeight(100);
+                imageContainer.setImage(image);
+                break;
+            case "Ninth":
+                imageName = "/img/personal goal cards/Personal_Goals9.png";
+                imagePath = getClass().getResource(imageName).toExternalForm();
+                image = new Image(imagePath);
+                imageView = new ImageView(image);
+                imageView.setFitWidth(100);
+                imageView.setFitHeight(100);
+                imageContainer.setImage(image);
+                break;
+            case "Tenth":
+                imageName = "/img/personal goal cards/Personal_Goals10.png";
+                imagePath = getClass().getResource(imageName).toExternalForm();
+                image = new Image(imagePath);
+                imageView = new ImageView(image);
+                imageView.setPreserveRatio(true);
+                imageView.setFitWidth(100);
+                imageView.setFitHeight(100);
+                imageContainer.setImage(image);
+                break;
+            case "Eleventh":
+                imageName = "/img/personal goal cards/Personal_Goals11.png";
+                imagePath = getClass().getResource(imageName).toExternalForm();
+                image = new Image(imagePath);
+                imageView = new ImageView(image);
+                imageView.setPreserveRatio(true);
+                imageView.setFitWidth(100);
+                imageView.setFitHeight(100);
+                imageContainer.setImage(image);
+                break;
+            case "Twelfth":
+                imageName = "/img/personal goal cards/Personal_Goals12.png";
+                imagePath = getClass().getResource(imageName).toExternalForm();
+                image = new Image(imagePath);
+                imageView = new ImageView(image);
+                imageView.setPreserveRatio(true);
+                imageView.setFitWidth(100);
+                imageView.setFitHeight(100);
+                imageContainer.setImage(image);
+                break;
         }
     }
 }
