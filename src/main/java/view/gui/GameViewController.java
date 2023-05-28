@@ -13,7 +13,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import model.TableTop;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
@@ -28,6 +31,7 @@ import java.util.*;
 public class GameViewController implements Initializable {
 
     private  static final int POPUP_WIDTH = 400;
+    private static final int SIZE = 9;
     private static final int POPUP_HEIGHT = 500;
     @FXML
     public Button sendMessageButton;
@@ -69,6 +73,33 @@ public class GameViewController implements Initializable {
         serverThread.start();
     }
 
+    private void fillScene(TableTop tableTop) {
+        Optional[][] table = tableTop.getTable();
+        for(int y = 0; y < SIZE; y++){
+            for(int x = 0; x < SIZE; x++){
+                if(tableTop.isUsed(y,x) && table[y][x].isPresent()){
+                    ImageView imageView = null;
+                    String imageName;
+                    String imagePath;
+                    Image image;
+                    //controlla come effettivamente chiedere al table il tipo nella posizione
+                    switch (table[y][x].get().toString()){
+                        case "Gatto":
+                            imageName = "/img/item tiles/Gatti1.2.png";
+                            imagePath = getClass().getResource(imageName).toExternalForm();
+                            image = new Image(imagePath);
+                            imageView = new ImageView(image);
+                            imageView.setFitHeight(50);
+                            imageView.setFitWidth(50);
+                            //attaccala dove serve
+                            break;
+                            //fai altri case
+                    }
+                }
+            }
+        }
+
+    }
     public void startLobby(){
         //initialize the list view with blank spaces
         for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {

@@ -35,7 +35,7 @@ public class TableTop {
 	 * @param x The x coordinate of the position.
 	 * @return The card at the specified position.
 	 */
-	private boolean isUsed(int y, int x) {
+	public boolean isUsed(int y, int x) {
 		return PLAYER_NUMBER_MASK[y][x] <= nPlayers;
 	}
 
@@ -189,6 +189,9 @@ public class TableTop {
 
 	public SaveTableTop getSaveTableTop() {
 		return new SaveTableTop(getSerializable(), deck);
+	}
+	public Optional<Card>[][] getTable() {
+		return table;
 	}
 }
 

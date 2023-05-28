@@ -17,7 +17,7 @@ public class GameData {
     private static ArrayList<String> playersNames;
     private static PersonalObjective myPersonalObjective;
     private static String me;
-    private Optional[][] tableTop;
+    private static Optional[][] tableTop;
     private int nPlayers;
     private ArrayList<Integer> commonObjectivesPoints;
 
@@ -91,5 +91,8 @@ public class GameData {
     }
     public static Shelf getMyShelf(){
         return myShelf;
+    }
+    public static Optional[][] getTableTop(){
+        return tableTop;
     }
 }
