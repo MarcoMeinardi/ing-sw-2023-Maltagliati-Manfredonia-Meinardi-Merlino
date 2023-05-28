@@ -5,6 +5,6 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.PersonalObjController">
    <children>
-      <VBox fx:id="imageContainer" layoutX="250.0" layoutY="150.0" prefHeight="100.0" prefWidth="100.0" />
+      <VBox fx:id="imageContainer" prefHeight="400.0" prefWidth="600.0" />
    </children>
 </AnchorPane>
