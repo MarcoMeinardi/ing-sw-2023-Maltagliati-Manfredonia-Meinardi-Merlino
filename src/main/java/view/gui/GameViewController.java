@@ -21,10 +21,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Card;
+import model.Point;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.ServerEvent;
+import network.parameters.CardSelect;
 import network.parameters.Message;
 
 import java.io.IOException;
@@ -49,6 +51,8 @@ public class GameViewController implements Initializable {
     private AnchorPane pane;
     @FXML
     private Label messageLabel;
+    @FXML
+    private TextField columnInput;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
     public static Lobby lobby;
@@ -119,7 +123,7 @@ public class GameViewController implements Initializable {
                             imageView.setFitWidth(60);
                             imageView.setX(25+61*x);
                             imageView.setY(25+61*y);
-                            imageToIndices.put(imageView, new int[]{x, y});
+                            imageToIndices.put(imageView, new int[]{y, x});
                             imageView.setOnMouseClicked(event ->{
                                 handleCardSelection(imageView);
                             });
@@ -139,7 +143,7 @@ public class GameViewController implements Initializable {
                             imageView.setFitWidth(60);
                             imageView.setX(25+61*x);
                             imageView.setY(25+61*y);
-                            imageToIndices.put(imageView, new int[]{x, y});
+                            imageToIndices.put(imageView, new int[]{y, x});
                             imageView.setOnMouseClicked(event ->{
                                 handleCardSelection(imageView);
                             });
@@ -159,7 +163,7 @@ public class GameViewController implements Initializable {
                             imageView.setFitWidth(60);
                             imageView.setX(25+61*x);
                             imageView.setY(25+61*y);
-                            imageToIndices.put(imageView, new int[]{x, y});
+                            imageToIndices.put(imageView, new int[]{y, x});
                             imageView.setOnMouseClicked(event ->{
                                 handleCardSelection(imageView);
                             });
@@ -179,7 +183,7 @@ public class GameViewController implements Initializable {
                             imageView.setFitWidth(60);
                             imageView.setX(25+61*x);
                             imageView.setY(25+61*y);
-                            imageToIndices.put(imageView, new int[]{x, y});
+                            imageToIndices.put(imageView, new int[]{y, x});
                             imageView.setOnMouseClicked(event ->{
                                 handleCardSelection(imageView);
                             });
@@ -199,7 +203,7 @@ public class GameViewController implements Initializable {
                             imageView.setFitWidth(60);
                             imageView.setX(25+61*x);
                             imageView.setY(25+61*y);
-                            imageToIndices.put(imageView, new int[]{x, y});
+                            imageToIndices.put(imageView, new int[]{y, x});
                             imageView.setOnMouseClicked(event ->{
                                 handleCardSelection(imageView);
                             });
@@ -252,6 +256,42 @@ public class GameViewController implements Initializable {
         }
 
     }
+
+    @FXML
+    private void tryMove(ActionEvent actionEvent){
+        ArrayList<Point> selectedCards = new ArrayList<>();
+        String column = columnInput.getText();
+
+        if(selectedImages.size() == 0){
+            messageLabel.setText("Select cards!");
+        }
+        if(column == null ||
+                column == "" ||
+                    column.length() > 1 ||
+                        Integer.valueOf(column) > 5 ||
+                            Integer.valueOf(column) < 1){
+            messageLabel.setText("Select a valid column!");
+        }
+
+        for(ImageView image : selectedImages){
+            int[] indices = imageToIndices.get(image);
+            selectedCards.add(new Point(indices[0], indices[1]));
+        }
+
+        try {
+            Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column), selectedCards)).waitResult();
+            if (result.isErr()) {
+                System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
+                messageLabel.setText("Can't select cards");
+            } else {
+                return;
+            }
+        } catch (Exception e) {
+            System.out.println("[ERROR] " + e.getMessage());
+        }
+
+    }
+
     public void startLobby(){
         //initialize the list view with blank spaces
         for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {

@@ -26,9 +26,9 @@
             <Image url="@../img/boards/livingroom.png" />
          </image>
       </ImageView>
-      <Button fx:id="printPersonalObjectivesButton" layoutX="446.0" layoutY="673.0" mnemonicParsing="false" onAction="#printPersonalObjectivesButton" text="Show Personal Obj" />
-      <Button fx:id="printAllShelvesButton" layoutX="43.0" layoutY="673.0" mnemonicParsing="false" onAction="#printAllShelvesObjectivesButton" text="Show All Shelfs" />
-      <Button fx:id="printCommonObjectivesButton" layoutX="240.0" layoutY="673.0" mnemonicParsing="false" onAction="#printCommonObjectivesButton" text="Show Common Obj" />
+      <Button fx:id="printPersonalObjectivesButton" layoutX="311.0" layoutY="673.0" mnemonicParsing="false" onAction="#printPersonalObjectivesButton" text="Show Personal Obj" />
+      <Button fx:id="printAllShelvesButton" layoutX="29.0" layoutY="673.0" mnemonicParsing="false" onAction="#printAllShelvesObjectivesButton" text="Show All Shelfs" />
+      <Button fx:id="printCommonObjectivesButton" layoutX="154.0" layoutY="673.0" mnemonicParsing="false" onAction="#printCommonObjectivesButton" text="Show Common Obj" />
       <ListView fx:id="chat" editable="true" layoutX="715.0" layoutY="510.0" prefHeight="71.0" prefWidth="327.0" />
       <Button fx:id="sendMessageButton" layoutX="816.0" layoutY="619.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="71.0" prefWidth="125.0" text="Send message">
          <font>
@@ -38,11 +38,17 @@
          <font>
             <Font size="10.0" />
          </font></TextField>
-      <ListView fx:id="players" layoutX="743.0" layoutY="369.0" prefHeight="94.0" prefWidth="271.0" />
+      <ListView fx:id="players" layoutX="743.0" layoutY="385.0" prefHeight="94.0" prefWidth="271.0" />
       <Label fx:id="messageLabel" alignment="CENTER" layoutX="743.0" layoutY="42.0" prefHeight="37.0" prefWidth="271.0" textFill="#a1ff00">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
+      <Button fx:id="moveButton" layoutX="466.0" layoutY="673.0" mnemonicParsing="false" onAction="#tryMove" text="Move to shelf" />
+      <TextField fx:id="columnInput" alignment="CENTER" layoutX="806.0" layoutY="333.0" prefHeight="37.0" prefWidth="132.0" promptText="Select a column">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </TextField>
    </children>
 </AnchorPane>
