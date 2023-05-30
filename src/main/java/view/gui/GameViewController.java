@@ -15,8 +15,10 @@ import javafx.scene.control.TextField;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import model.TableTop;
+import model.Card;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
@@ -41,6 +43,8 @@ public class GameViewController implements Initializable {
     private ListView chat;
     @FXML
     private ListView players;
+    @FXML
+    private AnchorPane pane;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
     public static Lobby lobby;
@@ -56,6 +60,7 @@ public class GameViewController implements Initializable {
         lobby = LobbyViewController.lobby;
         state = ClientStatus.InGame;
         startLobby();
+        fillScene(gameData.getTableTop());
         serverThread = new Thread(() -> {
             while (state != ClientStatus.Disconnected) {
                 synchronized (networkManager) {
@@ -73,27 +78,82 @@ public class GameViewController implements Initializable {
         serverThread.start();
     }
 
-    private void fillScene(TableTop tableTop) {
-        Optional[][] table = tableTop.getTable();
+    private void fillScene(Optional<Card>[][] table) {
         for(int y = 0; y < SIZE; y++){
             for(int x = 0; x < SIZE; x++){
-                if(tableTop.isUsed(y,x) && table[y][x].isPresent()){
+                if(table[y][x].isPresent()){
                     ImageView imageView = null;
                     String imageName;
                     String imagePath;
                     Image image;
                     //controlla come effettivamente chiedere al table il tipo nella posizione
-                    switch (table[y][x].get().toString()){
-                        case "Gatto":
+                    switch (table[y][x].get()){
+                        case Gatto:
                             imageName = "/img/item tiles/Gatti1.2.png";
                             imagePath = getClass().getResource(imageName).toExternalForm();
                             image = new Image(imagePath);
                             imageView = new ImageView(image);
-                            imageView.setFitHeight(50);
-                            imageView.setFitWidth(50);
-                            //attaccala dove serve
+                            imageView.setFitHeight(60);
+                            imageView.setFitWidth(60);
+                            imageView.setX(25+60*x);
+                            imageView.setY(25+60*y);
+                            pane.getChildren().add(imageView);
                             break;
-                            //fai altri case
+                        case Libro:
+                            imageName = "/img/item tiles/Libri1.2.png";
+                            imagePath = getClass().getResource(imageName).toExternalForm();
+                            image = new Image(imagePath);
+                            imageView = new ImageView(image);
+                            imageView.setFitHeight(60);
+                            imageView.setFitWidth(60);
+                            imageView.setX(25+60*x);
+                            imageView.setY(25+60*y);
+                            pane.getChildren().add(imageView);
+                            break;
+                        case Cornice:
+                            imageName = "/img/item tiles/Cornici1.2.png";
+                            imagePath = getClass().getResource(imageName).toExternalForm();
+                            image = new Image(imagePath);
+                            imageView = new ImageView(image);
+                            imageView.setFitHeight(60);
+                            imageView.setFitWidth(60);
+                            imageView.setX(25+60*x);
+                            imageView.setY(25+60*y);
+                            pane.getChildren().add(imageView);
+                            break;
+                        case Gioco:
+                            imageName = "/img/item tiles/Giochi1.2.png";
+                            imagePath = getClass().getResource(imageName).toExternalForm();
+                            image = new Image(imagePath);
+                            imageView = new ImageView(image);
+                            imageView.setFitHeight(60);
+                            imageView.setFitWidth(60);
+                            imageView.setX(25+60*x);
+                            imageView.setY(25+60*y);
+                            pane.getChildren().add(imageView);
+                            break;
+                        case Pianta:
+                            imageName = "/img/item tiles/Piante1.2.png";
+                            imagePath = getClass().getResource(imageName).toExternalForm();
+                            image = new Image(imagePath);
+                            imageView = new ImageView(image);
+                            imageView.setFitHeight(60);
+                            imageView.setFitWidth(60);
+                            imageView.setX(25+60*x);
+                            imageView.setY(25+60*y);
+                            pane.getChildren().add(imageView);
+                            break;
+                        case Trofeo:
+                            imageName = "/img/item tiles/Trofei1.2.png";
+                            imagePath = getClass().getResource(imageName).toExternalForm();
+                            image = new Image(imagePath);
+                            imageView = new ImageView(image);
+                            imageView.setFitHeight(60);
+                            imageView.setFitWidth(60);
+                            imageView.setX(25+60*x);
+                            imageView.setY(25+60*y);
+                            pane.getChildren().add(imageView);
+                            break;
                     }
                 }
             }

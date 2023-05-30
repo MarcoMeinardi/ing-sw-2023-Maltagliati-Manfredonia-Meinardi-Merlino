@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="1140.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.GameViewController">
+<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="1140.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.GameViewController">
    <children>
       <ImageView fitHeight="760.0" fitWidth="1140.0" pickOnBounds="true">
          <image>
@@ -38,7 +38,7 @@
             <Font size="10.0" />
          </font></TextField>
       <ListView fx:id="players" layoutX="743.0" layoutY="349.0" prefHeight="94.0" prefWidth="271.0" />
-      <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="208.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="671.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/item tiles/Gatti1.1.png" />
          </image>
