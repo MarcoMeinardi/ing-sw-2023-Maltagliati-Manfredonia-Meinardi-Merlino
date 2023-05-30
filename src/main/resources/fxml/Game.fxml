@@ -41,7 +41,7 @@
       <ListView fx:id="players" layoutX="743.0" layoutY="369.0" prefHeight="94.0" prefWidth="271.0" />
       <Label fx:id="messageLabel" alignment="CENTER" layoutX="743.0" layoutY="42.0" prefHeight="37.0" prefWidth="271.0" textFill="#a1ff00">
          <font>
-            <Font size="22.0" />
+            <Font size="16.0" />
          </font>
       </Label>
    </children>
