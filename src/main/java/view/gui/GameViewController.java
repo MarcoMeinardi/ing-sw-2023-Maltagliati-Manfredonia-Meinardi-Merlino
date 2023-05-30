@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,19 +24,22 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Card;
 import model.Shelf;
+import model.Cockade;
+import model.Point;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.ServerEvent;
+import network.parameters.CardSelect;
 import network.parameters.Message;
+import network.parameters.Update;
 
 import java.io.IOException;
 import java.net.URL;
 
 import java.util.*;
 
-
-
+//DO NOT GIVE ID WITH "cat", "book", "frame", "toy", "plant", "trophy" IN IT TO ANY NODES IN THE FXML FILE
 public class GameViewController implements Initializable {
 
     private  static final int POPUP_WIDTH = 400;
@@ -53,6 +57,8 @@ public class GameViewController implements Initializable {
     private AnchorPane pane;
     @FXML
     private Label messageLabel;
+    @FXML
+    private TextField columnInput;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
     public static Lobby lobby;
@@ -63,6 +69,7 @@ public class GameViewController implements Initializable {
     private List<ImageView> selectedImages = new ArrayList<>();
     private boolean yourTurn = false;
 
+    //TODO implement label to say whose turn it is
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         gameData = new GameData(LobbyViewController.gameInfo, LobbyViewController.username);
@@ -100,6 +107,23 @@ public class GameViewController implements Initializable {
         int plantNumber = 1;
         int trophyNumber = 1;
         imageToIndices.clear();
+        List<Node> toRemove = new ArrayList<>();
+        for(Node child : pane.getChildren()){
+            if(child.getId() != null){
+                if(child.getId().contains("cat") ||
+                        child.getId().contains("book") ||
+                            child.getId().contains("frame") ||
+                                child.getId().contains("toy") ||
+                                    child.getId().contains("plant") ||
+                                        child.getId().contains("trophy")){
+                    toRemove.add(child);
+                }
+            }
+        }
+
+        for(Node child : toRemove){
+            pane.getChildren().remove(child);
+        }
 
         for(int y = 0; y < SIZE; y++){
             for(int x = 0; x < SIZE; x++){
@@ -123,7 +147,8 @@ public class GameViewController implements Initializable {
                             imageView.setFitWidth(60);
                             imageView.setX(25+61*x);
                             imageView.setY(25+61*y);
-                            imageToIndices.put(imageView, new int[]{x, y});
+                            imageView.setId("cat" + x + y);
+                            imageToIndices.put(imageView, new int[]{y, x});
                             imageView.setOnMouseClicked(event ->{
                                 handleCardSelection(imageView);
                             });
@@ -143,7 +168,8 @@ public class GameViewController implements Initializable {
                             imageView.setFitWidth(60);
                             imageView.setX(25+61*x);
                             imageView.setY(25+61*y);
-                            imageToIndices.put(imageView, new int[]{x, y});
+                            imageView.setId("book" + x + y);
+                            imageToIndices.put(imageView, new int[]{y, x});
                             imageView.setOnMouseClicked(event ->{
                                 handleCardSelection(imageView);
                             });
@@ -163,7 +189,8 @@ public class GameViewController implements Initializable {
                             imageView.setFitWidth(60);
                             imageView.setX(25+61*x);
                             imageView.setY(25+61*y);
-                            imageToIndices.put(imageView, new int[]{x, y});
+                            imageView.setId("frame" + x + y);
+                            imageToIndices.put(imageView, new int[]{y, x});
                             imageView.setOnMouseClicked(event ->{
                                 handleCardSelection(imageView);
                             });
@@ -183,7 +210,8 @@ public class GameViewController implements Initializable {
                             imageView.setFitWidth(60);
                             imageView.setX(25+61*x);
                             imageView.setY(25+61*y);
-                            imageToIndices.put(imageView, new int[]{x, y});
+                            imageView.setId("toy" + x + y);
+                            imageToIndices.put(imageView, new int[]{y, x});
                             imageView.setOnMouseClicked(event ->{
                                 handleCardSelection(imageView);
                             });
@@ -203,7 +231,8 @@ public class GameViewController implements Initializable {
                             imageView.setFitWidth(60);
                             imageView.setX(25+61*x);
                             imageView.setY(25+61*y);
-                            imageToIndices.put(imageView, new int[]{x, y});
+                            imageView.setId("plant" + x + y);
+                            imageToIndices.put(imageView, new int[]{y, x});
                             imageView.setOnMouseClicked(event ->{
                                 handleCardSelection(imageView);
                             });
@@ -223,6 +252,7 @@ public class GameViewController implements Initializable {
                             imageView.setFitWidth(60);
                             imageView.setX(25+61*x);
                             imageView.setY(25+61*y);
+                            imageView.setId("trophy" + x + y);
                             imageToIndices.put(imageView, new int[]{x, y});
                             imageView.setOnMouseClicked(event ->{
                                 handleCardSelection(imageView);
@@ -412,6 +442,49 @@ public class GameViewController implements Initializable {
 
             fillShelf(selectedImages, gameData.getMyShelf());
         }
+    }
+
+    }
+
+    @FXML
+    private void tryMove(ActionEvent actionEvent){
+        ArrayList<Point> selectedCards = new ArrayList<>();
+        String column = columnInput.getText();
+        String columnHelper = columnInput.getText();
+
+        if(selectedImages.size() == 0){
+            messageLabel.setText("Select cards!");
+        }
+        if(columnHelper.trim().isEmpty() ||
+                column == null){
+            messageLabel.setText("Left blank!");
+        }
+        if(column.length() > 1 ||
+                Integer.valueOf(column) > 5 ||
+                    Integer.valueOf(column) < 1){
+            messageLabel.setText("Select a valid column!");
+        }
+        if(!yourTurn){
+            messageLabel.setText("It's not your turn!");
+        }
+
+        for(ImageView image : selectedImages){
+            int[] indices = imageToIndices.get(image);
+            selectedCards.add(new Point(indices[0], indices[1]));
+        }
+
+        try {
+            Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column), selectedCards)).waitResult();
+            if (result.isErr()) {
+                System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
+                messageLabel.setText("Can't select cards");
+            } else {
+                return;
+            }
+        } catch (Exception e) {
+            System.out.println("[ERROR] " + e.getMessage());
+        }
+
     }
 
     private void handleCardInsert(ImageView image) {
@@ -617,7 +690,36 @@ public class GameViewController implements Initializable {
                     });
                 }
             }
+            case Update -> {
+                Update update = (Update)event.get().getData();
+                for (Cockade commonObjective : update.commonObjectives()) {
+                    if (update.idPlayer().equals(username)) {
+                        System.out.format("[*] You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
+                        //TODO: aggiungere un popup che dice che hai completato un obiettivo comune
+                    } else {
+                        System.out.format("[*] %s completed %s getting %d points%n", update.idPlayer(), commonObjective.name(), commonObjective.points());
+                        //TODO: aggiungere un popup che dice che un altro giocatore ha completato un obiettivo comune
+                    }
+                }
+                gameData.update(update);
+                if (update.nextPlayer().equals(username)) {
+                    yourTurn = true;
+                    System.out.println("[*] It's your turn");
+                    //TODO: aggiungere un popup che dice che è il tuo turno
+                } else {
+                    yourTurn = false;
+                    System.out.println("[*] It's " + update.nextPlayer() + "'s turn");
+                    //TODO: aggiungere un popup che dice che è il turno di un altro giocatore
+                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        fillScene(gameData.getTableTop());
+                    }
+                });
+            }
             default -> throw new RuntimeException("Unhandled event");
+
         }
     }
 
