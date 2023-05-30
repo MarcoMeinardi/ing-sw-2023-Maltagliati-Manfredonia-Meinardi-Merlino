@@ -95,6 +95,7 @@ public class GameViewController implements Initializable {
         int toyNumber = 1;
         int plantNumber = 1;
         int trophyNumber = 1;
+        imageToIndices.clear();
 
         for(int y = 0; y < SIZE; y++){
             for(int x = 0; x < SIZE; x++){
