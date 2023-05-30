@@ -45,10 +45,6 @@
          </font>
       </Label>
       <Button fx:id="moveButton" layoutX="466.0" layoutY="673.0" mnemonicParsing="false" onAction="#tryMove" text="Move to shelf" />
-      <TextField fx:id="columnInput" alignment="CENTER" layoutX="806.0" layoutY="333.0" prefHeight="37.0" prefWidth="132.0" promptText="Select a column">
-         <font>
-            <Font size="10.0" />
-         </font>
-      </TextField>
+      <TextField fx:id="columnInput" alignment="CENTER" layoutX="806.0" layoutY="333.0" prefHeight="37.0" prefWidth="132.0" promptText="Select a column" />
    </children>
 </AnchorPane>
