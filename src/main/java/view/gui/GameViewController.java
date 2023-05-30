@@ -444,8 +444,6 @@ public class GameViewController implements Initializable {
         }
     }
 
-    }
-
     @FXML
     private void tryMove(ActionEvent actionEvent){
         ArrayList<Point> selectedCards = new ArrayList<>();
