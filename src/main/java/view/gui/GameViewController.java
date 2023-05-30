@@ -17,10 +17,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Card;
+import model.Shelf;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
@@ -31,6 +33,8 @@ import java.io.IOException;
 import java.net.URL;
 
 import java.util.*;
+
+
 
 public class GameViewController implements Initializable {
 
@@ -232,6 +236,162 @@ public class GameViewController implements Initializable {
 
     }
 
+    private void fillShelf(List<ImageView> selectedImages, Shelf shelf) {
+        final ImageView imageView = null; //null perchè mi dava errore
+        if (!selectedImages.isEmpty()) {
+            imageView.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    int col = (int) (event.getX() / 60); // Calcola la colonna in base alla posizione X del click
+                    int row = (int) (event.getY() / 60); // Calcola la riga in base alla posizione Y del click
+/// aggiunta di una griglia?
+                    if (isValidPosition(col, row)) {
+
+                        }
+                    }
+            });
+        }
+        /*int shelfSizeX = 5;
+        int shelfSizeY = 6;
+        int startX = 25;
+        int startY = SIZE * 61 - 35;
+        int catNumber = 1;
+        int bookNumber = 1;
+        int frameNumber = 1;
+        int toyNumber = 1;
+        int plantNumber = 1;
+        int trophyNumber = 1;
+        imageToIndices.clear();
+
+        for (int y = startY; y < startY + shelfSizeY * 61; y += 61) {
+            for (int x = startX; x < startX + shelfSizeX * 61; x += 61) {
+                String imageName = null;
+                String imagePath;
+                Image image;
+                final ImageView imageView;
+
+                for (int i = 0; i < selectedImages.size(); i++) {
+                    if (selectedImages.get(i).getId().equals("Gatto")) {
+                        imageName = "/img/item tiles/Gatti1." + catNumber + ".png";
+                        if (catNumber == 3) {
+                            catNumber = 1;
+                        } else {
+                            catNumber++;
+                        }
+                        imagePath = getClass().getResource(imageName).toExternalForm();
+                        image = new Image(imagePath);
+                        imageView = new ImageView(image);
+                        imageView.setFitHeight(60);
+                        imageView.setFitWidth(60);
+                        imageView.setX(25+61*x);
+                        imageView.setY(25+61*y);
+                        imageToIndices.put(imageView, new int[]{x, y});
+                        pane.getChildren().add(imageView);
+                        break;
+                    }
+                    if (selectedImages.get(i).getId().equals("Libro")) {
+                        imageName = "/img/item tiles/Libri1." + bookNumber + ".png";
+                        if (bookNumber == 3) {
+                            bookNumber = 1;
+                        } else {
+                            bookNumber++;
+                        }
+                        imagePath = getClass().getResource(imageName).toExternalForm();
+                        image = new Image(imagePath);
+                        imageView = new ImageView(image);
+                        imageView.setFitHeight(60);
+                        imageView.setFitWidth(60);
+                        imageView.setX(25+61*x);
+                        imageView.setY(25+61*y);
+                        imageToIndices.put(imageView, new int[]{x, y});
+                        pane.getChildren().add(imageView);
+                        break;
+                    }
+                    if (selectedImages.get(i).getId().equals("Cornice")) {
+                        imageName = "/img/item tiles/Cornici1." + frameNumber + ".png";
+                        if (frameNumber == 3) {
+                            frameNumber = 1;
+                        } else {
+                            frameNumber++;
+                        }
+                        imagePath = getClass().getResource(imageName).toExternalForm();
+                        image = new Image(imagePath);
+                        imageView = new ImageView(image);
+                        imageView.setFitHeight(60);
+                        imageView.setFitWidth(60);
+                        imageView.setX(25+61*x);
+                        imageView.setY(25+61*y);
+                        imageToIndices.put(imageView, new int[]{x, y});
+                        pane.getChildren().add(imageView);
+                        break;
+                    }
+                    if (selectedImages.get(i).getId().equals("Gioco")) {
+                        imageName = "/img/item tiles/Giochi1." + toyNumber + ".png";
+                        if (toyNumber == 3) {
+                            toyNumber = 1;
+                        } else {
+                            toyNumber++;
+                        }
+                        imagePath = getClass().getResource(imageName).toExternalForm();
+                        image = new Image(imagePath);
+                        imageView = new ImageView(image);
+                        imageView.setFitHeight(60);
+                        imageView.setFitWidth(60);
+                        imageView.setX(25+61*x);
+                        imageView.setY(25+61*y);
+                        imageToIndices.put(imageView, new int[]{x, y});
+                        pane.getChildren().add(imageView);
+                        break;
+                    }
+                    if (selectedImages.get(i).getId().equals("Pianta")) {
+                        imageName = "/img/item tiles/Piante1." + plantNumber + ".png";
+                        if (plantNumber == 3) {
+                            plantNumber = 1;
+                        } else {
+                            plantNumber++;
+                        }
+                        imagePath = getClass().getResource(imageName).toExternalForm();
+                        image = new Image(imagePath);
+                        imageView = new ImageView(image);
+                        imageView.setFitHeight(60);
+                        imageView.setFitWidth(60);
+                        imageView.setX(25+61*x);
+                        imageView.setY(25+61*y);
+                        imageToIndices.put(imageView, new int[]{x, y});
+                        pane.getChildren().add(imageView);
+                        break;
+                    }
+                    if (selectedImages.get(i).getId().equals("Trofeo")) {
+                        imageName = "/img/item tiles/Trofei1." + trophyNumber + ".png";
+                        if (trophyNumber == 3) {
+                            trophyNumber = 1;
+                        } else {
+                            trophyNumber++;
+                        }
+                        imagePath = getClass().getResource(imageName).toExternalForm();
+                        image = new Image(imagePath);
+                        imageView = new ImageView(image);
+                        imageView.setFitHeight(60);
+                        imageView.setFitWidth(60);
+                        imageView.setX(x);
+                        imageView.setY(y);
+                        imageToIndices.put(imageView, new int[]{x, y});
+                        pane.getChildren().add(imageView);
+                        break;
+                    } else {
+                            imageName = "";
+                            break;
+                    }
+                }
+            }
+        }*/
+    }
+
+    private boolean isValidPosition(int col, int row) {
+        int shelfSizeX = 5;
+        int shelfSizeY = 6;
+        return col >= 0 && col < shelfSizeX && row >= 0 && row < shelfSizeY;
+    }
+
     private void handleCardSelection(ImageView image){
 
         if(selectedImages.contains(image)){
@@ -249,9 +409,19 @@ public class GameViewController implements Initializable {
             else{
                 messageLabel.setText("You can't select more than 3 cards");
             }
-        }
 
+            fillShelf(selectedImages, gameData.getMyShelf());
+        }
     }
+
+    private void handleCardInsert(ImageView image) {
+        if(selectedImages.contains(image)) {
+            selectedImages.add(image);
+        }
+        else{
+                messageLabel.setText("You can't insert card here");
+            }
+        }
     public void startLobby(){
         //initialize the list view with blank spaces
         for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {
