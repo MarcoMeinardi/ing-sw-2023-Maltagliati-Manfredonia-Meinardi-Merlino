@@ -100,22 +100,20 @@ public class GameViewController implements Initializable {
     }
 
     private void fillScene(Optional<Card>[][] table) {
-        int catNumber = 1;
-        int bookNumber = 1;
-        int frameNumber = 1;
-        int toyNumber = 1;
-        int plantNumber = 1;
-        int trophyNumber = 1;
+        int[] counter = new int[Card.values().length];
+        for(int i = 0; i < Card.values().length; i++){
+            counter[i] = 1;
+        }
         imageToIndices.clear();
         List<Node> toRemove = new ArrayList<>();
         for(Node child : pane.getChildren()){
             if(child.getId() != null){
-                if(child.getId().contains("cat") ||
-                        child.getId().contains("book") ||
-                            child.getId().contains("frame") ||
-                                child.getId().contains("toy") ||
-                                    child.getId().contains("plant") ||
-                                        child.getId().contains("trophy")){
+                if(child.getId().contains("Gatto") ||
+                        child.getId().contains("Libro") ||
+                            child.getId().contains("Cornice") ||
+                                child.getId().contains("Gioco") ||
+                                    child.getId().contains("Pianta") ||
+                                        child.getId().contains("Trofeo")){
                     toRemove.add(child);
                 }
             }
@@ -134,136 +132,56 @@ public class GameViewController implements Initializable {
                 if(table[y][x].isPresent()){
                     switch (table[y][x].get()){
                         case Gatto:
-                            imageName = "/img/item tiles/Gatti1." + catNumber + ".png";
-                            if(catNumber == 3) {
-                                catNumber = 1;
-                            } else {
-                                catNumber++;
-                            }
-                            imagePath = getClass().getResource(imageName).toExternalForm();
-                            image = new Image(imagePath);
-                            imageView = new ImageView(image);
-                            imageView.setFitHeight(60);
-                            imageView.setFitWidth(60);
-                            imageView.setX(25+61*x);
-                            imageView.setY(25+61*y);
-                            imageView.setId("cat" + x + y);
-                            imageToIndices.put(imageView, new int[]{y, x});
-                            imageView.setOnMouseClicked(event ->{
-                                handleCardSelection(imageView);
-                            });
-                            pane.getChildren().add(imageView);
+                            imageName = "/img/item tiles/Gatti1." + counter[Card.Gatto.ordinal()] + ".png";
+                            counter[Card.Gatto.ordinal()] = (counter[Card.Gatto.ordinal()]%3) + 1;
+                            putImageOnScene(imageName, y, x, Card.Gatto);
                             break;
                         case Libro:
-                            imageName = "/img/item tiles/Libri1." + bookNumber + ".png";
-                            if(bookNumber == 3) {
-                                bookNumber = 1;
-                            } else {
-                                bookNumber++;
-                            }
-                            imagePath = getClass().getResource(imageName).toExternalForm();
-                            image = new Image(imagePath);
-                            imageView = new ImageView(image);
-                            imageView.setFitHeight(60);
-                            imageView.setFitWidth(60);
-                            imageView.setX(25+61*x);
-                            imageView.setY(25+61*y);
-                            imageView.setId("book" + x + y);
-                            imageToIndices.put(imageView, new int[]{y, x});
-                            imageView.setOnMouseClicked(event ->{
-                                handleCardSelection(imageView);
-                            });
-                            pane.getChildren().add(imageView);
+                            imageName = "/img/item tiles/Libri1." + counter[Card.Libro.ordinal()] + ".png";
+                            counter[Card.Libro.ordinal()] = (counter[Card.Libro.ordinal()]%3) + 1;
+                            putImageOnScene(imageName, y, x, Card.Libro);
                             break;
                         case Cornice:
-                            imageName = "/img/item tiles/Cornici1." + frameNumber + ".png";
-                            if(frameNumber == 3) {
-                                frameNumber = 1;
-                            } else {
-                                frameNumber++;
-                            }
-                            imagePath = getClass().getResource(imageName).toExternalForm();
-                            image = new Image(imagePath);
-                            imageView = new ImageView(image);
-                            imageView.setFitHeight(60);
-                            imageView.setFitWidth(60);
-                            imageView.setX(25+61*x);
-                            imageView.setY(25+61*y);
-                            imageView.setId("frame" + x + y);
-                            imageToIndices.put(imageView, new int[]{y, x});
-                            imageView.setOnMouseClicked(event ->{
-                                handleCardSelection(imageView);
-                            });
-                            pane.getChildren().add(imageView);
+                            imageName = "/img/item tiles/Cornici1." + counter[Card.Cornice.ordinal()] + ".png";
+                            counter[Card.Cornice.ordinal()] = (counter[Card.Cornice.ordinal()]%3) + 1;
+                            putImageOnScene(imageName, y, x, Card.Cornice);
                             break;
                         case Gioco:
-                            imageName = "/img/item tiles/Giochi1." + toyNumber + ".png";
-                            if(toyNumber == 3) {
-                                toyNumber = 1;
-                            } else {
-                                toyNumber++;
-                            }
-                            imagePath = getClass().getResource(imageName).toExternalForm();
-                            image = new Image(imagePath);
-                            imageView = new ImageView(image);
-                            imageView.setFitHeight(60);
-                            imageView.setFitWidth(60);
-                            imageView.setX(25+61*x);
-                            imageView.setY(25+61*y);
-                            imageView.setId("toy" + x + y);
-                            imageToIndices.put(imageView, new int[]{y, x});
-                            imageView.setOnMouseClicked(event ->{
-                                handleCardSelection(imageView);
-                            });
-                            pane.getChildren().add(imageView);
+                            imageName = "/img/item tiles/Giochi1." + counter[Card.Gioco.ordinal()] + ".png";
+                            counter[Card.Gioco.ordinal()] = (counter[Card.Gioco.ordinal()]%3) + 1;
+                            putImageOnScene(imageName, y, x, Card.Gioco);
                             break;
                         case Pianta:
-                            imageName = "/img/item tiles/Piante1." + plantNumber + ".png";
-                            if(plantNumber == 3) {
-                                plantNumber = 1;
-                            } else {
-                                plantNumber++;
-                            }
-                            imagePath = getClass().getResource(imageName).toExternalForm();
-                            image = new Image(imagePath);
-                            imageView = new ImageView(image);
-                            imageView.setFitHeight(60);
-                            imageView.setFitWidth(60);
-                            imageView.setX(25+61*x);
-                            imageView.setY(25+61*y);
-                            imageView.setId("plant" + x + y);
-                            imageToIndices.put(imageView, new int[]{y, x});
-                            imageView.setOnMouseClicked(event ->{
-                                handleCardSelection(imageView);
-                            });
-                            pane.getChildren().add(imageView);
+                            imageName = "/img/item tiles/Piante1." + counter[Card.Pianta.ordinal()] + ".png";
+                            counter[Card.Pianta.ordinal()] = (counter[Card.Pianta.ordinal()]%3) + 1;
+                            putImageOnScene(imageName, y, x, Card.Pianta);
                             break;
                         case Trofeo:
-                            imageName = "/img/item tiles/Trofei1." + trophyNumber +".png";
-                            if(trophyNumber == 3) {
-                                trophyNumber = 1;
-                            } else {
-                                trophyNumber++;
-                            }
-                            imagePath = getClass().getResource(imageName).toExternalForm();
-                            image = new Image(imagePath);
-                            imageView = new ImageView(image);
-                            imageView.setFitHeight(60);
-                            imageView.setFitWidth(60);
-                            imageView.setX(25+61*x);
-                            imageView.setY(25+61*y);
-                            imageView.setId("trophy" + x + y);
-                            imageToIndices.put(imageView, new int[]{x, y});
-                            imageView.setOnMouseClicked(event ->{
-                                handleCardSelection(imageView);
-                            });
-                            pane.getChildren().add(imageView);
+                            imageName = "/img/item tiles/Trofei1." + counter[Card.Trofeo.ordinal()] +".png";
+                            counter[Card.Trofeo.ordinal()] = (counter[Card.Trofeo.ordinal()]%3) + 1;
+                            putImageOnScene(imageName, y, x, Card.Trofeo);
                             break;
                     }
                 }
             }
         }
 
+    }
+
+    private void putImageOnScene(String imageName, int y, int x, Card card){
+        String imagePath = getClass().getResource(imageName).toExternalForm();
+        Image image = new Image(imagePath);
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(60);
+        imageView.setFitWidth(60);
+        imageView.setX(25+61*x);
+        imageView.setY(25+61*y);
+        imageView.setId(card.toString() + x + y);
+        pane.getChildren().add(imageView);
+        imageView.setOnMouseClicked(event ->{
+            handleCardSelection(imageView);
+        });
+        imageToIndices.put(imageView, new int[]{y, x});
     }
 
     private void fillShelf(List<ImageView> selectedImages, Shelf shelf) {
@@ -276,8 +194,8 @@ public class GameViewController implements Initializable {
 /// aggiunta di una griglia?
                     if (isValidPosition(col, row)) {
 
-                        }
                     }
+                }
             });
         }
         /*int shelfSizeX = 5;
@@ -439,8 +357,6 @@ public class GameViewController implements Initializable {
             else{
                 messageLabel.setText("You can't select more than 3 cards");
             }
-
-            fillShelf(selectedImages, gameData.getMyShelf());
         }
     }
 
@@ -459,7 +375,7 @@ public class GameViewController implements Initializable {
         }
         if(column.length() > 1 ||
                 Integer.valueOf(column) > 5 ||
-                    Integer.valueOf(column) < 1){
+                Integer.valueOf(column) < 1){
             messageLabel.setText("Select a valid column!");
         }
         if(!yourTurn){
@@ -490,9 +406,9 @@ public class GameViewController implements Initializable {
             selectedImages.add(image);
         }
         else{
-                messageLabel.setText("You can't insert card here");
-            }
+            messageLabel.setText("You can't insert card here");
         }
+    }
     public void startLobby(){
         //initialize the list view with blank spaces
         for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {
@@ -713,6 +629,7 @@ public class GameViewController implements Initializable {
                     @Override
                     public void run() {
                         fillScene(gameData.getTableTop());
+                        selectedImages.clear();
                     }
                 });
             }
