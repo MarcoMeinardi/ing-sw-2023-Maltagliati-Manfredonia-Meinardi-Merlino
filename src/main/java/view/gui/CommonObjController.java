@@ -74,7 +74,7 @@ public class CommonObjController implements Initializable {
                 imageView.setFitHeight(100);
                 imageContainer.getChildren().add(imageView);
             }
-            if (commonObjectives.get(i).equals("4 row of at most 3 different cards")) {
+            if (commonObjectives.get(i).equals("4 rows of at most 3 different cards")) {
                 String imageName = "/img/common goal cards/7.jpg";
                 String imagePath = getClass().getResource(imageName).toExternalForm();
                 Image image = new Image(imagePath);
@@ -83,7 +83,7 @@ public class CommonObjController implements Initializable {
                 imageView.setFitHeight(100);
                 imageContainer.getChildren().add(imageView);
             }
-            if (commonObjectives.get(i).equals("all equal corner")) {
+            if (commonObjectives.get(i).equals("all equal corners")) {
                 String imageName = "/img/common goal cards/8.jpg";
                 String imagePath = getClass().getResource(imageName).toExternalForm();
                 Image image = new Image(imagePath);
