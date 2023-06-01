@@ -3,10 +3,7 @@ package view.gui;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import model.Card;
-import model.PersonalObjective;
-import model.Shelf;
-import model.TableTop;
+import model.*;
 import network.parameters.GameInfo;
 import network.parameters.Update;
 
@@ -20,6 +17,8 @@ public class GameData {
     private static Optional[][] tableTop;
     private int nPlayers;
     private ArrayList<Integer> commonObjectivesPoints;
+    private static ScoreBoard scoreBoard;
+    private static String currentPlayer;
 
     public GameData(GameInfo data, String me){
         this.me = me;
@@ -29,6 +28,7 @@ public class GameData {
         this.myPersonalObjective = new PersonalObjective(data.personalObjective());
         this.shelves = new ArrayList<>();
         this.commonObjectivesPoints = data.commonObjectivesPoints();
+        this.currentPlayer = data.currentPlayer();
 
         updateTableTop(data.tableTop());
 
@@ -94,5 +94,17 @@ public class GameData {
     }
     public static Optional[][] getTableTop(){
         return tableTop;
+    }
+    public static ScoreBoard getScoreBoard(){
+        return scoreBoard;
+    }
+    public static String getMe(){
+        return me;
+    }
+    public static  String getCurrentPlayer(){
+        return currentPlayer;
+    }
+    public void setScoreBoard(ScoreBoard scoreBoard){
+        this.scoreBoard = scoreBoard;
     }
 }

@@ -22,10 +22,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.Card;
-import model.Shelf;
-import model.Cockade;
-import model.Point;
+import model.*;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
@@ -39,12 +36,17 @@ import java.net.URL;
 
 import java.util.*;
 
-//DO NOT GIVE ID WITH "cat", "book", "frame", "toy", "plant", "trophy" IN IT TO ANY NODES IN THE FXML FILE
 public class GameViewController implements Initializable {
 
     private  static final int POPUP_WIDTH = 400;
-    private static final int SIZE = 9;
     private static final int POPUP_HEIGHT = 500;
+    private static final int WIDTH = 1140;
+    private static final int HEIGHT = 760;
+    private static final int SIZE = 9;
+    private static final int shelfRows = 6;
+    private static final int shelfColumns = 5;
+    private Stage stage;
+    private Scene scene;
     @FXML
     public Button sendMessageButton;
     @FXML
@@ -66,10 +68,11 @@ public class GameViewController implements Initializable {
     public static GameData gameData;
     private String username;
     private Map<ImageView, int[]> imageToIndices = new HashMap<>();
+    private Map<int[], ImageView> indicesToImage = new HashMap<>();
     private List<ImageView> selectedImages = new ArrayList<>();
     private boolean yourTurn = false;
+    private boolean isPaused = false;
 
-    //TODO implement label to say whose turn it is
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         gameData = new GameData(LobbyViewController.gameInfo, LobbyViewController.username);
@@ -77,8 +80,9 @@ public class GameViewController implements Initializable {
         networkManager = LobbyViewController.networkManager;
         lobby = LobbyViewController.lobby;
         state = ClientStatus.InGame;
-        if(lobby.getPlayers().get(0).equals(username)){
+        if(gameData.getCurrentPlayer().equals(username)){
             yourTurn = true;
+            messageLabel.setText("It's your turn!");
         }
         startLobby();
         fillScene(gameData.getTableTop());
@@ -184,160 +188,76 @@ public class GameViewController implements Initializable {
         imageToIndices.put(imageView, new int[]{y, x});
     }
 
-    private void fillShelf(List<ImageView> selectedImages, Shelf shelf) {
-        final ImageView imageView = null; //null perchè mi dava errore
-        if (!selectedImages.isEmpty()) {
-            imageView.setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.PRIMARY) {
-                    int col = (int) (event.getX() / 60); // Calcola la colonna in base alla posizione X del click
-                    int row = (int) (event.getY() / 60); // Calcola la riga in base alla posizione Y del click
-/// aggiunta di una griglia?
-                    if (isValidPosition(col, row)) {
+    private void fillShelf(Shelf shelf) {
+        Optional<Card>[][] shelfCards = shelf.getShelf();
 
-                    }
-                }
-            });
+        int[] counter = new int[Card.values().length];
+        for(int i = 0; i < Card.values().length; i++){
+            counter[i] = 1;
         }
-        /*int shelfSizeX = 5;
-        int shelfSizeY = 6;
-        int startX = 25;
-        int startY = SIZE * 61 - 35;
-        int catNumber = 1;
-        int bookNumber = 1;
-        int frameNumber = 1;
-        int toyNumber = 1;
-        int plantNumber = 1;
-        int trophyNumber = 1;
-        imageToIndices.clear();
 
-        for (int y = startY; y < startY + shelfSizeY * 61; y += 61) {
-            for (int x = startX; x < startX + shelfSizeX * 61; x += 61) {
-                String imageName = null;
-                String imagePath;
-                Image image;
-                final ImageView imageView;
+        List<Node> toRemove = new ArrayList<>();
+        for(Node child : pane.getChildren()){
+            if(child.getId() != null){
+                if((child.getId().contains("Gatto") ||
+                        child.getId().contains("Libro") ||
+                        child.getId().contains("Cornice") ||
+                        child.getId().contains("Gioco") ||
+                        child.getId().contains("Pianta") ||
+                        child.getId().contains("Trofeo")) && child.getId().contains("Shelf")){
+                    toRemove.add(child);
+                }
+            }
+        }
 
-                for (int i = 0; i < selectedImages.size(); i++) {
-                    if (selectedImages.get(i).getId().equals("Gatto")) {
-                        imageName = "/img/item tiles/Gatti1." + catNumber + ".png";
-                        if (catNumber == 3) {
-                            catNumber = 1;
-                        } else {
-                            catNumber++;
-                        }
-                        imagePath = getClass().getResource(imageName).toExternalForm();
-                        image = new Image(imagePath);
-                        imageView = new ImageView(image);
-                        imageView.setFitHeight(60);
-                        imageView.setFitWidth(60);
-                        imageView.setX(25+61*x);
-                        imageView.setY(25+61*y);
-                        imageToIndices.put(imageView, new int[]{x, y});
-                        pane.getChildren().add(imageView);
-                        break;
-                    }
-                    if (selectedImages.get(i).getId().equals("Libro")) {
-                        imageName = "/img/item tiles/Libri1." + bookNumber + ".png";
-                        if (bookNumber == 3) {
-                            bookNumber = 1;
-                        } else {
-                            bookNumber++;
-                        }
-                        imagePath = getClass().getResource(imageName).toExternalForm();
-                        image = new Image(imagePath);
-                        imageView = new ImageView(image);
-                        imageView.setFitHeight(60);
-                        imageView.setFitWidth(60);
-                        imageView.setX(25+61*x);
-                        imageView.setY(25+61*y);
-                        imageToIndices.put(imageView, new int[]{x, y});
-                        pane.getChildren().add(imageView);
-                        break;
-                    }
-                    if (selectedImages.get(i).getId().equals("Cornice")) {
-                        imageName = "/img/item tiles/Cornici1." + frameNumber + ".png";
-                        if (frameNumber == 3) {
-                            frameNumber = 1;
-                        } else {
-                            frameNumber++;
-                        }
-                        imagePath = getClass().getResource(imageName).toExternalForm();
-                        image = new Image(imagePath);
-                        imageView = new ImageView(image);
-                        imageView.setFitHeight(60);
-                        imageView.setFitWidth(60);
-                        imageView.setX(25+61*x);
-                        imageView.setY(25+61*y);
-                        imageToIndices.put(imageView, new int[]{x, y});
-                        pane.getChildren().add(imageView);
-                        break;
-                    }
-                    if (selectedImages.get(i).getId().equals("Gioco")) {
-                        imageName = "/img/item tiles/Giochi1." + toyNumber + ".png";
-                        if (toyNumber == 3) {
-                            toyNumber = 1;
-                        } else {
-                            toyNumber++;
-                        }
-                        imagePath = getClass().getResource(imageName).toExternalForm();
-                        image = new Image(imagePath);
-                        imageView = new ImageView(image);
-                        imageView.setFitHeight(60);
-                        imageView.setFitWidth(60);
-                        imageView.setX(25+61*x);
-                        imageView.setY(25+61*y);
-                        imageToIndices.put(imageView, new int[]{x, y});
-                        pane.getChildren().add(imageView);
-                        break;
-                    }
-                    if (selectedImages.get(i).getId().equals("Pianta")) {
-                        imageName = "/img/item tiles/Piante1." + plantNumber + ".png";
-                        if (plantNumber == 3) {
-                            plantNumber = 1;
-                        } else {
-                            plantNumber++;
-                        }
-                        imagePath = getClass().getResource(imageName).toExternalForm();
-                        image = new Image(imagePath);
-                        imageView = new ImageView(image);
-                        imageView.setFitHeight(60);
-                        imageView.setFitWidth(60);
-                        imageView.setX(25+61*x);
-                        imageView.setY(25+61*y);
-                        imageToIndices.put(imageView, new int[]{x, y});
-                        pane.getChildren().add(imageView);
-                        break;
-                    }
-                    if (selectedImages.get(i).getId().equals("Trofeo")) {
-                        imageName = "/img/item tiles/Trofei1." + trophyNumber + ".png";
-                        if (trophyNumber == 3) {
-                            trophyNumber = 1;
-                        } else {
-                            trophyNumber++;
-                        }
-                        imagePath = getClass().getResource(imageName).toExternalForm();
-                        image = new Image(imagePath);
-                        imageView = new ImageView(image);
-                        imageView.setFitHeight(60);
-                        imageView.setFitWidth(60);
-                        imageView.setX(x);
-                        imageView.setY(y);
-                        imageToIndices.put(imageView, new int[]{x, y});
-                        pane.getChildren().add(imageView);
-                        break;
-                    } else {
-                            imageName = "";
+        for(Node child : toRemove){
+            pane.getChildren().remove(child);
+        }
+
+        for (int y = 0; y < shelfRows; y++){
+            for(int x = 0; x < shelfColumns; x++){
+                if(shelfCards[y][x].isPresent()){
+                    switch (shelfCards[y][x].get()){
+                        case Gatto:
+                            counter[Card.Gatto.ordinal()] = (counter[Card.Gatto.ordinal()]%3) + 1;
+                            putImageOnShelf("/img/item tiles/Gatti1." + counter[Card.Gatto.ordinal()] + ".png", y, x, Card.Gatto);
+                            break;
+                        case Libro:
+                            counter[Card.Libro.ordinal()] = (counter[Card.Libro.ordinal()]%3) + 1;
+                            putImageOnShelf("/img/item tiles/Libri1." + counter[Card.Libro.ordinal()] + ".png", y, x, Card.Libro);
+                            break;
+                        case Cornice:
+                            counter[Card.Cornice.ordinal()] = (counter[Card.Cornice.ordinal()]%3) + 1;
+                            putImageOnShelf("/img/item tiles/Cornici1." + counter[Card.Cornice.ordinal()] + ".png", y, x, Card.Cornice);
+                            break;
+                        case Gioco:
+                            counter[Card.Gioco.ordinal()] = (counter[Card.Gioco.ordinal()]%3) + 1;
+                            putImageOnShelf("/img/item tiles/Giochi1." + counter[Card.Gioco.ordinal()] + ".png", y, x, Card.Gioco);
+                            break;
+                        case Pianta:
+                            counter[Card.Pianta.ordinal()] = (counter[Card.Pianta.ordinal()]%3) + 1;
+                            putImageOnShelf("/img/item tiles/Piante1." + counter[Card.Pianta.ordinal()] + ".png", y, x, Card.Pianta);
+                            break;
+                        case Trofeo:
+                            counter[Card.Trofeo.ordinal()] = (counter[Card.Trofeo.ordinal()]%3) + 1;
+                            putImageOnShelf("/img/item tiles/Trofei1." + counter[Card.Trofeo.ordinal()] +".png", y, x, Card.Trofeo);
                             break;
                     }
                 }
             }
-        }*/
+        }
     }
 
-    private boolean isValidPosition(int col, int row) {
-        int shelfSizeX = 5;
-        int shelfSizeY = 6;
-        return col >= 0 && col < shelfSizeX && row >= 0 && row < shelfSizeY;
+    private void putImageOnShelf(String imageName, int y, int x, Card card){
+        String imagePath = getClass().getResource(imageName).toExternalForm();
+        Image image = new Image(imagePath);
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(28);
+        imageView.setFitWidth(28);
+        imageView.setX(790+34*x);
+        imageView.setY(270-30*y);
+        imageView.setId(card.toString() + x + y + "shelf");
+        pane.getChildren().add(imageView);
     }
 
     private void handleCardSelection(ImageView image){
@@ -368,18 +288,26 @@ public class GameViewController implements Initializable {
 
         if(selectedImages.size() == 0){
             messageLabel.setText("Select cards!");
+            return;
         }
         if(columnHelper.trim().isEmpty() ||
                 column == null){
             messageLabel.setText("Left blank!");
+            return;
         }
         if(column.length() > 1 ||
                 Integer.valueOf(column) > 5 ||
-                Integer.valueOf(column) < 1){
+                    Integer.valueOf(column) < 1){
             messageLabel.setText("Select a valid column!");
+            return;
         }
         if(!yourTurn){
             messageLabel.setText("It's not your turn!");
+            return;
+        }
+        if(isPaused){
+            messageLabel.setText("Game is paused!");
+            return;
         }
 
         for(ImageView image : selectedImages){
@@ -388,10 +316,10 @@ public class GameViewController implements Initializable {
         }
 
         try {
-            Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column), selectedCards)).waitResult();
+            Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
             if (result.isErr()) {
                 System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
-                messageLabel.setText("Can't select cards");
+                messageLabel.setText("Error" + result.getException().orElse("Cannot select cards"));
             } else {
                 return;
             }
@@ -401,14 +329,7 @@ public class GameViewController implements Initializable {
 
     }
 
-    private void handleCardInsert(ImageView image) {
-        if(selectedImages.contains(image)) {
-            selectedImages.add(image);
-        }
-        else{
-            messageLabel.setText("You can't insert card here");
-        }
-    }
+    @FXML
     public void startLobby(){
         //initialize the list view with blank spaces
         for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {
@@ -586,6 +507,29 @@ public class GameViewController implements Initializable {
         }
     }
 
+    public void printEnd(){
+        try {
+            serverThread.interrupt();
+            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/End.fxml"));
+            stage = (Stage) (sendMessageButton.getScene().getWindow());
+            scene = new Scene(newRoot, WIDTH, HEIGHT);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void changeLabel(String text){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                messageLabel.setText(text);
+            }
+        });
+    }
+
     private void handleEvent() {
         Optional<ServerEvent> event = networkManager.getEvent();
         if (event.isEmpty()) {
@@ -609,32 +553,50 @@ public class GameViewController implements Initializable {
                 for (Cockade commonObjective : update.commonObjectives()) {
                     if (update.idPlayer().equals(username)) {
                         System.out.format("[*] You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
-                        //TODO: aggiungere un popup che dice che hai completato un obiettivo comune
+                        changeLabel("You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points");
                     } else {
                         System.out.format("[*] %s completed %s getting %d points%n", update.idPlayer(), commonObjective.name(), commonObjective.points());
-                        //TODO: aggiungere un popup che dice che un altro giocatore ha completato un obiettivo comune
+                        changeLabel(update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points");
                     }
                 }
                 gameData.update(update);
                 if (update.nextPlayer().equals(username)) {
                     yourTurn = true;
                     System.out.println("[*] It's your turn");
-                    //TODO: aggiungere un popup che dice che è il tuo turno
+                    changeLabel("It's your turn");
                 } else {
                     yourTurn = false;
                     System.out.println("[*] It's " + update.nextPlayer() + "'s turn");
-                    //TODO: aggiungere un popup che dice che è il turno di un altro giocatore
+                    changeLabel("It's " + update.nextPlayer() + "'s turn");
                 }
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         fillScene(gameData.getTableTop());
+                        fillShelf(gameData.getMyShelf());
                         selectedImages.clear();
                     }
                 });
             }
+            case End -> {
+                ScoreBoard scoreboard = (ScoreBoard)event.get().getData();
+                gameData.setScoreBoard(scoreboard);
+                System.out.println("[*] Game ended");
+                printEnd();
+            }
+            case Pause -> {
+                if (!isPaused) {
+                    System.out.println("[WARNING] Someone has disconnected");
+                    changeLabel("Someone has disconnected");
+                }
+                isPaused = true;
+            }
+            case Resume -> {
+                System.out.println("Game resumed");
+                changeLabel("Game resumed");
+                isPaused = false;
+            }
             default -> throw new RuntimeException("Unhandled event");
-
         }
     }
 
