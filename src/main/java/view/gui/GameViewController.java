@@ -84,6 +84,9 @@ public class GameViewController implements Initializable {
             yourTurn = true;
             messageLabel.setText("It's your turn!");
         }
+        else{
+            messageLabel.setText("It's " + gameData.getCurrentPlayer() + "'s turn!");
+        }
         startLobby();
         fillScene(gameData.getTableTop());
         serverThread = new Thread(() -> {
@@ -582,7 +585,12 @@ public class GameViewController implements Initializable {
                 ScoreBoard scoreboard = (ScoreBoard)event.get().getData();
                 gameData.setScoreBoard(scoreboard);
                 System.out.println("[*] Game ended");
-                printEnd();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        printEnd();
+                    }
+                });
             }
             case Pause -> {
                 if (!isPaused) {
