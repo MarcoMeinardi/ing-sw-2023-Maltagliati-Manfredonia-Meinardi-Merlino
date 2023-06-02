@@ -33,24 +33,24 @@ public class EndController implements Initializable {
         int position = 1;
         String your_title = "Why is my life like this";
         for (Score score : scoreBoard) {
-            System.out.format(" [%d] %s: %d points %n", position++, score.username(), score.score());
             if(position == 1){
-                messageLabel1.setText(" [" + position++ + "] " + score.username() + ":" + score.score() +" points");
+                messageLabel1.setText(" [" + position + "] " + score.username() + ":" + score.score() +" points");
             }
             else if(position == 2){
-                messageLabel2.setText(" [" + position++ + "] " + score.username() + ":" + score.score() +" points");
+                messageLabel2.setText(" [" + position + "] " + score.username() + ":" + score.score() +" points");
             }
             else if(position == 3){
-                messageLabel3.setText(" [" + position++ + "] " + score.username() + ":" + score.score() +" points");
+                messageLabel3.setText(" [" + position + "] " + score.username() + ":" + score.score() +" points");
             }
             else if(position == 4){
-                messageLabel4.setText(" [" + position++ + "] " + score.username() + ":" + score.score() +" points");
+                messageLabel4.setText(" [" + position + "] " + score.username() + ":" + score.score() +" points");
             }
             if (score.username().equals(username)) {
                 your_title = score.title();
             }
             System.out.println("Your final grade: "+your_title);
             titleLabel.setText("Your final grade: "+your_title);
+            position++;
         }
     }
 }
