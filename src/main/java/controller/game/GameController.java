@@ -37,6 +37,7 @@ public class GameController {
     private final ClientManagerInterface clientManager;
 
     private final DataBase db = DataBase.getInstance();
+    private boolean alreadyFilled = false;
     File saveFile;
 
     /**
@@ -127,6 +128,14 @@ public class GameController {
                 completedObjectives.add(cockade.get());
                 newCommonObjectivesScores.add(objective.getValue());
             }
+        }
+    }
+
+    private void addFirstToFinish(Player player){
+        Optional<Cockade> firstToFinish = player.getShelf().isFirstToFinish();
+        if(firstToFinish.isPresent() && !alreadyFilled){
+            player.addCockade(firstToFinish.get());
+            alreadyFilled = true;
         }
     }
 
@@ -276,6 +285,7 @@ public class GameController {
                     ArrayList<Cockade> completedObjectives = new ArrayList<>();
                     ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
                     addCommonCockade(player, completedObjectives, newCommonObjectivesScores);
+                    addFirstToFinish(player);
                     refillTable();
                     Optional<Player> nextPlayer = nextNotDisconnected();
                     if (nextPlayer.isPresent()) {
