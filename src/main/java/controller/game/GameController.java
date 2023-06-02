@@ -294,7 +294,7 @@ public class GameController {
                         for (Player p : game.getPlayers()) {
                             addPersonalCockade(p);
                         }
-                        ScoreBoard scoreBoard = new ScoreBoard(game);
+                        ScoreBoard scoreBoard = ScoreBoard.create(game).build();
                         globalUpdate(ServerEvent.End(scoreBoard));
                         deleteSave();
                         exitGame();
