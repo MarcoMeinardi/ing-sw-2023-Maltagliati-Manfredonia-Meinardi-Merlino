@@ -16,10 +16,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import model.Card;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.ServerEvent;
+import network.parameters.GameInfo;
 import network.parameters.Message;
 
 import java.io.IOException;
@@ -59,6 +61,7 @@ public class LobbyViewController implements Initializable{
     private Scene scene;
     private Stage stage;
     private Thread serverThread;
+    public static GameInfo gameInfo;
 
     /**
      * Method that initializes the lobby scene. It is called when the scene is loaded.
@@ -205,15 +208,7 @@ public class LobbyViewController implements Initializable{
             return;
         }
         Result result = networkManager.gameStart().waitResult();
-        if (result.isOk()) {
-            LoginController.state = ClientStatus.InGame;
-            try {
-                switchToGame();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else{
+        if (!result.isOk()) {
             descriptorLabel.setText("");
             descriptorLabel.setText("Start game failed");
             System.out.println("[ERROR] " + result.getException().orElse("Start game failed"));
@@ -229,6 +224,7 @@ public class LobbyViewController implements Initializable{
 
     public void switchToGame() throws IOException{
         LoginController.state = ClientStatus.InGame;
+        state = ClientStatus.InGame;
         try {
             serverThread.interrupt();
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
@@ -242,6 +238,7 @@ public class LobbyViewController implements Initializable{
             e.printStackTrace();
         }
     }
+
 
     /**
      * method called to send a message to the server and add it to the chat.
@@ -439,13 +436,14 @@ public class LobbyViewController implements Initializable{
             case Start -> {
                 System.out.println("[*] Game has started");
                 state = ClientStatus.InGame;
+                gameInfo = (GameInfo)event.get().getData();
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            if(!username.equals(lobby.getPlayers().get(0))) {
-                                switchToGame();
-                            }
+
+                            switchToGame();
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

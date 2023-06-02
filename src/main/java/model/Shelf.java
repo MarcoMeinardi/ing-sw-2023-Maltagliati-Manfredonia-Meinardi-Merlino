@@ -240,4 +240,8 @@ public class Shelf {
 		return count;
 	}
 
+	public Optional<Card>[][] getShelf() {
+		return slots;
+	}
+
 }
