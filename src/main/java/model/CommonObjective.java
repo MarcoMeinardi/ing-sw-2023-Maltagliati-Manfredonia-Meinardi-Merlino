@@ -54,20 +54,20 @@ public class CommonObjective extends Objective {
 	 * @return An array list containing all the common objectives
 	 * @author Marco, Lorenzo, Ludovico, Riccardo
 	 */
-	private static ArrayList<CommonObjective> generateAllCommonObjectives(int nPlayers) {
+	public static ArrayList<CommonObjective> generateAllCommonObjectives(int nPlayers) {
 		ArrayList<CommonObjective> allObjectives = new ArrayList<>();
 
-		allObjectives.add(new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCards));
-		allObjectives.add(new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonal));
-		allObjectives.add(new CommonObjective("all equal corners", nPlayers, CommonObjective::equalCorners));
-		allObjectives.add(new CommonObjective("4 rows of at most 3 different cards", nPlayers, CommonObjective::fourRowsOfAtMostThreeDifferentCards));
-		allObjectives.add(new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCards));
-		allObjectives.add(new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCards));
 		allObjectives.add(new CommonObjective("2 square-shaped groups", nPlayers, CommonObjective::twoSquareGroups));
-		allObjectives.add(new CommonObjective("2 rows with 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCards));
+		allObjectives.add(new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCards));
+		allObjectives.add(new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCards));
+		allObjectives.add(new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCards));
 		allObjectives.add(new CommonObjective("3 columns of at most 3 different cards", nPlayers, CommonObjective::threeColumnsOfAtMostThreeDifferentCards));
-		allObjectives.add(new CommonObjective("X shapes group", nPlayers, CommonObjective::equalsX));
+		allObjectives.add(new CommonObjective("2 rows with 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCards));
+		allObjectives.add(new CommonObjective("4 rows of at most 3 different cards", nPlayers, CommonObjective::fourRowsOfAtMostThreeDifferentCards));
+		allObjectives.add(new CommonObjective("all equal corners", nPlayers, CommonObjective::equalCorners));
 		allObjectives.add(new CommonObjective("eight equal cards", nPlayers, CommonObjective::eightEquals));
+		allObjectives.add(new CommonObjective("X shapes group", nPlayers, CommonObjective::equalsX));
+		allObjectives.add(new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonal));
 		allObjectives.add(new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShape));
 
 		return allObjectives;

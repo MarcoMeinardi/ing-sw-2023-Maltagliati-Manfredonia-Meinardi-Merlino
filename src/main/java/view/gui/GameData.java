@@ -8,17 +8,17 @@ import network.parameters.GameInfo;
 import network.parameters.Update;
 
 public class GameData {
-    private static ArrayList<Shelf> shelves;
-    private static Shelf myShelf;
-    private static ArrayList<String> commonObjectives;
-    private static ArrayList<String> playersNames;
-    private static PersonalObjective myPersonalObjective;
-    private static String me;
-    private static Optional[][] tableTop;
+    private ArrayList<Shelf> shelves;
+    private Shelf myShelf;
+    private ArrayList<String> commonObjectives;
+    private ArrayList<String> playersNames;
+    private PersonalObjective myPersonalObjective;
+    private String me;
+    private Optional[][] tableTop;
     private int nPlayers;
     private ArrayList<Integer> commonObjectivesPoints;
-    private static ScoreBoard scoreBoard;
-    private static String currentPlayer;
+    private ScoreBoard scoreBoard;
+    private String currentPlayer;
 
     public GameData(GameInfo data, String me){
         this.me = me;
@@ -77,31 +77,31 @@ public class GameData {
 
 
 
-    public static ArrayList<String> getPlayersNames(){
+    public ArrayList<String> getPlayersNames(){
         return playersNames;
     }
-    public static ArrayList<String> getCommonObjectives(){
+    public ArrayList<String> getCommonObjectives(){
         return commonObjectives;
     }
-    public static PersonalObjective getMyPersonalObjective(){
+    public PersonalObjective getMyPersonalObjective(){
         return myPersonalObjective;
     }
-    public static ArrayList<Shelf> getShelves(){
+    public ArrayList<Shelf> getShelves(){
         return shelves;
     }
-    public static Shelf getMyShelf(){
+    public Shelf getMyShelf(){
         return myShelf;
     }
-    public static Optional[][] getTableTop(){
+    public Optional[][] getTableTop(){
         return tableTop;
     }
-    public static ScoreBoard getScoreBoard(){
+    public ScoreBoard getScoreBoard(){
         return scoreBoard;
     }
-    public static String getMe(){
+    public String getMe(){
         return me;
     }
-    public static  String getCurrentPlayer(){
+    public String getCurrentPlayer(){
         return currentPlayer;
     }
     public void setScoreBoard(ScoreBoard scoreBoard){
