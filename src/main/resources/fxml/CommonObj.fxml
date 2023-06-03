@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.CommonObjController">
+   <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+         <Image url="@../img/misc/sfondo parquet.jpg" />
+      </image>
+      <viewport>
+         <Rectangle2D height="400.0" width="600.0" />
+      </viewport>
+   </ImageView>
    <HBox fx:id="imageContainer" alignment="CENTER" prefHeight="400.0" prefWidth="600.0">
         <!--- Image container -->
     </HBox>
