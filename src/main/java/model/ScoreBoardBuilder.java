@@ -25,11 +25,10 @@ public class ScoreBoardBuilder {
 
     private final VictoryType victoryType;
 
-    public ScoreBoardBuilder(Game game){
+    public ScoreBoardBuilder(Game game) {
         scores = new ArrayList<>();
-        ArrayList<Player> players = game.getPlayers();
-        players.sort(Comparator.comparing(Player::getPoints).reversed());
-        winner = players.stream().max(Comparator.comparing(Player::getPoints));
+        ArrayList<Player> players = game.finalRanks();
+        winner = Optional.of(players.get(0));
         most_cats = players.stream().max((p1,p2) -> p1.getShelf().countCard(Card.Gatto) - p2.getShelf().countCard(Card.Gatto));
         most_books = players.stream().max((p1,p2) -> p1.getShelf().countCard(Card.Libro) - p2.getShelf().countCard(Card.Libro));
         most_games = players.stream().max((p1,p2) -> p1.getShelf().countCard(Card.Gioco) - p2.getShelf().countCard(Card.Gioco));
@@ -38,7 +37,7 @@ public class ScoreBoardBuilder {
         most_plants = players.stream().max((p1,p2) -> p1.getShelf().countCard(Card.Pianta) - p2.getShelf().countCard(Card.Pianta));
         sole_survivor = findSoleSurvivor(players);
         victoryType = findVictoryType(players);
-        for(Player player : game.getPlayers()){
+        for (Player player : players) {
             Score score = createScore(player);
             scores.add(score);
         }

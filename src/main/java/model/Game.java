@@ -78,6 +78,32 @@ public class Game implements Iterable<Player> {
         return commonObjectives;
     }
 
+    /**
+     * Returns the final ranks of the players.
+     *
+     * @return The final ranks of the players
+     * @author Ludovico, Marco
+     */
+    public ArrayList<Player> finalRanks() {
+        for (Player player : players) {
+            ArrayList<Cockade> helpGroupCockades = player.getShelf().getGroupsCockades();
+            for (Cockade cockade : helpGroupCockades) {
+                player.addCockade(cockade);
+            }
+        }
+
+        ArrayList<Player> finalResult = new ArrayList<>(players);
+        finalResult.sort((player1, player2) -> {
+            int diff = player2.getPoints() - player1.getPoints();
+            if (diff == 0) {
+                return players.indexOf(player2) - players.indexOf(player1);
+            } else {
+                return diff;
+            }
+        });
+        return finalResult;
+    }
+
 
     private SaveState getSaveState() {
         SaveTableTop tableTop = this.tabletop.getSaveTableTop();

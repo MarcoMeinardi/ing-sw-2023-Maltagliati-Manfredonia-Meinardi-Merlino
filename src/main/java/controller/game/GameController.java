@@ -140,29 +140,6 @@ public class GameController {
     }
 
     /**
-     * Returns the final ranks of the players.
-     * @author Ludovico, Marco
-     *
-     * @return The final ranks of the players
-     * @author Ludovico
-     */
-    private ArrayList<Player> finalRanks() {
-        ArrayList<Player> players = game.getPlayers();
-
-        for (Player player : players) {
-
-            ArrayList<Cockade> helpGroupCockades = player.getShelf().getGroupsCockades();
-            for (Cockade cockade : helpGroupCockades) {
-                player.addCockade(cockade);
-            }
-
-        }
-
-        players.sort((player1, player2) -> player2.getPoints() - player1.getPoints());
-        return players;
-    }
-
-    /**
      * Tries to execute the move requested by the player.
      * @author Marco
      *

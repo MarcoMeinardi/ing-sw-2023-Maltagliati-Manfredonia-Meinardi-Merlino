@@ -179,7 +179,7 @@ public class Shelf {
 	 */
 
 	public boolean isFull() {
-		for (int x = 0; x < COLUMNS; x++) {
+		for (int x = 0; x < 1; x++) {
 			if (slots[ROWS - 1][x].isEmpty()) {
 				return false;
 			}
@@ -247,18 +247,11 @@ public class Shelf {
 	}
 
 	public Optional<Cockade> isFirstToFinish() {
-		int filled = 0;
-		for (int y = 0; y < ROWS; y++) {
-			for(int x = 0; x < COLUMNS; x++) {
-				if (slots[y][x].isPresent()) {
-			        filled++;
-				}
-			}
-		}
-		if (filled == N_SLOTS) {
+		if (isFull()) {
 			return Optional.of(new Cockade("First to finish", 1));
+		} else {
+			return Optional.empty();
 		}
-		return Optional.empty();
 	}
 
 }

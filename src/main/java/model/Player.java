@@ -68,4 +68,12 @@ public class Player {
 			points
 		);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Player)) {
+			return false;
+		}
+		return ((Player)obj).getName().equals(name);
+	}
 }
