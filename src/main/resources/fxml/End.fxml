@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="1140.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.EndController">
+<Pane fx:id="shelfPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="1140.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.EndController">
     <children>
         <ImageView fitHeight="760.0" fitWidth="1140.0" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -17,30 +18,31 @@
                 <Rectangle2D height="760.0" width="1140.0" />
             </viewport>
         </ImageView>
-      <Label fx:id="messageLabel1" alignment="CENTER" layoutX="270.0" layoutY="80.0" prefHeight="80.0" prefWidth="600.0">
+      <Label fx:id="messageLabel1" alignment="CENTER" layoutY="80.0" prefHeight="80.0" prefWidth="1140.0">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="messageLabel2" alignment="CENTER" layoutX="270.0" layoutY="200.0" prefHeight="80.0" prefWidth="600.0">
+      <Label fx:id="messageLabel2" alignment="CENTER" layoutY="200.0" prefHeight="80.0" prefWidth="1140.0">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="titleLabel" alignment="CENTER" layoutX="270.0" layoutY="560.0" prefHeight="80.0" prefWidth="600.0">
+      <Label fx:id="titleLabel" alignment="CENTER" layoutY="560.0" prefHeight="80.0" prefWidth="1140.0">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="messageLabel3" alignment="CENTER" layoutX="270.0" layoutY="320.0" prefHeight="80.0" prefWidth="600.0">
+      <Label fx:id="messageLabel3" alignment="CENTER" layoutY="320.0" prefHeight="80.0" prefWidth="1140.0">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="messageLabel4" alignment="CENTER" layoutX="270.0" layoutY="440.0" prefHeight="80.0" prefWidth="600.0">
+      <Label fx:id="messageLabel4" alignment="CENTER" layoutY="440.0" prefHeight="80.0" prefWidth="1140.0">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
+      <Button fx:id="exitButton" layoutX="510.0" layoutY="671.0" mnemonicParsing="false" onAction="#goToLobbies" prefHeight="60.0" prefWidth="120.0" text="Back to lobbies" />
     </children>
 </Pane>
