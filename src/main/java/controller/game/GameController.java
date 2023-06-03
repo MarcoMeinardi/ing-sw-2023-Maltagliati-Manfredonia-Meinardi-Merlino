@@ -37,7 +37,7 @@ public class GameController {
     private final ClientManagerInterface clientManager;
 
     private final DataBase db = DataBase.getInstance();
-    private boolean alreadyFilled = false;
+    private boolean someoneCompleted = false;
     File saveFile;
 
     /**
@@ -132,10 +132,10 @@ public class GameController {
     }
 
     private void addFirstToFinish(Player player){
-        Optional<Cockade> firstToFinish = player.getShelf().isFirstToFinish();
-        if(firstToFinish.isPresent() && !alreadyFilled){
-            player.addCockade(firstToFinish.get());
-            alreadyFilled = true;
+        Optional<Cockade> firstToFinishCockade = player.getShelf().isFirstToFinish();
+        if(firstToFinishCockade.isPresent() && !someoneCompleted){
+            player.addCockade(firstToFinishCockade.get());
+            someoneCompleted = true;
         }
     }
 
