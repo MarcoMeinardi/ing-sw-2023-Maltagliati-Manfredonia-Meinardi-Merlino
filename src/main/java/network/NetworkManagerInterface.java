@@ -6,6 +6,7 @@ import network.parameters.LobbyCreateInfo;
 import network.parameters.Login;
 import network.parameters.Message;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -27,7 +28,14 @@ public interface NetworkManagerInterface {
     public Function<Boolean, Boolean> gameStart() throws Exception;
     public Function<Boolean, Boolean> gameLoad() throws Exception;
     public Function<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception;
-    public Function<Login, Boolean> login(Login username) throws Exception;
+
+    /**
+     * Login to the server
+     * @param username the username to log in with
+     * @return True if successful and no game is running or GameInfo if successful and there is a game running
+     * @throws Exception if there is any kind of problem during the login process
+     */
+    public Function<Login, Serializable> login(Login username) throws Exception;
     public void join() throws Exception;
     public Function<Message, Boolean> chat(Message message) throws Exception;
 }

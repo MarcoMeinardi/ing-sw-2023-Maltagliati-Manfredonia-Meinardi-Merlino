@@ -1,25 +1,29 @@
 package network.rmi.server;
 
-import network.ClientInterface;
-import network.ClientManagerInterface;
-import network.ClientStatus;
-import network.GlobalClientManager;
+import controller.game.GameController;
+import controller.lobby.LobbyController;
+import model.Player;
+import network.*;
+import network.errors.ClientAlreadyConnectedExeption;
+import network.parameters.GameInfo;
 import network.parameters.Login;
 import network.rmi.LoginService;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class ClientManager extends Thread implements ClientManagerInterface, LoginService {
     HashMap <String, Client> clients;
     public static int port = 8001;
     private int availablePort = 10000;
-    private Object availablePortLock;
+    private final Object availablePortLock;
     private final Registry registry;
     private final LoginService stub;
     private static ClientManager instance = null;
@@ -68,19 +72,28 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
     }
 
     @Override
-    public boolean login(Login info) throws Exception {
+    public Result<Serializable> login(Login info, UUID callId) throws Exception {
         String username = info.username();
+        boolean wasConnected = false;
         if(GlobalClientManager.getInstance().isUsernameTaken(username)){
             if(!clients.containsKey(username) || !clients.get(username).isDisconnected()){
-                return false;
+                return Result.err(new ClientAlreadyConnectedExeption(),callId);
+            }
+            wasConnected = true;
+        }
+        Optional<GameController> game = LobbyController.getInstance().searchGame(username);
+        if(wasConnected && game.isPresent()){
+            GameController gameController = game.get();
+            Player player = gameController.getPlayer(username);
+            return Result.ok(game.get().getGameInfo(player), callId);
+        }else {
+            synchronized (availablePortLock) {
+                Client client = new Client(username, registry, availablePort);
+                clients.put(username, client);
+                availablePort++;
             }
         }
-        synchronized (availablePortLock){
-            Client client = new Client(username, registry, availablePort);
-            clients.put(username, client);
-            availablePort++;
-        }
-        return true;
+        return Result.empty(callId);
     }
 
     @Override

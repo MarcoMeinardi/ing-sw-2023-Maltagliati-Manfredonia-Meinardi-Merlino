@@ -96,7 +96,6 @@ public class LobbyController extends Thread {
      *  @throws LobbyNotFoundException if the player is not found in any lobby
      *  @author Riccardo, Lorenzo
      */
-
     public Lobby findPlayerLobby(String playerName) throws LobbyNotFoundException {
         synchronized (lobbies){
             for(Lobby lobby : lobbies.values()){
@@ -127,6 +126,10 @@ public class LobbyController extends Thread {
         return lobby;
     }
 
+    /**
+     * Returns the list of lobbies.
+     * @return the list of lobbies
+     */
     public ArrayList<Lobby> getLobbies() {
         synchronized (lobbies){
             return new ArrayList<>(lobbies.values());
@@ -284,6 +287,11 @@ public class LobbyController extends Thread {
         return result;
     }
 
+    /**
+     * Starts a game in the specified lobby.
+     * @param lobby the lobby in which to start the game
+     * @throws Exception if the game cannot be started for any reason (e.g. the save directory cannot be created)
+     */
     public void startGame(Lobby lobby) throws Exception {
         synchronized (lobby) {
             File saveDirectory = new File(SAVESTATES_DIRECTORY);
@@ -311,6 +319,11 @@ public class LobbyController extends Thread {
         }
     }
 
+    /**
+     * Loads a save game from the specified lobby.
+     * @param lobby the lobby from which to load the game
+     * @throws Exception if the game cannot be loaded for any reason (e.g. the save file does not exist)
+     */
 	private void loadGame(Lobby lobby) throws Exception {
         synchronized (lobby) {
             HashSet<String> dbKey = new HashSet<>(lobby.getPlayers());
@@ -321,6 +334,10 @@ public class LobbyController extends Thread {
         }
     }
 
+    /**
+     * Ends the specified game.
+     * @param game the GameController object representing the game to end
+     */
     public void endGame(GameController game) {
         synchronized (games){
             games.remove(game);
@@ -333,6 +350,11 @@ public class LobbyController extends Thread {
         }
     }
 
+    /**
+     * Searches for a game containing the specified player.
+     * @param username the username of the player to search for
+     * @return an Optional object containing the GameController object representing the game, if found, or an empty Optional object otherwise
+     */
     public Optional<GameController> searchGame(String username) {
         synchronized (games) {
             for (GameController game : games) {

@@ -252,8 +252,8 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     }
 
     @Override
-    public Function<Login, Boolean> login(Login username) throws Exception {
-        Function<Login, Boolean> login = new Function<Login, Boolean>(username, Service.Login);
+    public Function<Login, Serializable> login(Login username) throws Exception {
+        Function login = new Function(username, Service.Login);
         callQueue.put(login.id(), login);
         login.call(out);
         return login;

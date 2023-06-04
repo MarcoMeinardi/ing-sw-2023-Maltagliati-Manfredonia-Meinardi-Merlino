@@ -178,15 +178,14 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     }
 
     @Override
-    public Function<Login, Boolean> login(Login info) throws Exception {
+    public Function<Login, Serializable> login(Login info) throws Exception {
         Function fn = new Function(info, Service.Login);
         Result<Serializable> result;
         try{
-            if(!loginService.login(info)){
-                throw new ClientAlreadyConnectedExeption();
+            result = loginService.login(info, fn.id());
+            if(result.isOk()){
+                clientService = Optional.of((ClientService) registry.lookup(info.username()));
             }
-            clientService = Optional.of((ClientService) registry.lookup(info.username()));
-            result = Result.empty(fn.id());
         }catch(Exception e){
             result = Result.err(e,fn.id());
         }
