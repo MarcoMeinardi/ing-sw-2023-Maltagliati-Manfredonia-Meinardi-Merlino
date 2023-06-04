@@ -39,7 +39,7 @@ import java.util.*;
 public class GameViewController implements Initializable {
 
     private  static final int POPUP_WIDTH = 600;
-    private static final int POPUP_HEIGHT = 600;
+    private static final int POPUP_HEIGHT = 400;
 
     private  static final int SHELVES_POPUP_WIDTH = 800;
     private static final int SHELVES_POPUP_HEIGHT = 800;
@@ -339,21 +339,6 @@ public class GameViewController implements Initializable {
         }
         //add messages to the chat
         chat.getItems().add("[Type /help to see the list of commands]");
-    }
-
-    @FXML
-    public void quitGame(ActionEvent actionEvent){
-        try {
-            serverThread.interrupt();
-            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
-            stage = (Stage) (sendMessageButton.getScene().getWindow());
-            scene = new Scene(newRoot, WIDTH, HEIGHT);
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**

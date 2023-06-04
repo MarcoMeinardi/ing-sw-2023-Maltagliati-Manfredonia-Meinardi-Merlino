@@ -1,7 +1,6 @@
 package view.gui;
 
 import controller.lobby.Lobby;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -93,21 +92,15 @@ public class LoginController implements Initializable {
 
             //login
             try {
-                System.out.println("Login successful idk");
                 Result result = networkManager.login(new Login(username)).waitResult();
-                System.out.println("Login successful idk1");
                 if (result.isOk()) {
                     if (result.unwrap().equals(Boolean.TRUE)) {
-                        System.out.println("Login successful");
                         state = ClientStatus.InLobbySearch;
                     }
                     else{
                         gameInfo = (GameInfo)result.unwrap();
-                        System.out.println("Login successful1");
                         state = ClientStatus.InGame;
-                        System.out.println("Login successful2");
                         lobby = new Lobby(username, gameInfo.players());
-                        System.out.println("Login successful3");
                         switchToGame();
                     }
                 }

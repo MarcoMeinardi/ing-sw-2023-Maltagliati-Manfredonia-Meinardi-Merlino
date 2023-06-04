@@ -2,9 +2,10 @@ package view.gui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.AnchorPane;
 import model.CommonObjective;
 
 import java.net.URL;
@@ -14,7 +15,11 @@ import java.util.stream.Collectors;
 
 public class CommonObjController implements Initializable {
     @FXML
-    private HBox imageContainer;
+    private AnchorPane pane;
+    @FXML
+    private Label firstObj;
+    @FXML
+    private Label secObj;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GameData gameData = GameViewController.getGameData();
@@ -34,9 +39,18 @@ public class CommonObjController implements Initializable {
             String imagePath = getClass().getResource(imageName).toExternalForm();
             Image image = new Image(imagePath);
             ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(100);
-            imageView.setFitHeight(100);
-            imageContainer.getChildren().add(imageView);
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(200);
+            if(commonObjectives.indexOf(commonObjective) == 0) {
+                firstObj.setText(commonObjective);
+                imageView.setX(50);
+            }
+            else {
+                secObj.setText(commonObjective);
+                imageView.setX(350);
+            }
+            imageView.setY(80);
+            pane.getChildren().add(imageView);
         }
     }
 
