@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
@@ -12,7 +13,8 @@ import model.PersonalObjective;
 
 public class PersonalObjController implements Initializable {
     @FXML
-    private VBox imageContainer;
+    private AnchorPane pane;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GameData gameData = GameViewController.getGameData();
@@ -34,7 +36,9 @@ public class PersonalObjController implements Initializable {
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(300);
         imageView.setFitHeight(300);
-        imageContainer.getChildren().add(imageView);
+        imageView.setX(150);
+        imageView.setY(50);
+        pane.getChildren().add(imageView);
     }
 }
 
