@@ -16,6 +16,6 @@
             <Rectangle2D height="400.0" width="600.0" />
          </viewport>
       </ImageView>
-      <VBox fx:id="imageContainer" prefHeight="400.0" prefWidth="600.0" />
+      <VBox fx:id="imageContainer" />
    </children>
 </AnchorPane>

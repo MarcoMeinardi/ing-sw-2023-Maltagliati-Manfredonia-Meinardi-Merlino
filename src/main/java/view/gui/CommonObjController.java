@@ -34,8 +34,8 @@ public class CommonObjController implements Initializable {
             String imagePath = getClass().getResource(imageName).toExternalForm();
             Image image = new Image(imagePath);
             ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(100);
-            imageView.setFitHeight(100);
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(200);
             imageContainer.getChildren().add(imageView);
         }
     }

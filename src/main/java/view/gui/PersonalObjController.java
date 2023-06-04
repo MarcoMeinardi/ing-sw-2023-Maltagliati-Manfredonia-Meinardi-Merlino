@@ -32,8 +32,8 @@ public class PersonalObjController implements Initializable {
         String imagePath = getClass().getResource(imageName).toExternalForm();
         Image image = new Image(imagePath);
         ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(100);
-        imageView.setFitHeight(100);
+        imageView.setFitWidth(300);
+        imageView.setFitHeight(300);
         imageContainer.getChildren().add(imageView);
     }
 }
