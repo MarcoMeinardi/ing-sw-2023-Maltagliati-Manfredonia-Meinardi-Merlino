@@ -135,7 +135,7 @@ public class LoginController implements Initializable {
         Platform.runLater(() -> {
             try {
                 Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
-                stage = (Stage) (loginButton.getScene().getWindow());
+                stage = (Stage)(scene.getWindow());
                 scene = new Scene(newRoot, WIDTH, HEIGHT);
                 stage.setScene(scene);
                 stage.setResizable(false);

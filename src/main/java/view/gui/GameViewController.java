@@ -86,16 +86,17 @@ public class GameViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if(LobbyViewController.gameInfo == null){
+        if (LobbyViewController.gameInfo == null) {
             gameData = new GameData(LoginController.gameInfo, LoginController.username);
             username = LoginController.username;
-        }
-        else{
+            networkManager = LoginController.networkManager;
+            lobby = LoginController.lobby;
+        } else {
             gameData = new GameData(LobbyViewController.gameInfo, LobbyViewController.username);
             username = LobbyViewController.username;
+            networkManager = LobbyViewController.networkManager;
+            lobby = LobbyViewController.lobby;
         }
-        networkManager = LobbyViewController.networkManager;
-        lobby = LobbyViewController.lobby;
         state = ClientStatus.InGame;
         if(gameData.getCurrentPlayer().equals(username)){
             yourTurn = true;
