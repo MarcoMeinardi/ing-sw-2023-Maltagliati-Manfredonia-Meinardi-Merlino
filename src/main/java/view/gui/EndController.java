@@ -1,6 +1,8 @@
 package view.gui;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.Card;
 import model.Score;
 import model.ScoreBoard;
@@ -41,6 +44,8 @@ public class EndController implements Initializable {
     private Label titleLabel;
     @FXML
     private Button exitButton;
+    @FXML
+    private Pane shelfPane;
     private Stage stage;
     private Scene scene;
     @Override
@@ -48,6 +53,19 @@ public class EndController implements Initializable {
         this.scoreBoard = GameViewController.gameData.getScoreBoard();
         this.username = GameViewController.gameData.getMe();
         showScoreBoard();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                stage = (Stage) shelfPane.getScene().getWindow();
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent t) {
+                        Platform.exit();
+                        System.exit(0);
+                    }
+                });
+            }
+        });
     }
 
     private void showScoreBoard() {

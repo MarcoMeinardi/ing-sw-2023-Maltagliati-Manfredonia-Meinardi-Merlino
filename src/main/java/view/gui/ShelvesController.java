@@ -1,11 +1,15 @@
 package view.gui;
 
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.Card;
 import model.Shelf;
 
@@ -33,6 +37,7 @@ public class ShelvesController implements Initializable {
     private Label player4;
     private ArrayList<Shelf> shelves;
     private ArrayList<String> playersNames;
+    private Stage stage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

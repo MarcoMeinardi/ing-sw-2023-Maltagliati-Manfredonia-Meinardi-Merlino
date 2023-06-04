@@ -4,6 +4,7 @@ import controller.lobby.Lobby;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,8 +15,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import javafx.stage.WindowEvent;
 import model.Card;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
@@ -55,6 +58,8 @@ public class LobbyViewController implements Initializable{
     public Label descriptorLabel;
     @FXML
     private Button loadButton;
+    @FXML
+    private Pane pane;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
     public static Lobby lobby;
@@ -64,6 +69,7 @@ public class LobbyViewController implements Initializable{
     private Stage stage;
     private Thread serverThread;
     public static GameInfo gameInfo;
+
 
     /**
      * Method that initializes the lobby scene. It is called when the scene is loaded.
@@ -104,6 +110,19 @@ public class LobbyViewController implements Initializable{
             }
         });
         serverThread.start();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                stage = (Stage) pane.getScene().getWindow();
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent t) {
+                        Platform.exit();
+                        System.exit(0);
+                    }
+                });
+            }
+        });
     }
 
     /**

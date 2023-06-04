@@ -2,6 +2,7 @@ package view.gui;
 
 import controller.lobby.Lobby;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,8 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
+import javafx.stage.WindowEvent;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
@@ -38,6 +41,8 @@ public class LoginController implements Initializable {
     private Button loginButton;
     @FXML
     private TextField selectedIp;
+    @FXML
+    private Pane pane;
     public static String username;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
@@ -48,6 +53,19 @@ public class LoginController implements Initializable {
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         loginButton.setDefaultButton(true);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                stage = (Stage) pane.getScene().getWindow();
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent t) {
+                        Platform.exit();
+                        System.exit(0);
+                    }
+                });
+            }
+        });
     }
     public void switchToMainMenu(javafx.event.ActionEvent actionEvent) {
 

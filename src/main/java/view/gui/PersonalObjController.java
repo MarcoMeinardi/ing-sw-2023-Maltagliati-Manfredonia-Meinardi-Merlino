@@ -1,5 +1,7 @@
 package view.gui;
 
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
@@ -9,11 +11,15 @@ import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.PersonalObjective;
 
 public class PersonalObjController implements Initializable {
     @FXML
     private AnchorPane pane;
+    private Stage stage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -39,6 +45,7 @@ public class PersonalObjController implements Initializable {
         imageView.setX(150);
         imageView.setY(50);
         pane.getChildren().add(imageView);
+
     }
 }
 

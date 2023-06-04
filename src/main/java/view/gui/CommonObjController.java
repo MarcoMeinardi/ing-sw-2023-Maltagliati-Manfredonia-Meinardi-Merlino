@@ -1,11 +1,15 @@
 package view.gui;
 
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.CommonObjective;
 
 import java.net.URL;
@@ -20,6 +24,8 @@ public class CommonObjController implements Initializable {
     private Label firstObj;
     @FXML
     private Label secObj;
+    private Stage stage;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GameData gameData = GameViewController.getGameData();
@@ -52,6 +58,7 @@ public class CommonObjController implements Initializable {
             imageView.setY(80);
             pane.getChildren().add(imageView);
         }
+
     }
 
 }
