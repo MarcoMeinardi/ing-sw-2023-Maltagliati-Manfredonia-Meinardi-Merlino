@@ -547,15 +547,6 @@ public class GameViewController implements Initializable {
         });
     }
 
-    private void changeNamesInPlayersList() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                players.getItems().clear();
-                players.getItems().addAll(lobby.getPlayers());
-            }
-        });
-    }
 
     private void handleEvent() {
         Optional<ServerEvent> event = networkManager.getEvent();
@@ -616,12 +607,21 @@ public class GameViewController implements Initializable {
                     }
                 });
             }
+            case Join -> {
+                String joinedPlayer = (String)event.get().getData();
+                try {
+                    lobby.addPlayer(joinedPlayer);
+                } catch (Exception e) {  // Cannot happen
+                    throw new RuntimeException("Added already existing player to lobby");
+                }
+                System.out.println("[*] " + joinedPlayer + " joined the lobby");
+                changeLabel(joinedPlayer + " joined the lobby");
+            }
             case Leave -> {
                 String leftPlayer = (String)event.get().getData();
                 try {
                     lobby.removePlayer(leftPlayer);
                     changeLabel(leftPlayer + " left the lobby");
-                    changeNamesInPlayersList();
 
                 } catch (Exception e) {  // Cannot happen
                     throw new RuntimeException("Removed non existing player from lobby");

@@ -53,6 +53,8 @@ public class LobbyViewController implements Initializable{
     public ListView players;
     @FXML
     public Label descriptorLabel;
+    @FXML
+    private Button loadButton;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
     public static Lobby lobby;
@@ -151,9 +153,11 @@ public class LobbyViewController implements Initializable{
     public void showStart(){
         if(username.equals(lobby.getPlayers().get(0))) {
             startButton.setVisible(true);
+            loadButton.setVisible(true);
         }
         else {
             startButton.setVisible(false);
+            loadButton.setVisible(false);
         }
     }
 

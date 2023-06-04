@@ -46,10 +46,5 @@
       </Label>
       <Button fx:id="moveButton" layoutX="466.0" layoutY="643.0" mnemonicParsing="false" onAction="#tryMove" text="Move to shelf" />
       <TextField fx:id="columnInput" alignment="CENTER" layoutX="806.0" layoutY="333.0" prefHeight="37.0" prefWidth="132.0" promptText="Select a column" />
-      <Button fx:id="quit" layoutX="264.0" layoutY="690.0" mnemonicParsing="false" onAction="#quitGame" prefHeight="37.0" prefWidth="72.0" text="Quit ">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
    </children>
 </AnchorPane>

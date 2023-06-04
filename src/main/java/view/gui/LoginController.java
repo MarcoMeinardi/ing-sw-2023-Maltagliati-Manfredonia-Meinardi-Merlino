@@ -93,7 +93,9 @@ public class LoginController implements Initializable {
 
             //login
             try {
+                System.out.println("Login successful idk");
                 Result result = networkManager.login(new Login(username)).waitResult();
+                System.out.println("Login successful idk1");
                 if (result.isOk()) {
                     if (result.unwrap().equals(Boolean.TRUE)) {
                         System.out.println("Login successful");
@@ -101,8 +103,11 @@ public class LoginController implements Initializable {
                     }
                     else{
                         gameInfo = (GameInfo)result.unwrap();
+                        System.out.println("Login successful1");
                         state = ClientStatus.InGame;
+                        System.out.println("Login successful2");
                         lobby = new Lobby(username, gameInfo.players());
+                        System.out.println("Login successful3");
                         switchToGame();
                     }
                 }
