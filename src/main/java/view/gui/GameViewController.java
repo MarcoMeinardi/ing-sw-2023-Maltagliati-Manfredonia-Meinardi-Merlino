@@ -86,8 +86,14 @@ public class GameViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        gameData = new GameData(LobbyViewController.gameInfo, LobbyViewController.username);
-        username = LobbyViewController.username;
+        if(LobbyViewController.gameInfo == null){
+            gameData = new GameData(LoginController.gameInfo, LoginController.username);
+            username = LoginController.username;
+        }
+        else{
+            gameData = new GameData(LobbyViewController.gameInfo, LobbyViewController.username);
+            username = LobbyViewController.username;
+        }
         networkManager = LobbyViewController.networkManager;
         lobby = LobbyViewController.lobby;
         state = ClientStatus.InGame;
@@ -335,6 +341,21 @@ public class GameViewController implements Initializable {
         chat.getItems().add("[Type /help to see the list of commands]");
     }
 
+    @FXML
+    public void quitGame(ActionEvent actionEvent){
+        try {
+            serverThread.interrupt();
+            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
+            stage = (Stage) (sendMessageButton.getScene().getWindow());
+            scene = new Scene(newRoot, WIDTH, HEIGHT);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * method called to send a message to the server and add it to the chat.
      * It checks if the message is valid and if it is not it returns after adding the
@@ -526,6 +547,16 @@ public class GameViewController implements Initializable {
         });
     }
 
+    private void changeNamesInPlayersList() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                players.getItems().clear();
+                players.getItems().addAll(lobby.getPlayers());
+            }
+        });
+    }
+
     private void handleEvent() {
         Optional<ServerEvent> event = networkManager.getEvent();
         if (event.isEmpty()) {
@@ -584,6 +615,18 @@ public class GameViewController implements Initializable {
                         printEnd();
                     }
                 });
+            }
+            case Leave -> {
+                String leftPlayer = (String)event.get().getData();
+                try {
+                    lobby.removePlayer(leftPlayer);
+                    changeLabel(leftPlayer + " left the lobby");
+                    changeNamesInPlayersList();
+
+                } catch (Exception e) {  // Cannot happen
+                    throw new RuntimeException("Removed non existing player from lobby");
+                }
+                System.out.format("[*] %s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
             }
             case Pause -> {
                 if (!isPaused) {

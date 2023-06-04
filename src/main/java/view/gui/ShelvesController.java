@@ -2,50 +2,71 @@ package view.gui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import model.Card;
 import model.Shelf;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ShelvesController implements Initializable {
 
-    private static final int shelfCardSize = 28;
-    private static final int shelfCardStepX = 34;
-    private static final int shelfCardStepY = 30;
-    private static final int shelfOffSetX = 790;
-    private static final int shelfOffSetY = 270;
+    private static final int shelfCardSize = 24;
+    private static final int shelfCardStepX = 30;
+    private static final int shelfCardStepY = 26;
     private static final int shelfRows = 6;
     private static final int shelfColumns = 5;
     @FXML
     private AnchorPane pane;
+    @FXML
+    private Label player;
+    @FXML
+    private Label player2;
+    @FXML
+    private Label player3;
+    @FXML
+    private Label player4;
     private ArrayList<Shelf> shelves;
     private ArrayList<String> playersNames;
-
-    private static String me;
-    private static Shelf Shelf;
-
-    @FXML
-    private HBox imageContainer;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GameData gameData = GameViewController.getGameData();
         shelves = gameData.getShelves();
         playersNames = gameData.getPlayersNames();
+        for(Shelf shelf : shelves){
+            fillShelf(shelf, shelves.indexOf(shelf));
+        }
     }
 
-    private void fillShelf(Shelf shelf) {
+    private void fillShelf(Shelf shelf, int playerIndex) {
         Optional<Card>[][] shelfCards = shelf.getShelf();
+        int shelfOffSetY = 0;
+        int shelfOffSetX = 0;
+
+        switch (playerIndex){
+            case 0:
+                shelfOffSetY = 228;
+                shelfOffSetX = 126;
+                break;
+            case 1:
+                shelfOffSetY = 228;
+                shelfOffSetX = 526;
+                break;
+            case 2:
+                shelfOffSetY = 588;
+                shelfOffSetX = 126;
+                break;
+            case 3:
+                shelfOffSetY = 588;
+                shelfOffSetX = 526;
+                break;
+        }
 
         int[] counter = new int[Card.values().length];
         for(int i = 0; i < Card.values().length; i++){
@@ -80,14 +101,29 @@ public class ShelvesController implements Initializable {
                         counter[Card.Trofeo.ordinal()] = (counter[Card.Trofeo.ordinal()]%3) + 1;
                         imageName = "/img/item tiles/Trofei1." + counter[Card.Trofeo.ordinal()] + ".png";
                     }
-                    putImageOnScene(imageName, y, x,  shelfCardSize, shelfCardSize, shelfOffSetX, shelfOffSetY, shelfCardStepX, shelfCardStepY, true);
+                    putImageOnScene(imageName, y, x,  shelfCardSize, shelfCardSize, shelfOffSetX, shelfOffSetY, shelfCardStepX, shelfCardStepY);
                 }
+            }
+        }
+
+        for(int i = 0; i < playersNames.size(); i++){
+            if(i == 0){
+                player.setText(playersNames.get(i));
+            }
+            if(i == 1){
+                player2.setText(playersNames.get(i));
+            }
+            if(i == 2){
+                player3.setText(playersNames.get(i));
+            }
+            if(i == 3){
+                player4.setText(playersNames.get(i));
             }
         }
 
     }
 
-    public void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY, boolean isShelf){
+    public void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY){
         String imagePath = getClass().getResource(imageName).toExternalForm();
         Image image = new Image(imagePath);
         ImageView imageView = new ImageView(image);
@@ -95,11 +131,6 @@ public class ShelvesController implements Initializable {
         imageView.setFitWidth(width);
         imageView.setX(offsetX + stepX*x);
         imageView.setY(offsetY - stepY*y);
-        String id = "Card" + x + y;
-        if(isShelf){
-            id += "Shelf";
-        }
-        imageView.setId(id);
         pane.getChildren().add(imageView);
     }
 

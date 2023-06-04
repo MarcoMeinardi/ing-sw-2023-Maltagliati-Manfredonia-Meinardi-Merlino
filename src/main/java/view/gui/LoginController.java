@@ -2,6 +2,7 @@ package view.gui;
 
 import controller.lobby.Lobby;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,6 +18,7 @@ import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.Server;
+import network.parameters.GameInfo;
 import network.parameters.Login;
 
 import java.io.IOException;
@@ -42,6 +44,7 @@ public class LoginController implements Initializable {
     public static String ip;
     public static int port;
     public static Lobby lobby;
+    public static GameInfo gameInfo;
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         loginButton.setDefaultButton(true);
@@ -85,6 +88,7 @@ public class LoginController implements Initializable {
                 errorLabel.setText("Connection failed");
                 System.out.println("[ERROR] " + e.getMessage());
                 state = ClientStatus.Disconnected;
+                return;
             }
 
             //login
@@ -96,13 +100,16 @@ public class LoginController implements Initializable {
                         state = ClientStatus.InLobbySearch;
                     }
                     else{
-                        errorLabel.setText("Name already taken");
-                        System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
+                        gameInfo = (GameInfo)result.unwrap();
+                        state = ClientStatus.InGame;
+                        lobby = new Lobby(username, gameInfo.players());
+                        switchToGame();
                     }
                 }
             } catch (Exception e) {
                 errorLabel.setText("Login failed");
                 System.out.println("[ERROR] " + e.getMessage());
+                return;
             }
 
             //Creation of scene
@@ -119,5 +126,19 @@ public class LoginController implements Initializable {
 
     }
 
+    public void switchToGame() throws IOException {
+        Platform.runLater(() -> {
+            try {
+                Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
+                stage = (Stage) (loginButton.getScene().getWindow());
+                scene = new Scene(newRoot, WIDTH, HEIGHT);
+                stage.setScene(scene);
+                stage.setResizable(false);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
 }

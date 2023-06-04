@@ -26,12 +26,12 @@
             </font>
         </Label>
         <TextField fx:id="messageInput" layoutX="778.0" layoutY="575.0" prefHeight="37.0" prefWidth="327.0" promptText="Your message..." />
-        <Button fx:id="startButton" layoutX="494.0" layoutY="504.0" mnemonicParsing="false" onAction="#startGame" prefHeight="71.0" prefWidth="125.0" text="Start!">
+        <Button fx:id="startButton" layoutX="495.0" layoutY="433.0" mnemonicParsing="false" onAction="#startGame" prefHeight="71.0" prefWidth="125.0" text="Start!">
          <font>
             <Font size="33.0" />
          </font>
       </Button>
-      <Button fx:id="quitLobby" layoutX="494.0" layoutY="630.0" mnemonicParsing="false" onAction="#quitLobby" prefHeight="71.0" prefWidth="125.0" text="Quit">
+      <Button fx:id="quitLobby" layoutX="495.0" layoutY="655.0" mnemonicParsing="false" onAction="#quitLobby" prefHeight="71.0" prefWidth="125.0" text="Quit">
          <font>
             <Font size="33.0" />
          </font>
@@ -48,5 +48,10 @@
             <Font size="20.0" />
          </font>
       </Label>
+      <Button fx:id="loadButton" layoutX="495.0" layoutY="540.0" mnemonicParsing="false" onAction="#loadGame" prefHeight="71.0" prefWidth="125.0" text="Load">
+         <font>
+            <Font size="33.0" />
+         </font>
+      </Button>
     </children>
 </Pane>

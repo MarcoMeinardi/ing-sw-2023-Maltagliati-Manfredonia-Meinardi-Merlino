@@ -368,6 +368,21 @@ public class LobbyViewController implements Initializable{
             chat.scrollTo(chat.getItems().size()-1);
         }
     }
+    @FXML
+    private void loadGame(ActionEvent actionEvent) throws Exception {
+        if(lobby.getNumberOfPlayers() < 2){
+            descriptorLabel.setText("You need at least 2 players to start a game");
+            return;
+        }
+        Result result = networkManager.gameLoad().waitResult();
+        if(result.isOk()){
+            System.out.println("[INFO] Game loaded");
+            return;
+        }
+        else{
+            descriptorLabel.setText("We could not load the game");
+        }
+    }
 
     /**
      * method called to handle the events received from the server.
@@ -451,6 +466,7 @@ public class LobbyViewController implements Initializable{
                 });
 
             }
+
             default -> throw new RuntimeException("Unhandled event");
         }
     }
