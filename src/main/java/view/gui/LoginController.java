@@ -21,6 +21,7 @@ import network.parameters.GameInfo;
 import network.parameters.Login;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class LoginController implements Initializable {
     private static final int WIDTH = 1140;
@@ -51,6 +52,7 @@ public class LoginController implements Initializable {
     public void switchToMainMenu(javafx.event.ActionEvent actionEvent) {
 
         try {
+            stage = (Stage)(loginButton.getScene().getWindow());
             errorLabel.setText("");
             username = namePlayer.getText();
 
@@ -102,7 +104,13 @@ public class LoginController implements Initializable {
                         state = ClientStatus.InGame;
                         lobby = new Lobby(username, gameInfo.players());
                         switchToGame();
+                        return;
                     }
+                }
+                else{
+                    errorLabel.setText("Login failed");
+                    System.out.println(result.getException());
+                    return;
                 }
             } catch (Exception e) {
                 errorLabel.setText("Login failed");
@@ -128,7 +136,6 @@ public class LoginController implements Initializable {
         Platform.runLater(() -> {
             try {
                 Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
-                stage = (Stage)(scene.getWindow());
                 scene = new Scene(newRoot, WIDTH, HEIGHT);
                 stage.setScene(scene);
                 stage.setResizable(false);
