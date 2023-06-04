@@ -474,7 +474,7 @@ public class GameViewController implements Initializable {
         try {
             Stage newStage = new Stage();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/PersonalObj.fxml"));
-            Scene newScene = new Scene(newRoot, 300, 300);
+            Scene newScene = new Scene(newRoot, POPUP_WIDTH, POPUP_HEIGHT);
             newStage.setScene(newScene);
             newStage.setResizable(false);
             newStage.show();
