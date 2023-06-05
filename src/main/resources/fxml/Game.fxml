@@ -26,25 +26,40 @@
             <Image url="@../img/boards/livingroom.png" />
          </image>
       </ImageView>
-      <Button fx:id="printPersonalObjectivesButton" layoutX="311.0" layoutY="673.0" mnemonicParsing="false" onAction="#printPersonalObjectivesButton" text="Show Personal Obj" />
-      <Button fx:id="printAllShelvesButton" layoutX="29.0" layoutY="673.0" mnemonicParsing="false" onAction="#printAllShelvesObjectivesButton" text="Show All Shelfs" />
-      <Button fx:id="printCommonObjectivesButton" layoutX="154.0" layoutY="673.0" mnemonicParsing="false" onAction="#printCommonObjectivesButton" text="Show Common Obj" />
-      <ListView fx:id="chat" editable="true" layoutX="715.0" layoutY="510.0" prefHeight="71.0" prefWidth="327.0" />
-      <Button fx:id="sendMessageButton" layoutX="816.0" layoutY="619.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="71.0" prefWidth="125.0" text="Send message">
+      <Button fx:id="printPersonalObjectivesButton" layoutX="311.0" layoutY="673.0" mnemonicParsing="false" onAction="#printPersonalObjectivesButton" text="Show Personal Obj">
          <font>
-            <Font size="16.0" />
+            <Font name="Arial" size="12.0" />
+         </font></Button>
+      <Button fx:id="printAllShelvesButton" layoutX="29.0" layoutY="673.0" mnemonicParsing="false" onAction="#printAllShelvesObjectivesButton" text="Show All Shelfs">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
+      <Button fx:id="printCommonObjectivesButton" layoutX="154.0" layoutY="673.0" mnemonicParsing="false" onAction="#printCommonObjectivesButton" text="Show Common Obj">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
+      <ListView fx:id="chat" editable="true" layoutX="715.0" layoutY="510.0" prefHeight="71.0" prefWidth="327.0" />
+      <Button fx:id="sendMessageButton" layoutX="801.0" layoutY="619.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="37.0" prefWidth="142.0" text="Send message">
+         <font>
+            <Font name="Arial" size="16.0" />
          </font></Button>
       <TextField fx:id="messageInput" layoutX="715.0" layoutY="582.0" prefHeight="37.0" prefWidth="327.0" promptText="Type your message...">
          <font>
-            <Font size="10.0" />
+            <Font name="Arial" size="10.0" />
          </font></TextField>
       <ListView fx:id="players" layoutX="743.0" layoutY="385.0" prefHeight="94.0" prefWidth="271.0" />
       <Label fx:id="messageLabel" alignment="CENTER" layoutX="743.0" layoutY="42.0" prefHeight="37.0" prefWidth="271.0" textFill="#a1ff00">
          <font>
-            <Font size="16.0" />
+            <Font name="Arial" size="16.0" />
          </font>
       </Label>
-      <Button fx:id="moveButton" layoutX="466.0" layoutY="673.0" mnemonicParsing="false" onAction="#tryMove" text="Move to shelf" />
-      <TextField fx:id="columnInput" alignment="CENTER" layoutX="806.0" layoutY="333.0" prefHeight="37.0" prefWidth="132.0" promptText="Select a column" />
+      <Button fx:id="moveButton" layoutX="466.0" layoutY="673.0" mnemonicParsing="false" onAction="#tryMove" text="Move to shelf">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
+      <TextField fx:id="columnInput" alignment="CENTER" layoutX="806.0" layoutY="333.0" prefHeight="37.0" prefWidth="132.0" promptText="Select a column">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></TextField>
    </children>
 </AnchorPane>

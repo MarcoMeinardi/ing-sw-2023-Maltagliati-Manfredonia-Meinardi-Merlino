@@ -19,7 +19,7 @@
       </ImageView>
       <Button fx:id="loginButton" alignment="CENTER" contentDisplay="CENTER" layoutX="515.0" layoutY="630.0" mnemonicParsing="false" onAction="#switchToMainMenu" prefHeight="50.0" prefWidth="111.0" style="-fx-background-color: white;" text="Play">
          <font>
-            <Font name="Franklin Gothic Demi Cond" size="33.0" />
+            <Font name="Arial" size="33.0" />
          </font>
       </Button>
       <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="900.0" layoutY="630.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
@@ -34,12 +34,12 @@
       </ImageView>
       <TextField fx:id="namePlayer" alignment="CENTER" layoutX="295.0" layoutY="295.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="Select your name" style="-fx-background-color: white; -fx-opacity: 80%;">
          <font>
-            <Font name="Franklin Gothic Medium Cond" size="26.0" />
+            <Font name="Arial" size="26.0" />
          </font>
       </TextField>
       <RadioButton fx:id="RMIButton" layoutX="74.0" layoutY="648.0" mnemonicParsing="false" selected="true" text="RMI">
          <font>
-            <Font name="Franklin Gothic Medium" size="26.0" />
+            <Font name="Arial" size="26.0" />
          </font>
          <toggleGroup>
             <ToggleGroup fx:id="Server" />
@@ -47,7 +47,7 @@
       </RadioButton>
       <RadioButton fx:id="serverButton" layoutX="201.0" layoutY="648.0" mnemonicParsing="false" selected="true" text="Socket" toggleGroup="$Server">
          <font>
-            <Font name="Franklin Gothic Medium" size="26.0" />
+            <Font name="Arial" size="26.0" />
          </font>
       </RadioButton>
       <Label fx:id="errorLabel" alignment="CENTER" layoutX="368.0" layoutY="198.0" prefHeight="71.0" prefWidth="404.0" textAlignment="CENTER" textFill="#d4ff00">
@@ -57,7 +57,7 @@
       </Label>
       <TextField fx:id="selectedIp" alignment="CENTER" layoutX="296.0" layoutY="419.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="Ip" style="-fx-background-color: white; -fx-opacity: 80%;">
          <font>
-            <Font name="Franklin Gothic Medium Cond" size="26.0" />
+            <Font name="Arial" size="26.0" />
          </font>
       </TextField>
    </children>

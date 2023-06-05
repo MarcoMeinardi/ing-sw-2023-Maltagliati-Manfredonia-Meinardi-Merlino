@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane fx:id="pane" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.gui.ShelvesController">
    <children>
       <ImageView fitHeight="800.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
@@ -18,44 +17,44 @@
             <Rectangle2D height="800.0" width="800.0" />
          </viewport>
       </ImageView>
-      <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="100.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="shelf" fitHeight="200.0" fitWidth="200.0" layoutX="100.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/boards/bookshelf.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="500.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="shelf2" fitHeight="200.0" fitWidth="200.0" layoutX="500.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/boards/bookshelf.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="500.0" layoutY="440.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="shelf4" fitHeight="200.0" fitWidth="200.0" layoutX="500.0" layoutY="440.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/boards/bookshelf.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="100.0" layoutY="440.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="shelf3" fitHeight="200.0" fitWidth="200.0" layoutX="100.0" layoutY="440.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/boards/bookshelf.png" />
          </image>
       </ImageView>
       <Label fx:id="player" alignment="CENTER" layoutX="100.0" layoutY="280.0" prefHeight="80.0" prefWidth="200.0" text="Find more friends">
          <font>
-            <Font size="18.0" />
+            <Font name="Arial" size="18.0" />
          </font>
       </Label>
       <Label fx:id="player2" alignment="CENTER" layoutX="500.0" layoutY="280.0" prefHeight="80.0" prefWidth="200.0" text="Find more friends">
          <font>
-            <Font size="18.0" />
+            <Font name="Arial" size="18.0" />
          </font>
       </Label>
       <Label fx:id="player3" alignment="CENTER" layoutX="100.0" layoutY="640.0" prefHeight="80.0" prefWidth="200.0" text="Find more friends">
          <font>
-            <Font size="18.0" />
+            <Font name="Arial" size="18.0" />
          </font>
       </Label>
       <Label fx:id="player4" alignment="CENTER" layoutX="500.0" layoutY="640.0" prefHeight="80.0" prefWidth="200.0" text="Find more friends">
          <font>
-            <Font size="18.0" />
+            <Font name="Arial" size="18.0" />
          </font>
       </Label>
    </children>

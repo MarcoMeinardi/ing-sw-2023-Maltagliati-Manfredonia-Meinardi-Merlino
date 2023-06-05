@@ -20,29 +20,32 @@
         </ImageView>
       <Label fx:id="messageLabel1" alignment="CENTER" layoutY="80.0" prefHeight="80.0" prefWidth="1140.0">
          <font>
-            <Font size="20.0" />
+            <Font name="Arial" size="20.0" />
          </font>
       </Label>
       <Label fx:id="messageLabel2" alignment="CENTER" layoutY="200.0" prefHeight="80.0" prefWidth="1140.0">
          <font>
-            <Font size="20.0" />
+            <Font name="Arial" size="20.0" />
          </font>
       </Label>
       <Label fx:id="titleLabel" alignment="CENTER" layoutY="560.0" prefHeight="80.0" prefWidth="1140.0">
          <font>
-            <Font size="20.0" />
+            <Font name="Arial" size="20.0" />
          </font>
       </Label>
       <Label fx:id="messageLabel3" alignment="CENTER" layoutY="320.0" prefHeight="80.0" prefWidth="1140.0">
          <font>
-            <Font size="20.0" />
+            <Font name="Arial" size="20.0" />
          </font>
       </Label>
       <Label fx:id="messageLabel4" alignment="CENTER" layoutY="440.0" prefHeight="80.0" prefWidth="1140.0">
          <font>
-            <Font size="20.0" />
+            <Font name="Arial" size="20.0" />
          </font>
       </Label>
-      <Button fx:id="exitButton" layoutX="510.0" layoutY="671.0" mnemonicParsing="false" onAction="#goToLobbies" prefHeight="60.0" prefWidth="120.0" text="Back to lobbies" />
+      <Button fx:id="exitButton" layoutX="510.0" layoutY="671.0" mnemonicParsing="false" onAction="#goToLobbies" prefHeight="60.0" prefWidth="120.0" text="Back to lobbies">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
     </children>
 </Pane>

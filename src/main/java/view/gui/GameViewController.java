@@ -339,7 +339,7 @@ public class GameViewController implements Initializable {
             Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
             if (result.isErr()) {
                 System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
-                messageLabel.setText("Error" + result.getException().orElse("Cannot select cards"));
+                messageLabel.setText("Select valid cards!");
             } else {
                 return;
             }

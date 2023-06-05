@@ -22,7 +22,7 @@ public class ShelvesController implements Initializable {
 
     private static final int shelfCardSize = 24;
     private static final int shelfCardStepX = 30;
-    private static final int shelfCardStepY = 26;
+    private static final int shelfCardStepY = 27;
     private static final int shelfRows = 6;
     private static final int shelfColumns = 5;
     @FXML
@@ -35,6 +35,14 @@ public class ShelvesController implements Initializable {
     private Label player3;
     @FXML
     private Label player4;
+    @FXML
+    private ImageView shelf;
+    @FXML
+    private ImageView shelf2;
+    @FXML
+    private ImageView shelf3;
+    @FXML
+    private ImageView shelf4;
     private ArrayList<Shelf> shelves;
     private ArrayList<String> playersNames;
     private Stage stage;
@@ -44,6 +52,18 @@ public class ShelvesController implements Initializable {
         GameData gameData = GameViewController.getGameData();
         shelves = gameData.getShelves();
         playersNames = gameData.getPlayersNames();
+        switch (playersNames.size()){
+            case 2:
+                pane.getChildren().remove(player3);
+                pane.getChildren().remove(player4);
+                pane.getChildren().remove(shelf3);
+                pane.getChildren().remove(shelf4);
+                break;
+            case 3:
+                pane.getChildren().remove(player4);
+                pane.getChildren().remove(shelf4);
+                break;
+        }
         for(Shelf shelf : shelves){
             fillShelf(shelf, shelves.indexOf(shelf));
         }

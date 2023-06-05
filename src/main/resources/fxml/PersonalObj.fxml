@@ -15,5 +15,6 @@
             <Rectangle2D height="400.0" width="600.0" />
          </viewport>
       </ImageView>
+      <ImageView fx:id="objImage" fitHeight="300.0" fitWidth="300.0" layoutX="200.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

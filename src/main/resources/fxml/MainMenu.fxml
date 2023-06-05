@@ -18,17 +18,17 @@
       </ImageView>
       <Text fx:id="nameUser" fill="WHITE" layoutX="85.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" underline="true" wrappingWidth="210.0911102294922">
          <font>
-            <Font name="Franklin Gothic Medium" size="35.0" />
+            <Font name="Arial" size="35.0" />
          </font>
       </Text>
-      <Button fx:id="btnSelectLobby" layoutX="594.0" layoutY="597.0" mnemonicParsing="false" onAction="#joinLobby" prefHeight="40.0" prefWidth="164.0" text="Select Lobby">
+      <Button fx:id="btnSelectLobby" alignment="CENTER" layoutX="594.0" layoutY="597.0" mnemonicParsing="false" onAction="#joinLobby" prefHeight="40.0" prefWidth="164.0" text="Select Lobby">
          <font>
-            <Font name="Franklin Gothic Medium" size="20.0" />
+            <Font name="Arial" size="20.0" />
          </font>
       </Button>
-      <Button fx:id="btnCreateLobby" layoutX="369.0" layoutY="597.0" mnemonicParsing="false" onAction="#switchToCreateLobby" prefHeight="40.0" prefWidth="164.0" text="Create Lobby">
+      <Button fx:id="btnCreateLobby" alignment="CENTER" layoutX="369.0" layoutY="597.0" mnemonicParsing="false" onAction="#switchToCreateLobby" prefHeight="40.0" prefWidth="164.0" text="Create Lobby">
          <font>
-            <Font name="Franklin Gothic Medium" size="20.0" />
+            <Font name="Arial" size="20.0" />
          </font>
       </Button>
       <ImageView fitHeight="154.0" fitWidth="162.0" layoutX="1415.0" layoutY="676.0" pickOnBounds="true" preserveRatio="true">
@@ -42,9 +42,9 @@
             <Font size="31.0" />
          </font>
       </Label>
-      <Button fx:id="btnRefreshLobbies" layoutX="481.0" layoutY="155.0" mnemonicParsing="false" onAction="#refreshLobbies" prefHeight="40.0" prefWidth="164.0" text="Refresh lobbies">
+      <Button fx:id="btnRefreshLobbies" alignment="CENTER" layoutX="481.0" layoutY="155.0" mnemonicParsing="false" onAction="#refreshLobbies" prefHeight="40.0" prefWidth="164.0" text="Refresh lobbies">
          <font>
-            <Font name="Franklin Gothic Medium" size="20.0" />
+            <Font name="Arial" size="18.0" />
          </font>
       </Button>
    </children>

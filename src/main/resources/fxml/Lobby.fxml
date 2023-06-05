@@ -22,35 +22,38 @@
         </ImageView>
         <Label fx:id="descriptorLabel" alignment="CENTER" layoutX="305.0" layoutY="281.0" prefHeight="199.0" prefWidth="504.0" text="Waiting for the others to start..." textFill="#d4ff00">
             <font>
-                <Font size="36.0" />
+                <Font name="Arial" size="36.0" />
             </font>
         </Label>
-        <TextField fx:id="messageInput" layoutX="778.0" layoutY="575.0" prefHeight="37.0" prefWidth="327.0" promptText="Your message..." />
+        <TextField fx:id="messageInput" layoutX="778.0" layoutY="575.0" prefHeight="37.0" prefWidth="327.0" promptText="Your message...">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></TextField>
         <Button fx:id="startButton" layoutX="495.0" layoutY="433.0" mnemonicParsing="false" onAction="#startGame" prefHeight="71.0" prefWidth="125.0" text="Start!">
          <font>
-            <Font size="33.0" />
+            <Font name="Arial" size="33.0" />
          </font>
       </Button>
       <Button fx:id="quitLobby" layoutX="495.0" layoutY="655.0" mnemonicParsing="false" onAction="#quitLobby" prefHeight="71.0" prefWidth="125.0" text="Quit">
          <font>
-            <Font size="33.0" />
+            <Font name="Arial" size="33.0" />
          </font>
       </Button>
       <ListView fx:id="chat" layoutX="778.0" layoutY="504.0" prefHeight="71.0" prefWidth="327.0" />
-      <Button fx:id="sendMessageButton" layoutX="879.0" layoutY="630.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="71.0" prefWidth="125.0" text="Send message">
+      <Button fx:id="sendMessageButton" layoutX="872.0" layoutY="612.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="56.0" prefWidth="139.0" text="Send message">
          <font>
-            <Font size="16.0" />
+            <Font name="Arial" size="16.0" />
          </font>
       </Button>
       <ListView fx:id="players" layoutX="435.0" layoutY="136.0" prefHeight="94.0" prefWidth="271.0" />
       <Label alignment="CENTER" layoutX="433.0" layoutY="74.0" prefHeight="44.0" prefWidth="271.0" text="Players in lobby:" textAlignment="CENTER">
          <font>
-            <Font size="20.0" />
+            <Font name="Arial" size="20.0" />
          </font>
       </Label>
       <Button fx:id="loadButton" layoutX="495.0" layoutY="540.0" mnemonicParsing="false" onAction="#loadGame" prefHeight="71.0" prefWidth="125.0" text="Load">
          <font>
-            <Font size="33.0" />
+            <Font name="Arial" size="33.0" />
          </font>
       </Button>
     </children>
