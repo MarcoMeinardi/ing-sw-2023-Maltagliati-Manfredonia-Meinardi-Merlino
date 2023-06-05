@@ -153,7 +153,7 @@ public class LoginController implements Initializable {
                     else{
                         gameInfo = (GameInfo)result.unwrap();
                         state = ClientStatus.InGame;
-                        lobby = new Lobby(username, gameInfo.players());
+                        lobby = gameInfo.lobby();
                         switchToGame();
                         return;
                     }

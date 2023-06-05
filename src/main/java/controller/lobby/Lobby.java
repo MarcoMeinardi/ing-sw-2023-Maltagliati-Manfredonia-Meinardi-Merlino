@@ -13,10 +13,6 @@ public class Lobby implements Serializable {
         this.players.add(host);
     }
 
-    public Lobby(String name, ArrayList<String> players){
-        this.name = name;
-        this.players = players;
-    }
     public String getName() {
         synchronized (name) {
             return name;

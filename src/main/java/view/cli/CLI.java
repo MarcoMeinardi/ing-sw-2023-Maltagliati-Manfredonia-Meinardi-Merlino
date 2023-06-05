@@ -107,7 +107,9 @@ public class CLI {
 				if (result.unwrap().equals(Boolean.TRUE)) {
 					return ClientStatus.InLobbySearch;
 				} else {
-					game = new CLIGame((GameInfo)result.unwrap(), username);
+					GameInfo gameInfo = (GameInfo)result.unwrap();
+					game = new CLIGame(gameInfo, username);
+					lobby = gameInfo.lobby();
 					yourTurn = game.players.get(0).equals(username);
 					gameStarted = true;
 					return ClientStatus.InGame;

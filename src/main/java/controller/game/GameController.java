@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 public class GameController {
 
     private final Game game;
+    private Lobby lobby;
 
     private final Iterator<Player> playerIterator;
 
@@ -50,6 +51,7 @@ public class GameController {
      *
      */
     public GameController(Lobby lobby) throws Exception {
+        this.lobby = lobby;
         game = new Game(lobby.getPlayers());
         playerIterator = game.iterator();
         currentPlayer = playerIterator.next();
@@ -472,6 +474,7 @@ public class GameController {
         ArrayList<String> commonObjectives = game.getCommonObjectives().stream().map(CommonObjective::getName).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<Integer> commonObjectivesPoints = game.getCommonObjectives().stream().map(CommonObjective::getValue).collect(Collectors.toCollection(ArrayList::new));
         return new GameInfo(
+            lobby,
             game.getTabletop().getSerializable(),
             players,
             shelves,
