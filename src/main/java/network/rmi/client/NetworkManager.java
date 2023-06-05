@@ -76,7 +76,6 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public void run(){
-        logger.info("NetworkManager: running");
         while(isConnected()){
             try{
                 if(clientService.isPresent()) {

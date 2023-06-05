@@ -72,13 +72,9 @@ public class LobbyController extends Thread {
                         for (int i = 0; i < players.size(); i++) {
                             Optional<ClientInterface> client = clientManager.getClient(players.get(i));
                             if (client.isEmpty()) {
-                                throw new ClientNotFoundException();
-                            } else {
-                                if (client.get().isDisconnected()) {
                                     leaveLobby(players.get(i));
                                     client.get().setCallHandler(LobbyController.getInstance()::handleLobbySearch);
                                     i--;
-                                }
                             }
                         }
                     }
@@ -272,7 +268,7 @@ public class LobbyController extends Thread {
                     } else {
                         Optional<ClientInterface> receiver = clientManager.getClient(new_chat_message.idReceiver().get());
                         if(receiver.isEmpty()){
-                            throw new ClientNotFoundException();
+                            throw new ClientNotConnectedException();
                         }
                         receiver.get().sendEvent(event);
                     }
@@ -379,6 +375,8 @@ public class LobbyController extends Thread {
                     Optional<ClientInterface> client = clientManager.getClient(player);
                     if(client.isPresent()) {
                         client.get().sendEvent(event);
+                    }else{
+                        Logger.getLogger(LobbyController.class.getName()).warning("Client " + player + " not connected");
                     }
                 } catch (Exception e) {
                     Logger.getLogger(LobbyController.class.getName()).warning("Error while sending global update event to client" + player + " " + e.getMessage());

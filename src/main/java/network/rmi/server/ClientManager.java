@@ -56,7 +56,7 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
     @Override
     public Optional<ClientInterface> getClient(String username) {
         Optional<ClientInterface> client = Optional.empty();
-        if(clients.containsKey(username)){
+        if(clients.containsKey(username) && !clients.get(username).isDisconnected()){
             client = Optional.of(clients.get(username));
         }
         return client;
@@ -109,7 +109,7 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
                 e.printStackTrace();
             }
             for(Client client : clients.values()){
-                if(!client.checkPing()){
+                if(!client.getStatus().equals(ClientStatus.Disconnected) && !client.checkPing()){
                     logger.info("Client " + client.username + " timed out");
                     client.setStatus(ClientStatus.Disconnected);
                 }

@@ -2,6 +2,7 @@ package controller.game;
 import controller.DataBase;
 import controller.lobby.Lobby;
 import controller.lobby.LobbyController;
+import javafx.util.Pair;
 import model.*;
 import network.*;
 import network.errors.ClientNotFoundException;
@@ -13,10 +14,7 @@ import network.errors.WrongParametersException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -31,6 +29,11 @@ public class GameController {
     private final Game game;
 
     private final Iterator<Player> playerIterator;
+
+    private final Object timerLock = new Object();
+    private Timer timer = new Timer();
+    private boolean isTimerRunning = false;
+    private Thread healthyThread;
     private Player currentPlayer;
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
@@ -38,6 +41,7 @@ public class GameController {
 
     private final DataBase db = DataBase.getInstance();
     private boolean someoneCompleted = false;
+    private final long SOLE_SURVIVOR_TIMER = 60000;
     File saveFile;
 
     /**
@@ -50,6 +54,8 @@ public class GameController {
         playerIterator = game.iterator();
         currentPlayer = playerIterator.next();
         clientManager = GlobalClientManager.getInstance();
+        healthyThread = new Thread(this::checkPlayerHealth);
+        healthyThread.start();
         for (Player player : game.getPlayers()) {
             ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
             client.setCallHandler(this::handleGame);
@@ -65,6 +71,8 @@ public class GameController {
         clientManager = GlobalClientManager.getInstance();
         playerIterator = game.iterator();
         currentPlayer = playerIterator.next();
+        healthyThread = new Thread(this::checkPlayerHealth);
+        healthyThread.start();
         for (Player player : game.getPlayers()) {
             ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
             client.setCallHandler(this::handleGame);
@@ -131,11 +139,66 @@ public class GameController {
         }
     }
 
+    /**
+     * Checks if the player is the first to finish the game.
+     * If true adds the first to finish cockade to the player's shelf.
+     * @param player The player to check
+     */
     private void addFirstToFinish(Player player){
         Optional<Cockade> firstToFinishCockade = player.getShelf().isFirstToFinish();
         if(firstToFinishCockade.isPresent() && !someoneCompleted){
             player.addCockade(firstToFinishCockade.get());
             someoneCompleted = true;
+        }
+    }
+
+    private void startTimer(){
+        synchronized (timerLock){
+            Message message = new Message("Server", "If no one reconnects in 60 seconds the game will end");
+            ServerEvent event = ServerEvent.NewMessage(message);
+            globalUpdate(event);
+            timer = new Timer();
+            timer.schedule(
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+                            endTimer();
+                        }
+                    },
+                    SOLE_SURVIVOR_TIMER
+            );
+            isTimerRunning = true;
+        }
+    }
+    /**
+     * This function is called when the timer is over
+     * it ends the game if there is only one player connected
+     * otherwise it ends the turn of the current player and selects a new player
+     */
+    private void endTimer() {
+        synchronized (timerLock){
+            Pair<Boolean, Optional<Player>> nextToPlay = nextNotDisconnected();
+            if(!nextToPlay.getKey() || nextToPlay.getValue().isEmpty()){
+                exitGame();
+            } else {
+                ArrayList<Cockade> completedObjectives = new ArrayList<>();
+                ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
+                addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
+                Player nextPlayer = nextToPlay.getValue().get();
+                Update update = new Update(
+                        currentPlayer.getName(),
+                        game.getTabletop().getSerializable(),
+                        currentPlayer.getShelf().getSerializable(),
+                        nextPlayer.getName(),
+                        completedObjectives,
+                        newCommonObjectivesScores
+                );
+                ServerEvent event = ServerEvent.Update(update);
+                globalUpdate(event);
+                currentPlayer = nextPlayer;
+            }
+            timer.cancel();
+            isTimerRunning = false;
         }
     }
 
@@ -215,20 +278,25 @@ public class GameController {
         }
     }
 
-    private Optional<Player> nextNotDisconnected() {
+    /**
+     * Finds the next player that is not disconnected.
+     * @return A pair containing a boolean that is true if the game is not finished and an optional player that is Some only if there is a next valid player
+     */
+    private Pair<Boolean,Optional<Player>> nextNotDisconnected() {
         Optional<Player> nextPlayer = Optional.empty();
         int count = 0;
         while (playerIterator.hasNext()) {
             Player player = playerIterator.next();
             if (clientManager.getClient(player.getName()).isPresent()) {
-                return Optional.of(player);
+                if (currentPlayer.equals(player) || count == (game.getPlayers().size() - 1) ) {
+                    return new Pair<>(true, Optional.empty());
+                }else{
+                    return new Pair<>(true, Optional.of(player));
+                }
             }
             count++;
-            if (count == game.getPlayers().size()) {
-                break;
-            }
         }
-        return nextPlayer;
+        return new Pair<>(false, Optional.empty());
     }
 
     /**
@@ -255,37 +323,12 @@ public class GameController {
                     CardSelect cardSelect = (CardSelect) call.params();
                     String username = client.getUsername();
                     Player player = game.getPlayers().stream().filter(p -> p.getName().equals(username)).findFirst().orElseThrow();
-                    if (!currentPlayer.equals(player)) {
-                        throw new NotYourTurnException();
-                    }
-                    doMove(player, cardSelect.selectedCards(), cardSelect.column());
-                    ArrayList<Cockade> completedObjectives = new ArrayList<>();
-                    ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
-                    addCommonCockade(player, completedObjectives, newCommonObjectivesScores);
-                    addFirstToFinish(player);
-                    refillTable();
-                    Optional<Player> nextPlayer = nextNotDisconnected();
-                    if (nextPlayer.isPresent()) {
-                        currentPlayer = nextPlayer.get();
-                        Update update = new Update(
-                            username,
-                            game.getTabletop().getSerializable(),
-                            player.getShelf().getSerializable(),
-                            currentPlayer.getName(),
-                            completedObjectives,
-                            newCommonObjectivesScores
-                        );
-                        globalUpdate(ServerEvent.Update(update));
-                        saveGame();
-                    } else {
-                        for (Player p : game.getPlayers()) {
-                            addPersonalCockade(p);
+                    synchronized (timerLock){
+                        if (!currentPlayer.equals(player) || isTimerRunning) {
+                            throw new NotYourTurnException();
                         }
-                        ScoreBoard scoreBoard = ScoreBoard.create(game).build();
-                        globalUpdate(ServerEvent.End(scoreBoard));
-                        deleteSave();
-                        exitGame();
                     }
+                    completePlayerTurn(player, cardSelect);
                     result = Result.empty(call.id());
                 }
                 case GameChatSend -> {
@@ -320,11 +363,20 @@ public class GameController {
      * @author Ludovico, Lorenzo, Marco
      */
     public void exitGame() {
+        ArrayList<Cockade> completedObjectives = new ArrayList<>();
+        ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
+        addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
+        addFirstToFinish(currentPlayer);
         LobbyController lobbyController = LobbyController.getInstance();
+        ScoreBoard scoreBoard = ScoreBoard.create(game).build();
         for(Player player: game.getPlayers()){
-            Optional<ClientInterface> client = clientManager.getClient(player.getName());
-            if(client.isPresent()){
-                client.get().setCallHandler(lobbyController::handleLobbySearch);  // TODO block toxic boys
+            try{
+                Optional<ClientInterface> client = clientManager.getClient(player.getName());
+                client.get().sendEvent(ServerEvent.End(scoreBoard));
+                client.get().setCallHandler(lobbyController::handleLobbySearch);
+            }catch (Exception e) {
+                logger.warning("Client disconnected while exiting game, they won't receive the final ranking");
+                e.printStackTrace();
             }
         }
         lobbyController.endGame(this);
@@ -377,6 +429,36 @@ public class GameController {
         return playersOrder;
     }
 
+    private void completePlayerTurn(Player player, CardSelect cardSelect) throws Exception {
+        doMove(player, cardSelect.selectedCards(), cardSelect.column());
+        ArrayList<Cockade> completedObjectives = new ArrayList<>();
+        ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
+        addCommonCockade(player, completedObjectives, newCommonObjectivesScores);
+        addFirstToFinish(player);
+        refillTable();
+        Pair<Boolean,Optional<Player>> nextToPlay = nextNotDisconnected();
+        if(nextToPlay.getKey()) {
+            if(nextToPlay.getValue().isEmpty()){
+                startTimer();
+            }else{
+                Player nextPlayer = nextToPlay.getValue().get();
+                Update update = new Update(
+                        player.getName(),
+                        game.getTabletop().getSerializable(),
+                        player.getShelf().getSerializable(),
+                        nextPlayer.getName(),
+                        completedObjectives,
+                        newCommonObjectivesScores
+                );
+                ServerEvent event = ServerEvent.Update(update);
+                globalUpdate(event);
+                currentPlayer = nextPlayer;
+            }
+        }else{
+            exitGame();
+        }
+    }
+
     /**
      * Prepares the game for the start
      * @param player
@@ -406,6 +488,45 @@ public class GameController {
     private void deleteSave() {
         if (!saveFile.delete()) {
             logger.warning("Failed to delete save file (" + saveFile + ")");
+        }
+    }
+
+    private void checkPlayerHealth(){
+        logger.info("Checking player health");
+        while(true){
+            Optional<ClientInterface> client = clientManager.getClient(currentPlayer.getName());
+            if(client.isEmpty()){
+                logger.info("Player " + currentPlayer.getName() + " disconnected while playing");
+                Pair<Boolean, Optional<Player>> nextToPlay = nextNotDisconnected();
+                if(!nextToPlay.getKey() || nextToPlay.getValue().isEmpty()){
+                    logger.info("All players disconnected, ending game");
+                    exitGame();
+                } else {
+                    ArrayList<Cockade> completedObjectives = new ArrayList<>();
+                    ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
+                    addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
+                    Player nextPlayer = nextToPlay.getValue().get();
+                    logger.info("Changing player" + nextPlayer.getName());
+                    Update update = new Update(
+                            currentPlayer.getName(),
+                            game.getTabletop().getSerializable(),
+                            currentPlayer.getShelf().getSerializable(),
+                            nextPlayer.getName(),
+                            completedObjectives,
+                            newCommonObjectivesScores
+                    );
+                    ServerEvent event = ServerEvent.Update(update);
+                    globalUpdate(event);
+                    currentPlayer = nextPlayer;
+                }
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                logger.warning("Thread interrupted while checking player health");
+                e.printStackTrace();
+                return;
+            }
         }
     }
 }
