@@ -180,26 +180,7 @@ public class GameController {
      */
     private void endTimer() {
         synchronized (timerLock){
-            Pair<Boolean, Optional<Player>> nextToPlay = nextNotDisconnected();
-            if(!nextToPlay.getKey() || nextToPlay.getValue().isEmpty()){
-                exitGame();
-            } else {
-                ArrayList<Cockade> completedObjectives = new ArrayList<>();
-                ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
-                addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
-                Player nextPlayer = nextToPlay.getValue().get();
-                Update update = new Update(
-                        currentPlayer.getName(),
-                        game.getTabletop().getSerializable(),
-                        currentPlayer.getShelf().getSerializable(),
-                        nextPlayer.getName(),
-                        completedObjectives,
-                        newCommonObjectivesScores
-                );
-                ServerEvent event = ServerEvent.Update(update);
-                globalUpdate(event);
-                currentPlayer = nextPlayer;
-            }
+            nextOrEndGame();
             timer.cancel();
             isTimerRunning = false;
         }
@@ -288,17 +269,21 @@ public class GameController {
      * @return A pair containing a boolean that is true if the game is not finished and an optional player that is Some only if there is a next valid player
      */
     private Pair<Boolean,Optional<Player>> nextNotDisconnected() {
+        Optional<Player> nextPlayer = Optional.empty();
         int count = 0;
         while (playerIterator.hasNext()) {
             Player player = playerIterator.next();
             if (clientManager.getClient(player.getName()).isPresent()) {
-                if (currentPlayer.equals(player) || count == game.getPlayers().size()) {
+                if (currentPlayer.equals(player)) {
                     return new Pair<>(true, Optional.empty());
                 }else{
                     return new Pair<>(true, Optional.of(player));
                 }
             }
             count++;
+            if(count == game.getPlayers().size()){
+                return new Pair<>(false, Optional.empty());
+            }
         }
         return new Pair<>(false, Optional.empty());
     }
@@ -495,6 +480,44 @@ public class GameController {
         }
     }
 
+    /**
+     * Try to find the next available player or end the game if there are no more players connected
+     */
+    private void nextOrEndGame(){
+        Pair<Boolean, Optional<Player>> nextToPlay = nextNotDisconnected();
+        if(!nextToPlay.getKey() || nextToPlay.getValue().isEmpty()){
+            logger.info("Most of the player are disconnected, closing the game");
+            exitGame();
+        } else {
+            ArrayList<Cockade> completedObjectives = new ArrayList<>();
+            ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
+            addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
+            Player nextPlayer = nextToPlay.getValue().get();
+            logger.info("Changing player" + nextPlayer.getName());
+            Update update = new Update(
+                    currentPlayer.getName(),
+                    game.getTabletop().getSerializable(),
+                    currentPlayer.getShelf().getSerializable(),
+                    nextPlayer.getName(),
+                    completedObjectives,
+                    newCommonObjectivesScores
+            );
+            ServerEvent event = ServerEvent.Update(update);
+            globalUpdate(event);
+            currentPlayer = nextPlayer;
+        }
+    }
+
+    private int currentlyConnectedPlayers(){
+        int connectedPlayers = 0;
+        for(Player player: game.getPlayers()){
+            Optional<ClientInterface> client = clientManager.getClient(player.getName());
+            if(client.isPresent()){
+                connectedPlayers++;
+            }
+        }
+        return connectedPlayers;
+    }
     private void checkPlayerHealth() {
         logger.info("Checking player health");
         while(true){
@@ -506,6 +529,14 @@ public class GameController {
                     logger.info("All players disconnected, ending game");
                     exitGame();
                 } else {
+                    completePlayerTurn(currentPlayer);
+                }
+            }
+            synchronized (timerLock){
+                if(isTimerRunning && currentlyConnectedPlayers() > 1){
+                    isTimerRunning = false;
+                    timer.cancel();
+                    logger.info("Timer stopped trying new turn");
                     completePlayerTurn(currentPlayer);
                 }
             }
