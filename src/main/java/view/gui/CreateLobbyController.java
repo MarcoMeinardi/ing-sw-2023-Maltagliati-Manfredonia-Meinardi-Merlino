@@ -24,6 +24,10 @@ import java.io.IOException;
 
 import static view.gui.LoginController.networkManager;
 
+/**
+ * CreateLobbyController is the class that manages the create lobby scene.
+ **/
+
 public class CreateLobbyController implements Initializable {
     private static final int WIDTH = 1140;
     private static final int HEIGHT = 760;
@@ -38,9 +42,25 @@ public class CreateLobbyController implements Initializable {
     @FXML
     private Pane pane;
 
+    /**
+     * dummy constructor
+     *
+    **/
+
     public CreateLobbyController() {
     }
 
+
+    /**
+     * Method initialize is used to initialize the create lobby scene.
+     * Puts the username of the player in the text field and sets the close request of the stage.
+     *
+     * @param location  the location used to resolve relative paths for the root object, or null if the location is not known.
+     *
+     * @param resources the resources used to localize the root object, or null if the root object was not localized.
+     *
+     * @autor: Ludovico
+     * */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         nameUser.setText(LoginController.username);
         Platform.runLater(new Runnable() {
@@ -58,6 +78,21 @@ public class CreateLobbyController implements Initializable {
         });
     }
 
+
+    /**
+     * Method createLobby is used to create a lobby.
+     * It sends a request to the server to create a lobby with the name inserted by the user.
+     * If the lobby is created successfully, the user is redirected to the lobby scene.
+     * If the lobby name is empty or already exists, the user is notified with a message.
+     * If the server is not reachable, the user is notified with a message.
+     *
+     * @param actionEvent
+     * the click of the create lobby button by the user.
+     *
+     * @throws Exception
+     *
+     * @autor: Ludovico
+     * */
 
     public void createLobby(ActionEvent actionEvent) throws Exception {
 

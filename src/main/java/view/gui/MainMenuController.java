@@ -23,6 +23,9 @@ import java.util.ArrayList;
 
 import static view.gui.LoginController.networkManager;
 
+/**
+ * MainMenuController is the class that manages the main menu scene.
+ **/
 
 public class MainMenuController implements Initializable {
     private static final int WIDTH = 1140;
@@ -38,9 +41,29 @@ public class MainMenuController implements Initializable {
     @FXML
     private Pane pane;
 
+    /**
+     * Dummy constructor
+     *
+     */
+
     public void MainMenuController() {
     }
 
+    /**
+     * Method initialize is used to initialize the main menu scene.
+     * Sets the name of the user on the top left of the scene and sets the close request of the stage.
+     * It also calls the method askNetForLobbies to get the list of the lobbies present at the moment of the connection.
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     *
+     * @author Ludovico
+     */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         nameUser.setText(LoginController.username);
         askNetForLobbies();
@@ -59,10 +82,29 @@ public class MainMenuController implements Initializable {
         });
     }
 
+    /**
+     * Method refreshLobbies is used to refresh the list of the lobbies present at the
+     * moment of the click of the linked button.
+     * Calls the method askNetForLobbies to get the list of the lobbies.
+     *
+     * @param actionEvent
+     * the click of the button refresh lobbies by the user
+     *
+     * @throws IOException
+     *
+     * @author Ludovico
+     */
+
     public void refreshLobbies(javafx.event.ActionEvent actionEvent){
         listView.getItems().clear();
         askNetForLobbies();
     }
+
+    /**
+     * Method askNetForLobbies is used to get the list of the lobbies present at the moment of the connection.
+     *
+     * @author Ludovico
+     */
 
     public void askNetForLobbies(){
         try {
@@ -84,6 +126,16 @@ public class MainMenuController implements Initializable {
         }
     }
 
+    /**
+     * Method switchToCreateLobby is used to switch to the create lobby scene.
+     * It is called when the user clicks on the create lobby button.
+     *
+     * @param actionEvent
+     * the click of the button create lobby by the user
+     *
+     * @author Ludovico
+     */
+
     public void switchToCreateLobby(javafx.event.ActionEvent actionEvent ) {
 
         try {
@@ -99,7 +151,18 @@ public class MainMenuController implements Initializable {
 
     }
 
-    public void joinLobby(javafx.event.ActionEvent actionEvent ) {
+    /**
+     * Method joinLobby is used to join a lobby.
+     * It is called when the user clicks on the join lobby button after selecting a lobby from the list.
+     * It checks if the user has selected a lobby and if it is not the case it prints an error message.
+     *
+     * @param actionEvent
+     * the click of the button join lobby by the user
+     *
+     * @author Ludovico
+     */
+
+    public void joinLobby(javafx.event.ActionEvent actionEvent) {
 
         String lobbyName = listView.getSelectionModel().getSelectedItem();
         if(lobbyName == null) {

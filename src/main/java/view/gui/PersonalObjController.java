@@ -4,22 +4,36 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.stage.Stage;
 import model.PersonalObjective;
 
+/**
+ * PersonalObjController is the class that manages the personal objective scene.
+ **/
+
 public class PersonalObjController implements Initializable {
-    @FXML
-    private AnchorPane pane;
-    private Stage stage;
+
     @FXML
     private ImageView objImage;
 
+    /**
+     * Method called when the scene is loaded.
+     * It sets the image of the personal objective card of the game.
+     *
+     * @param url
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resourceBundle
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     *
+     * @author Ludovico, Riccardo, Marco
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GameData gameData = GameViewController.getGameData();

@@ -24,7 +24,10 @@ import network.parameters.GameInfo;
 import network.parameters.Login;
 
 import java.io.IOException;
-import java.util.Optional;
+
+/**
+ * LoginController is the class that manages the login scene.
+**/
 
 public class LoginController implements Initializable {
     private static final int WIDTH = 1140;
@@ -51,6 +54,21 @@ public class LoginController implements Initializable {
     public static Lobby lobby;
     public static GameInfo gameInfo;
 
+    /**
+     * Method initialize is used to initialize the login scene.
+     * sets the default button to the login button and sets the close request of the stage.
+     *
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     *
+     * @author Ludovico
+     */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         loginButton.setDefaultButton(true);
         Platform.runLater(new Runnable() {
@@ -67,6 +85,19 @@ public class LoginController implements Initializable {
             }
         });
     }
+
+    /**
+     * Method called when the user presses the login button. It switches to the main menu scene.
+     * It checks if the input is valid and if the connection to the server is successful.
+     * If the login is successful, it switches to the main menu scene.
+     * If the login is not successful, it prints an error message.
+     * In case of reconnection of player that previously disconnected, it switches to the game scene
+     * of the game they were playing, if it is still going, with the method switchToGame.
+     *
+     * @param actionEvent
+     * The click of the login button.
+     * */
+
     public void switchToMainMenu(javafx.event.ActionEvent actionEvent) {
 
         try {
@@ -149,6 +180,16 @@ public class LoginController implements Initializable {
         }
 
     }
+
+    /**
+     * Method switchToGame is used to switch to the game scene.
+     * It is called when a player that previously disconnected reconnects to the game.
+     * It switches to the game scene of the game they were playing, if it is still going.
+     *
+     * @throws IOException
+     * @see IOException
+     * @autor Ludovico
+     */
 
     public void switchToGame() throws IOException {
         Platform.runLater(() -> {

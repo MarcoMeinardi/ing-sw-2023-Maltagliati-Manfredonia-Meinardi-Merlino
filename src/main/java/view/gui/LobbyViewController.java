@@ -19,7 +19,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import javafx.stage.WindowEvent;
-import model.Card;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
@@ -84,7 +83,10 @@ public class LobbyViewController implements Initializable{
      *
      *
      * @param location
+     *
      * @param resources
+     *
+     * @author Ludovico
      */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         username = LoginController.username;
@@ -391,6 +393,19 @@ public class LobbyViewController implements Initializable{
             chat.scrollTo(chat.getItems().size()-1);
         }
     }
+
+    /**
+     * Method called when the user wants to load a game.
+     * Checks if the lobby has at least 2 players.
+     * It sends a request to the server to load the game.
+     * If the request is successful, the game is loaded.
+     *
+     *
+     * @param actionEvent
+     * The click of the load button by the user.
+     *
+     * @throws Exception
+     */
     @FXML
     private void loadGame(ActionEvent actionEvent) throws Exception {
         if(lobby.getNumberOfPlayers() < 2){
@@ -414,8 +429,8 @@ public class LobbyViewController implements Initializable{
      *
      * - Join: a player joined the lobby
      * - Leave: a player left the lobby
+     * - newMessage: a message was sent in the lobby chat
      * - Start: the game is starting
-     * - Chat: a message was sent in the lobby chat
      *
      * In the join and leave cases the lobby is updated and the start button is shown if the player is the first in the lobby.
      * In the start case the game starts and the players are brought to the game scene.
