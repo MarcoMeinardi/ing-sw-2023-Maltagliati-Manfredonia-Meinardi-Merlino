@@ -127,7 +127,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
                         }
                     }
                 }
-                Thread.sleep(Client.TIMEOUT / 2);
+                Thread.sleep(Client.TIMEOUT * 1000 / 2);
                 synchronized (instanceLock){
                     running = instance != null;
                 }
