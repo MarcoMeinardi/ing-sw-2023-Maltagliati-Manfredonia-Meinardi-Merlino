@@ -480,7 +480,7 @@ public class CLI {
 			}
 			case Update -> {
 				Update update = (Update)event.get().getData();
-				for (Cockade commonObjective : update.commonObjectives()) {
+				for (Cockade commonObjective : update.completedObjectives()) {
 					if (update.idPlayer().equals(username)) {
 						System.out.format("[*] You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
 					} else {

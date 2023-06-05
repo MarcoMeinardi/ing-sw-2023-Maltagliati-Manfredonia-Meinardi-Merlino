@@ -12,9 +12,9 @@ import java.util.ArrayList;
  * @param tableTop current table top
  * @param shelf shelf of the player
  * @param nextPlayer next player of the turn
- * @param commonObjectives list of the common objectives
+ * @param completedObjectives list of the common objectives
  * @param newCommonObjectivesScores list of the points of the common objectives
  * @author Ludovico
  */
-public record Update(String idPlayer, Card[][] tableTop, Card[][] shelf, String nextPlayer, ArrayList<Cockade> commonObjectives, ArrayList<Integer> newCommonObjectivesScores) implements Serializable {
+public record Update(String idPlayer, Card[][] tableTop, Card[][] shelf, String nextPlayer, ArrayList<Cockade> completedObjectives, ArrayList<Integer> newCommonObjectivesScores) implements Serializable {
 }

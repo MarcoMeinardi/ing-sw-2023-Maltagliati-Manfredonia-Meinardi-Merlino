@@ -19,7 +19,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -571,7 +570,7 @@ public class GameViewController implements Initializable {
             }
             case Update -> {
                 Update update = (Update)event.get().getData();
-                for (Cockade commonObjective : update.commonObjectives()) {
+                for (Cockade commonObjective : update.completedObjectives()) {
                     if (update.idPlayer().equals(username)) {
                         System.out.format("[*] You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
                         changeLabel("You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points");

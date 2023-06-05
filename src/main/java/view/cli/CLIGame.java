@@ -59,9 +59,9 @@ public class CLIGame {
 			}
 		}
 
-		for (int i = 0; i < update.commonObjectives().size(); i++) {
+		for (int i = 0; i < update.completedObjectives().size(); i++) {
 			for (int j = 0; j < commonObjectives.size(); j++) {
-				if (update.commonObjectives().get(i).name().equals(commonObjectives.get(j))) {
+				if (update.completedObjectives().get(i).name().equals(commonObjectives.get(j))) {
 					commonObjectivesPoints.set(j, update.newCommonObjectivesScores().get(i));
 					break;
 				}
