@@ -522,7 +522,7 @@ public class CLI {
 					if (message.idReceiver().isEmpty()) {
 						System.out.format("[%s to everyone]: %s%n", message.idSender(), message.message());
 					} else {
-						System.out.format("[%s to you]: %s%n", message.idSender(), message.idReceiver().get(), message.message());
+						System.out.format("[%s to you]: %s%n", message.idSender(), message.message());
 					}
 				}
 			} case Pause -> {
