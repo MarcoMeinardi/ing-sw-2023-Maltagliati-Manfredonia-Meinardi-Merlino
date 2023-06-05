@@ -154,6 +154,7 @@ public class GameController {
 
     private void startTimer(){
         synchronized (timerLock){
+            logger.info("Starting timer");
             Message message = new Message("Server", "If no one reconnects in 60 seconds the game will end");
             ServerEvent event = ServerEvent.NewMessage(message);
             globalUpdate(event);
@@ -269,8 +270,10 @@ public class GameController {
     public void globalUpdate(ServerEvent event) {
         for (Player player : game.getPlayers()) {
             try {
-                ClientInterface client = clientManager.getClient(player.getName()).get();
-                client.sendEvent(event);
+                Optional<ClientInterface> client = clientManager.getClient(player.getName());
+                if (client.isPresent()) {
+                    client.get().sendEvent(event);
+                }
             } catch(Exception e) {
                 logger.warning("oopsy doopsy we got an exceptionussy");
                 e.printStackTrace();
@@ -283,12 +286,11 @@ public class GameController {
      * @return A pair containing a boolean that is true if the game is not finished and an optional player that is Some only if there is a next valid player
      */
     private Pair<Boolean,Optional<Player>> nextNotDisconnected() {
-        Optional<Player> nextPlayer = Optional.empty();
         int count = 0;
         while (playerIterator.hasNext()) {
             Player player = playerIterator.next();
             if (clientManager.getClient(player.getName()).isPresent()) {
-                if (currentPlayer.equals(player) || count == (game.getPlayers().size() - 1) ) {
+                if (currentPlayer.equals(player) || count == game.getPlayers().size()) {
                     return new Pair<>(true, Optional.empty());
                 }else{
                     return new Pair<>(true, Optional.of(player));
@@ -328,7 +330,8 @@ public class GameController {
                             throw new NotYourTurnException();
                         }
                     }
-                    completePlayerTurn(player, cardSelect);
+                    doMove(player, cardSelect.selectedCards(), cardSelect.column());
+                    completePlayerTurn(player);
                     result = Result.empty(call.id());
                 }
                 case GameChatSend -> {
@@ -376,7 +379,6 @@ public class GameController {
                 client.get().setCallHandler(lobbyController::handleLobbySearch);
             }catch (Exception e) {
                 logger.warning("Client disconnected while exiting game, they won't receive the final ranking");
-                e.printStackTrace();
             }
         }
         lobbyController.endGame(this);
@@ -429,8 +431,7 @@ public class GameController {
         return playersOrder;
     }
 
-    private void completePlayerTurn(Player player, CardSelect cardSelect) throws Exception {
-        doMove(player, cardSelect.selectedCards(), cardSelect.column());
+    private void completePlayerTurn(Player player) {
         ArrayList<Cockade> completedObjectives = new ArrayList<>();
         ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
         addCommonCockade(player, completedObjectives, newCommonObjectivesScores);
@@ -491,7 +492,7 @@ public class GameController {
         }
     }
 
-    private void checkPlayerHealth(){
+    private void checkPlayerHealth() {
         logger.info("Checking player health");
         while(true){
             Optional<ClientInterface> client = clientManager.getClient(currentPlayer.getName());
@@ -502,22 +503,7 @@ public class GameController {
                     logger.info("All players disconnected, ending game");
                     exitGame();
                 } else {
-                    ArrayList<Cockade> completedObjectives = new ArrayList<>();
-                    ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
-                    addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
-                    Player nextPlayer = nextToPlay.getValue().get();
-                    logger.info("Changing player" + nextPlayer.getName());
-                    Update update = new Update(
-                            currentPlayer.getName(),
-                            game.getTabletop().getSerializable(),
-                            currentPlayer.getShelf().getSerializable(),
-                            nextPlayer.getName(),
-                            completedObjectives,
-                            newCommonObjectivesScores
-                    );
-                    ServerEvent event = ServerEvent.Update(update);
-                    globalUpdate(event);
-                    currentPlayer = nextPlayer;
+                    completePlayerTurn(currentPlayer);
                 }
             }
             try {
