@@ -131,14 +131,16 @@ public class LoginController implements Initializable {
                 this.ip = selectedIp.getText();
                 this.port = 8000;
             }
-            try{
-                networkManager.connect(new Server(this.ip, this.port));
-                state = ClientStatus.Idle;
-            }catch (Exception e) {
-                errorLabel.setText("Connection failed");
-                System.out.println("[ERROR] " + e.getMessage());
-                state = ClientStatus.Disconnected;
-                return;
+            if (!networkManager.isConnected()) {
+                try{
+                    networkManager.connect(new Server(this.ip, this.port));
+                    state = ClientStatus.Idle;
+                }catch (Exception e) {
+                    errorLabel.setText("Connection failed");
+                    System.out.println("[ERROR] " + e.getMessage());
+                    state = ClientStatus.Disconnected;
+                    return;
+                }
             }
 
             //login
