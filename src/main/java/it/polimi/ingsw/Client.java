@@ -8,5 +8,6 @@ public class Client {
 	static public void main(String[] args) throws Exception {
 		CLI.networkManager = network.rmi.client.NetworkManager.getInstance();
 		cli.run();
+		System.exit(0);
 	}
 }
