@@ -94,7 +94,7 @@ public class GameViewController implements Initializable {
 
     /**
      * Method that initializes the game scene.
-     * Checks if the player is reconniting from a disconnection or if it's a new game, then retrieves the game data
+     * Checks if the player is reconnecting from a disconnection or if it's a new game, then retrieves the game data
      * accordingly.
      * Checks if it's the player's turn and sets the message label accordingly.
      * Updates the GUI adding the list of the players, the chat and the game board.
