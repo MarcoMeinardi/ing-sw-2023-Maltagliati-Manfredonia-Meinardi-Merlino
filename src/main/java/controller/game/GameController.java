@@ -369,7 +369,7 @@ public class GameController {
         boolean isSomeoneAlive = currentlyConnectedPlayers() > 0;
         LobbyController lobbyController = LobbyController.getInstance();
         for(Player player : game.getPlayers()) {
-            Optional<ClientInterface> client = clientManager.getClientEvenIfDisconnected(player.getName());
+            Optional<ClientInterface> client = clientManager.getClient(player.getName());
             client.get().setCallHandler(lobbyController::handleLobbySearch);
             if (client.get().getStatus() != ClientStatus.Disconnected) {
                 client.get().setStatus(ClientStatus.InLobbySearch);
