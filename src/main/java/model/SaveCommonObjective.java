@@ -1,8 +1,10 @@
 package model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 
 public record SaveCommonObjective(
 	String name,
-	int points
+	int points,
+	HashSet<String> completedBy
 ) implements Serializable {}

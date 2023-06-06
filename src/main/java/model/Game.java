@@ -111,7 +111,7 @@ public class Game implements Iterable<Player> {
         for (Player player : this.players) {
             savePlayers.add(player.getSavePlayer());
         }
-        ArrayList<SaveCommonObjective> saveCommonObjectives = commonObjectives.stream().map(o -> new SaveCommonObjective(o.getName(), o.getValue())).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<SaveCommonObjective> saveCommonObjectives = commonObjectives.stream().map(CommonObjective::getSavable).collect(Collectors.toCollection(ArrayList::new));
         int index = playerIterator.getIndex();
 
         return new SaveState(tableTop, savePlayers, saveCommonObjectives, index);

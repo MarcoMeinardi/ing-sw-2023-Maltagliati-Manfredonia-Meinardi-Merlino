@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 public class CommonObjective extends Objective {
 	int value;
 	int pointDecrement;
+	HashSet<String> completedBy;
 	Function<Shelf, Boolean> checkCompleted;
 
 	private static final int INITIAL_VALUE = 8;
@@ -30,6 +31,7 @@ public class CommonObjective extends Objective {
 		value = INITIAL_VALUE;
 		pointDecrement = nPlayers == 2 ? POINT_DECREMENT_2_PLAYERS : POINT_DECREMENT;
 		this.checkCompleted = checkCompleted;
+		completedBy = new HashSet<>();
 	}
 
 	public CommonObjective(SaveCommonObjective objective, int nPlayers) {
@@ -44,7 +46,12 @@ public class CommonObjective extends Objective {
 				return;
 			}
 		}
+		completedBy = objective.completedBy();
 		throw new RuntimeException("Objective not found");
+	}
+
+	public SaveCommonObjective getSavable() {
+		return new SaveCommonObjective(name, value, completedBy);
 	}
 
 	/**
@@ -96,12 +103,12 @@ public class CommonObjective extends Objective {
 	 * or an empty Optional object if the objective has not been completed
 	 * @author Marco, Ludovico, Lorenzo, Riccardo
 	 */
-	@Override
-	public Optional<Cockade> isCompleted(Shelf shelf) {
+	public Optional<Cockade> isCompleted(Shelf shelf, String player) {
 		Optional<Cockade> cockade = Optional.empty();
-		if (checkCompleted.apply(shelf)) {
+		if (!completedBy.contains(player) && checkCompleted.apply(shelf)) {
 			cockade = Optional.of(new Cockade(name, value));
 			value -= pointDecrement;
+			completedBy.add(player);
 		}
 		return cockade;
 	}
