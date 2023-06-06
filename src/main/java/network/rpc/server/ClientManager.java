@@ -138,20 +138,11 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         }
     }
 
+    @Override
     public Optional<ClientInterface> getClient(String username){
         Optional<ClientInterface> client = Optional.empty();
         synchronized (identifiedClients) {
             if(identifiedClients.containsKey(username)){
-                client = Optional.of(identifiedClients.get(username));
-            }
-        }
-        return client;
-    }
-
-    public Optional<ClientInterface> getClientEvenIfDisconnected(String username) {
-        Optional<ClientInterface> client = Optional.empty();
-        synchronized (identifiedClients) {
-            if (identifiedClients.containsKey(username)){
                 client = Optional.of(identifiedClients.get(username));
             }
         }
