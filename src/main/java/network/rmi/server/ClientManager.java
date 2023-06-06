@@ -63,6 +63,15 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
     }
 
     @Override
+    public Optional<ClientInterface> getClientEvenIfDisconnected(String username) {
+        Optional<ClientInterface> client = Optional.empty();
+        if(clients.containsKey(username)){
+            client = Optional.of(clients.get(username));
+        }
+        return client;
+    }
+
+    @Override
     public void waitAndClose() {
         try{
             this.join();

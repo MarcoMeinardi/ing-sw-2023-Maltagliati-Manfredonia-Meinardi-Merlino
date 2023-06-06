@@ -9,6 +9,7 @@ import java.util.function.BiFunction;
 public interface ClientInterface {
     public ClientStatus getStatus();
     public void setStatus(ClientStatus status);
+    public void setLastValidStatus(ClientStatus status);
     public <T extends Serializable> void sendEvent(ServerEvent<T> message);
     public boolean isDisconnected();
     public void setCallHandler(BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> handler);

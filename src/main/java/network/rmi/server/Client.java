@@ -53,6 +53,11 @@ public class Client implements ClientService, ClientInterface {
         statusHandler.setStatus(status);
     }
     @Override
+    public void setLastValidStatus(ClientStatus status) {
+        logger.info("Setting last valid status of " + username + " to " + status.toString());
+        statusHandler.setLastValidStatus(status);
+    }
+    @Override
     public <T extends Serializable> void sendEvent(ServerEvent<T> message){
         serverEvents.add(message);
     }

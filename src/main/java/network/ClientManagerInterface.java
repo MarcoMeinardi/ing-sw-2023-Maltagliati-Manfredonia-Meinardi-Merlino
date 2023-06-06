@@ -14,6 +14,7 @@ public interface ClientManagerInterface{
      * @return the client with the given username.
      */
     public Optional<ClientInterface> getClient(String username);
+    public Optional<ClientInterface> getClientEvenIfDisconnected(String username);
     public void waitAndClose();
 
     public boolean isUsernameTaken(String username);

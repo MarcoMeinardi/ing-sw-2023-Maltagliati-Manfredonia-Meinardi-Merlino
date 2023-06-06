@@ -40,13 +40,13 @@ public class CommonObjective extends Objective {
 		value = objective.points();
 		pointDecrement = nPlayers == 2 ? POINT_DECREMENT_2_PLAYERS : POINT_DECREMENT;
 
+		completedBy = objective.completedBy();
 		for (CommonObjective obj : generateAllCommonObjectives(nPlayers)) {
 			if (obj.getName().equals(this.name)) {
 				this.checkCompleted = obj.checkCompleted;
 				return;
 			}
 		}
-		completedBy = objective.completedBy();
 		throw new RuntimeException("Objective not found");
 	}
 
