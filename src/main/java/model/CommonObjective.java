@@ -46,7 +46,12 @@ public class CommonObjective extends Objective {
 				return;
 			}
 		}
+		completedBy = objective.completedBy();
 		throw new RuntimeException("Objective not found");
+	}
+
+	public SaveCommonObjective getSavable() {
+		return new SaveCommonObjective(name, value, completedBy);
 	}
 
 	/**
