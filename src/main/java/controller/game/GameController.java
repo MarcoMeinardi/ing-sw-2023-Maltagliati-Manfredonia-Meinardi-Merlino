@@ -364,7 +364,11 @@ public class GameController {
         for(Player player : game.getPlayers()) {
             Optional<ClientInterface> client = clientManager.getClientEvenIfDisconnected(player.getName());
             client.get().setCallHandler(lobbyController::handleLobbySearch);
-            client.get().setStatus(ClientStatus.InLobbySearch);
+            if (client.get().getStatus() != ClientStatus.Disconnected) {
+                client.get().setStatus(ClientStatus.InLobbySearch);
+            } else {
+                client.get().setLastValidStatus(ClientStatus.InLobbySearch);
+            }
         }
 
         if (isSomeoneAlive) {
@@ -547,6 +551,7 @@ public class GameController {
                 if(!nextToPlay.getKey() || nextToPlay.getValue().isEmpty()){
                     logger.info("All players disconnected, ending game");
                     exitGame();
+                    return;
                 } else {
                     completePlayerTurn(currentPlayer);
                 }

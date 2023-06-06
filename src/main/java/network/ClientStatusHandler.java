@@ -30,9 +30,6 @@ public class ClientStatusHandler {
     }
 
     public void setLastValidStatus(ClientStatus status) {
-        if(status == ClientStatus.Disconnected){
-            throw new RuntimeException("Cannot set disconnected status as last valid status");
-        }
         synchronized (lastValidStatusLock){
             lastValidStatus = status;
         }

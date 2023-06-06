@@ -44,6 +44,10 @@ public class Client extends Thread implements ClientInterface {
 		statusHandler.setStatus(status);
 	}
 
+	public void setLastValidStatus(ClientStatus status) {
+		statusHandler.setLastValidStatus(status);
+	}
+
 	public void from(Client old_client){
 		setCallHandler(old_client.getCallHandler());
 		setStatus(old_client.statusHandler.getLastValidStatus());
