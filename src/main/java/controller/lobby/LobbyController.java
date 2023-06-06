@@ -347,6 +347,16 @@ public class LobbyController extends Thread {
     }
 
     /**
+     * Exits the specified game.
+     * @param game the GameController object representing the game to exit
+     */
+    public void exitGame(GameController game) {
+        synchronized (games){
+            games.remove(game);
+        }
+    }
+
+    /**
      * Searches for a game containing the specified player.
      * @param username the username of the player to search for
      * @return an Optional object containing the GameController object representing the game, if found, or an empty Optional object otherwise

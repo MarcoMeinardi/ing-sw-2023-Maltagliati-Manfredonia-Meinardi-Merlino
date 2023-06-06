@@ -8,6 +8,7 @@ public interface ClientManagerInterface{
     }
     public boolean isClientConnected(String username);
     public Optional<ClientInterface> getClient(String username);
+    public Optional<ClientInterface> getClientEvenIfDisconnected(String username);
     public void waitAndClose();
 
     public boolean isUsernameTaken(String username);

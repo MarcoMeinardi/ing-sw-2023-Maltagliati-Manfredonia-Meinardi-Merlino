@@ -148,6 +148,16 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         return client;
     }
 
+    public Optional<ClientInterface> getClientEvenIfDisconnected(String username) {
+        Optional<ClientInterface> client = Optional.empty();
+        synchronized (identifiedClients) {
+            if (identifiedClients.containsKey(username)){
+                client = Optional.of(identifiedClients.get(username));
+            }
+        }
+        return client;
+    }
+
     @Override
     public void waitAndClose() {
         try{

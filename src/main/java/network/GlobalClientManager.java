@@ -30,6 +30,11 @@ public class GlobalClientManager implements ClientManagerInterface{
     }
 
     @Override
+    public Optional<ClientInterface> getClientEvenIfDisconnected(String username) {
+        return rpcClientManager.getClientEvenIfDisconnected(username).or(() -> rmiClientManager.getClientEvenIfDisconnected(username));
+    }
+
+    @Override
     public void waitAndClose() {
         rpcClientManager.waitAndClose();
         rmiClientManager.waitAndClose();

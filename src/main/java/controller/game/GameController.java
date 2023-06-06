@@ -357,18 +357,28 @@ public class GameController {
         ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
         addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
         addFirstToFinish(currentPlayer);
+
+        boolean isSomeoneAlive = currentlyConnectedPlayers() > 0;
         LobbyController lobbyController = LobbyController.getInstance();
-        ScoreBoard scoreBoard = ScoreBoard.create(game).build();
-        for(Player player: game.getPlayers()){
-            try{
-                Optional<ClientInterface> client = clientManager.getClient(player.getName());
-                client.get().sendEvent(ServerEvent.End(scoreBoard));
-                client.get().setCallHandler(lobbyController::handleLobbySearch);
-            }catch (Exception e) {
-                logger.warning("Client disconnected while exiting game, they won't receive the final ranking");
-            }
+        for(Player player : game.getPlayers()) {
+            Optional<ClientInterface> client = clientManager.getClientEvenIfDisconnected(player.getName());
+            client.get().setCallHandler(lobbyController::handleLobbySearch);
+            client.get().setStatus(ClientStatus.InLobbySearch);
         }
-        lobbyController.endGame(this);
+        if (isSomeoneAlive) {
+            ScoreBoard scoreBoard = ScoreBoard.create(game).build();
+            for(Player player: game.getPlayers()){
+                try{
+                    Optional<ClientInterface> client = clientManager.getClient(player.getName());
+                    client.get().sendEvent(ServerEvent.End(scoreBoard));
+                }catch (Exception e) {
+                    logger.warning("Client disconnected while exiting game, they won't receive the final ranking");
+                }
+            }
+            lobbyController.endGame(this);
+        } else {
+            lobbyController.exitGame(this);
+        }
     }
 
     /**
@@ -497,6 +507,7 @@ public class GameController {
             ArrayList<Cockade> completedObjectives = new ArrayList<>();
             ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
             addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
+            saveGame();
             Player nextPlayer = nextToPlay.getValue().get();
             logger.info("Changing player" + nextPlayer.getName());
             Update update = new Update(
