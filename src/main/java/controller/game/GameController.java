@@ -244,7 +244,7 @@ public class GameController {
             }
         }
 
-        ArrayList<Card> cards = new ArrayList<Card>();
+        ArrayList<Card> cards = new ArrayList<>();
         for (Point position : positions) {
             cards.add(game.getTabletop().pickCard(position.y(), position.x()));
         }
@@ -253,7 +253,7 @@ public class GameController {
 
     /**
      * Sends the global update event to all the clients.
-     * @param event
+     * @param event The event to send
      * @author Ludovico, Lorenzo, Marco, Riccardo, Momo
      */
     public void globalUpdate(ServerEvent event) {
@@ -264,7 +264,6 @@ public class GameController {
                     client.get().sendEvent(event);
                 }
             } catch(Exception e) {
-                logger.warning("oopsy doopsy we got an exceptionussy");
                 e.printStackTrace();
             }
         }
@@ -319,7 +318,7 @@ public class GameController {
                     CardSelect cardSelect = (CardSelect) call.params();
                     String username = client.getUsername();
                     Player player = game.getPlayers().stream().filter(p -> p.getName().equals(username)).findFirst().orElseThrow();
-                    synchronized (timerLock){
+                    synchronized (timerLock) {
                         if (!currentPlayer.equals(player) || isTimerRunning) {
                             throw new NotYourTurnException();
                         }
@@ -329,15 +328,14 @@ public class GameController {
                     result = Result.empty(call.id());
                 }
                 case GameChatSend -> {
-                    if (!(call.params() instanceof Message)) {
+                    if (!(call.params() instanceof Message newChatMessage)) {
                         throw new WrongParametersException("Message", call.params().getClass().getName(), "GameChatSend");
                     }
-                    Message new_chat_message = (Message)call.params();
-                    ServerEvent event = ServerEvent.NewMessage(new_chat_message);
-                    if (new_chat_message.idReceiver().isEmpty()) {
+                    ServerEvent event = ServerEvent.NewMessage(newChatMessage);
+                    if (newChatMessage.idReceiver().isEmpty()) {
                         globalUpdate(event);
                     } else {
-                        Optional<ClientInterface> receiver = clientManager.getClient(new_chat_message.idReceiver().get());
+                        Optional<ClientInterface> receiver = clientManager.getClient(newChatMessage.idReceiver().get());
                         if(receiver.isEmpty() || receiver.get().isDisconnected()) {
                             throw new ClientNotFoundException();
                         }
@@ -563,7 +561,7 @@ public class GameController {
                     completePlayerTurn(currentPlayer);
                 }
             }
-            synchronized (timerLock){
+            synchronized (timerLock) {
                 if(isTimerRunning && currentlyConnectedPlayers() > 1){
                     isTimerRunning = false;
                     timer.cancel();

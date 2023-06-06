@@ -24,12 +24,12 @@ public class ShelfTest {
 	@Test
 	public void testCLIConstructor() throws InvalidMoveException {
 		Optional<Card>[][] cards = new Optional[Shelf.ROWS][Shelf.COLUMNS];
-		cards[0][0] = Optional.of(Card.Pianta);
-		cards[2][1] = Optional.of(Card.Gatto);
+		cards[0][0] = Optional.of(new Card(Card.Type.Pianta, 0));
+		cards[2][1] = Optional.of(new Card(Card.Type.Gatto, 0));
 		Shelf shelf = new Shelf(cards);
 
-		assertEquals(shelf.getCard(0, 0).get(), Card.Pianta);
-		assertEquals(shelf.getCard(2, 1).get(), Card.Gatto);
+		assertEquals(shelf.getCard(0, 0).get(), new Card(Card.Type.Pianta, 0));
+		assertEquals(shelf.getCard(2, 1).get(), new Card(Card.Type.Gatto, 0));
 		assertEquals(shelf.getCard(0, 1), null);
 	}
 
@@ -43,21 +43,21 @@ public class ShelfTest {
 	public void testInsert() throws InvalidMoveException {
 		Shelf shelf = new Shelf();
 		for (int x = 0; x < Shelf.COLUMNS; x++) {
-			shelf.insert(x, new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+			shelf.insert(x, new ArrayList<Card>(Arrays.asList(new Card(Card.Type.Pianta, 0))));
 
-			assertEquals(Optional.of(Card.Pianta), shelf.getCard(0, x));
+			assertEquals(Optional.of(new Card(Card.Type.Pianta, 0)), shelf.getCard(0, x));
 			assertEquals(Optional.empty(), shelf.getCard(1, x));
 
-			shelf.insert(x, new ArrayList<Card>(Arrays.asList(Card.Libro, Card.Gatto)));
-			assertEquals(Optional.of(Card.Libro), shelf.getCard(1, x));
-			assertEquals(Optional.of(Card.Gatto), shelf.getCard(2, x));
+			shelf.insert(x, new ArrayList<Card>(Arrays.asList(new Card(Card.Type.Libro, 0), new Card(Card.Type.Gatto, 0))));
+			assertEquals(Optional.of(new Card(Card.Type.Libro, 0)), shelf.getCard(1, x));
+			assertEquals(Optional.of(new Card(Card.Type.Gatto, 0)), shelf.getCard(2, x));
 			assertEquals(Optional.empty(), shelf.getCard(3, x));
 
-			shelf.insert(x, new ArrayList<Card>(Arrays.asList(Card.Gioco, Card.Cornice, Card.Trofeo)));
+			shelf.insert(x, new ArrayList<Card>(Arrays.asList(new Card(Card.Type.Gioco, 0), new Card(Card.Type.Cornice, 0), new Card(Card.Type.Trofeo, 0))));
 
-			assertEquals(Optional.of(Card.Gioco), shelf.getCard(3, x));
-			assertEquals(Optional.of(Card.Cornice), shelf.getCard(4, x));
-			assertEquals(Optional.of(Card.Trofeo), shelf.getCard(5, x));
+			assertEquals(Optional.of(new Card(Card.Type.Gioco, 0)), shelf.getCard(3, x));
+			assertEquals(Optional.of(new Card(Card.Type.Cornice, 0)), shelf.getCard(4, x));
+			assertEquals(Optional.of(new Card(Card.Type.Trofeo, 0)), shelf.getCard(5, x));
 			if (x < Shelf.COLUMNS - 1) {
 				for (int y = 0; y < Shelf.ROWS; y++) {
 					assertEquals(Optional.empty(), shelf.getCard(y, x + 1));
@@ -69,13 +69,13 @@ public class ShelfTest {
 	@Test(expected = InvalidMoveException.class)
 	public void testInsertNegativeColumn() throws InvalidMoveException {
 		Shelf shelf = new Shelf();
-		shelf.insert(-1, new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+		shelf.insert(-1, new ArrayList<Card>(Arrays.asList(new Card(Card.Type.Pianta, 0))));
 	}
 
 	@Test(expected = InvalidMoveException.class)
 	public void testInsertTooLargeColumn() throws InvalidMoveException {
 		Shelf shelf = new Shelf();
-		shelf.insert(Shelf.COLUMNS, new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+		shelf.insert(Shelf.COLUMNS, new ArrayList<Card>(Arrays.asList(new Card(Card.Type.Pianta, 0))));
 	}
 
 	@Test(expected = InvalidMoveException.class)
@@ -87,15 +87,15 @@ public class ShelfTest {
 	@Test(expected = InvalidMoveException.class)
 	public void testInsertTooBigArray() throws InvalidMoveException {
 		Shelf shelf = new Shelf();
-		shelf.insert(0, new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Gatto, Card.Trofeo, Card.Gioco)));
+		shelf.insert(0, new ArrayList<Card>(Arrays.asList(new Card(Card.Type.Pianta, 0), new Card(Card.Type.Gatto, 0), new Card(Card.Type.Trofeo, 0), new Card(Card.Type.Gioco, 0))));
 	}
 
 	@Test(expected = InvalidMoveException.class)
 	public void testInsertTooManyCards() throws InvalidMoveException {
 		Shelf shelf = new Shelf();
-		shelf.insert(2, new ArrayList<Card>(Arrays.asList(Card.Gioco, Card.Cornice, Card.Trofeo)));
-		shelf.insert(2, new ArrayList<Card>(Arrays.asList(Card.Gioco, Card.Cornice, Card.Trofeo)));
-		shelf.insert(2, new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+		shelf.insert(2, new ArrayList<Card>(Arrays.asList(new Card(Card.Type.Gioco, 0), new Card(Card.Type.Cornice, 0), new Card(Card.Type.Trofeo, 0))));
+		shelf.insert(2, new ArrayList<Card>(Arrays.asList(new Card(Card.Type.Gioco, 0), new Card(Card.Type.Cornice, 0), new Card(Card.Type.Trofeo, 0))));
+		shelf.insert(2, new ArrayList<Card>(Arrays.asList(new Card(Card.Type.Pianta, 0))));
 	}
 
 
@@ -111,19 +111,19 @@ public class ShelfTest {
 		Shelf shelf = new Shelf();
 		assertEquals(List.of(), shelf.getGroupsCockades());
 
-		shelf.insert(0, new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+		shelf.insert(0, new ArrayList<>(Arrays.asList(new Card(Card.Type.Pianta, 0), new Card(Card.Type.Pianta, 0), new Card(Card.Type.Pianta, 0))));
 		assertEquals(
 			List.of(new Cockade("Area of Pianta of size 3", 2)),
 			shelf.getGroupsCockades()
 		);
 
-		shelf.insert(1, new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Gioco, Card.Gioco)));
+		shelf.insert(1, new ArrayList<>(Arrays.asList(new Card(Card.Type.Pianta, 0), new Card(Card.Type.Gioco, 0), new Card(Card.Type.Gioco, 0))));
 		assertEquals(
 			List.of(new Cockade("Area of Pianta of size 4", 3)),
 			shelf.getGroupsCockades()
 		);
 		
-		shelf.insert(2, new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Gioco, Card.Pianta)));
+		shelf.insert(2, new ArrayList<>(Arrays.asList(new Card(Card.Type.Pianta, 0), new Card(Card.Type.Gioco, 0), new Card(Card.Type.Pianta, 0))));
 		assertEquals(
 			Arrays.asList(
 				new Cockade("Area of Pianta of size 5", 5),
@@ -132,7 +132,7 @@ public class ShelfTest {
 			shelf.getGroupsCockades()
 		);
 
-		shelf.insert(3, new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Trofeo, Card.Gioco)));
+		shelf.insert(3, new ArrayList<>(Arrays.asList(new Card(Card.Type.Pianta, 0), new Card(Card.Type.Trofeo, 0), new Card(Card.Type.Gioco, 0))));
 		assertEquals(
 			Arrays.asList(
 				new Cockade("Area of Pianta of size 6", 8),
@@ -141,7 +141,7 @@ public class ShelfTest {
 			shelf.getGroupsCockades()
 		);
 
-		shelf.insert(4, new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta, Card.Pianta)));
+		shelf.insert(4, new ArrayList<>(Arrays.asList(new Card(Card.Type.Pianta, 0), new Card(Card.Type.Pianta, 0), new Card(Card.Type.Pianta, 0))));
 		assertEquals(
 			Arrays.asList(
 				new Cockade("Area of Pianta of size 9", 8),
@@ -150,10 +150,10 @@ public class ShelfTest {
 			shelf.getGroupsCockades()
 		);
 
-		shelf.insert(0, new ArrayList<Card>(Arrays.asList(Card.Pianta, Card.Pianta)));
-		shelf.insert(2, new ArrayList<Card>(Arrays.asList(Card.Pianta)));
-		shelf.insert(3, new ArrayList<Card>(Arrays.asList(Card.Pianta)));
-		shelf.insert(4, new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+		shelf.insert(0, new ArrayList<>(Arrays.asList(new Card(Card.Type.Pianta, 0), new Card(Card.Type.Pianta, 0))));
+		shelf.insert(2, new ArrayList<>(Arrays.asList(new Card(Card.Type.Pianta, 0))));
+		shelf.insert(3, new ArrayList<>(Arrays.asList(new Card(Card.Type.Pianta, 0))));
+		shelf.insert(4, new ArrayList<>(Arrays.asList(new Card(Card.Type.Pianta, 0))));
 		assertEquals(
 			Arrays.asList(
 				new Cockade("Area of Pianta of size 15", 8),
@@ -168,14 +168,14 @@ public class ShelfTest {
 		Optional<Card>[][] cards = new Optional[Shelf.ROWS][Shelf.COLUMNS];
 		for (int y = 0; y < Shelf.ROWS; y++) {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
-				cards[y][x] = Optional.of(Card.values()[(int)Math.floor(Math.random() * Card.values().length)]);
+				cards[y][x] = Optional.of(new Card(Card.Type.values()[(int)Math.floor(Math.random() * Card.Type.values().length)], 0));
 			}
 		}
 		cards[Shelf.ROWS - 1][Shelf.COLUMNS - 1] = Optional.empty();
 		Shelf shelf = new Shelf(cards);
 
 		assertFalse(shelf.isFull());
-		shelf.insert(Shelf.COLUMNS - 1, new ArrayList<Card>(Arrays.asList(Card.Pianta)));
+		shelf.insert(Shelf.COLUMNS - 1, new ArrayList<>(Arrays.asList(new Card(Card.Type.Pianta, 0))));
 		assertTrue(shelf.isFull());
 	}
 
@@ -185,7 +185,7 @@ public class ShelfTest {
 		for (int y = 0; y < Shelf.ROWS; y++) {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
 				if (Math.random() < 0.9) {
-					cards[y][x] = Optional.of(Card.values()[(int)Math.floor(Math.random() * Card.values().length)]);
+					cards[y][x] = Optional.of(new Card(Card.Type.values()[(int)Math.floor(Math.random() * Card.Type.values().length)], 0));
 				} else {
 					cards[y][x] = Optional.empty();
 				}

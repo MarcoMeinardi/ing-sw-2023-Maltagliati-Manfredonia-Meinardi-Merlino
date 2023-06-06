@@ -48,7 +48,7 @@ public class Shelf {
 	 * Note: this game must not be used by the controller it has to be used only for testing or for the CLI
 	 *
 	 * @param slots The two-dimensional array of cards to initialize the shelf with
-	 * @Author Marco
+	 * @author Marco
 	 */
 	public Shelf(Optional<Card>[][] slots) {
 		this.slots = slots;
@@ -134,9 +134,9 @@ public class Shelf {
 			for (int x = 0; x < COLUMNS; x++) {
 				if (slots[y][x].isEmpty()) continue;
 
-				int groupSize = getGroupSize(y, x, slots[y][x].get(), visited);
+				int groupSize = getGroupSize(y, x, slots[y][x].get().getType(), visited);
 				if (groupSize >= 3) {
-					String cockadeName = String.format("Area of %s of size %d", slots[y][x].get(), groupSize);
+					String cockadeName = String.format("Area of %s of size %d", slots[y][x].get().getType(), groupSize);
 					result.add(new Cockade(cockadeName, groupPoints[Math.min(groupSize - 3, 3)]));
 				}
 			}
@@ -157,8 +157,8 @@ public class Shelf {
 	 * having the same color as the reference card.
 	 * @author Marco
 	 */
-	public int getGroupSize(int y, int x, Card reference, boolean[][] visited) {
-		if (y < 0 || x < 0 || y >= ROWS || x >= COLUMNS || visited[y][x] || !slots[y][x].map(value -> value.equals(reference)).orElse(false)) {
+	public int getGroupSize(int y, int x, Card.Type reference, boolean[][] visited) {
+		if (y < 0 || x < 0 || y >= ROWS || x >= COLUMNS || visited[y][x] || !slots[y][x].map(value -> value.getType()  == reference).orElse(false)) {
 			return 0;
 		}
 		visited[y][x] = true;
@@ -220,7 +220,6 @@ public class Shelf {
 
 	public void insertTest(int column, int row, Card card) {
 		slots[row][column] = Optional.of(card);
-		return;
 	}
 
 	/**
@@ -228,13 +227,13 @@ public class Shelf {
 	 *
 	 * @param card the type of card to count
 	 * @return the number of cards of a certain type in the shelf
-	 * @Author Lorenzo
+	 * @author Lorenzo
 	 */
-	public int countCard(Card card) {
+	public int countCard(Card.Type card) {
 		int count = 0;
 		for (int y = 0; y < ROWS; y++) {
 			for (int x = 0; x < COLUMNS; x++) {
-				if (slots[y][x].isPresent() && slots[y][x].get().equals(card)) {
+				if (slots[y][x].isPresent() && slots[y][x].get().getType() == card) {
 					count++;
 				}
 			}

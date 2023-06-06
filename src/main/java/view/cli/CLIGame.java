@@ -115,7 +115,7 @@ public class CLIGame {
 	}
 
 	private String cardToChar(Card card) {
-		switch (card) {
+		switch (card.getType()) {
 			case Gatto   -> { return "C"; }
 			case Libro   -> { return "B"; }
 			case Gioco   -> { return "G"; }
@@ -252,7 +252,7 @@ public class CLIGame {
 			}
 		}
 		for (Cell cell : personalObjective.getCellsCheck()) {
-			shelfLikePersonalObjective[cell.y()][cell.x()] = Optional.of(cell.card());
+			shelfLikePersonalObjective[cell.y()][cell.x()] = Optional.of(new Card(cell.card()));
 		}
 		printShelf(new Shelf(shelfLikePersonalObjective));
 		

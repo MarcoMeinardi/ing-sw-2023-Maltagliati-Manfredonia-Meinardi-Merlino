@@ -58,7 +58,7 @@ public class PersonalObjective extends Objective {
         try {
             for (Cell cell : cellsCheck) {
                 Optional<Card> pos = shelf.getCard(cell.y(), cell.x());
-                if (pos.isPresent() && pos.get() == cell.card()) {
+                if (pos.isPresent() && pos.get().getType() == cell.card()) {
                     count++;
                 }
             }
@@ -84,112 +84,112 @@ public class PersonalObjective extends Objective {
         ArrayList<PersonalObjective> allObjectives = new ArrayList<>();
 
         allObjectives.add(new PersonalObjective("First", new Cell[]{
-                new Cell(5, 0, Card.Pianta),
-                new Cell(5, 2, Card.Cornice),
-                new Cell(4, 4, Card.Gatto),
-                new Cell(3, 3, Card.Libro),
-                new Cell(2, 1, Card.Gioco),
-                new Cell(0, 2, Card.Trofeo)
+                new Cell(5, 0, Card.Type.Pianta),
+                new Cell(5, 2, Card.Type.Cornice),
+                new Cell(4, 4, Card.Type.Gatto),
+                new Cell(3, 3, Card.Type.Libro),
+                new Cell(2, 1, Card.Type.Gioco),
+                new Cell(0, 2, Card.Type.Trofeo)
         }));
 
         allObjectives.add(new PersonalObjective("Second", new Cell[]{
-                new Cell(4,1, Card.Pianta),
-                new Cell(3,0, Card.Gatto),
-                new Cell(3,2, Card.Gioco),
-                new Cell(2,4, Card.Libro),
-                new Cell(1,3, Card.Trofeo),
-                new Cell(0,4, Card.Cornice)
+                new Cell(4,1, Card.Type.Pianta),
+                new Cell(3,0, Card.Type.Gatto),
+                new Cell(3,2, Card.Type.Gioco),
+                new Cell(2,4, Card.Type.Libro),
+                new Cell(1,3, Card.Type.Trofeo),
+                new Cell(0,4, Card.Type.Cornice)
         }));
 
         allObjectives.add(new PersonalObjective("Third", new Cell[]{
-                new Cell(4,0, Card.Cornice),
-                new Cell(4,3, Card.Gioco),
-                new Cell(3,2, Card.Pianta),
-                new Cell(2,1, Card.Gatto),
-                new Cell(2,4, Card.Trofeo),
-                new Cell(0,0, Card.Libro)
+                new Cell(4,0, Card.Type.Cornice),
+                new Cell(4,3, Card.Type.Gioco),
+                new Cell(3,2, Card.Type.Pianta),
+                new Cell(2,1, Card.Type.Gatto),
+                new Cell(2,4, Card.Type.Trofeo),
+                new Cell(0,0, Card.Type.Libro)
 
         }));
 
         allObjectives.add(new PersonalObjective("Fourth", new Cell[]{
-                new Cell(5,4, Card.Gioco),
-                new Cell(3,0, Card.Trofeo),
-                new Cell(3,2, Card.Cornice),
-                new Cell(2,3, Card.Pianta),
-                new Cell(1,2, Card.Gatto),
-                new Cell(1,1, Card.Libro)
+                new Cell(5,4, Card.Type.Gioco),
+                new Cell(3,0, Card.Type.Trofeo),
+                new Cell(3,2, Card.Type.Cornice),
+                new Cell(2,3, Card.Type.Pianta),
+                new Cell(1,2, Card.Type.Gatto),
+                new Cell(1,1, Card.Type.Libro)
         }));
 
         allObjectives.add(new PersonalObjective("Fifth", new Cell[]{
-                new Cell(4,1, Card.Trofeo),
-                new Cell(2,1, Card.Cornice),
-                new Cell(2,2, Card.Libro),
-                new Cell(1,4, Card.Pianta),
-                new Cell(0,0, Card.Gioco),
-                new Cell(0,3, Card.Gatto)
+                new Cell(4,1, Card.Type.Trofeo),
+                new Cell(2,1, Card.Type.Cornice),
+                new Cell(2,2, Card.Type.Libro),
+                new Cell(1,4, Card.Type.Pianta),
+                new Cell(0,0, Card.Type.Gioco),
+                new Cell(0,3, Card.Type.Gatto)
         }));
 
         allObjectives.add(new PersonalObjective("Sixth", new Cell[]{
-                new Cell(5,2, Card.Trofeo),
-                new Cell(5,4, Card.Gatto),
-                new Cell(3,3, Card.Libro),
-                new Cell(1,1, Card.Gioco),
-                new Cell(1,3, Card.Cornice),
-                new Cell(0,0, Card.Pianta)
+                new Cell(5,2, Card.Type.Trofeo),
+                new Cell(5,4, Card.Type.Gatto),
+                new Cell(3,3, Card.Type.Libro),
+                new Cell(1,1, Card.Type.Gioco),
+                new Cell(1,3, Card.Type.Cornice),
+                new Cell(0,0, Card.Type.Pianta)
         }));
 
         allObjectives.add(new PersonalObjective("Seventh", new Cell[]{
-                new Cell(5,0, Card.Gatto),
-                new Cell(4,3, Card.Cornice),
-                new Cell(3,1, Card.Pianta),
-                new Cell(2,0, Card.Trofeo),
-                new Cell(1,4, Card.Gioco),
-                new Cell(0,2, Card.Libro)
+                new Cell(5,0, Card.Type.Gatto),
+                new Cell(4,3, Card.Type.Cornice),
+                new Cell(3,1, Card.Type.Pianta),
+                new Cell(2,0, Card.Type.Trofeo),
+                new Cell(1,4, Card.Type.Gioco),
+                new Cell(0,2, Card.Type.Libro)
         }));
 
         allObjectives.add(new PersonalObjective("Eight", new Cell[]{
-                new Cell(5,4, Card.Cornice),
-                new Cell(4,1, Card.Gatto),
-                new Cell(3,2, Card.Trofeo),
-                new Cell(2,0, Card.Pianta),
-                new Cell(1,3, Card.Libro),
-                new Cell(0,3, Card.Gioco)
+                new Cell(5,4, Card.Type.Cornice),
+                new Cell(4,1, Card.Type.Gatto),
+                new Cell(3,2, Card.Type.Trofeo),
+                new Cell(2,0, Card.Type.Pianta),
+                new Cell(1,3, Card.Type.Libro),
+                new Cell(0,3, Card.Type.Gioco)
         }));
 
         allObjectives.add(new PersonalObjective("Ninth", new Cell[]{
-                new Cell(5,2, Card.Gioco),
-                new Cell(3,2, Card.Gatto),
-                new Cell(2,4, Card.Libro),
-                new Cell(1,1, Card.Trofeo),
-                new Cell(1,4, Card.Pianta),
-                new Cell(0,0, Card.Cornice)
+                new Cell(5,2, Card.Type.Gioco),
+                new Cell(3,2, Card.Type.Gatto),
+                new Cell(2,4, Card.Type.Libro),
+                new Cell(1,1, Card.Type.Trofeo),
+                new Cell(1,4, Card.Type.Pianta),
+                new Cell(0,0, Card.Type.Cornice)
         }));
 
         allObjectives.add(new PersonalObjective("Tenth", new Cell[]{
-                new Cell(5,4, Card.Trofeo),
-                new Cell(4,1, Card.Gioco),
-                new Cell(3,0, Card.Libro),
-                new Cell(2,3, Card.Gatto),
-                new Cell(1,1, Card.Cornice),
-                new Cell(0,3, Card.Pianta)
+                new Cell(5,4, Card.Type.Trofeo),
+                new Cell(4,1, Card.Type.Gioco),
+                new Cell(3,0, Card.Type.Libro),
+                new Cell(2,3, Card.Type.Gatto),
+                new Cell(1,1, Card.Type.Cornice),
+                new Cell(0,3, Card.Type.Pianta)
         }));
 
         allObjectives.add(new PersonalObjective("Eleventh", new Cell[]{
-                new Cell(5,2, Card.Pianta),
-                new Cell(4,1, Card.Libro),
-                new Cell(3,0, Card.Gioco),
-                new Cell(2,2, Card.Cornice),
-                new Cell(1,4, Card.Gatto),
-                new Cell(0,3, Card.Trofeo)
+                new Cell(5,2, Card.Type.Pianta),
+                new Cell(4,1, Card.Type.Libro),
+                new Cell(3,0, Card.Type.Gioco),
+                new Cell(2,2, Card.Type.Cornice),
+                new Cell(1,4, Card.Type.Gatto),
+                new Cell(0,3, Card.Type.Trofeo)
         }));
 
         allObjectives.add(new PersonalObjective("Twelfth", new Cell[]{
-                new Cell(5,2, Card.Libro),
-                new Cell(4,1, Card.Pianta),
-                new Cell(3,2, Card.Cornice),
-                new Cell(2,3, Card.Trofeo),
-                new Cell(1,4, Card.Gioco),
-                new Cell(0,0, Card.Gatto)
+                new Cell(5,2, Card.Type.Libro),
+                new Cell(4,1, Card.Type.Pianta),
+                new Cell(3,2, Card.Type.Cornice),
+                new Cell(2,3, Card.Type.Trofeo),
+                new Cell(1,4, Card.Type.Gioco),
+                new Cell(0,0, Card.Type.Gatto)
         }));
 
         return allObjectives;
@@ -197,7 +197,7 @@ public class PersonalObjective extends Objective {
 
     /**
      * Generates an array of personal objectives, one for each player, randomly selected from the list of all the existing personal objectives.
-     * @Author Ludovico
+     * @author Ludovico
      * 
      * @param nPlayers The number of players in the game
      * @return An array of personal objectives

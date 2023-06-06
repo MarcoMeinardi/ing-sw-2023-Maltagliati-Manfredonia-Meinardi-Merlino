@@ -143,7 +143,7 @@ public class CommonObjective extends Objective {
 			for (int y = 0; y < Shelf.ROWS; y++) {
 				for (int x = 0; x < Shelf.COLUMNS; x++) {
 					if (shelf.getCard(y, x).isPresent()) {
-						groups += shelf.getGroupSize(y, x, shelf.getCard(y, x).get(), visited) >= n ? 1 : 0;
+						groups += shelf.getGroupSize(y, x, shelf.getCard(y, x).get().getType(), visited) >= n ? 1 : 0;
 					}
 				}
 			}
@@ -206,7 +206,7 @@ public class CommonObjective extends Objective {
 	 */
 	private static Boolean twoColumnsOfSixDifferentCards(Shelf shelf) {
 		boolean firstCol = false;
-		HashSet<Card> cards = new HashSet<>();
+		HashSet<Card.Type> cards = new HashSet<>();
 
 		try {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
@@ -214,7 +214,7 @@ public class CommonObjective extends Objective {
 					if (shelf.getCard(y, x).isEmpty()) {
 						break;
 					}
-					cards.add(shelf.getCard(y, x).get());
+					cards.add(shelf.getCard(y, x).get().getType());
 				}
 				if (cards.size() == 6) {
 					if (firstCol) {
@@ -310,7 +310,7 @@ public class CommonObjective extends Objective {
 	 */
 	private static Boolean fourRowsOfAtMostThreeDifferentCards(Shelf shelf) {
 		int count = 0;
-		HashSet<Card> cards = new HashSet<>();
+		HashSet<Card.Type> cards = new HashSet<>();
 
 		try {
 			for (int y = 0; y < Shelf.ROWS; y++) {
@@ -320,7 +320,7 @@ public class CommonObjective extends Objective {
 						isFull = false;
 						break;
 					}
-					cards.add(shelf.getCard(y, x).get());
+					cards.add(shelf.getCard(y, x).get().getType());
 				}
 				if (isFull && cards.size() <= 3) {
 					count++;
@@ -393,7 +393,7 @@ public class CommonObjective extends Objective {
 	 */
 	private static Boolean twoRowsWithFiveDifferentCards(Shelf shelf) {
 		boolean firstRow = false;
-		HashSet<Card> cards = new HashSet<>();
+		HashSet<Card.Type> cards = new HashSet<>();
 
 		try {
 			for (int y = 0; y < Shelf.ROWS; y++) {
@@ -401,7 +401,7 @@ public class CommonObjective extends Objective {
 					if (shelf.getCard(y, x).isEmpty()) {
 						break;
 					}
-					cards.add(shelf.getCard(y, x).get());
+					cards.add(shelf.getCard(y, x).get().getType());
 				}
 				if (cards.size() == 5) {
 					if (firstRow) {
@@ -580,18 +580,18 @@ public class CommonObjective extends Objective {
 	 * @author Marco
 	 */
 	private static Boolean eightEquals(Shelf shelf) {
-		HashMap<Card, Integer> cardCount = new HashMap<>();
+		HashMap<Card.Type, Integer> cardCount = new HashMap<>();
 
 		try {
 			for (int y = 0; y < Shelf.ROWS; y++) {
 				for (int x = 0; x < Shelf.COLUMNS; x++) {
 					if (shelf.getCard(y, x).isPresent()) {
 						Card card = shelf.getCard(y, x).get();
-						int count = cardCount.getOrDefault(card, 0) + 1;
+						int count = cardCount.getOrDefault(card.getType(), 0) + 1;
 						if (count == 8) {
 							return true;
 						}
-						cardCount.put(card, count);
+						cardCount.put(card.getType(), count);
 					}
 				}
 			}
@@ -622,7 +622,7 @@ public class CommonObjective extends Objective {
 	 */
 	private static Boolean threeColumnsOfAtMostThreeDifferentCards(Shelf shelf) {
 		int count = 0;
-		HashSet<Card> cards = new HashSet<>();
+		HashSet<Card.Type> cards = new HashSet<>();
 
 		try {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
@@ -632,7 +632,7 @@ public class CommonObjective extends Objective {
 						isFull = false;
 						break;
 					}
-					cards.add(shelf.getCard(y, x).get());
+					cards.add(shelf.getCard(y, x).get().getType());
 				}
 				if (isFull && cards.size() <= 3) {
 					count++;

@@ -84,14 +84,14 @@ public class CLI {
 	private void askIpAndMethod() {
 		this.ip = IO.askString("[+] Server IP: ");
 		switch (IO.askOption(ConnectionModeOptions.class)) {
-			case SOCKET:
+			case SOCKET -> {
 				this.port = 8000;
 				networkManager = network.rpc.client.NetworkManager.getInstance();
-				break;
-			case RMI:
+			}
+			case RMI -> {
 				this.port = 8001;
 				networkManager = network.rmi.client.NetworkManager.getInstance();
-				break;
+			}
 		}
 		// this.ip = "localhost";
 		// this.port = 8000;
@@ -155,11 +155,11 @@ public class CLI {
 				case LIST_LOBBIES -> {
 					result = networkManager.lobbyList().waitResult();
 					if (result.isOk()) {
-						ArrayList<Lobby> lobbies = ((Result<ArrayList<Lobby>>) result).unwrap();
+						ArrayList<Lobby> lobbies = ((Result<ArrayList<Lobby>>)result).unwrap();
 						if (lobbies.isEmpty()) {
 							System.out.println("[!] No lobbies available");
 						} else {
-							for (Lobby lobby : ((Result<ArrayList<Lobby>>) result).unwrap()) {
+							for (Lobby lobby : ((Result<ArrayList<Lobby>>)result).unwrap()) {
 								System.out.println(String.format(" - %s ( %d players )", lobby.getName(), lobby.getNumberOfPlayers()));
 							}
 						}
@@ -199,9 +199,9 @@ public class CLI {
 				case LIST_PLAYERS -> {
 					for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {
 						if (i == 0) {
-							System.out.println(String.format(" + %s", lobby.getPlayers().get(i)));
+							System.out.printf(" + %s%n", lobby.getPlayers().get(i));
 						} else {
-							System.out.println(String.format(" - %s", lobby.getPlayers().get(i)));
+							System.out.printf(" - %s%n", lobby.getPlayers().get(i));
 						}
 					}
 					return ClientStatus.InLobby;

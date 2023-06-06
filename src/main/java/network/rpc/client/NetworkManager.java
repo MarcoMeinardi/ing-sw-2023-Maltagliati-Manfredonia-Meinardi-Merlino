@@ -24,8 +24,8 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     private Object connectedLock = new Object();
     private Server server;
     private static NetworkManager instance;
-    private HashMap<UUID, Function> callQueue = new HashMap<UUID,Function>();
-    private Queue<ServerEvent> eventQueue = new LinkedList<ServerEvent>();
+    private HashMap<UUID, Function> callQueue = new HashMap<>();
+    private Queue<ServerEvent> eventQueue = new LinkedList<>();
     private Logger logger = Logger.getLogger(NetworkManager.class.getName());
     private Function<LocalDateTime,Boolean> lastPing = null;
     private static final int PING_TIMEOUT = 1;
@@ -192,7 +192,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public Function<Boolean,ArrayList<Lobby>> lobbyList() throws Exception{
-        Function<Boolean,ArrayList<Lobby>> lobbyList = new Function<Boolean,ArrayList<Lobby>>(true, Service.LobbyList);
+        Function<Boolean,ArrayList<Lobby>> lobbyList = new Function<>(true, Service.LobbyList);
         callQueue.put(lobbyList.id(), lobbyList);
         lobbyList.call(out);
         return lobbyList;
@@ -200,7 +200,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public Function<LobbyCreateInfo, Lobby> lobbyCreate(LobbyCreateInfo info) throws Exception {
-        Function<LobbyCreateInfo, Lobby> lobbyCreate = new Function<LobbyCreateInfo, Lobby>(info, Service.LobbyCreate);
+        Function<LobbyCreateInfo, Lobby> lobbyCreate = new Function<>(info, Service.LobbyCreate);
         callQueue.put(lobbyCreate.id(), lobbyCreate);
         lobbyCreate.call(out);
         return lobbyCreate;
@@ -208,7 +208,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public Function<String, Lobby> lobbyJoin(String lobbyName) throws Exception {
-        Function<String, Lobby> lobbyJoin = new Function<String, Lobby>(lobbyName, Service.LobbyJoin);
+        Function<String, Lobby> lobbyJoin = new Function<>(lobbyName, Service.LobbyJoin);
         callQueue.put(lobbyJoin.id(), lobbyJoin);
         lobbyJoin.call(out);
         return lobbyJoin;
@@ -216,7 +216,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public Function<Boolean, Boolean> lobbyLeave() throws Exception {
-        Function<Boolean, Boolean> lobbyLeave = new Function<Boolean, Boolean>(true, Service.LobbyLeave);
+        Function<Boolean, Boolean> lobbyLeave = new Function<>(true, Service.LobbyLeave);
         callQueue.put(lobbyLeave.id(), lobbyLeave);
         lobbyLeave.call(out);
         return lobbyLeave;
@@ -224,7 +224,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public Function<Boolean, Lobby> updateLobby() throws Exception {
-        Function<Boolean, Lobby> lobbyUpdate = new Function<Boolean, Lobby>(true, Service.LobbyUpdate);
+        Function<Boolean, Lobby> lobbyUpdate = new Function<>(true, Service.LobbyUpdate);
         callQueue.put(lobbyUpdate.id(), lobbyUpdate);
         lobbyUpdate.call(out);
         return lobbyUpdate;
@@ -232,7 +232,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public Function<Boolean,Boolean> gameStart() throws Exception{
-        Function<Boolean,Boolean> gameStart = new Function<Boolean,Boolean>(true, Service.GameStart);
+        Function<Boolean,Boolean> gameStart = new Function<>(true, Service.GameStart);
         callQueue.put(gameStart.id(), gameStart);
         gameStart.call(out);
         return gameStart;
@@ -240,7 +240,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public Function<Boolean, Boolean> gameLoad() throws Exception {
-        Function<Boolean,Boolean> gameLoad = new Function<Boolean,Boolean>(true, Service.GameLoad);
+        Function<Boolean,Boolean> gameLoad = new Function<>(true, Service.GameLoad);
         callQueue.put(gameLoad.id(), gameLoad);
         gameLoad.call(out);
         return gameLoad;
@@ -248,7 +248,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public Function<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception{
-        Function<CardSelect,Boolean> cardSelect = new Function<CardSelect,Boolean>(selected, Service.CardSelect);
+        Function<CardSelect,Boolean> cardSelect = new Function<>(selected, Service.CardSelect);
         callQueue.put(cardSelect.id(), cardSelect);
         cardSelect.call(out);
         return cardSelect;
@@ -256,7 +256,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public Function<Login, Serializable> login(Login username) throws Exception {
-        Function login = new Function(username, Service.Login);
+        Function<Login, Serializable> login = new Function<>(username, Service.Login);
         callQueue.put(login.id(), login);
         login.call(out);
         return login;
@@ -264,7 +264,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public Function<Message, Boolean> chat(Message message) throws Exception {
-        Function<Message, Boolean> chat = new Function<Message, Boolean>(message, Service.GameChatSend);
+        Function<Message, Boolean> chat = new Function<>(message, Service.GameChatSend);
         callQueue.put(chat.id(), chat);
         chat.call(out);
         return chat;

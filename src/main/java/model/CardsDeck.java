@@ -5,8 +5,9 @@ import java.util.*;
 
 public class CardsDeck implements Serializable {
     private Stack<Card> cards;
-	public static final int CARDS_PER_TYPE = 22;
-	public static final int TOTAL_CARDS = CARDS_PER_TYPE * Card.values().length;
+    public static final int CARDS_PER_TYPE = 22;
+    public static final int IMAGES_PER_TYPE = 3;
+    public static final int TOTAL_CARDS = CARDS_PER_TYPE * Card.Type.values().length;
 
     /**
      * Constructor that creates a new deck of cards by initializing a stack of cards
@@ -16,9 +17,9 @@ public class CardsDeck implements Serializable {
      */
     public CardsDeck() {
         cards = new Stack<>();
-        for (Card c : Card.values()) {
+        for (Card.Type c : Card.Type.values()) {
             for (int i = 0; i < CARDS_PER_TYPE; i++) {
-                cards.push(c);
+                cards.push(new Card(c, i % IMAGES_PER_TYPE + 1));
             }
         }
         Collections.shuffle(cards);

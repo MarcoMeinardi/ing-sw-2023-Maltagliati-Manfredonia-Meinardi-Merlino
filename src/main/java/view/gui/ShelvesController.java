@@ -85,6 +85,18 @@ public class ShelvesController implements Initializable {
         }
     }
 
+    private String cardToImageName(Card card) {
+        switch (card.getType()) {
+            case Gatto   -> { return String.format("/img/item tiles/Gatti1.%d.png", card.getImageIndex()); }
+            case Libro   -> { return String.format("/img/item tiles/Libri1.%d.png", card.getImageIndex()); }
+            case Cornice -> { return String.format("/img/item tiles/Cornici1.%d.png", card.getImageIndex()); }
+            case Gioco   -> { return String.format("/img/item tiles/Giochi1.%d.png", card.getImageIndex()); }
+            case Pianta  -> { return String.format("/img/item tiles/Piante1.%d.png", card.getImageIndex()); }
+            case Trofeo  -> { return String.format("/img/item tiles/Trofei1.%d.png", card.getImageIndex()); }
+            default -> throw new RuntimeException("Invalid card type");
+        }
+    }
+
     /**
      * Method used to calculate the position of the image of the item on the shelf.
      * Puts the images of the shelf calling the method putImageOnScene.
@@ -97,7 +109,6 @@ public class ShelvesController implements Initializable {
      *
      * @author Ludovico
      */
-
     private void fillShelf(Shelf shelf, int playerIndex) {
         Optional<Card>[][] shelfCards = shelf.getShelf();
         int shelfOffSetY = 0;
@@ -122,39 +133,10 @@ public class ShelvesController implements Initializable {
                 break;
         }
 
-        int[] counter = new int[Card.values().length];
-        for(int i = 0; i < Card.values().length; i++){
-            counter[i] = 1;
-        }
-
-        for (int y = 0; y < shelfRows; y++){
-            for(int x = 0; x < shelfColumns; x++){
-                String imageName = null;
-                if(shelfCards[y][x].isPresent()){
-                    if(shelfCards[y][x].get() == Card.Gatto){
-                        counter[Card.Gatto.ordinal()] = (counter[Card.Gatto.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Gatti1." + counter[Card.Gatto.ordinal()] + ".png";
-                    }
-                    if(shelfCards[y][x].get() == Card.Libro){
-                        counter[Card.Libro.ordinal()] = (counter[Card.Libro.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Libri1." + counter[Card.Libro.ordinal()] + ".png";
-                    }
-                    if(shelfCards[y][x].get() == Card.Cornice){
-                        counter[Card.Cornice.ordinal()] = (counter[Card.Cornice.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Cornici1." + counter[Card.Cornice.ordinal()] + ".png";
-                    }
-                    if(shelfCards[y][x].get() == Card.Gioco){
-                        counter[Card.Gioco.ordinal()] = (counter[Card.Gioco.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Giochi1." + counter[Card.Gioco.ordinal()] + ".png";
-                    }
-                    if(shelfCards[y][x].get() == Card.Pianta){
-                        counter[Card.Pianta.ordinal()] = (counter[Card.Pianta.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Piante1." + counter[Card.Pianta.ordinal()] + ".png";
-                    }
-                    if(shelfCards[y][x].get() == Card.Trofeo){
-                        counter[Card.Trofeo.ordinal()] = (counter[Card.Trofeo.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Trofei1." + counter[Card.Trofeo.ordinal()] + ".png";
-                    }
+        for (int y = 0; y < shelfRows; y++) {
+            for (int x = 0; x < shelfColumns; x++) {
+                if (shelfCards[y][x].isPresent()) {
+                    String imageName = cardToImageName(shelfCards[y][x].get());
                     putImageOnScene(imageName, y, x,  shelfCardSize, shelfCardSize, shelfOffSetX, shelfOffSetY, shelfCardStepX, shelfCardStepY);
                 }
             }

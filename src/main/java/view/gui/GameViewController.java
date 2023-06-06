@@ -154,6 +154,18 @@ public class GameViewController implements Initializable {
                 });
     }
 
+    private String cardToImageName(Card card) {
+        switch (card.getType()) {
+            case Gatto   -> { return String.format("/img/item tiles/Gatti1.%d.png", card.getImageIndex()); }
+            case Libro   -> { return String.format("/img/item tiles/Libri1.%d.png", card.getImageIndex()); }
+            case Cornice -> { return String.format("/img/item tiles/Cornici1.%d.png", card.getImageIndex()); }
+            case Gioco   -> { return String.format("/img/item tiles/Giochi1.%d.png", card.getImageIndex()); }
+            case Pianta  -> { return String.format("/img/item tiles/Piante1.%d.png", card.getImageIndex()); }
+            case Trofeo  -> { return String.format("/img/item tiles/Trofei1.%d.png", card.getImageIndex()); }
+            default -> throw new RuntimeException("Invalid card type");
+        }
+    }
+    
     /**
      * This method fills the game scene with images of items based on the contents of the `table` array.
      * It uses the `counter` array to keep track of the number of times each item has been added to the scene,
@@ -164,42 +176,13 @@ public class GameViewController implements Initializable {
      * @author Ludovico
      */
     private void fillScene(Optional<Card>[][] table) {
-        int[] counter = new int[Card.values().length];
-        for (int i = 0; i < Card.values().length; i++) {
-            counter[i] = 1;
-        }
-
         imageToIndices.clear();
         removeImages(false);
 
         for (int y = 0; y < SIZE; y++) {
             for (int x = 0; x < SIZE; x++) {
-                String imageName = null;
                 if (table[y][x].isPresent()) {
-                    if (table[y][x].get() == Card.Gatto) {
-                        imageName = "/img/item tiles/Gatti1." + counter[Card.Gatto.ordinal()] + ".png";
-                        counter[Card.Gatto.ordinal()] = (counter[Card.Gatto.ordinal()] % 3) + 1;
-                    }
-                    if (table[y][x].get() == Card.Libro) {
-                        imageName = "/img/item tiles/Libri1." + counter[Card.Libro.ordinal()] + ".png";
-                        counter[Card.Libro.ordinal()] = (counter[Card.Libro.ordinal()] % 3) + 1;
-                    }
-                    if (table[y][x].get() == Card.Cornice) {
-                        imageName = "/img/item tiles/Cornici1." + counter[Card.Cornice.ordinal()] + ".png";
-                        counter[Card.Cornice.ordinal()] = (counter[Card.Cornice.ordinal()] % 3) + 1;
-                    }
-                    if (table[y][x].get() == Card.Gioco) {
-                        imageName = "/img/item tiles/Giochi1." + counter[Card.Gioco.ordinal()] + ".png";
-                        counter[Card.Gioco.ordinal()] = (counter[Card.Gioco.ordinal()] % 3) + 1;
-                    }
-                    if (table[y][x].get() == Card.Pianta) {
-                        imageName = "/img/item tiles/Piante1." + counter[Card.Pianta.ordinal()] + ".png";
-                        counter[Card.Pianta.ordinal()] = (counter[Card.Pianta.ordinal()] % 3) + 1;
-                    }
-                    if(table[y][x].get() == Card.Trofeo){
-                        counter[Card.Trofeo.ordinal()] = (counter[Card.Trofeo.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Trofei1." + counter[Card.Trofeo.ordinal()] + ".png";
-                    }
+                    String imageName = cardToImageName(table[y][x].get());
                     putImageOnScene(imageName, y, x, cardSize, cardSize, cardOffSet, cardOffSet, cardStep, cardStep, false);
                 }
             }
@@ -219,8 +202,8 @@ public class GameViewController implements Initializable {
     private void fillShelf(Shelf shelf) {
         Optional<Card>[][] shelfCards = shelf.getShelf();
 
-        int[] counter = new int[Card.values().length];
-        for(int i = 0; i < Card.values().length; i++){
+        int[] counter = new int[Card.Type.values().length];
+        for(int i = 0; i < Card.Type.values().length; i++) {
             counter[i] = 1;
         }
 
@@ -230,31 +213,7 @@ public class GameViewController implements Initializable {
             for(int x = 0; x < shelfColumns; x++){
                 String imageName = null;
                 if(shelfCards[y][x].isPresent()){
-
-                    if(shelfCards[y][x].get() == Card.Gatto){
-                        counter[Card.Gatto.ordinal()] = (counter[Card.Gatto.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Gatti1." + counter[Card.Gatto.ordinal()] + ".png";
-                    }
-                    if(shelfCards[y][x].get() == Card.Libro){
-                        counter[Card.Libro.ordinal()] = (counter[Card.Libro.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Libri1." + counter[Card.Libro.ordinal()] + ".png";
-                    }
-                    if(shelfCards[y][x].get() == Card.Cornice){
-                        counter[Card.Cornice.ordinal()] = (counter[Card.Cornice.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Cornici1." + counter[Card.Cornice.ordinal()] + ".png";
-                    }
-                    if(shelfCards[y][x].get() == Card.Gioco){
-                        counter[Card.Gioco.ordinal()] = (counter[Card.Gioco.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Giochi1." + counter[Card.Gioco.ordinal()] + ".png";
-                    }
-                    if(shelfCards[y][x].get() == Card.Pianta){
-                        counter[Card.Pianta.ordinal()] = (counter[Card.Pianta.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Piante1." + counter[Card.Pianta.ordinal()] + ".png";
-                    }
-                    if(shelfCards[y][x].get() == Card.Trofeo){
-                        counter[Card.Trofeo.ordinal()] = (counter[Card.Trofeo.ordinal()]%3) + 1;
-                        imageName = "/img/item tiles/Trofei1." + counter[Card.Trofeo.ordinal()] + ".png";
-                    }
+                    imageName = cardToImageName(shelfCards[y][x].get());
                     putImageOnScene(imageName, y, x,  shelfCardSize, shelfCardSize, shelfOffSetX, shelfOffSetY, shelfCardStepX, shelfCardStepY, true);
 
                 }
@@ -280,7 +239,7 @@ public class GameViewController implements Initializable {
      * @param stepX The horizontal step size between image positions on the scene.
      * @param stepY The vertical step size between image positions on the scene.
      * @param isShelf Specifies whether the image is being placed on a shelf or not
-     * @autor Ludovico
+     * @author Ludovico
      */
     public void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY, boolean isShelf){
         String imagePath = getClass().getResource(imageName).toExternalForm();
@@ -317,7 +276,7 @@ public class GameViewController implements Initializable {
      * Finally, it loops through the list and removes each node from the pane.
      *
      * @param isShelf specifies whether the images to be removed are on the shelf or not
-     * @autor Ludovico
+     * @author Ludovico
      */
     public void removeImages(boolean isShelf){
         List<Node> toRemove = new ArrayList<>();
@@ -350,7 +309,7 @@ public class GameViewController implements Initializable {
      * it displays a message indicating that no more than 3 cards can be selected.
      *
      * @param image the image that has been selected
-     * @autor Ludovico
+     * @author Ludovico
      */
     private void handleCardSelection(ImageView image){
 
@@ -383,7 +342,7 @@ public class GameViewController implements Initializable {
      * If there is an error, it displays an error message.
      *
      * @param actionEvent The action event triggered by the move button
-     * @autor Ludovico
+     * @author Ludovico
      */
     @FXML
     private void tryMove(ActionEvent actionEvent){
@@ -400,9 +359,11 @@ public class GameViewController implements Initializable {
             messageLabel.setText("Left blank!");
             return;
         }
-        if(column.length() > 1 ||
-                Integer.valueOf(column) > 5 ||
-                    Integer.valueOf(column) < 1){
+        if(
+            column.length() > 1 ||
+            Integer.parseInt(column) > 5 ||
+            Integer.parseInt(column) < 1
+        ) {
             messageLabel.setText("Select a valid column!");
             return;
         }
@@ -439,7 +400,7 @@ public class GameViewController implements Initializable {
      * method that initializes the lobby scene.
      * It adds the players to the list view and adds the messages to the chat.
      *
-     * @autor Ludovico
+     * @author Ludovico
      */
     @FXML
     public void startLobby(){
@@ -463,7 +424,7 @@ public class GameViewController implements Initializable {
      *
      * @param actionEvent the send button is clicked
      * @throws Exception
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     public void sendMessage(ActionEvent actionEvent) throws Exception{
@@ -547,7 +508,7 @@ public class GameViewController implements Initializable {
      * It is called when the server sends a message to the lobby chat.
      *
      * @param message the message to add to the chat
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     public void addMessageToChat(Message message){
@@ -586,7 +547,7 @@ public class GameViewController implements Initializable {
      * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
      *
      * @param actionEvent the event that triggered the method
-     * @autor: Ludovico
+     * @author Ludovico
      */
     public void printPersonalObjectivesButton(ActionEvent actionEvent) {
         try {
@@ -607,7 +568,7 @@ public class GameViewController implements Initializable {
      * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
      *
      * @param actionEvent the event that triggered the method
-     * @autor: Ludovico
+     * @author Ludovico
      */
     public void printAllShelvesObjectivesButton(ActionEvent actionEvent) {
         try {
@@ -628,7 +589,7 @@ public class GameViewController implements Initializable {
      * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
      *
      * @param actionEvent the event that triggered the method
-     * @autor: Ludovico
+     * @author Ludovico
      */
     public void printCommonObjectivesButton(ActionEvent actionEvent) {
         try {
@@ -649,7 +610,7 @@ public class GameViewController implements Initializable {
      * loads the End.fxml file using FXMLLoader,
      * sets the new scene to the stage, and displays the stage.
      *
-     * @autor: Ludovico
+     * @author Ludovico
      */
     public void printEnd(){
         try {
@@ -672,7 +633,7 @@ public class GameViewController implements Initializable {
      * which is necessary for updating UI components.
      *
      * @param text
-     * @autor: Ludovico
+     * @author Ludovico
      */
     private void changeLabel(Label label, String text){
         Platform.runLater(new Runnable() {
@@ -697,7 +658,7 @@ public class GameViewController implements Initializable {
      * - Pause: pauses the game and notifies the players
      * - Resume: resumes the game and notifies the players
      *
-     * @autor: Ludovico
+     * @author Ludovico
      */
     private void handleEvent() {
         Optional<ServerEvent> event = networkManager.getEvent();
@@ -802,7 +763,7 @@ public class GameViewController implements Initializable {
      *  The `GameData` object being returned is a singleton instance that holds data related to the game being played.
      *
      *  @return GameData
-     *  @autor: Ludovico
+     *  @author Ludovico
      */
     public static GameData getGameData(){
         return gameData;

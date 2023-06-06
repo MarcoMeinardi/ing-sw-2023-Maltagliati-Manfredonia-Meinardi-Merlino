@@ -32,12 +32,12 @@ public class ScoreBoardBuilder {
         scores = new ArrayList<>();
         ArrayList<Player> players = game.finalRanks();
         winner = Optional.of(players.get(0));
-        most_cats = players.stream().max((p1,p2) -> p1.getShelf().countCard(Card.Gatto) - p2.getShelf().countCard(Card.Gatto));
-        most_books = players.stream().max((p1,p2) -> p1.getShelf().countCard(Card.Libro) - p2.getShelf().countCard(Card.Libro));
-        most_games = players.stream().max((p1,p2) -> p1.getShelf().countCard(Card.Gioco) - p2.getShelf().countCard(Card.Gioco));
-        most_frames = players.stream().max((p1,p2) -> p1.getShelf().countCard(Card.Cornice) - p2.getShelf().countCard(Card.Cornice));
-        most_trophies = players.stream().max((p1,p2) -> p1.getShelf().countCard(Card.Trofeo) - p2.getShelf().countCard(Card.Trofeo));
-        most_plants = players.stream().max((p1,p2) -> p1.getShelf().countCard(Card.Pianta) - p2.getShelf().countCard(Card.Pianta));
+        most_cats = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Gatto)));
+        most_books = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Libro)));
+        most_games = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Gioco)));
+        most_frames = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Cornice)));
+        most_trophies = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Trofeo)));
+        most_plants = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Pianta)));
         sole_survivor = findSoleSurvivor(players);
         victoryType = findVictoryType(players);
         for (Player player : players) {
