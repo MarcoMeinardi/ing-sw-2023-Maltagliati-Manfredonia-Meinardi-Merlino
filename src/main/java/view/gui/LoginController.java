@@ -109,7 +109,7 @@ public class LoginController implements Initializable {
             if(username == null || username.equals("") || username.equals(" ")){
                 errorLabel.setText("Invalid name!");
                 return;
-            } else if (username.length() > 8) {
+            } else if (username.length() > 16) {
                 errorLabel.setText("max 8 letters in name!");
                 return;
             }

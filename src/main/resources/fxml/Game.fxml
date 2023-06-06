@@ -48,9 +48,9 @@
             <Font name="Arial" size="10.0" />
          </font></TextField>
       <ListView fx:id="players" layoutX="743.0" layoutY="385.0" prefHeight="94.0" prefWidth="271.0" />
-      <Label fx:id="messageLabel" alignment="CENTER" layoutX="743.0" layoutY="42.0" prefHeight="37.0" prefWidth="271.0" textFill="#a1ff00">
+      <Label fx:id="messageLabel" alignment="CENTER" layoutX="641.0" layoutY="42.0" prefHeight="37.0" prefWidth="474.0" textFill="#a1ff00">
          <font>
-            <Font name="Arial" size="16.0" />
+            <Font name="Arial" size="13.0" />
          </font>
       </Label>
       <Button fx:id="moveButton" layoutX="466.0" layoutY="673.0" mnemonicParsing="false" onAction="#tryMove" text="Move to shelf">
@@ -61,5 +61,10 @@
          <font>
             <Font name="Arial" size="12.0" />
          </font></TextField>
+      <Label fx:id="pointsLabel" alignment="CENTER" layoutX="620.0" layoutY="661.0" prefHeight="71.0" prefWidth="517.0" textFill="#a1ff00">
+         <font>
+            <Font name="Arial" size="13.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

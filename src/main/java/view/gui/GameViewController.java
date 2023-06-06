@@ -78,6 +78,8 @@ public class GameViewController implements Initializable {
     private Label messageLabel;
     @FXML
     private TextField columnInput;
+    @FXML
+    private Label pointsLabel;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
     public static Lobby lobby;
@@ -422,8 +424,9 @@ public class GameViewController implements Initializable {
             Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
             if (result.isErr()) {
                 System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
-                messageLabel.setText("Select valid cards!");
+                messageLabel.setText("[ERROR] " + result.getException().orElse("Cannot select cards"));
             } else {
+                changeLabel(pointsLabel, "");
                 return;
             }
         } catch (Exception e) {
@@ -663,19 +666,19 @@ public class GameViewController implements Initializable {
     }
 
     /**
-     * method that takes a `String` parameter.
-     * The method uses `Platform.runLater` to update the label `messageLabel` with the new text value.
+     * method that takes a `String` and Label parameters..
+     * The method uses `Platform.runLater` to update the label with the new text value.
      * `Platform.runLater` is used to ensure that the update is executed on the JavaFX application thread,
      * which is necessary for updating UI components.
      *
      * @param text
      * @autor: Ludovico
      */
-    private void changeLabel(String text){
+    private void changeLabel(Label label, String text){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                messageLabel.setText(text);
+                label.setText(text);
             }
         });
     }
@@ -719,21 +722,22 @@ public class GameViewController implements Initializable {
                 for (Cockade commonObjective : update.completedObjectives()) {
                     if (update.idPlayer().equals(username)) {
                         System.out.format("[*] You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
-                        changeLabel("You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points");
+                        changeLabel(pointsLabel,"You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points");
+
                     } else {
                         System.out.format("[*] %s completed %s getting %d points%n", update.idPlayer(), commonObjective.name(), commonObjective.points());
-                        changeLabel(update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points");
+                        changeLabel(pointsLabel, update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points");
                     }
                 }
                 gameData.update(update);
                 if (update.nextPlayer().equals(username)) {
                     yourTurn = true;
                     System.out.println("[*] It's your turn");
-                    changeLabel("It's your turn");
+                    changeLabel(messageLabel, "It's your turn");
                 } else {
                     yourTurn = false;
                     System.out.println("[*] It's " + update.nextPlayer() + "'s turn");
-                    changeLabel("It's " + update.nextPlayer() + "'s turn");
+                    changeLabel(messageLabel, "It's " + update.nextPlayer() + "'s turn");
                 }
                 Platform.runLater(new Runnable() {
                     @Override
@@ -763,13 +767,13 @@ public class GameViewController implements Initializable {
                     throw new RuntimeException("Added already existing player to lobby");
                 }
                 System.out.println("[*] " + joinedPlayer + " joined the lobby");
-                changeLabel(joinedPlayer + " joined the lobby");
+                changeLabel(messageLabel, joinedPlayer + " joined the lobby");
             }
             case Leave -> {
                 String leftPlayer = (String)event.get().getData();
                 try {
                     lobby.removePlayer(leftPlayer);
-                    changeLabel(leftPlayer + " left the lobby");
+                    changeLabel(messageLabel, leftPlayer + " left the lobby");
 
                 } catch (Exception e) {  // Cannot happen
                     throw new RuntimeException("Removed non existing player from lobby");
@@ -779,13 +783,13 @@ public class GameViewController implements Initializable {
             case Pause -> {
                 if (!isPaused) {
                     System.out.println("[WARNING] Someone has disconnected");
-                    changeLabel("Someone has disconnected");
+                    changeLabel(messageLabel, "Someone has disconnected");
                 }
                 isPaused = true;
             }
             case Resume -> {
                 System.out.println("Game resumed");
-                changeLabel("Game resumed");
+                changeLabel(messageLabel, "Game resumed");
                 isPaused = false;
             }
             default -> throw new RuntimeException("Unhandled event");
