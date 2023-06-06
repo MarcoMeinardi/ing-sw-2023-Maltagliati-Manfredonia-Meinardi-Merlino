@@ -377,7 +377,7 @@ public class GameController {
         }
 
         if (isSomeoneAlive) {
-            ScoreBoard scoreBoard = ScoreBoard.create(game).build();
+            ScoreBoard scoreBoard = new ScoreBoard(game);
             for(Player player: game.getPlayers()){
                 addPersonalCockade(player);
                 try{

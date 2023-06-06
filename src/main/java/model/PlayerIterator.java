@@ -24,9 +24,7 @@ public class PlayerIterator implements Iterator<Player>, Serializable {
     @Override
     public boolean hasNext() {
         if (index == 0) {
-            if (game.getPlayers().stream().anyMatch(player -> player.getShelf().isFull())) {
-                return false;
-            }
+            return game.getPlayers().stream().noneMatch(player -> player.getShelf().isFull());
         }
         return true;
     }

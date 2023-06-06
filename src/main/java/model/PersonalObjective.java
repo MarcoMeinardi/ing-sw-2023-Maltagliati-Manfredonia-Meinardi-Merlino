@@ -38,7 +38,7 @@ public class PersonalObjective extends Objective {
      * Returns the array of cells to check for completion of the objective.
      *
      * @return The array of cells to check for completion of the objectives
-     * @Author Marco
+     * @author Marco
      */
     public Cell[] getCellsCheck() {
         return cellsCheck;

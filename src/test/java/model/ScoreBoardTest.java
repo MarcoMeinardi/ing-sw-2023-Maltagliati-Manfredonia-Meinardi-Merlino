@@ -17,7 +17,7 @@ public class ScoreBoardTest {
         game.getPlayers().get(1).addCockade(new Cockade("c2", 10));
         game.getPlayers().get(0).addCockade(new Cockade("c3", 10));
 
-        ScoreBoard sc = ScoreBoard.create(game).build();
+        ScoreBoard sc = new ScoreBoard(game);
 
         int cnt = 0;
         ArrayList<Score> target = new ArrayList<>(Arrays.asList(
