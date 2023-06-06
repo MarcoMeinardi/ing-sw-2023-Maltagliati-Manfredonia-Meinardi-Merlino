@@ -1,5 +1,6 @@
 package controller.game;
 import controller.DataBase;
+import controller.lobby.ClientNotConnectedException;
 import controller.lobby.Lobby;
 import controller.lobby.LobbyController;
 import javafx.util.Pair;
@@ -60,11 +61,13 @@ public class GameController {
         healthyThread.start();
         for (Player player : game.getPlayers()) {
             ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
+            if(client.isDisconnected()){
+                throw new ClientNotConnectedException();
+            }
             client.setCallHandler(this::handleGame);
             GameInfo toSend = getGameInfo(player);
             client.sendEvent(ServerEvent.Start(toSend));
         }
-
         saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(HashSet::new)));
     }
 
@@ -77,6 +80,9 @@ public class GameController {
         healthyThread.start();
         for (Player player : game.getPlayers()) {
             ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
+            if(client.isDisconnected()){
+                throw new ClientNotConnectedException();
+            }
             client.setCallHandler(this::handleGame);
             GameInfo toSend = getGameInfo(player);
             client.sendEvent(ServerEvent.Start(toSend));
@@ -254,7 +260,7 @@ public class GameController {
         for (Player player : game.getPlayers()) {
             try {
                 Optional<ClientInterface> client = clientManager.getClient(player.getName());
-                if (client.isPresent()) {
+                if (client.isPresent() && !client.get().isDisconnected()) {
                     client.get().sendEvent(event);
                 }
             } catch(Exception e) {
@@ -273,7 +279,8 @@ public class GameController {
         int count = 0;
         while (playerIterator.hasNext()) {
             Player player = playerIterator.next();
-            if (clientManager.getClient(player.getName()).isPresent()) {
+            Optional<ClientInterface> client = clientManager.getClient(player.getName());
+            if (client.isPresent() && !client.get().isDisconnected()) {
                 if (currentPlayer.equals(player)) {
                     return new Pair<>(true, Optional.empty());
                 }else{
@@ -331,7 +338,7 @@ public class GameController {
                         globalUpdate(event);
                     } else {
                         Optional<ClientInterface> receiver = clientManager.getClient(new_chat_message.idReceiver().get());
-                        if(receiver.isEmpty()){
+                        if(receiver.isEmpty() || receiver.get().isDisconnected()) {
                             throw new ClientNotFoundException();
                         }
                         receiver.get().sendEvent(event);
@@ -517,7 +524,7 @@ public class GameController {
         int connectedPlayers = 0;
         for(Player player: game.getPlayers()){
             Optional<ClientInterface> client = clientManager.getClient(player.getName());
-            if(client.isPresent()){
+            if(client.isPresent() && !client.get().isDisconnected()){
                 connectedPlayers++;
             }
         }
@@ -527,7 +534,7 @@ public class GameController {
         logger.info("Checking player health");
         while(true){
             Optional<ClientInterface> client = clientManager.getClient(currentPlayer.getName());
-            if(client.isEmpty()){
+            if(client.isEmpty() || client.get().isDisconnected()){
                 logger.info("Player " + currentPlayer.getName() + " disconnected while playing");
                 Pair<Boolean, Optional<Player>> nextToPlay = nextNotDisconnected();
                 if(!nextToPlay.getKey() || nextToPlay.getValue().isEmpty()){

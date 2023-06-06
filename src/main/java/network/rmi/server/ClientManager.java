@@ -56,7 +56,7 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
     @Override
     public Optional<ClientInterface> getClient(String username) {
         Optional<ClientInterface> client = Optional.empty();
-        if(clients.containsKey(username) && !clients.get(username).isDisconnected()){
+        if(clients.containsKey(username)){
             client = Optional.of(clients.get(username));
         }
         return client;

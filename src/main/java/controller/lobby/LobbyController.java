@@ -71,7 +71,7 @@ public class LobbyController extends Thread {
                         ArrayList<String> players = lobby.getPlayers();
                         for (int i = 0; i < players.size(); i++) {
                             Optional<ClientInterface> client = clientManager.getClient(players.get(i));
-                            if (client.isEmpty()) {
+                            if (client.isEmpty() || client.get().isDisconnected()) {
                                     leaveLobby(players.get(i));
                                     client.get().setCallHandler(LobbyController.getInstance()::handleLobbySearch);
                                     i--;
@@ -373,7 +373,7 @@ public class LobbyController extends Thread {
             for(String player : lobby.getPlayers()) {
                 try {
                     Optional<ClientInterface> client = clientManager.getClient(player);
-                    if(client.isPresent()) {
+                    if(client.isPresent() && !client.get().isDisconnected()) {
                         client.get().sendEvent(event);
                     }else{
                         Logger.getLogger(LobbyController.class.getName()).warning("Client " + player + " not connected");

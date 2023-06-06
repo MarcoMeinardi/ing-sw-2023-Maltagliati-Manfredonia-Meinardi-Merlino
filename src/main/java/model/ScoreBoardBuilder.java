@@ -1,5 +1,6 @@
 package model;
 
+import network.ClientInterface;
 import network.ClientManagerInterface;
 import network.GlobalClientManager;
 
@@ -56,7 +57,8 @@ public class ScoreBoardBuilder {
             return soleSurvivor;
         }
         for(model.Player player : players) {
-            if(clientManager.getClient(player.getName()).isPresent()){
+            Optional<ClientInterface> client = clientManager.getClient(player.getName());
+            if(client.isPresent() && !client.get().isDisconnected()){
                 connected++;
                 soleSurvivor = Optional.of(player);
             }

@@ -7,6 +7,12 @@ public interface ClientManagerInterface{
         return null;
     }
     public boolean isClientConnected(String username);
+
+    /**
+     * Returns the client with the given username. If it is logged in
+     * @param username the username of the client.
+     * @return the client with the given username.
+     */
     public Optional<ClientInterface> getClient(String username);
     public void waitAndClose();
 
