@@ -9,8 +9,6 @@ public abstract class Objective {
         this.name = name;
     }
 
-    public abstract Optional<Cockade> isCompleted(Shelf shelf);
-
     public String getName() {
         return name;
     }

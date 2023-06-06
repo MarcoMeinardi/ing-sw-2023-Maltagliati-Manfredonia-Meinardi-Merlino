@@ -132,7 +132,7 @@ public class GameController {
      */
     private void addCommonCockade(Player player, ArrayList<Cockade> completedObjectives, ArrayList<Integer> newCommonObjectivesScores) {
         for (CommonObjective objective : game.getCommonObjectives()) {
-            Optional<Cockade> cockade = objective.isCompleted(player.getShelf());
+            Optional<Cockade> cockade = objective.isCompleted(player.getShelf(), player.getName());
             if (cockade.isPresent()) {
                 player.addCockade(cockade.get());
                 completedObjectives.add(cockade.get());

@@ -52,7 +52,6 @@ public class PersonalObjective extends Objective {
         * @returns An optional containing the cockade if the objective is completed, an empty optional otherwise
         * @throws RuntimeException if the logic is broken
      */
-    @Override
     public Optional<Cockade> isCompleted(Shelf shelf) {
         int count = 0;
 
