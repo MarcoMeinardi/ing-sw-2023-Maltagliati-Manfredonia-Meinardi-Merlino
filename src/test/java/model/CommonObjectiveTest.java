@@ -27,7 +27,7 @@ public class CommonObjectiveTest {
     /**
      * Test the method generateCommonObjectives
      *
-     * @autor: Ludovico
+     * @author Ludovico
      */
     @Test
     public void testGenerateCommonObjectives() {
@@ -46,7 +46,7 @@ public class CommonObjectiveTest {
     /**
      * Test the Objective.equals method
      *
-     * @autor: Marco
+     * @author Marco
      */
     @Test
     public void testEquals() {
@@ -61,7 +61,7 @@ public class CommonObjectiveTest {
      * Test the objective "FiveCardsInDiagonal" sud-west to nord-east
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico, Marco
+     * @author Ludovico, Marco
      */
 
     @Test
@@ -91,7 +91,7 @@ public class CommonObjectiveTest {
      * Test the objective "FiveCardsInDiagonal" nor-west to sud-east
      *
      * @throws InvalidMoveException
-     * @autor: Marco
+     * @author Marco
      */
 
     @Test
@@ -123,7 +123,7 @@ public class CommonObjectiveTest {
      * Test the objective "isEqualsCorners"
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     @Test
@@ -149,7 +149,7 @@ public class CommonObjectiveTest {
      * Test the objective "fourRowsOfAtMostThreeDifferentCards"
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     @Test
@@ -187,7 +187,7 @@ public class CommonObjectiveTest {
      * Test the objective "fourGroupsOfFourCards"
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     @Test
@@ -221,7 +221,7 @@ public class CommonObjectiveTest {
      * Test the objective "twoColumnsOfSixDifferentCards"
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     @Test
@@ -247,7 +247,7 @@ public class CommonObjectiveTest {
      * Test the objective "twoSquareGroups"
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     @Test
@@ -273,7 +273,7 @@ public class CommonObjectiveTest {
      * Test the objective "twoRowsWithFiveDifferentCards
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     @Test
@@ -301,7 +301,7 @@ public class CommonObjectiveTest {
      * Test the objective "threeColumnsOfAtMostThreeDifferentCards
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     @Test
@@ -331,7 +331,7 @@ public class CommonObjectiveTest {
      * Test the objective "equalsX"
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     @Test
@@ -355,7 +355,7 @@ public class CommonObjectiveTest {
      * Test the objective "eightEquals"
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     @Test
@@ -379,7 +379,7 @@ public class CommonObjectiveTest {
      * Test the objective "stairsShape"
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     @Test
@@ -411,7 +411,7 @@ public class CommonObjectiveTest {
      * Test the objective "6 groups of 2 cards"
      *
      * @throws InvalidMoveException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     @Test

@@ -87,7 +87,7 @@ public class EndController implements Initializable {
     /**
      * Method that shows the game results and the final grade of the player.
      *
-     * @autor Ludovico
+     * @author Ludovico
      */
 
     private void showScoreBoard() {

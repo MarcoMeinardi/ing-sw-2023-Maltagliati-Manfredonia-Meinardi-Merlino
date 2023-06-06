@@ -190,7 +190,7 @@ public class LoginController implements Initializable {
      *
      * @throws IOException
      * @see IOException
-     * @autor Ludovico
+     * @author Ludovico
      */
 
     public void switchToGame() throws IOException {

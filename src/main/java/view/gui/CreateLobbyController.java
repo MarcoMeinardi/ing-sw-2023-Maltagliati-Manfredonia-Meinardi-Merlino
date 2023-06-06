@@ -59,7 +59,7 @@ public class CreateLobbyController implements Initializable {
      *
      * @param resources the resources used to localize the root object, or null if the root object was not localized.
      *
-     * @autor: Ludovico
+     * @author Ludovico
      * */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         nameUser.setText(LoginController.username);
@@ -91,7 +91,7 @@ public class CreateLobbyController implements Initializable {
      *
      * @throws Exception
      *
-     * @autor: Ludovico
+     * @author Ludovico
      * */
 
     public void createLobby(ActionEvent actionEvent) throws Exception {

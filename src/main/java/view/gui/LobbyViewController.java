@@ -133,7 +133,7 @@ public class LobbyViewController implements Initializable{
      * Calls updateLobby() method to fill the names in the right spots after they
      * are initialized.
      *
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     public void startLobby(){
@@ -151,7 +151,7 @@ public class LobbyViewController implements Initializable{
      * method called to update the names on the list view showing the names of the players.
      * It is called when a player joins or leaves the lobby.
      *
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     public void updateLobby() {
@@ -168,7 +168,7 @@ public class LobbyViewController implements Initializable{
     /**
      * method called to show the start button if the player is the owner of the lobby
      * (aka the first one in the list of players of the lobby).
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     public void showStart(){
@@ -190,7 +190,7 @@ public class LobbyViewController implements Initializable{
      *
      * @param actionEvent quit lobby button is clicked
      * @throws Exception
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     public void quitLobby(ActionEvent actionEvent) throws Exception {
@@ -223,7 +223,7 @@ public class LobbyViewController implements Initializable{
      *
      * @param actionEvent the start game button is clicked
      * @throws Exception
-     * @autor: Riccardo, Ludovico
+     * @author Riccardo, Ludovico
      */
 
     public void startGame(ActionEvent actionEvent) throws Exception{
@@ -244,7 +244,7 @@ public class LobbyViewController implements Initializable{
      * method called to switch to the game scene.
      *
      * @throws IOException
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     public void switchToGame() throws IOException{
@@ -277,7 +277,7 @@ public class LobbyViewController implements Initializable{
      *
      * @param actionEvent the send button is clicked
      * @throws Exception
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     public void sendMessage(ActionEvent actionEvent) throws Exception{
@@ -361,7 +361,7 @@ public class LobbyViewController implements Initializable{
      * It is called when the server sends a message to the lobby chat.
      *
      * @param message the message to add to the chat
-     * @autor: Ludovico
+     * @author Ludovico
      */
 
     public void addMessageToChat(Message message){
@@ -436,7 +436,7 @@ public class LobbyViewController implements Initializable{
      * In the start case the game starts and the players are brought to the game scene.
      * In the chat case the message is added to the chat.
      *
-     * @autor: Ludovico
+     * @author Ludovico
      */
     private void handleEvent() {
         Optional<ServerEvent> event = networkManager.getEvent();
