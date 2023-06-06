@@ -46,7 +46,8 @@ public class GameTest {
 	@Test
 	public void testSaveGame() throws ClassNotFoundException, IOException {
 		File file = new File(new File(System.getProperty("java.io.tmpdir")), "game.ser");
-		Game game1 = new Game(new ArrayList<String>(Arrays.asList("p1", "p2")));
+		Game game1 = new Game(new ArrayList<>(Arrays.asList("p1", "p2")));
+		game1.iterator();
 		game1.saveGame(file);
 		Game game2 = Game.loadGame(file);
 		assertEquals(
