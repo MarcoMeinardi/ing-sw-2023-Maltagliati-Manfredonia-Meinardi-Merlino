@@ -187,6 +187,7 @@ public class GameController {
                 ArrayList<Cockade> completedObjectives = new ArrayList<>();
                 ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
                 addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
+                saveGame();
                 Player nextPlayer = nextToPlay.getValue().get();
                 Update update = new Update(
                         currentPlayer.getName(),
@@ -439,6 +440,7 @@ public class GameController {
         addCommonCockade(player, completedObjectives, newCommonObjectivesScores);
         addFirstToFinish(player);
         refillTable();
+        saveGame();
         Pair<Boolean,Optional<Player>> nextToPlay = nextNotDisconnected();
         if(nextToPlay.getKey()) {
             if(nextToPlay.getValue().isEmpty()){
@@ -485,8 +487,12 @@ public class GameController {
         );
     }
 
-    private void saveGame() throws IOException {
-        game.saveGame(saveFile);
+    private void saveGame() {
+        try {
+            game.saveGame(saveFile);
+        } catch (IOException e) {
+            logger.warning("Failed to save game");
+        }
     }
 
     private void deleteSave() {
