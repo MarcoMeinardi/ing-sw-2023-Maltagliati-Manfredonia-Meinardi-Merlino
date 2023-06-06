@@ -129,7 +129,7 @@ public class GameController {
 
     /**
      * Adds the common cockade to the player's shelf if the player has completed the common objective.
-     * Also save the cocades and the new objective values to be returned to the client.
+     * Also save the cockades and the new objective values to be returned to the client.
      *
      * @param player The player
      * @param completedObjectives The list of completed objectives
@@ -387,6 +387,7 @@ public class GameController {
                     logger.warning("Client disconnected while exiting game, they won't receive the final ranking");
                 }
             }
+            deleteSave();
             lobbyController.endGame(this);
         } else {
             lobbyController.exitGame(this);
