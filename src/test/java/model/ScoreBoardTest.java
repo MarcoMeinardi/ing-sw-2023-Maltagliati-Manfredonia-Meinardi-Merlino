@@ -21,8 +21,8 @@ public class ScoreBoardTest {
 
         int cnt = 0;
         ArrayList<Score> target = new ArrayList<>(Arrays.asList(
-                new Score(game.getPlayers().get(1).getName(), 20, "Stinky"),
-                new Score(game.getPlayers().get(0).getName(), 10, "Poopy")
+                new Score(game.getPlayers().get(1).getName(), 20, "As shrimple as that"),
+                new Score(game.getPlayers().get(0).getName(), 10, "NO TITLE FOR YOU! Come back, one year!")
         ));
         for (Score s : sc) {
             assertEquals(s, target.get(cnt++));
