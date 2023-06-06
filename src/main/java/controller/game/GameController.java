@@ -358,6 +358,7 @@ public class GameController {
         addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
         addFirstToFinish(currentPlayer);
 
+        // If no one is connected, don't do end game stuff
         boolean isSomeoneAlive = currentlyConnectedPlayers() > 0;
         LobbyController lobbyController = LobbyController.getInstance();
         for(Player player : game.getPlayers()) {
@@ -365,9 +366,11 @@ public class GameController {
             client.get().setCallHandler(lobbyController::handleLobbySearch);
             client.get().setStatus(ClientStatus.InLobbySearch);
         }
+
         if (isSomeoneAlive) {
             ScoreBoard scoreBoard = ScoreBoard.create(game).build();
             for(Player player: game.getPlayers()){
+                addPersonalCockade(player);
                 try{
                     Optional<ClientInterface> client = clientManager.getClient(player.getName());
                     client.get().sendEvent(ServerEvent.End(scoreBoard));
