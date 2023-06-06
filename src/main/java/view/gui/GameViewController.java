@@ -37,6 +37,11 @@ import java.net.URL;
 
 import java.util.*;
 
+/**
+ * Class that handles a new instance of game.
+ *
+ */
+
 public class GameViewController implements Initializable {
 
     private  static final int POPUP_WIDTH = 600;
@@ -85,6 +90,15 @@ public class GameViewController implements Initializable {
     private boolean yourTurn = false;
     private boolean isPaused = false;
 
+    /**
+     * Method that initializes the game scene.
+     * Checks if the player is reconniting from a disconnection or if it's a new game, then retrieves the game data
+     * accordingly.
+     * Checks if it's the player's turn and sets the message label accordingly.
+     * Updates the GUI adding the list of the players, the chat and the game board.
+     * It then starts the server thread that will handle the events received from the server.
+     *
+    **/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (LobbyViewController.gameInfo == null) {
@@ -248,7 +262,7 @@ public class GameViewController implements Initializable {
     }
 
     /**
-     * This method is adding an image to a pane.
+     * This method adds an image to a pane.
      * It takes in parameters such as the image name, position, size, and whether it is on a shelf or not.
      * It creates an ImageView object with the image and sets its properties such as fit height and width, position, and ID.
      * It then adds the ImageView to the pane and sets an event handler for mouse clicks if it is not on a shelf.
@@ -296,7 +310,7 @@ public class GameViewController implements Initializable {
     /**
      * method that removes images from a pane.
      * The method takes a boolean parameter `isShelf`
-     * which determines whether to remove only images with "Shelf" in their ID or all images with "Card" in their ID.
+     * which determines whether to remove only images with "Shelf and Card" in their ID or all images with "Card" in their ID.
      * The method loops through all the children of the pane and adds the appropriate images to a list of nodes to be removed.
      * Finally, it loops through the list and removes each node from the pane.
      *
@@ -364,7 +378,8 @@ public class GameViewController implements Initializable {
      * if it's the player's turn, and if the game is paused.
      * If all checks pass, it gets the indices of the selected cards
      * and sends a request to the network manager to move the cards to the specified column.
-     * If there is an error, it displays an error message.     *
+     * If there is an error, it displays an error message.
+     *
      * @param actionEvent The action event triggered by the move button
      * @autor Ludovico
      */
@@ -564,9 +579,8 @@ public class GameViewController implements Initializable {
 
     /**
      * method that is triggered when a button is clicked ("Print Personal Objectives" button).
-     * It creates a new stage (window) and loads the contents of a FXML file called "PersonalObj.fxml" into it.
+     * It creates a new stage (window) and loads the contents of the FXML file called "PersonalObj.fxml" into it.
      * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
-     * If there is an error loading the FXML file, it throws a runtime exception.
      *
      * @param actionEvent the event that triggered the method
      * @autor: Ludovico
@@ -586,9 +600,8 @@ public class GameViewController implements Initializable {
 
     /**
      * method that is triggered when a button is clicked ("Print All Shelves" button).
-     * It creates a new stage (window) and loads the contents of a FXML file called "Shelves.fxml" into it.
+     * It creates a new stage (window) and loads the contents of the FXML file called "Shelves.fxml" into it.
      * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
-     * If there is an error loading the FXML file, it throws a runtime exception.
      *
      * @param actionEvent the event that triggered the method
      * @autor: Ludovico
@@ -608,9 +621,8 @@ public class GameViewController implements Initializable {
 
     /**
      * method that is triggered when a button is clicked ("Print Common Objectives" button).
-     * It creates a new stage (window) and loads the contents of a FXML file called "CommonObj.fxml" into it.
+     * It creates a new stage (window) and loads the contents of the FXML file called "CommonObj.fxml" into it.
      * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
-     * If there is an error loading the FXML file, it throws a runtime exception.
      *
      * @param actionEvent the event that triggered the method
      * @autor: Ludovico
@@ -629,11 +641,10 @@ public class GameViewController implements Initializable {
     }
 
     /**
-     * This method is responsible for printing the end of the program.
+     * This method is responsible for printing the last view of the program.
      * It interrupts the server thread,
      * loads the End.fxml file using FXMLLoader,
      * sets the new scene to the stage, and displays the stage.
-     * If an IOException occurs, it throws a RuntimeException.
      *
      * @autor: Ludovico
      */
@@ -653,7 +664,7 @@ public class GameViewController implements Initializable {
 
     /**
      * method that takes a `String` parameter.
-     * The method uses `Platform.runLater` to update the `messageLabel` with the new text value.
+     * The method uses `Platform.runLater` to update the label `messageLabel` with the new text value.
      * `Platform.runLater` is used to ensure that the update is executed on the JavaFX application thread,
      * which is necessary for updating UI components.
      *
@@ -674,6 +685,14 @@ public class GameViewController implements Initializable {
      * method that handles events received from the server.
      * It first checks if there is an event available, and if not, it returns.
      * If there is an event, it switches on the type of the event and performs the appropriate action.
+     *
+     * - NewMessage: prints the message received from the server
+     * - Update: updates the game data with the new information received from the server, then update
+     *   the GUI where necessary and sets the yourTurn boolean to true if it's the turn of the player
+     * - End: calls the printEnd method to redirect to the scoreboard view of the game
+     * - Join and Leave: updates the list of players in the game and notifies the players
+     * - Pause: pauses the game and notifies the players
+     * - Resume: resumes the game and notifies the players
      *
      * @autor: Ludovico
      */
@@ -776,7 +795,7 @@ public class GameViewController implements Initializable {
     /**
      *  method that returns an instance of the `GameData` class.
      *  The `static` keyword means that the method can be called without creating an instance of the class.
-     *  The `GameData` object being returned is likely a singleton instance that holds data related to the game being played.
+     *  The `GameData` object being returned is a singleton instance that holds data related to the game being played.
      *
      *  @return GameData
      *  @autor: Ludovico
