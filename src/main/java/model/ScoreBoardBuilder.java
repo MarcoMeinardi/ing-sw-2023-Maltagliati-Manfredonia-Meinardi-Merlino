@@ -6,6 +6,7 @@ import network.GlobalClientManager;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class ScoreBoardBuilder {
     private enum VictoryType{
@@ -22,6 +23,7 @@ public class ScoreBoardBuilder {
     private final Optional<Player> most_trophies;
     private final Optional<Player> most_plants;
     private final Optional<Player> sole_survivor;
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private final VictoryType victoryType;
 
@@ -110,6 +112,8 @@ public class ScoreBoardBuilder {
                 title = "NO TITLE FOR YOU! Come back, one year!";
             }
         }
+        logger.info("Generating score for player " + player.getName() + " with title " + title);
+        logger.info(player.getCockades().stream().map(Cockade::toString).reduce("", (s1, s2) -> s1 + " " + s2));
         return new Score(player.getName(), player.getPoints(), title);
     }
 
