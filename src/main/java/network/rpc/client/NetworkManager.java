@@ -142,6 +142,9 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
                 }
             } catch (Exception e) {
                 logger.warning(e.getMessage());
+                if (e instanceof java.net.SocketException) {
+                    disconnect();
+                }
             }
         }
         try {
