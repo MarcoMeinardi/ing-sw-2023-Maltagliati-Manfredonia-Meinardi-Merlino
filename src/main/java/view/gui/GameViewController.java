@@ -138,6 +138,15 @@ public class GameViewController implements Initializable {
                 });
     }
 
+    /**
+     * This method fills the game scene with images of items based on the contents of the `table` array.
+     * It uses the `counter` array to keep track of the number of times each item has been added to the scene,
+     * and selects the appropriate image file based on the item type and the current count.
+     * The `putImageOnScene` method is then called to add the image to the scene at the appropriate location.
+     *
+     * @param table The table of optional cards representing the scene.
+     * @author Ludovico
+     */
     private void fillScene(Optional<Card>[][] table) {
         int[] counter = new int[Card.values().length];
         for (int i = 0; i < Card.values().length; i++) {
@@ -179,10 +188,18 @@ public class GameViewController implements Initializable {
                 }
             }
         }
-
-
     }
 
+    /**
+     * method that takes a `Shelf` object as input and fills the shelf with images of items based on the cards present on the shelf.
+     * It uses an array `counter` to keep track of the number of times each item has been placed on the shelf and selects the appropriate image file
+     * based on the item type and the counter value.
+     * The `putImageOnScene` method is then called to place the image on the scene.
+     * The method also calls `removeImages` to remove any existing images on the shelf before filling it with new images.
+     *
+     * @param shelf to be filled with images
+     * @author Ludovico
+     */
     private void fillShelf(Shelf shelf) {
         Optional<Card>[][] shelfCards = shelf.getShelf();
 
@@ -230,7 +247,25 @@ public class GameViewController implements Initializable {
 
     }
 
-
+    /**
+     * This method is adding an image to a pane.
+     * It takes in parameters such as the image name, position, size, and whether it is on a shelf or not.
+     * It creates an ImageView object with the image and sets its properties such as fit height and width, position, and ID.
+     * It then adds the ImageView to the pane and sets an event handler for mouse clicks if it is not on a shelf.
+     * Finally, it adds the ImageView and its position to a HashMap for later reference.
+     *
+     * @param imageName The name or path of the image file to be displayed.
+     * @param y The row position (y-coordinate) of the image on the scene.
+     * @param x The column position (x-coordinate) of the image on the scene.
+     * @param height The desired height of the image.
+     * @param width The desired width of the image.
+     * @param offsetX The X-offset from the left side of the scene where the image should be positioned.
+     * @param offsetY The Y-offset from the top side of the scene where the image should be positioned.
+     * @param stepX The horizontal step size between image positions on the scene.
+     * @param stepY The vertical step size between image positions on the scene.
+     * @param isShelf Specifies whether the image is being placed on a shelf or not
+     * @autor Ludovico
+     */
     public void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY, boolean isShelf){
         String imagePath = getClass().getResource(imageName).toExternalForm();
         Image image = new Image(imagePath);
@@ -257,6 +292,17 @@ public class GameViewController implements Initializable {
         }
     }
 
+
+    /**
+     * method that removes images from a pane.
+     * The method takes a boolean parameter `isShelf`
+     * which determines whether to remove only images with "Shelf" in their ID or all images with "Card" in their ID.
+     * The method loops through all the children of the pane and adds the appropriate images to a list of nodes to be removed.
+     * Finally, it loops through the list and removes each node from the pane.
+     *
+     * @param isShelf specifies whether the images to be removed are on the shelf or not
+     * @autor Ludovico
+     */
     public void removeImages(boolean isShelf){
         List<Node> toRemove = new ArrayList<>();
         for(Node child : pane.getChildren()){
@@ -278,6 +324,18 @@ public class GameViewController implements Initializable {
         }
     }
 
+    /**
+     * method that handles the selection of a card represented by an ImageView object.
+     * It checks if the card is already selected, and if so,
+     * it removes it from the list of selected images and removes the selection effect.
+     * If the card is not already selected, it adds it to the list of selected images
+     * and applies a yellow drop shadow effect to indicate selection.
+     * If the number of selected cards exceeds 3,
+     * it displays a message indicating that no more than 3 cards can be selected.
+     *
+     * @param image the image that has been selected
+     * @autor Ludovico
+     */
     private void handleCardSelection(ImageView image){
 
         if(selectedImages.contains(image)){
@@ -299,6 +357,17 @@ public class GameViewController implements Initializable {
 
     }
 
+    /**
+     * method that is called when the player tries to move selected cards to a specified column.
+     * It first checks if any cards are selected, if the column input is empty or null,
+     * if the column input is a valid number between 1 and 5,
+     * if it's the player's turn, and if the game is paused.
+     * If all checks pass, it gets the indices of the selected cards
+     * and sends a request to the network manager to move the cards to the specified column.
+     * If there is an error, it displays an error message.     *
+     * @param actionEvent The action event triggered by the move button
+     * @autor Ludovico
+     */
     @FXML
     private void tryMove(ActionEvent actionEvent){
         ArrayList<Point> selectedCards = new ArrayList<>();
@@ -348,6 +417,12 @@ public class GameViewController implements Initializable {
 
     }
 
+    /**
+     * method that initializes the lobby scene.
+     * It adds the players to the list view and adds the messages to the chat.
+     *
+     * @autor Ludovico
+     */
     @FXML
     public void startLobby(){
         //initialize the list view with blank spaces
@@ -487,6 +562,15 @@ public class GameViewController implements Initializable {
         }
     }
 
+    /**
+     * method that is triggered when a button is clicked ("Print Personal Objectives" button).
+     * It creates a new stage (window) and loads the contents of a FXML file called "PersonalObj.fxml" into it.
+     * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
+     * If there is an error loading the FXML file, it throws a runtime exception.
+     *
+     * @param actionEvent the event that triggered the method
+     * @autor: Ludovico
+     */
     public void printPersonalObjectivesButton(ActionEvent actionEvent) {
         try {
             Stage newStage = new Stage();
@@ -500,6 +584,15 @@ public class GameViewController implements Initializable {
         }
     }
 
+    /**
+     * method that is triggered when a button is clicked ("Print All Shelves" button).
+     * It creates a new stage (window) and loads the contents of a FXML file called "Shelves.fxml" into it.
+     * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
+     * If there is an error loading the FXML file, it throws a runtime exception.
+     *
+     * @param actionEvent the event that triggered the method
+     * @autor: Ludovico
+     */
     public void printAllShelvesObjectivesButton(ActionEvent actionEvent) {
         try {
             Stage newStage = new Stage();
@@ -513,6 +606,15 @@ public class GameViewController implements Initializable {
         }
     }
 
+    /**
+     * method that is triggered when a button is clicked ("Print Common Objectives" button).
+     * It creates a new stage (window) and loads the contents of a FXML file called "CommonObj.fxml" into it.
+     * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
+     * If there is an error loading the FXML file, it throws a runtime exception.
+     *
+     * @param actionEvent the event that triggered the method
+     * @autor: Ludovico
+     */
     public void printCommonObjectivesButton(ActionEvent actionEvent) {
         try {
             Stage newStage = new Stage();
@@ -526,6 +628,15 @@ public class GameViewController implements Initializable {
         }
     }
 
+    /**
+     * This method is responsible for printing the end of the program.
+     * It interrupts the server thread,
+     * loads the End.fxml file using FXMLLoader,
+     * sets the new scene to the stage, and displays the stage.
+     * If an IOException occurs, it throws a RuntimeException.
+     *
+     * @autor: Ludovico
+     */
     public void printEnd(){
         try {
             serverThread.interrupt();
@@ -540,6 +651,15 @@ public class GameViewController implements Initializable {
         }
     }
 
+    /**
+     * method that takes a `String` parameter.
+     * The method uses `Platform.runLater` to update the `messageLabel` with the new text value.
+     * `Platform.runLater` is used to ensure that the update is executed on the JavaFX application thread,
+     * which is necessary for updating UI components.
+     *
+     * @param text
+     * @autor: Ludovico
+     */
     private void changeLabel(String text){
         Platform.runLater(new Runnable() {
             @Override
@@ -550,6 +670,13 @@ public class GameViewController implements Initializable {
     }
 
 
+    /**
+     * method that handles events received from the server.
+     * It first checks if there is an event available, and if not, it returns.
+     * If there is an event, it switches on the type of the event and performs the appropriate action.
+     *
+     * @autor: Ludovico
+     */
     private void handleEvent() {
         Optional<ServerEvent> event = networkManager.getEvent();
         if (event.isEmpty()) {
@@ -646,6 +773,14 @@ public class GameViewController implements Initializable {
         }
     }
 
+    /**
+     *  method that returns an instance of the `GameData` class.
+     *  The `static` keyword means that the method can be called without creating an instance of the class.
+     *  The `GameData` object being returned is likely a singleton instance that holds data related to the game being played.
+     *
+     *  @return GameData
+     *  @autor: Ludovico
+     */
     public static GameData getGameData(){
         return gameData;
     }
