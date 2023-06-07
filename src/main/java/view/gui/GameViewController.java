@@ -154,6 +154,13 @@ public class GameViewController implements Initializable {
                 });
     }
 
+    /**
+     * Method that associates the card passed as parameter to an index to decide wich image to show.
+
+     * @param card
+     * @return
+     */
+
     private String cardToImageName(Card card) {
         switch (card.getType()) {
             case Gatto   -> { return String.format("/img/item tiles/Gatti1.%d.png", card.getImageIndex()); }
@@ -168,9 +175,8 @@ public class GameViewController implements Initializable {
     
     /**
      * This method fills the game scene with images of items based on the contents of the `table` array.
-     * It uses the `counter` array to keep track of the number of times each item has been added to the scene,
-     * and selects the appropriate image file based on the item type and the current count.
      * The `putImageOnScene` method is then called to add the image to the scene at the appropriate location.
+     * The method also calls `removeImages` to remove any existing images on the table before filling it with new images.
      *
      * @param table The table of optional cards representing the scene.
      * @author Ludovico
@@ -191,21 +197,15 @@ public class GameViewController implements Initializable {
 
     /**
      * method that takes a `Shelf` object as input and fills the shelf with images of items based on the cards present on the shelf.
-     * It uses an array `counter` to keep track of the number of times each item has been placed on the shelf and selects the appropriate image file
-     * based on the item type and the counter value.
      * The `putImageOnScene` method is then called to place the image on the scene.
      * The method also calls `removeImages` to remove any existing images on the shelf before filling it with new images.
      *
      * @param shelf to be filled with images
      * @author Ludovico
      */
+
     private void fillShelf(Shelf shelf) {
         Optional<Card>[][] shelfCards = shelf.getShelf();
-
-        int[] counter = new int[Card.Type.values().length];
-        for(int i = 0; i < Card.Type.values().length; i++) {
-            counter[i] = 1;
-        }
 
         removeImages(true);
 
