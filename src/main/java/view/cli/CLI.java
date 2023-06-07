@@ -325,17 +325,20 @@ public class CLI {
 		int column;
 
 		game.printTableTop();
-		System.out.println("[+] Enter the coordinates of the cards you want to pick");
+		System.out.println("[+] Enter the coordinates of the cards you want to pick (-1 to abort)");
 		for (int i = 0; i < 3; i++) {
 			boolean ok = false;
 			while (!ok) {
 				String line = IO.askString();
-				line = line.toLowerCase().replaceAll("\\W", "");
+				line = line.toLowerCase().replaceAll("[^a-z0-9-]", "");
 				if (line.isEmpty()) {
 					break;
 				}
 				if (line.length() != 2) {
 					System.out.println("[!] Invalid coordinates");
+				} else if (line.equals("-1")) {
+					System.out.println("[*] Aborted");
+					return ClientStatus.InGame;
 				} else {
 					Point p = stringToPoint(line);
 					if (p.x() < 0 || p.x() >= TableTop.SIZE || p.y() < 0 || p.y() >= TableTop.SIZE) {
