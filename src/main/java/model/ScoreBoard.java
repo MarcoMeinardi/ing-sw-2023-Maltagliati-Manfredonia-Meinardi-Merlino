@@ -39,8 +39,16 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
         mostFrames = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Cornice))).get().getName();
         mostTrophies = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Trofeo))).get().getName();
         mostPlants = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Pianta))).get().getName();
+
         soleSurvivor = findSoleSurvivor(players);
-        victoryType = findVictoryType(players);
+        if (soleSurvivor != null) {
+            victoryType = null;
+            Player solePlayer = players.stream().filter(p -> p.getName().equals(soleSurvivor)).findFirst().get();
+            players.remove(solePlayer);
+            players.add(0, solePlayer);
+        } else {
+            victoryType = findVictoryType(players);
+        }
         for (Player player : players) {
             Score score = createScore(player);
             scores.add(score);
