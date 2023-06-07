@@ -124,6 +124,7 @@ public class GameViewController implements Initializable {
         }
         startLobby();
         fillScene(gameData.getTableTop());
+        fillShelf(gameData.getMyShelf());
         serverThread = new Thread(() -> {
             while (state != ClientStatus.Disconnected) {
                 synchronized (networkManager) {
