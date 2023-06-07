@@ -43,7 +43,7 @@ public class GameController {
 
     private final DataBase db = DataBase.getInstance();
     private boolean someoneCompleted = false;
-    private final long SOLE_SURVIVOR_TIMER = 60000;
+    private final long SOLE_SURVIVOR_TIMER = 60;
     File saveFile;
 
     /**
@@ -163,7 +163,7 @@ public class GameController {
     private void startTimer(){
         synchronized (timerLock){
             logger.info("Starting timer");
-            Message message = new Message("Server", "If no one reconnects in 60 seconds the game will end");
+            Message message = new Message("Server", String.format("If no one reconnects in %d seconds the game will end", SOLE_SURVIVOR_TIMER));
             ServerEvent event = ServerEvent.NewMessage(message);
             globalUpdate(event);
             timer = new Timer();
@@ -174,7 +174,7 @@ public class GameController {
                             endTimer();
                         }
                     },
-                    SOLE_SURVIVOR_TIMER
+                    SOLE_SURVIVOR_TIMER * 1000
             );
             isTimerRunning = true;
         }
