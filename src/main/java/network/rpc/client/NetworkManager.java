@@ -116,11 +116,18 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     }
 
     public void run() {
+        Result result;
         checkPingThread = new Thread(this::checkPing);
         checkPingThread.start();
-        while(isConnected()){
+        while (isConnected()) {
             try {
-                Result result = receive();
+                result = receive();
+            } catch (Exception e) {
+                logger.warning(e.getMessage());
+                disconnect();
+                break;
+            }
+            try {
                 if (result.isEvent()) {
                     ServerEvent event = (ServerEvent)result.unwrap();
                     synchronized (eventQueue) {
@@ -142,9 +149,6 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
                 }
             } catch (Exception e) {
                 logger.warning(e.getMessage());
-                if (e instanceof java.net.SocketException) {
-                    disconnect();
-                }
             }
         }
         try {
