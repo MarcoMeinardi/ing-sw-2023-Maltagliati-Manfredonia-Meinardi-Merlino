@@ -367,6 +367,7 @@ public class GameController {
         boolean isSomeoneAlive = currentlyConnectedPlayers() > 0;
         LobbyController lobbyController = LobbyController.getInstance();
         for(Player player : game.getPlayers()) {
+            addPersonalCockade(player);
             Optional<ClientInterface> client = clientManager.getClient(player.getName());
             client.get().setCallHandler(lobbyController::handleLobbySearch);
             if (client.get().getStatus() != ClientStatus.Disconnected) {
@@ -379,7 +380,6 @@ public class GameController {
         if (isSomeoneAlive) {
             ScoreBoard scoreBoard = new ScoreBoard(game);
             for(Player player: game.getPlayers()){
-                addPersonalCockade(player);
                 try{
                     Optional<ClientInterface> client = clientManager.getClient(player.getName());
                     client.get().sendEvent(ServerEvent.End(scoreBoard));
