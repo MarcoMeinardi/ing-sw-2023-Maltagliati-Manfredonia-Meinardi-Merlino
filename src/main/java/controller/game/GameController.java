@@ -18,6 +18,8 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static network.Server.SERVER_NAME;
+
 /**
  * This class runs an instance of game and controls it.
  * @author Ludovico, Marco, Lorenzo
@@ -503,7 +505,7 @@ public class GameController {
                     if (wasDisconnected) {
                         playerDisconnected.set(i, false);
                         logger.info("Player " + players.get(i).getName() + " reconnected");
-                        ServerEvent event = ServerEvent.NewMessage(new Message("Server", String.format("%s reconnected", players.get(i).getName())));
+                        ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, String.format("%s reconnected", players.get(i).getName())));
                         globalUpdate(event);
                     }
                     if (players.get(i).equals(currentPlayer)) {
@@ -513,7 +515,7 @@ public class GameController {
                     if (!wasDisconnected) {
                         playerDisconnected.set(i, true);
                         logger.info("Player " + players.get(i).getName() + " disconnected");
-                        ServerEvent event = ServerEvent.NewMessage(new Message("Server", String.format("%s disconnected", players.get(i).getName())));
+                        ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, String.format("%s disconnected", players.get(i).getName())));
                         globalUpdate(event);
                     }
                     if (players.get(i).equals(currentPlayer)) {
@@ -541,7 +543,7 @@ public class GameController {
                     isPaused = true;
                     pauseCounter = 0;
                     logger.info("Game paused");
-                    ServerEvent event = ServerEvent.NewMessage(new Message("Server", String.format("Game paused if no one reconnects in %d seconds the game will end", SOLE_SURVIVOR_TIMER)));
+                    ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, String.format("Game paused if no one reconnects in %d seconds the game will end", SOLE_SURVIVOR_TIMER)));
                     globalUpdate(event);
                 } else if (pauseCounter >= SOLE_SURVIVOR_TIMER) {
                     logger.info("Timeout expired, ending game");
@@ -552,7 +554,7 @@ public class GameController {
             if (activePlayers > 1 && wasPaused) {
                 isPaused = false;
                 logger.info("Game resumed");
-                ServerEvent event = ServerEvent.NewMessage(new Message("Server", "Game resumed"));
+                ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, "Game resumed"));
                 globalUpdate(event);
             }
             wasPaused = isPaused;
