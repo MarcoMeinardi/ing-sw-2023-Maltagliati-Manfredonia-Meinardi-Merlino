@@ -526,7 +526,7 @@ public class GameController {
                         if (wasDisconnected) {
                             playerDisconnected.set(i, false);
                             logger.info("Player " + players.get(i).getName() + " reconnected");
-                            ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, String.format("%s reconnected", players.get(i).getName())));
+                            ServerEvent event = ServerEvent.Join(players.get(i).getName());
                             globalUpdate(event);
                         }
                         if (players.get(i).equals(currentPlayer)) {
@@ -536,7 +536,7 @@ public class GameController {
                         if (!wasDisconnected) {
                             playerDisconnected.set(i, true);
                             logger.info("Player " + players.get(i).getName() + " disconnected");
-                            ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, String.format("%s disconnected", players.get(i).getName())));
+                            ServerEvent event = ServerEvent.Leave(players.get(i).getName());
                             globalUpdate(event);
                         }
                         if (players.get(i).equals(currentPlayer)) {
