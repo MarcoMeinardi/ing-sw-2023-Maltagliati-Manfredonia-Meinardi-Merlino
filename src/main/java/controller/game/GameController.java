@@ -291,19 +291,21 @@ public class GameController {
                     if(!(call.params() instanceof CardSelect)) {
                         throw new WrongParametersException("CardSelect", call.params().getClass().getName(), "CardSelect");
                     }
-                    CardSelect cardSelect = (CardSelect)call.params();
-                    String username = client.getUsername();
-                    Player player = game.getPlayers().stream().filter(p -> p.getName().equals(username)).findFirst().orElseThrow();
-                    if (!currentPlayer.equals(player)) {
-                        throw new NotYourTurnException();
-                    } else if (isPaused) {
-                        throw new GamePausedException();
+                    synchronized (disconnectionChecker) {
+                        CardSelect cardSelect = (CardSelect)call.params();
+                        String username = client.getUsername();
+                        Player player = game.getPlayers().stream().filter(p -> p.getName().equals(username)).findFirst().orElseThrow();
+                        if (!currentPlayer.equals(player)) {
+                            throw new NotYourTurnException();
+                        } else if (isPaused) {
+                            throw new GamePausedException();
+                        }
+                        doMove(player, cardSelect.selectedCards(), cardSelect.column());
+                        if (completePlayerTurn(player)) {
+                            disconnectionChecker.interrupt();
+                        }
+                        result = Result.empty(call.id());
                     }
-                    doMove(player, cardSelect.selectedCards(), cardSelect.column());
-                    if (completePlayerTurn(player)) {
-                        disconnectionChecker.interrupt();
-                    }
-                    result = Result.empty(call.id());
                 }
                 case GameChatSend -> {
                     if (!(call.params() instanceof Message newChatMessage)) {
@@ -494,70 +496,72 @@ public class GameController {
             } catch (InterruptedException e) {
                 return;
             }
-            int activePlayers = 0; 
-            boolean currentPlayerActive = false;
-            ArrayList<Player> players = game.getPlayers();
-            for (int i = 0; i < players.size(); i++) {
-                boolean wasDisconnected = playerDisconnected.get(i);
-                Optional<ClientInterface> client = clientManager.getClient(players.get(i).getName());
-                if (client.isPresent() && !client.get().isDisconnected()) {
-                    activePlayers++;
-                    if (wasDisconnected) {
-                        playerDisconnected.set(i, false);
-                        logger.info("Player " + players.get(i).getName() + " reconnected");
-                        ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, String.format("%s reconnected", players.get(i).getName())));
-                        globalUpdate(event);
-                    }
-                    if (players.get(i).equals(currentPlayer)) {
-                        currentPlayerActive = true;
-                    }
-                } else {
-                    if (!wasDisconnected) {
-                        playerDisconnected.set(i, true);
-                        logger.info("Player " + players.get(i).getName() + " disconnected");
-                        ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, String.format("%s disconnected", players.get(i).getName())));
-                        globalUpdate(event);
-                    }
-                    if (players.get(i).equals(currentPlayer)) {
-                        currentPlayerActive = false;
+            synchronized (disconnectionChecker) {
+                int activePlayers = 0; 
+                boolean currentPlayerActive = false;
+                ArrayList<Player> players = game.getPlayers();
+                for (int i = 0; i < players.size(); i++) {
+                    boolean wasDisconnected = playerDisconnected.get(i);
+                    Optional<ClientInterface> client = clientManager.getClient(players.get(i).getName());
+                    if (client.isPresent() && !client.get().isDisconnected()) {
+                        activePlayers++;
+                        if (wasDisconnected) {
+                            playerDisconnected.set(i, false);
+                            logger.info("Player " + players.get(i).getName() + " reconnected");
+                            ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, String.format("%s reconnected", players.get(i).getName())));
+                            globalUpdate(event);
+                        }
+                        if (players.get(i).equals(currentPlayer)) {
+                            currentPlayerActive = true;
+                        }
+                    } else {
+                        if (!wasDisconnected) {
+                            playerDisconnected.set(i, true);
+                            logger.info("Player " + players.get(i).getName() + " disconnected");
+                            ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, String.format("%s disconnected", players.get(i).getName())));
+                            globalUpdate(event);
+                        }
+                        if (players.get(i).equals(currentPlayer)) {
+                            currentPlayerActive = false;
+                        }
                     }
                 }
-            }
 
-            if (isPaused) pauseCounter++;
+                if (isPaused) pauseCounter++;
 
-            if (activePlayers == 0) {
-                logger.info("All players disconnected, closing game");
-                exitGame(false);
-                return;
-            }
-            if (!currentPlayerActive) {
-                logger.info("Current player disconnected, skipping turn");
-                if (completePlayerTurn(currentPlayer)) {
-                    // Shouldn't happen
+                if (activePlayers == 0) {
+                    logger.info("All players disconnected, closing game");
+                    exitGame(false);
                     return;
                 }
-            }
-            if (activePlayers == 1) {
-                if (!wasPaused) {
-                    isPaused = true;
-                    pauseCounter = 0;
-                    logger.info("Game paused");
-                    ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, String.format("Game paused if no one reconnects in %d seconds the game will end", SOLE_SURVIVOR_TIMER)));
+                if (!currentPlayerActive) {
+                    logger.info("Current player disconnected, skipping turn");
+                    if (completePlayerTurn(currentPlayer)) {
+                        // Shouldn't happen
+                        return;
+                    }
+                }
+                if (activePlayers == 1) {
+                    if (!wasPaused) {
+                        isPaused = true;
+                        pauseCounter = 0;
+                        logger.info("Game paused");
+                        ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, String.format("Game paused if no one reconnects in %d seconds the game will end", SOLE_SURVIVOR_TIMER)));
+                        globalUpdate(event);
+                    } else if (pauseCounter >= SOLE_SURVIVOR_TIMER) {
+                        logger.info("Timeout expired, ending game");
+                        exitGame(true);
+                        return;
+                    }
+                }
+                if (activePlayers > 1 && wasPaused) {
+                    isPaused = false;
+                    logger.info("Game resumed");
+                    ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, "Game resumed"));
                     globalUpdate(event);
-                } else if (pauseCounter >= SOLE_SURVIVOR_TIMER) {
-                    logger.info("Timeout expired, ending game");
-                    exitGame(true);
-                    return;
                 }
+                wasPaused = isPaused;
             }
-            if (activePlayers > 1 && wasPaused) {
-                isPaused = false;
-                logger.info("Game resumed");
-                ServerEvent event = ServerEvent.NewMessage(new Message(SERVER_NAME, "Game resumed"));
-                globalUpdate(event);
-            }
-            wasPaused = isPaused;
         }
     }
 }
