@@ -1,5 +1,6 @@
 package controller.game;
 import controller.DataBase;
+import controller.IdentityTheftException;
 import controller.MessageTooLongException;
 import controller.lobby.ClientNotConnectedException;
 import controller.lobby.Lobby;
@@ -314,6 +315,9 @@ public class GameController {
                     }
                     if (newChatMessage.message().length() > 100) {
                         throw new MessageTooLongException();
+                    }
+                    if (!newChatMessage.idSender().equals(client.getUsername())) {
+                        throw new IdentityTheftException();
                     }
                     ServerEvent event = ServerEvent.NewMessage(newChatMessage);
                     if (newChatMessage.idReceiver().isEmpty()) {

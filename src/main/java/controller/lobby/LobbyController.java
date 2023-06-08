@@ -1,6 +1,7 @@
 package controller.lobby;
 
 import controller.DataBase;
+import controller.IdentityTheftException;
 import controller.MessageTooLongException;
 import controller.game.GameController;
 import model.Player;
@@ -266,6 +267,9 @@ public class LobbyController extends Thread {
                     if (newChatMessage.message().length() > 100) {
                         throw new MessageTooLongException();
                     }
+                    if (!newChatMessage.idSender().equals(client.getUsername())) {
+                        throw new IdentityTheftException();
+                    }
                     ServerEvent event = ServerEvent.NewMessage(newChatMessage);
                     if (newChatMessage.idReceiver().isEmpty()) {
                         globalUpdate(lobby, event);
@@ -387,9 +391,9 @@ public class LobbyController extends Thread {
             for(String player : lobby.getPlayers()) {
                 try {
                     Optional<ClientInterface> client = clientManager.getClient(player);
-                    if(client.isPresent() && !client.get().isDisconnected()) {
+                    if (client.isPresent() && !client.get().isDisconnected()) {
                         client.get().sendEvent(event);
-                    }else{
+                    } else {
                         Logger.getLogger(LobbyController.class.getName()).warning("Client " + player + " not connected");
                     }
                 } catch (Exception e) {
