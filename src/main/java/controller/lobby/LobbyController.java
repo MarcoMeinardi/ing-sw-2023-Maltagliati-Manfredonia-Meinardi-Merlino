@@ -3,13 +3,13 @@ package controller.lobby;
 import controller.DataBase;
 import controller.IdentityTheftException;
 import controller.MessageTooLongException;
+import controller.NotHostException;
 import controller.game.GameController;
 import model.Player;
 import network.*;
 import network.parameters.LobbyCreateInfo;
 import network.parameters.Message;
 import network.errors.WrongParametersException;
-import network.errors.ClientNotFoundException;
 
 import java.io.File;
 import java.io.Serializable;

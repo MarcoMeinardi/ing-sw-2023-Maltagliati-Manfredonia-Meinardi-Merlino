@@ -273,4 +273,12 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         chat.call(out);
         return chat;
     }
+
+    @Override
+    public Function<Boolean, Boolean> exitGame() throws Exception {
+        Function<Boolean, Boolean> exitGame = new Function<>(true, Service.ExitGame);
+        callQueue.put(exitGame.id(), exitGame);
+        exitGame.call(out);
+        return exitGame;
+    }
 }

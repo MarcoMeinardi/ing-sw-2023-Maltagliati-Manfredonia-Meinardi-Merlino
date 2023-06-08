@@ -27,7 +27,8 @@ public interface NetworkManagerInterface {
     public Function<Boolean, Lobby> updateLobby() throws Exception;
     public Function<Boolean, Boolean> gameStart() throws Exception;
     public Function<Boolean, Boolean> gameLoad() throws Exception;
-    public Function<CardSelect,Boolean> cardSelect(CardSelect selected) throws Exception;
+    public Function<CardSelect, Boolean> cardSelect(CardSelect selected) throws Exception;
+    public Function<Boolean, Boolean> exitGame() throws Exception;
 
     /**
      * Login to the server

@@ -177,6 +177,11 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     }
 
     @Override
+    public Function<Boolean, Boolean> exitGame() throws Exception {
+        return handleService(new Function(true, Service.ExitGame));
+    }
+
+    @Override
     public Function<Login, Serializable> login(Login info) throws Exception {
         Function fn = new Function(info, Service.Login);
         Result<Serializable> result;

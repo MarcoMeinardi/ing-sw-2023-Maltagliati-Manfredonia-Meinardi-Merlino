@@ -12,4 +12,5 @@ public enum Service {
     GameLoad,
     CardSelect,
     GameChatSend,
+    ExitGame
 }

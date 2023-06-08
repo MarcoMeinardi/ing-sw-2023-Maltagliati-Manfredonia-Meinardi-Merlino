@@ -2,6 +2,7 @@ package controller.game;
 import controller.DataBase;
 import controller.IdentityTheftException;
 import controller.MessageTooLongException;
+import controller.NotHostException;
 import controller.lobby.ClientNotConnectedException;
 import controller.lobby.Lobby;
 import controller.lobby.LobbyController;
@@ -331,6 +332,15 @@ public class GameController {
                     }
 
                     result = Result.empty(call.id());
+                }
+                case ExitGame -> {
+                    synchronized (disconnectionChecker) {
+                        if (!lobby.isHost(client.getUsername())) {
+                            throw new NotHostException();
+                        }
+                        exitGame(false);
+                        result = Result.empty(call.id());
+                    }
                 }
                 default -> throw new WrongThreadException();
             }
