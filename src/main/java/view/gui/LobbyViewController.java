@@ -4,7 +4,6 @@ import controller.lobby.Lobby;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,7 +17,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import javafx.stage.WindowEvent;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
 import network.Result;
@@ -112,19 +110,6 @@ public class LobbyViewController implements Initializable{
             }
         });
         serverThread.start();
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                stage = (Stage) pane.getScene().getWindow();
-                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                    @Override
-                    public void handle(WindowEvent t) {
-                        Platform.exit();
-                        System.exit(0);
-                    }
-                });
-            }
-        });
     }
 
     /**

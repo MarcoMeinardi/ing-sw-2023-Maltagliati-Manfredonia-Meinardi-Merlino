@@ -4,7 +4,6 @@ import controller.lobby.Lobby;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,7 +21,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import model.*;
 import network.ClientStatus;
 import network.NetworkManagerInterface;
@@ -140,19 +138,6 @@ public class GameViewController implements Initializable {
             }
         });
         serverThread.start();
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        stage = (Stage) pane.getScene().getWindow();
-                        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                            @Override
-                            public void handle(WindowEvent t) {
-                                Platform.exit();
-                                System.exit(0);
-                            }
-                        });
-                    }
-                });
     }
 
     /**

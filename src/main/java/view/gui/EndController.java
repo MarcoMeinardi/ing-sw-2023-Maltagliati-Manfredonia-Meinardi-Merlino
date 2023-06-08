@@ -1,8 +1,6 @@
 package view.gui;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,7 +12,6 @@ import javafx.scene.control.Label;
 
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import model.Score;
 import model.ScoreBoard;
 
@@ -69,19 +66,6 @@ public class EndController implements Initializable {
         this.scoreBoard = GameViewController.gameData.getScoreBoard();
         this.username = GameViewController.gameData.getMe();
         showScoreBoard();
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                stage = (Stage) shelfPane.getScene().getWindow();
-                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                    @Override
-                    public void handle(WindowEvent t) {
-                        Platform.exit();
-                        System.exit(0);
-                    }
-                });
-            }
-        });
     }
 
     /**

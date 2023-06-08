@@ -1,6 +1,7 @@
 package view.gui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.*;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -28,6 +29,10 @@ public class Main extends Application {
             stage.setTitle("MyShelfie!");
             stage.setResizable(false);
             stage.setScene(sceneLogin);
+            stage.setOnCloseRequest(t -> {
+                Platform.exit();
+                System.exit(0);
+            });
             stage.show();
 
         } catch (Exception e) {
