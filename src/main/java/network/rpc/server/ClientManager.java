@@ -5,6 +5,7 @@ import controller.game.GameController;
 import network.*;
 import network.errors.ClientAlreadyConnectedExeption;
 import network.errors.ClientNotIdentifiedException;
+import network.errors.InvalidUsernameException;
 import network.parameters.Login;
 import network.errors.WrongParametersException;
 
@@ -14,6 +15,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.logging.Logger;
+
+import static network.Server.SERVER_NAME;
 
 public class ClientManager extends Thread implements ClientManagerInterface{
     final private LinkedList<Client> unidentifiedClients = new LinkedList<>();
@@ -40,7 +43,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         }
     }
 
-    private ClientManager(int port) throws Exception{
+    private ClientManager(int port) throws Exception {
         this.socket = new ServerSocket(port);
         this.acceptConnectionsThread = new Thread(this::acceptConnections);
     }
@@ -52,7 +55,10 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         if(!(call.params() instanceof Login)) {
             return Result.err(new WrongParametersException("Login",call.params().getClass().getName(),"call.param()"), call.id());
         }
-        Login login = (Login) call.params();
+        Login login = (Login)call.params();
+        if (login.username().length() > 16 || login.username().equals(SERVER_NAME)) {
+            return Result.err(new InvalidUsernameException(), call.id());
+        }
         try{
             if (addIdentifiedClient(login.username(), (Client) client)) {
                 Optional<GameController> game = LobbyController.getInstance().searchGame(login.username());

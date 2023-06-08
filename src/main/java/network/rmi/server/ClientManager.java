@@ -5,6 +5,7 @@ import controller.lobby.LobbyController;
 import model.Player;
 import network.*;
 import network.errors.ClientAlreadyConnectedExeption;
+import network.errors.InvalidUsernameException;
 import network.parameters.GameInfo;
 import network.parameters.Login;
 import network.rmi.LoginService;
@@ -18,6 +19,8 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import static network.Server.SERVER_NAME;
 
 public class ClientManager extends Thread implements ClientManagerInterface, LoginService {
     HashMap <String, Client> clients;
@@ -75,6 +78,9 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
     public Result<Serializable> login(Login info, UUID callId) throws Exception {
         String username = info.username();
         boolean wasConnected = false;
+        if (username.length() > 16 || username.equals(SERVER_NAME)) {
+            return Result.err(new InvalidUsernameException(), callId);
+        }
         if(GlobalClientManager.getInstance().isUsernameTaken(username)){
             if(!clients.containsKey(username) || !clients.get(username).isDisconnected()){
                 return Result.err(new ClientAlreadyConnectedExeption(),callId);
