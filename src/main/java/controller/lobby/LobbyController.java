@@ -1,6 +1,7 @@
 package controller.lobby;
 
 import controller.DataBase;
+import controller.MessageTooLongException;
 import controller.game.GameController;
 import model.Player;
 import network.*;
@@ -261,12 +262,15 @@ public class LobbyController extends Thread {
                     if (!(call.params() instanceof Message)) {
                         throw new WrongParametersException("Message", call.params().getClass().getName(), "GameChatSend");
                     }
-                    Message new_chat_message = (Message)call.params();
-                    ServerEvent event = ServerEvent.NewMessage(new_chat_message);
-                    if (new_chat_message.idReceiver().isEmpty()) {
+                    Message newChatMessage = (Message)call.params();
+                    if (newChatMessage.message().length() > 100) {
+                        throw new MessageTooLongException();
+                    }
+                    ServerEvent event = ServerEvent.NewMessage(newChatMessage);
+                    if (newChatMessage.idReceiver().isEmpty()) {
                         globalUpdate(lobby, event);
                     } else {
-                        Optional<ClientInterface> receiver = clientManager.getClient(new_chat_message.idReceiver().get());
+                        Optional<ClientInterface> receiver = clientManager.getClient(newChatMessage.idReceiver().get());
                         if(receiver.isEmpty()){
                             throw new ClientNotConnectedException();
                         }

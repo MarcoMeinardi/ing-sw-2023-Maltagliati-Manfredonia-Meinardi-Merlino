@@ -1,5 +1,6 @@
 package controller.game;
 import controller.DataBase;
+import controller.MessageTooLongException;
 import controller.lobby.ClientNotConnectedException;
 import controller.lobby.Lobby;
 import controller.lobby.LobbyController;
@@ -310,6 +311,9 @@ public class GameController {
                 case GameChatSend -> {
                     if (!(call.params() instanceof Message newChatMessage)) {
                         throw new WrongParametersException("Message", call.params().getClass().getName(), "GameChatSend");
+                    }
+                    if (newChatMessage.message().length() > 100) {
+                        throw new MessageTooLongException();
                     }
                     ServerEvent event = ServerEvent.NewMessage(newChatMessage);
                     if (newChatMessage.idReceiver().isEmpty()) {
