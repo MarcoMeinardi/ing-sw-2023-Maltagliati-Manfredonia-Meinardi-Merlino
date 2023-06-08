@@ -7,15 +7,22 @@ public enum InGameOptions implements OptionsInterface {
 	SHOW_TABLETOP,
 	SHOW_PERSONAL_OBJECTIVE,
 	SHOW_COMMON_OBJECTIVES,
+	STOP_GAME(true, false),
 	PICK_CARDS(true);
 
-	private final boolean needHost = false;
+	private final boolean needHost;
 	private final boolean needTurn;
 
 	InGameOptions() {
+		this.needHost = false;
 		this.needTurn = false;
 	}
 	InGameOptions(boolean needTurn) {
+		this.needHost = false;
+		this.needTurn = needTurn;
+	}
+	InGameOptions(boolean needHost, boolean needTurn) {
+		this.needHost = needHost;
 		this.needTurn = needTurn;
 	}
 

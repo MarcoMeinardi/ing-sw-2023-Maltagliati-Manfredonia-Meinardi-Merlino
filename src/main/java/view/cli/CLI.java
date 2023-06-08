@@ -288,6 +288,9 @@ public class CLI {
 				game.printCommonObjectives();
 				return ClientStatus.InGame;
 			}
+			case STOP_GAME -> {
+				return handleStopGame();
+			}
 			case PICK_CARDS -> {
 				return handlePickCard();
 			}
@@ -387,6 +390,23 @@ public class CLI {
 			System.out.println("[ERROR] " + e.getMessage());
 		}
 
+		return ClientStatus.InGame;
+	}
+
+	private ClientStatus handleStopGame() {
+		String yn = IO.askString("Do you really want to stop the game (y/n)? ");
+		if (yn.toLowerCase().charAt(0) == 'y') {
+			try {
+				Result result = networkManager.exitGame().waitResult();
+				if (result.isErr()) {
+					System.out.println("[ERROR] " + result.getException().orElse("Cannot stop the game"));
+				} else {
+					return waitGlobalUpdate();
+				}
+			} catch (Exception e) {
+				System.out.println("[ERROR] " + e.getMessage());
+			}
+		}
 		return ClientStatus.InGame;
 	}
 
@@ -517,8 +537,7 @@ public class CLI {
 						your_title = score.title();
 					}
 				}
-				System.out.println("Your final grade: "+your_title);
-				System.out.println();
+				System.out.format("%nYour final grade: %s%n%n", your_title);
 				IO.askString("[+] Press enter to continue");
 				doPrint = true;
 				return ClientStatus.InLobbySearch;
@@ -536,13 +555,19 @@ public class CLI {
 						System.out.format("[%s to you]: %s%n", message.idSender(), message.message());
 					}
 				}
-			} case Pause -> {
+			}
+			case ExitGame -> {
+				System.out.println("[*] Game has been stopped");
+				return ClientStatus.InLobbySearch;
+			}
+			case Pause -> {
 				if (!isPaused) {
 					System.out.println("[WARNING] Someone has disconnected");
 					doPrint = true;
 				}
 				isPaused = true;
-			} case Resume -> {
+			}
+			case Resume -> {
 				System.out.println("Game resumed");
 				isPaused = false;
 				doPrint = true;
