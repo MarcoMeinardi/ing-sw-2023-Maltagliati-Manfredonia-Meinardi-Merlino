@@ -324,7 +324,7 @@ public class LobbyController extends Thread {
         synchronized (lobby) {
             HashSet<String> dbKey = new HashSet<>(lobby.getPlayers());
             File saveFile = db.get(dbKey);
-            GameController game = new GameController(saveFile);
+            GameController game = new GameController(saveFile, lobby);
             games.add(game);
             lobbies.remove(lobby.getName());
         }

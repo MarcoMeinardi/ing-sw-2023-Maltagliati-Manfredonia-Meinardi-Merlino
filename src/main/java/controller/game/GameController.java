@@ -71,7 +71,8 @@ public class GameController {
         saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(HashSet::new)));
     }
 
-    public GameController(File saveFile) throws Exception {
+    public GameController(File saveFile, Lobby lobby) throws Exception {
+        this.lobby = lobby;
         game = Game.loadGame(saveFile);
         clientManager = GlobalClientManager.getInstance();
         playerIterator = game.iterator();
