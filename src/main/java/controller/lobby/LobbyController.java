@@ -30,6 +30,15 @@ public class LobbyController extends Thread {
     private static final String SAVESTATES_DIRECTORY = "save-states";
     private static final String SAVESTATES_PREFIX = "save_";
 
+    /**
+     * Initializes the `clientManager` variable by calling the `getInstance()` method of the `GlobalClientManager` class.
+     * If an exception is caught during this process, it throws a `RuntimeException` with the message "Cannot get client manager instance".
+     * The constructor is marked as private, which means it can only be accessed within the `LobbyController` class itself.
+     *
+     * @throws RuntimeException if an exception is caught during the initialization of the `clientManager` variable
+     * @author Marco
+     */
+
     private LobbyController() {
         try {
             clientManager = GlobalClientManager.getInstance();
@@ -39,8 +48,13 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * Singleton pattern, if the instance is null, it creates a new one and starts it
-     * @return the instance of the LobbyController
+     * method that returns an instance of the `LobbyController` class.
+     * It uses the Singleton design pattern to ensure that only one instance of the class is created.
+     * If the `instance` variable is null, it creates a new instance of the `LobbyController` class and starts it.
+     * If an exception occurs during the creation or starting of the instance, it prints the stack trace.
+     * Finally, it returns the instance variable.
+     *
+     * @return the instance of the `LobbyController` class
      * @author Riccardo, Lorenzo
      */
     public static LobbyController getInstance() {
@@ -88,7 +102,12 @@ public class LobbyController extends Thread {
     }
 
     /**
-     *  Finds the lobby that contains a specific player.
+     *  method that searches for a lobby that a player with a given name is in.
+     *  It takes in a String parameter `playerName` and returns a `Lobby` object.
+     *  If the player is found in a lobby, the method returns that lobby.
+     *  If the player is not found in any lobby, it throws a `LobbyNotFoundException`.
+     *  The method is synchronized on the `lobbies` object to ensure thread safety.
+     *
      *  @param playerName the name of the player to search for
      *  @return the Lobby object that contains the player
      *  @throws LobbyNotFoundException if the player is not found in any lobby
@@ -106,7 +125,13 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * Creates a new lobby with the specified name and host player.
+     * method that creates a new lobby with a given name and host.
+     * It first checks if a lobby with the same name already exists in the `lobbies` map, and if so,
+     * it throws a `LobbyAlreadyExistsException`.
+     * If not, it creates a new `Lobby` object with the given name and host,
+     * adds it to the `lobbies` map, and returns the new `Lobby` object.
+     * The `synchronized` block ensures that the `lobbies` map is accessed in a thread-safe manner.
+     *
      * @param lobbyname the name of the lobby to create
      * @param host the name of the player who will be the host of the lobby
      * @return the created Lobby object
@@ -126,7 +151,9 @@ public class LobbyController extends Thread {
 
     /**
      * Returns the list of lobbies.
+     *
      * @return the list of lobbies
+     * @author Riccardo, Lorenzo
      */
     public ArrayList<Lobby> getLobbies() {
         synchronized (lobbies){
@@ -135,7 +162,8 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * Joins a player to a specified lobby.
+     * method that allows a player to join a lobby.
+     *
      * @param lobbyname the name of the lobby to join
      * @param player the name of the player to join the lobby
      * @return the Lobby object that the player has joined
@@ -159,6 +187,7 @@ public class LobbyController extends Thread {
 
     /**
      * Removes a player from their current lobby.
+     *
      * @param player the name of the player to remove from the lobby
      * @throws LobbyNotFoundException if the player is not found in any lobby
      * @throws PlayerNotInLobbyException if the player is not in a lobby
@@ -177,7 +206,9 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * Handles the lobby search call based on the specified service and parameters.
+     * method that handles lobby search requests from clients.
+     * It takes in a `Call` object and a `ClientInterface` object as parameters and returns a `Result` object containing a `Serializable` object.
+     *
      * @param call the Call object representing the lobby search request
      * @param client the ClientInterface object of the client making the request
      * @return a Result object containing the result of the lobby search operation
@@ -216,7 +247,9 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * Handles the in-lobby call based on the specified service and parameters.
+     * method that handles incoming calls from clients who are currently in a lobby.
+     * It takes in a `Call` object and a `ClientInterface` object as parameters, and returns a `Result` object that contains a `Serializable` object.
+     *
      * @param call the Call object representing the in-lobby request
      * @param client the ClientInterface object of the client making the request
      * @return a Result object containing the result of the in-lobby operation
@@ -292,9 +325,13 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * Starts a game in the specified lobby.
+     * method called `startGame` that takes a `Lobby` object as a parameter and throws an `Exception`.
+     * It creates a `File` object representing a directory called `SAVESTATES_DIRECTORY` and checks if it exists.
+     * If it doesn't exist, it creates the directory. If it exists but is not a directory, it throws an exception.
+     *
      * @param lobby the lobby in which to start the game
      * @throws Exception if the game cannot be started for any reason (e.g. the save directory cannot be created)
+     * @author Marco
      */
     public void startGame(Lobby lobby) throws Exception {
         synchronized (lobby) {
@@ -325,8 +362,10 @@ public class LobbyController extends Thread {
 
     /**
      * Loads a save game from the specified lobby.
+     *
      * @param lobby the lobby from which to load the game
      * @throws Exception if the game cannot be loaded for any reason (e.g. the save file does not exist)
+     * @author Marco
      */
 	private void loadGame(Lobby lobby) throws Exception {
         synchronized (lobby) {
@@ -340,7 +379,9 @@ public class LobbyController extends Thread {
 
     /**
      * Ends the specified game.
+     *
      * @param game the GameController object representing the game to end
+     * @author Marco
      */
     public void endGame(GameController game) {
         synchronized (games){
@@ -356,7 +397,9 @@ public class LobbyController extends Thread {
 
     /**
      * Exits the specified game.
+     *
      * @param game the GameController object representing the game to exit
+     * @author Marco
      */
     public void exitGame(GameController game) {
         synchronized (games){
@@ -366,8 +409,10 @@ public class LobbyController extends Thread {
 
     /**
      * Searches for a game containing the specified player.
+     *
      * @param username the username of the player to search for
      * @return an Optional object containing the GameController object representing the game, if found, or an empty Optional object otherwise
+     * @autor Marco
      */
     public Optional<GameController> searchGame(String username) {
         synchronized (games) {
@@ -381,10 +426,18 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * Sends a global update event to all clients in the specified lobby.
+     * method that takes in a `Lobby` object and a `ServerEvent` object as parameters.
+     * It synchronizes on the `Lobby` object and then iterates through all the players in the lobby.
+     * For each player, it tries to get the corresponding `ClientInterface` object from a `clientManager`
+     * and checks if it is present and not disconnected.
+     * If it is, it sends the `ServerEvent` object to the client using the `sendEvent` method.
+     * If the client is not present or disconnected, it logs a warning message.
+     * If there is an exception while sending the event, it logs an error message.
+     * This method is likely used to update all clients in a lobby with a new event.
+     *
      * @param lobby the Lobby object to send the update event to
      * @param event the ServerEvent object representing the update event
-     * @author Marco
+     * @author Marco, Lorenzo
      */
     private void globalUpdate(Lobby lobby, ServerEvent event) {
         synchronized (lobby) {
