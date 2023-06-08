@@ -338,8 +338,10 @@ public class GameController {
                         if (!lobby.isHost(client.getUsername())) {
                             throw new NotHostException();
                         }
+                        logger.info("Game stopped by host");
                         globalUpdate(ServerEvent.ExitGame());
                         exitGame(false);
+                        disconnectionChecker.interrupt();
                         result = Result.empty(call.id());
                     }
                 }
