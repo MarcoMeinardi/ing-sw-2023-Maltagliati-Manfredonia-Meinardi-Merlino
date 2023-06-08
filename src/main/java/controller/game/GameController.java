@@ -338,6 +338,7 @@ public class GameController {
                         if (!lobby.isHost(client.getUsername())) {
                             throw new NotHostException();
                         }
+                        globalUpdate(ServerEvent.ExitGame());
                         exitGame(false);
                         result = Result.empty(call.id());
                     }
@@ -351,8 +352,9 @@ public class GameController {
     }
 
     /**
-     * makes the player exit the game
-     * and ends the game
+     * makes the players exit the game
+     * if endGame is true, end the game, send the final ranking to the clients and cancel the game from disk
+     * @param endGame if set to true, completely end the game, otherwise just make the players exit the game, but keep the save
      * @author Ludovico, Lorenzo, Marco
      */
     public void exitGame(boolean endGame) {
@@ -361,7 +363,6 @@ public class GameController {
         addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
         addFirstToFinish(currentPlayer);
 
-        // If no one is connected, don't do end game stuff
         LobbyController lobbyController = LobbyController.getInstance();
         for(Player player : game.getPlayers()) {
             if (endGame) {
