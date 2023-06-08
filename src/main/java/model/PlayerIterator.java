@@ -42,6 +42,6 @@ public class PlayerIterator implements Iterator<Player>, Serializable {
     }
 
     public int getIndex() {
-        return index == 0 ? maxIndex : index - 1;
+        return index;
     }
 }
