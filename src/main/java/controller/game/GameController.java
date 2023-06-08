@@ -3,7 +3,6 @@ import controller.DataBase;
 import controller.lobby.ClientNotConnectedException;
 import controller.lobby.Lobby;
 import controller.lobby.LobbyController;
-import javafx.util.Pair;
 import model.*;
 import network.*;
 import network.errors.ClientNotFoundException;
@@ -32,24 +31,25 @@ public class GameController {
 
     private final Iterator<Player> playerIterator;
 
-    private final Object timerLock = new Object();
-    private Timer timer = new Timer();
-    private boolean isTimerRunning = false;
-    private Thread healthyThread;
+    private boolean isPaused = false;
+    private final Thread disconnectionChecker;
     private Player currentPlayer;
     private static final Logger logger = Logger.getLogger(GameController.class.getName());
 
     private final ClientManagerInterface clientManager;
+    private ArrayList<Boolean> playerDisconnected;
 
     private final DataBase db = DataBase.getInstance();
+    private final File saveFile;
+
     private boolean someoneCompleted = false;
-    private final long SOLE_SURVIVOR_TIMER = 60;
-    File saveFile;
+    private static final long SOLE_SURVIVOR_TIMER = 60;
+    private static final long DISCONNECTION_CHECK_INTERVAL = 1;
+    private int pauseCounter;
 
     /**
      * Constructor that creates a new game with the specified players.
      * @author Ludovico
-     *
      */
     public GameController(Lobby lobby) throws Exception {
         this.lobby = lobby;
@@ -57,8 +57,7 @@ public class GameController {
         playerIterator = game.iterator();
         currentPlayer = playerIterator.next();
         clientManager = GlobalClientManager.getInstance();
-        healthyThread = new Thread(this::checkPlayerHealth);
-        healthyThread.start();
+
         for (Player player : game.getPlayers()) {
             ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
             if(client.isDisconnected()){
@@ -69,6 +68,13 @@ public class GameController {
             client.sendEvent(ServerEvent.Start(toSend));
         }
         saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(HashSet::new)));
+
+        playerDisconnected = new ArrayList<>(game.getPlayers().size());
+        for (int i = 0; i < game.getPlayers().size(); i++) {
+            playerDisconnected.add(false);
+        }
+        disconnectionChecker = new Thread(this::checkDisconnections);
+        disconnectionChecker.start();
     }
 
     public GameController(File saveFile, Lobby lobby) throws Exception {
@@ -77,8 +83,6 @@ public class GameController {
         clientManager = GlobalClientManager.getInstance();
         playerIterator = game.iterator();
         currentPlayer = playerIterator.next();
-        healthyThread = new Thread(this::checkPlayerHealth);
-        healthyThread.start();
         for (Player player : game.getPlayers()) {
             ClientInterface client = clientManager.getClient(player.getName()).orElseThrow();
             if(client.isDisconnected()){
@@ -88,8 +92,14 @@ public class GameController {
             GameInfo toSend = getGameInfo(player);
             client.sendEvent(ServerEvent.Start(toSend));
         }
-
         this.saveFile = db.get(game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(HashSet::new)));
+
+        playerDisconnected = new ArrayList<>(game.getPlayers().size());
+        for (int i = 0; i < game.getPlayers().size(); i++) {
+            playerDisconnected.add(false);
+        }
+        disconnectionChecker = new Thread(this::checkDisconnections);
+        disconnectionChecker.start();
     }
 
     public Game getGame() {
@@ -158,38 +168,6 @@ public class GameController {
         if(firstToFinishCockade.isPresent() && !someoneCompleted){
             player.addCockade(firstToFinishCockade.get());
             someoneCompleted = true;
-        }
-    }
-
-    private void startTimer(){
-        synchronized (timerLock){
-            logger.info("Starting timer");
-            Message message = new Message("Server", String.format("If no one reconnects in %d seconds the game will end", SOLE_SURVIVOR_TIMER));
-            ServerEvent event = ServerEvent.NewMessage(message);
-            globalUpdate(event);
-            timer = new Timer();
-            timer.schedule(
-                    new TimerTask() {
-                        @Override
-                        public void run() {
-                            endTimer();
-                        }
-                    },
-                    SOLE_SURVIVOR_TIMER * 1000
-            );
-            isTimerRunning = true;
-        }
-    }
-    /**
-     * This function is called when the timer is over
-     * it ends the game if there is only one player connected
-     * otherwise it ends the turn of the current player and selects a new player
-     */
-    private void endTimer() {
-        synchronized (timerLock){
-            nextOrEndGame();
-            timer.cancel();
-            isTimerRunning = false;
         }
     }
 
@@ -274,25 +252,20 @@ public class GameController {
      * Finds the next player that is not disconnected.
      * @return A pair containing a boolean that is true if the game is not finished and an optional player that is Some only if there is a next valid player
      */
-    private Pair<Boolean,Optional<Player>> nextNotDisconnected() {
-        Optional<Player> nextPlayer = Optional.empty();
+    private Optional<Player> nextNotDisconnected() {
         int count = 0;
         while (playerIterator.hasNext()) {
             Player player = playerIterator.next();
             Optional<ClientInterface> client = clientManager.getClient(player.getName());
             if (client.isPresent() && !client.get().isDisconnected()) {
-                if (currentPlayer.equals(player)) {
-                    return new Pair<>(true, Optional.empty());
-                }else{
-                    return new Pair<>(true, Optional.of(player));
-                }
+                return Optional.of(player);
             }
             count++;
             if(count == game.getPlayers().size()){
-                return new Pair<>(false, Optional.empty());
+                return Optional.of(currentPlayer);
             }
         }
-        return new Pair<>(false, Optional.empty());
+        return Optional.empty();
     }
 
     /**
@@ -310,22 +283,24 @@ public class GameController {
      */
     public Result handleGame(Call call, ClientInterface client) {
         Result result;
-        try{
+        try {
             switch (call.service()) {
                 case CardSelect -> {
                     if(!(call.params() instanceof CardSelect)) {
                         throw new WrongParametersException("CardSelect", call.params().getClass().getName(), "CardSelect");
                     }
-                    CardSelect cardSelect = (CardSelect) call.params();
+                    CardSelect cardSelect = (CardSelect)call.params();
                     String username = client.getUsername();
                     Player player = game.getPlayers().stream().filter(p -> p.getName().equals(username)).findFirst().orElseThrow();
-                    synchronized (timerLock) {
-                        if (!currentPlayer.equals(player) || isTimerRunning) {
-                            throw new NotYourTurnException();
-                        }
+                    if (!currentPlayer.equals(player)) {
+                        throw new NotYourTurnException();
+                    } else if (isPaused) {
+                        throw new GamePausedException();
                     }
                     doMove(player, cardSelect.selectedCards(), cardSelect.column());
-                    completePlayerTurn(player);
+                    if (completePlayerTurn(player)) {
+                        disconnectionChecker.interrupt();
+                    }
                     result = Result.empty(call.id());
                 }
                 case GameChatSend -> {
@@ -347,7 +322,7 @@ public class GameController {
                 }
                 default -> throw new WrongThreadException();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             result = Result.err(e, call.id());
         }
         return result;
@@ -358,17 +333,18 @@ public class GameController {
      * and ends the game
      * @author Ludovico, Lorenzo, Marco
      */
-    public void exitGame() {
+    public void exitGame(boolean endGame) {
         ArrayList<Cockade> completedObjectives = new ArrayList<>();
         ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
         addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
         addFirstToFinish(currentPlayer);
 
         // If no one is connected, don't do end game stuff
-        boolean isSomeoneAlive = currentlyConnectedPlayers() > 0;
         LobbyController lobbyController = LobbyController.getInstance();
         for(Player player : game.getPlayers()) {
-            addPersonalCockade(player);
+            if (endGame) {
+                addPersonalCockade(player);
+            }
             Optional<ClientInterface> client = clientManager.getClient(player.getName());
             client.get().setCallHandler(lobbyController::handleLobbySearch);
             if (client.get().getStatus() != ClientStatus.Disconnected) {
@@ -378,13 +354,13 @@ public class GameController {
             }
         }
 
-        if (isSomeoneAlive) {
+        if (endGame) {
             ScoreBoard scoreBoard = new ScoreBoard(game);
             for(Player player: game.getPlayers()){
-                try{
+                try {
                     Optional<ClientInterface> client = clientManager.getClient(player.getName());
                     client.get().sendEvent(ServerEvent.End(scoreBoard));
-                }catch (Exception e) {
+                } catch (Exception e) {
                     logger.warning("Client disconnected while exiting game, they won't receive the final ranking");
                 }
             }
@@ -442,34 +418,33 @@ public class GameController {
         return playersOrder;
     }
 
-    private void completePlayerTurn(Player player) {
+    private boolean completePlayerTurn(Player player) {
         ArrayList<Cockade> completedObjectives = new ArrayList<>();
         ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
         addCommonCockade(player, completedObjectives, newCommonObjectivesScores);
         addFirstToFinish(player);
         refillTable();
         saveGame();
-        Pair<Boolean,Optional<Player>> nextToPlay = nextNotDisconnected();
-        if(nextToPlay.getKey()) {
-            if(nextToPlay.getValue().isEmpty()){
-                startTimer();
-            }else{
-                Player nextPlayer = nextToPlay.getValue().get();
-                Update update = new Update(
-                        player.getName(),
-                        game.getTabletop().getSerializable(),
-                        player.getShelf().getSerializable(),
-                        nextPlayer.getName(),
-                        completedObjectives,
-                        newCommonObjectivesScores
-                );
-                ServerEvent event = ServerEvent.Update(update);
-                globalUpdate(event);
-                currentPlayer = nextPlayer;
-            }
-        }else{
-            exitGame();
+        Optional<Player> nextToPlay = nextNotDisconnected();
+        if (nextToPlay.isEmpty()) {  // Game is over
+            exitGame(true);
+            return true;
+        } else if (nextToPlay.get().equals(currentPlayer)) {  // Sole survivor or all disconnected, waiting for the checker thread to do stuffs
+            isPaused = true;  // Prevent cheating for sole survivor
+        } else {
+            Update update = new Update(
+                player.getName(),
+                game.getTabletop().getSerializable(),
+                player.getShelf().getSerializable(),
+                nextToPlay.get().getName(),
+                completedObjectives,
+                newCommonObjectivesScores
+            );
+            ServerEvent event = ServerEvent.Update(update);
+            globalUpdate(event);
+            currentPlayer = nextToPlay.get();
         }
+        return false;
     }
 
     /**
@@ -478,7 +453,7 @@ public class GameController {
      * @throws Exception
      * @author Marco, Lorenzo
      */
-    public GameInfo getGameInfo(Player player) throws Exception {
+    public GameInfo getGameInfo(Player player) {
         ArrayList<Card[][]> shelves = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> players = game.getPlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> commonObjectives = game.getCommonObjectives().stream().map(CommonObjective::getName).collect(Collectors.toCollection(ArrayList::new));
@@ -509,75 +484,78 @@ public class GameController {
         }
     }
 
-    /**
-     * Try to find the next available player or end the game if there are no more players connected
-     */
-    private void nextOrEndGame(){
-        Pair<Boolean, Optional<Player>> nextToPlay = nextNotDisconnected();
-        if(!nextToPlay.getKey() || nextToPlay.getValue().isEmpty()){
-            logger.info("Most of the player are disconnected, closing the game");
-            exitGame();
-        } else {
-            ArrayList<Cockade> completedObjectives = new ArrayList<>();
-            ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
-            addCommonCockade(currentPlayer, completedObjectives, newCommonObjectivesScores);
-            saveGame();
-            Player nextPlayer = nextToPlay.getValue().get();
-            logger.info("Changing player" + nextPlayer.getName());
-            Update update = new Update(
-                    currentPlayer.getName(),
-                    game.getTabletop().getSerializable(),
-                    currentPlayer.getShelf().getSerializable(),
-                    nextPlayer.getName(),
-                    completedObjectives,
-                    newCommonObjectivesScores
-            );
-            ServerEvent event = ServerEvent.Update(update);
-            globalUpdate(event);
-            currentPlayer = nextPlayer;
-        }
-    }
-
-    private int currentlyConnectedPlayers(){
-        int connectedPlayers = 0;
-        for(Player player: game.getPlayers()){
-            Optional<ClientInterface> client = clientManager.getClient(player.getName());
-            if(client.isPresent() && !client.get().isDisconnected()){
-                connectedPlayers++;
-            }
-        }
-        return connectedPlayers;
-    }
-    private void checkPlayerHealth() {
-        logger.info("Checking player health");
-        while(true){
-            Optional<ClientInterface> client = clientManager.getClient(currentPlayer.getName());
-            if(client.isEmpty() || client.get().isDisconnected()){
-                logger.info("Player " + currentPlayer.getName() + " disconnected while playing");
-                Pair<Boolean, Optional<Player>> nextToPlay = nextNotDisconnected();
-                if(!nextToPlay.getKey() || nextToPlay.getValue().isEmpty()){
-                    logger.info("All players disconnected, ending game");
-                    exitGame();
-                    return;
-                } else {
-                    completePlayerTurn(currentPlayer);
-                }
-            }
-            synchronized (timerLock) {
-                if(isTimerRunning && currentlyConnectedPlayers() > 1){
-                    isTimerRunning = false;
-                    timer.cancel();
-                    logger.info("Timer stopped trying new turn");
-                    completePlayerTurn(currentPlayer);
-                }
-            }
+    private void checkDisconnections() {
+        boolean wasPaused = false;
+        while (true) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(DISCONNECTION_CHECK_INTERVAL * 1000);
             } catch (InterruptedException e) {
-                logger.warning("Thread interrupted while checking player health");
-                e.printStackTrace();
                 return;
             }
+            int activePlayers = 0; 
+            boolean currentPlayerActive = false;
+            ArrayList<Player> players = game.getPlayers();
+            for (int i = 0; i < players.size(); i++) {
+                boolean wasDisconnected = playerDisconnected.get(i);
+                Optional<ClientInterface> client = clientManager.getClient(players.get(i).getName());
+                if (client.isPresent() && !client.get().isDisconnected()) {
+                    activePlayers++;
+                    if (wasDisconnected) {
+                        playerDisconnected.set(i, false);
+                        logger.info("Player " + players.get(i).getName() + " reconnected");
+                        ServerEvent event = ServerEvent.NewMessage(new Message("Server", String.format("%s reconnected", players.get(i).getName())));
+                        globalUpdate(event);
+                    }
+                    if (players.get(i).equals(currentPlayer)) {
+                        currentPlayerActive = true;
+                    }
+                } else {
+                    if (!wasDisconnected) {
+                        playerDisconnected.set(i, true);
+                        logger.info("Player " + players.get(i).getName() + " disconnected");
+                        ServerEvent event = ServerEvent.NewMessage(new Message("Server", String.format("%s disconnected", players.get(i).getName())));
+                        globalUpdate(event);
+                    }
+                    if (players.get(i).equals(currentPlayer)) {
+                        currentPlayerActive = false;
+                    }
+                }
+            }
+
+            if (isPaused) pauseCounter++;
+
+            if (activePlayers == 0) {
+                logger.info("All players disconnected, closing game");
+                exitGame(false);
+                return;
+            }
+            if (!currentPlayerActive) {
+                logger.info("Current player disconnected, skipping turn");
+                if (completePlayerTurn(currentPlayer)) {
+                    // Shouldn't happen
+                    return;
+                }
+            }
+            if (activePlayers == 1) {
+                if (!wasPaused) {
+                    isPaused = true;
+                    pauseCounter = 0;
+                    logger.info("Game paused");
+                    ServerEvent event = ServerEvent.NewMessage(new Message("Server", String.format("Game paused if no one reconnects in %d seconds the game will end", SOLE_SURVIVOR_TIMER)));
+                    globalUpdate(event);
+                } else if (pauseCounter >= SOLE_SURVIVOR_TIMER) {
+                    logger.info("Timeout expired, ending game");
+                    exitGame(true);
+                    return;
+                }
+            }
+            if (activePlayers > 1 && wasPaused) {
+                isPaused = false;
+                logger.info("Game resumed");
+                ServerEvent event = ServerEvent.NewMessage(new Message("Server", "Game resumed"));
+                globalUpdate(event);
+            }
+            wasPaused = isPaused;
         }
     }
 }
