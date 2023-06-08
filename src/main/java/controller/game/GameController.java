@@ -526,6 +526,11 @@ public class GameController {
                         if (wasDisconnected) {
                             playerDisconnected.set(i, false);
                             logger.info("Player " + players.get(i).getName() + " reconnected");
+                            try {
+                                lobby.addPlayer(players.get(i).getName());
+                            } catch (Exception e) {
+                                throw new RuntimeException("Broken reconnection in game");
+                            }
                             ServerEvent event = ServerEvent.Join(players.get(i).getName());
                             globalUpdate(event);
                         }
@@ -536,6 +541,11 @@ public class GameController {
                         if (!wasDisconnected) {
                             playerDisconnected.set(i, true);
                             logger.info("Player " + players.get(i).getName() + " disconnected");
+                            try {
+                                lobby.removePlayer(players.get(i).getName());
+                            } catch (Exception e) {
+                                throw new RuntimeException("Broken left in game");
+                            }
                             ServerEvent event = ServerEvent.Leave(players.get(i).getName());
                             globalUpdate(event);
                         }
