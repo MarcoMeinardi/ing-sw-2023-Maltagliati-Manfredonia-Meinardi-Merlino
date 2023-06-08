@@ -61,11 +61,6 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         }catch(Exception e) {
             logger.warning(e.getMessage());
         }
-        try{
-            this.join();
-        }catch(Exception e) {
-            logger.warning(e.getMessage());
-        }
     }
 
     private Result<Serializable> receive() throws Exception{
