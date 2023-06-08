@@ -14,6 +14,8 @@ import model.ScoreBoard;
 import model.Shelf;
 import model.TableTop;
 
+import static network.Server.SERVER_NAME;
+
 public class CLI {
 	private static CLI instance;
 	public static NetworkManagerInterface networkManager;
@@ -525,7 +527,11 @@ public class CLI {
 				Message message = (Message)event.get().getData();
 				if (!message.idSender().equals(username)) {
 					if (message.idReceiver().isEmpty()) {
-						System.out.format("[%s to everyone]: %s%n", message.idSender(), message.message());
+						if (message.idSender().equals(SERVER_NAME)) {
+							System.out.format("[%s]: %s%n", message.idSender(), message.message());
+						} else {
+							System.out.format("[%s to everyone]: %s%n", message.idSender(), message.message());
+						}
 					} else {
 						System.out.format("[%s to you]: %s%n", message.idSender(), message.message());
 					}
@@ -546,4 +552,3 @@ public class CLI {
 		return state;
 	}
 }
-
