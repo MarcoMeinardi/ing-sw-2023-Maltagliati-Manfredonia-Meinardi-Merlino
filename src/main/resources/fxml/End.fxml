@@ -3,6 +3,7 @@
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
@@ -18,34 +19,42 @@
                 <Rectangle2D height="760.0" width="1140.0" />
             </viewport>
         </ImageView>
-      <Label fx:id="messageLabel1" alignment="CENTER" layoutY="80.0" prefHeight="80.0" prefWidth="1140.0">
+      <Label fx:id="messageLabel1" alignment="CENTER" layoutY="80.0" prefHeight="80.0" prefWidth="300.0">
          <font>
-            <Font name="Arial" size="20.0" />
+            <Font name="Arial" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="messageLabel2" alignment="CENTER" layoutY="200.0" prefHeight="80.0" prefWidth="1140.0">
+      <Label fx:id="messageLabel2" alignment="CENTER" layoutY="200.0" prefHeight="80.0" prefWidth="300.0">
          <font>
-            <Font name="Arial" size="20.0" />
+            <Font name="Arial" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="titleLabel" alignment="CENTER" layoutY="560.0" prefHeight="80.0" prefWidth="1140.0">
+      <Label fx:id="titleLabel" alignment="CENTER" layoutY="560.0" prefHeight="80.0" prefWidth="1140.0" text="asdd">
          <font>
-            <Font name="Arial" size="20.0" />
+            <Font name="Arial" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="messageLabel3" alignment="CENTER" layoutY="320.0" prefHeight="80.0" prefWidth="1140.0">
+      <Label fx:id="messageLabel3" alignment="CENTER" layoutY="320.0" prefHeight="80.0" prefWidth="300.0">
          <font>
-            <Font name="Arial" size="20.0" />
+            <Font name="Arial" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="messageLabel4" alignment="CENTER" layoutY="440.0" prefHeight="80.0" prefWidth="1140.0">
+      <Label fx:id="messageLabel4" alignment="CENTER" layoutY="440.0" prefHeight="80.0" prefWidth="300.0">
          <font>
-            <Font name="Arial" size="20.0" />
+            <Font name="Arial" size="18.0" />
          </font>
       </Label>
       <Button fx:id="exitButton" layoutX="510.0" layoutY="671.0" mnemonicParsing="false" onAction="#goToLobbies" prefHeight="60.0" prefWidth="120.0" text="Back to lobbies">
          <font>
             <Font name="Arial" size="12.0" />
          </font></Button>
+      <ListView fx:id="cockadesList1" layoutX="370.0" layoutY="60.0" prefHeight="110.0" prefWidth="400.0" />
+      <ListView fx:id="cockadesList2" layoutX="370.0" layoutY="180.0" prefHeight="110.0" prefWidth="400.0" />
+      <ListView fx:id="cockadesList3" layoutX="370.0" layoutY="300.0" prefHeight="110.0" prefWidth="400.0" />
+      <ListView fx:id="cockadesList4" layoutX="370.0" layoutY="420.0" prefHeight="110.0" prefWidth="400.0" />
+      <ImageView fx:id="cockadeImage1" fitHeight="100.0" fitWidth="100.0" layoutX="920.0" layoutY="65.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="cockadeImage2" fitHeight="100.0" fitWidth="100.0" layoutX="920.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="cockadeImage3" fitHeight="100.0" fitWidth="100.0" layoutX="920.0" layoutY="305.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="cockadeImage4" fitHeight="100.0" fitWidth="100.0" layoutX="920.0" layoutY="425.0" pickOnBounds="true" preserveRatio="true" />
     </children>
 </Pane>

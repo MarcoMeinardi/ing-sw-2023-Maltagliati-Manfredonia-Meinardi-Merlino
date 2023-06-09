@@ -10,8 +10,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
+import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import model.Cockade;
 import model.Score;
 import model.ScoreBoard;
 
@@ -19,6 +21,7 @@ import model.ScoreBoard;
 import java.io.IOException;
 import java.net.URL;
 
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
@@ -42,6 +45,14 @@ public class EndController implements Initializable {
     private Label messageLabel4;
     @FXML
     private Label titleLabel;
+    @FXML
+    private ListView cockadesList1;
+    @FXML
+    private ListView cockadesList2;
+    @FXML
+    private ListView cockadesList3;
+    @FXML
+    private ListView cockadesList4;
     @FXML
     private Button exitButton;
     @FXML
@@ -77,18 +88,35 @@ public class EndController implements Initializable {
     private void showScoreBoard() {
         int position = 1;
         String your_title = "Why is my life like this";
+        ArrayList<Cockade> playerCockades = new ArrayList<>();
         for (Score score : scoreBoard) {
             if(position == 1){
                 messageLabel1.setText(" [" + position + "] " + score.username() + ":" + score.score() +" points");
+                playerCockades = scoreBoard.getCockades(score.username());
+                for(Cockade cockade : playerCockades){
+                    cockadesList1.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                }
             }
             else if(position == 2){
                 messageLabel2.setText(" [" + position + "] " + score.username() + ":" + score.score() +" points");
+                playerCockades = scoreBoard.getCockades(score.username());
+                for(Cockade cockade : playerCockades){
+                    cockadesList2.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                }
             }
             else if(position == 3){
                 messageLabel3.setText(" [" + position + "] " + score.username() + ":" + score.score() +" points");
+                playerCockades = scoreBoard.getCockades(score.username());
+                for(Cockade cockade : playerCockades){
+                    cockadesList3.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                }
             }
             else if(position == 4){
                 messageLabel4.setText(" [" + position + "] " + score.username() + ":" + score.score() +" points");
+                playerCockades = scoreBoard.getCockades(score.username());
+                for(Cockade cockade : playerCockades){
+                    cockadesList4.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                }
             }
             if (score.username().equals(username)) {
                 your_title = score.title();

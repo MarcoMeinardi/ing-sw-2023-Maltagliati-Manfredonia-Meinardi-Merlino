@@ -5,10 +5,7 @@ import network.ClientManagerInterface;
 import network.GlobalClientManager;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
 
 public class ScoreBoard implements Serializable, Iterable<Score> {
     private enum VictoryType{
@@ -18,6 +15,7 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
     }
 
     private final ArrayList<Score> scores;
+    private final Map<String, ArrayList<Cockade>> cockades;
 	private final String winner;
     private final String mostCats;
     private final String mostBooks;
@@ -31,6 +29,7 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
 
     public ScoreBoard(Game game) {
         scores = new ArrayList<>();
+        cockades = new HashMap<>();
         ArrayList<Player> players = game.finalRanks();
         winner = players.get(0).getName();
         mostCats = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Gatto))).get().getName();
@@ -52,6 +51,7 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
         for (Player player : players) {
             Score score = createScore(player);
             scores.add(score);
+            cockades.put(player.getName(), player.getCockades());
         }
     }
 
@@ -90,6 +90,7 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
             return VictoryType.TOO_CLOSE;
         }
     }
+
     private Score createScore(Player player) {
         String playerName = player.getName();
         String title = "";
@@ -130,4 +131,9 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
         }
         return new Score(player.getName(), player.getPoints(), title);
     }
+
+    public ArrayList<Cockade> getCockades(String playerName) {
+        return cockades.get(playerName);
+    }
+
 }

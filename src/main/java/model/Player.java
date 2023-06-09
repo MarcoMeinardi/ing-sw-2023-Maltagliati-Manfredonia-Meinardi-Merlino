@@ -76,4 +76,5 @@ public class Player {
 		}
 		return ((Player)obj).getName().equals(name);
 	}
+
 }
