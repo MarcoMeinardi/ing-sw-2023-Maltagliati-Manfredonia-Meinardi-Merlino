@@ -164,7 +164,6 @@ public class EndController implements Initializable {
     private void addChangeOfImage(ListView cockadesList, int player){
         ObservableList<String> items = cockadesList.getItems();
 
-        // Set the event handler for the ListView
         cockadesList.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> handleCockadeSelection(player, newValue.toString())
         );
@@ -174,7 +173,6 @@ public class EndController implements Initializable {
     private void handleCockadeSelection(int player, String selectedCockade){
         Pattern pattern = Pattern.compile("\\d+");
 
-        // Find the last number in the string
         Matcher matcher = pattern.matcher(selectedCockade);
         String lastNumber = null;
         while (matcher.find()) {
