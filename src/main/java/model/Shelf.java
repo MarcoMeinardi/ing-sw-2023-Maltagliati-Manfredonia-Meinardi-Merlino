@@ -179,7 +179,7 @@ public class Shelf {
 	 */
 
 	public boolean isFull() {
-		for (int x = 0; x < ROWS; x++) {
+		for (int x = 0; x < COLUMNS; x++) {
 			if (slots[ROWS - 1][x].isEmpty()) {
 				return false;
 			}

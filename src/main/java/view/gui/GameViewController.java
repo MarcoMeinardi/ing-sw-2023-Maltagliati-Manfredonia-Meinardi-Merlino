@@ -368,14 +368,25 @@ public class GameViewController implements Initializable {
         }
 
         try {
-            Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
-            if (result.isErr()) {
-                System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
-                messageLabel.setText("[ERROR] " + result.getException().orElse("Cannot select cards"));
-            } else {
-                changeLabel(pointsLabel, "");
-                return;
-            }
+            final Result[] result = {null};
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        result[0] = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
+                        if (result[0].isErr()) {
+                            System.out.println("[ERROR] " + result[0].getException().orElse("Cannot select cards"));
+                            messageLabel.setText("[ERROR] " + result[0].getException().orElse("Cannot select cards"));
+                        } else {
+                            changeLabel(pointsLabel, "");
+                            return;
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
         }
