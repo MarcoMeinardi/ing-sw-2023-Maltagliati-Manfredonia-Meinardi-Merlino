@@ -102,6 +102,21 @@ public class EndController implements Initializable {
         int position = 1;
         String your_title = "Why is my life like this";
         ArrayList<Cockade> playerCockades = new ArrayList<>();
+
+        if(scoreBoard.size() == 2){
+            messageLabel3.setVisible(false);
+            messageLabel4.setVisible(false);
+            cockadesList3.setVisible(false);
+            cockadesList4.setVisible(false);
+            cockadeImage3.setVisible(false);
+            cockadeImage4.setVisible(false);
+        }
+        else if(scoreBoard.size() == 3){
+            messageLabel4.setVisible(false);
+            cockadesList4.setVisible(false);
+            cockadeImage4.setVisible(false);
+        }
+
         for (Score score : scoreBoard) {
             if(position == 1){
                 messageLabel1.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
@@ -170,63 +185,55 @@ public class EndController implements Initializable {
             return;
         }
 
-        if(!selectedCockade.contains("2") ||
-                !selectedCockade.contains("4") ||
-                    !selectedCockade.contains("6") ||
-                        !selectedCockade.contains("8") ||
-                            !selectedCockade.contains("1")){
-            if(player == 1){
-                cockadeImage1.setImage(null);
-            }
-            else if(player == 2){
-                cockadeImage2.setImage(null);
-            }
-            else if(player == 3){
-                cockadeImage3.setImage(null);
-            }
-            else if(player == 4){
-                cockadeImage4.setImage(null);
-            }
-            return;
-        }
+        if(lastNumber.contains("2") ||
+                lastNumber.contains("4") ||
+                    lastNumber.contains("6") ||
+                        lastNumber.contains("8") ||
+                            (lastNumber.contains("1") && selectedCockade.contains("finish"))){
 
-        if (selectedCockade == "1"){
-            if(player == 1){
-                cockadeImage1.setImage(null);
-                cockadeImage1.setImage(new Image("/img/scoring tokens/end game.jpg"));
+            if (lastNumber.equals("1")){
+                if(player == 1){
+                    cockadeImage1.setImage(new Image("/img/scoring tokens/end game.jpg"));
+                }
+                else if(player == 2){
+                    cockadeImage2.setImage(new Image("/img/scoring tokens/end game.jpg"));
+                }
+                else if(player == 3){
+                    cockadeImage3.setImage(new Image("/img/scoring tokens/end game.jpg"));
+                }
+                else if(player == 4){
+                    cockadeImage4.setImage(new Image("/img/scoring tokens/end game.jpg"));
+                }
             }
-            else if(player == 2){
-                cockadeImage2.setImage(null);
-                cockadeImage2.setImage(new Image("/img/scoring tokens/end game.jpg"));
-            }
-            else if(player == 3){
-                cockadeImage3.setImage(null);
-                cockadeImage3.setImage(new Image("/img/scoring tokens/end game.jpg"));
-            }
-            else if(player == 4){
-                cockadeImage4.setImage(null);
-                cockadeImage4.setImage(new Image("/img/scoring tokens/end game.jpg"));
+            else{
+                if(player == 1){
+                    cockadeImage1.setImage(new Image("/img/scoring tokens/scoring_" + lastNumber + ".jpg"));
+                }
+                else if(player == 2){
+                    cockadeImage2.setImage(new Image("/img/scoring tokens/scoring_" +  lastNumber + ".jpg"));
+                }
+                else if(player == 3){
+                    cockadeImage3.setImage(new Image("/img/scoring tokens/scoring_" + lastNumber + ".jpg"));
+                }
+                else if(player == 4){
+                    cockadeImage4.setImage(new Image("/img/scoring tokens/scoring_" +  lastNumber + ".jpg"));
+                }
             }
         }
         else{
             if(player == 1){
-                cockadeImage1.setImage(null);
-                cockadeImage1.setImage(new Image("/img/scoring tokens/scoring_" + selectedCockade + ".jpg"));
+                cockadeImage1.setImage(new Image("/img/scoring tokens/transparent.png"));
             }
             else if(player == 2){
-                cockadeImage2.setImage(null);
-                cockadeImage2.setImage(new Image("/img/scoring tokens/scoring_" +  selectedCockade + ".jpg"));
+                cockadeImage2.setImage(new Image("/img/scoring tokens/transparent.png"));
             }
             else if(player == 3){
-                cockadeImage3.setImage(null);
-                cockadeImage3.setImage(new Image("/img/scoring tokens/scoring_" + selectedCockade + ".jpg"));
+                cockadeImage3.setImage(new Image("/img/scoring tokens/transparent.png"));
             }
             else if(player == 4){
-                cockadeImage4.setImage(null);
-                cockadeImage4.setImage(new Image("/img/scoring tokens/scoring_" +  selectedCockade + ".jpg"));
+                cockadeImage4.setImage(new Image("/img/scoring tokens/transparent.png"));
             }
         }
-
     }
 
 
