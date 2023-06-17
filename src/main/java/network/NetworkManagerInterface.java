@@ -10,6 +10,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
+/**
+ * Interface for the network manager object that handles all communication with the server
+ */
 public interface NetworkManagerInterface {
     public static NetworkManagerInterface getInstance(){
         throw new RuntimeException("Not implemented");
