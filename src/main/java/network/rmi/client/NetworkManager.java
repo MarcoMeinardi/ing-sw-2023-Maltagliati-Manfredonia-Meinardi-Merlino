@@ -2,7 +2,6 @@ package network.rmi.client;
 
 import controller.lobby.Lobby;
 import network.*;
-import network.errors.ClientAlreadyConnectedExeption;
 import network.errors.ClientNeverConnectedException;
 import network.errors.ClientNotIdentifiedException;
 import network.parameters.CardSelect;
@@ -49,12 +48,20 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         this.start();
     }
 
+    /**
+     * Set the connected status of the client.
+     * @param connected the new status.
+     */
     private void setConnected(boolean connected){
         synchronized (connectedLock){
             this.connected = connected;
         }
     }
 
+    /**
+     * Method to get the instance of the class.
+     * @return the instance of the class.
+     */
     public static NetworkManagerInterface getInstance(){
         if(instance == null){
             instance = new NetworkManager();
@@ -62,12 +69,19 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         return instance;
     }
 
+    /**
+     * Set ping time to now.
+     */
     private void setLastMessage(){
         synchronized (lastMessageLock){
             this.pingTime = LocalDateTime.now();
         }
     }
 
+    /**
+     * Get the elapsed time since the last message.
+     * @return the elapsed time in seconds.
+     */
     private long getElapsedTimeSinceLastMessage(){
         synchronized (lastMessageLock){
             return Duration.between(pingTime, LocalDateTime.now()).getSeconds();
@@ -202,7 +216,12 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         return handleService(new Function(message, Service.GameChatSend));
     }
 
-    public Function handleService(Function fn){
+    /**
+     * Wrapper to handle the service call.
+     * @param fn the function to handle.
+     * @return the function with the result.
+     */
+    private Function handleService(Function fn){
         Result<Serializable> result;
         try{
             if(clientService.isEmpty()){

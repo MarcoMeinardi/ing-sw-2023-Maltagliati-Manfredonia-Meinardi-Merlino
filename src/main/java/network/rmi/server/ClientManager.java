@@ -4,14 +4,12 @@ import controller.game.GameController;
 import controller.lobby.LobbyController;
 import model.Player;
 import network.*;
-import network.errors.ClientAlreadyConnectedExeption;
+import network.errors.ClientAlreadyConnectedException;
 import network.errors.InvalidUsernameException;
-import network.parameters.GameInfo;
 import network.parameters.Login;
 import network.rmi.LoginService;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -22,6 +20,9 @@ import java.util.logging.Logger;
 
 import static network.Server.SERVER_NAME;
 
+/**
+ * Class to manage the clients connected to the server via rmi.
+ */
 public class ClientManager extends Thread implements ClientManagerInterface, LoginService {
     HashMap <String, Client> clients;
     public static int port = 8001;
@@ -33,6 +34,10 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
     private static final Object instanceLock = new Object();
     private static final Logger logger = Logger.getLogger(ClientManager.class.getName());
 
+    /**
+     * Constructor for the class.
+     * @throws Exception if the registry cannot be created.
+     */
     private ClientManager() throws Exception{
         clients = new HashMap<>();
         availablePortLock = new Object();
@@ -42,6 +47,11 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
         registry.rebind("LoginService", stub);
     }
 
+    /**
+     * Method to get the instance of the class.
+     * @return the instance of the class.
+     * @throws Exception if the instance cannot be created.
+     */
     public static ClientManagerInterface getInstance() throws Exception{
         synchronized (instanceLock) {
             if (instance == null) {
@@ -83,7 +93,7 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
         }
         if(GlobalClientManager.getInstance().isUsernameTaken(username)){
             if(!clients.containsKey(username) || !clients.get(username).isDisconnected()){
-                return Result.err(new ClientAlreadyConnectedExeption(),callId);
+                return Result.err(new ClientAlreadyConnectedException(),callId);
             }
             wasConnected = true;
         }

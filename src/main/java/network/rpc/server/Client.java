@@ -1,21 +1,22 @@
 package network.rpc.server;
 
 import network.*;
-import network.errors.ClientAlreadyConnectedExeption;
+import network.errors.ClientAlreadyConnectedException;
 import network.errors.ClientNotIdentifiedException;
 import network.errors.DisconnectedClientException;
-
+import network.errors.ClientAlreadyIdentifiedException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
+/**
+ * Class to represent a client connected to the server via socket.
+ */
 public class Client extends Thread implements ClientInterface {
 	private final Socket socket;
 	private final ObjectInputStream incomingMessages;
@@ -28,6 +29,12 @@ public class Client extends Thread implements ClientInterface {
 	private String username = null;
 	protected static final int TIMEOUT = 5;
 
+	/**
+	 * Constructor of the class.
+	 * @param socket Socket of the client.
+	 * @param handler Function to handle the calls received from the client.
+	 * @throws Exception If an error occurs.
+	 */
 	public Client(Socket socket, BiFunction<Call<Serializable>,ClientInterface,Result<Serializable>> handler) throws Exception {
 		this.socket = socket;
 		this.incomingMessages = new ObjectInputStream(socket.getInputStream());
@@ -36,23 +43,31 @@ public class Client extends Thread implements ClientInterface {
 		this.statusHandler = new ClientStatusHandler();
 	}
 
+	@Override
 	public ClientStatus getStatus() {
 		return statusHandler.getStatus();
 	}
 
+	@Override
 	public void setStatus(ClientStatus status) {
 		statusHandler.setStatus(status);
 	}
 
+	@Override
 	public void setLastValidStatus(ClientStatus status) {
 		statusHandler.setLastValidStatus(status);
 	}
 
+	/**
+	 * Inherit the status and the call handler from another client.
+	 * @param old_client The client to inherit from.
+	 */
 	public void from(Client old_client){
 		setCallHandler(old_client.getCallHandler());
 		setStatus(old_client.statusHandler.getLastValidStatus());
 	}
 
+	@Override
 	public <T extends Serializable> void sendEvent(ServerEvent<T> message){
 		synchronized (this.outcomingMessages){
 			try{
@@ -66,6 +81,12 @@ public class Client extends Thread implements ClientInterface {
 		}
 	}
 
+	/**
+	 * Send a message to the client in response to a call.
+	 * @param message The message to send.
+	 * @param <T> The type of the message.
+	 * @throws DisconnectedClientException If the client is disconnected.
+	 */
 	private <T extends Serializable> void send(Result<T> message) throws DisconnectedClientException {
 		if(getStatus() == ClientStatus.Disconnected){
 			throw new DisconnectedClientException();
@@ -82,6 +103,12 @@ public class Client extends Thread implements ClientInterface {
 		}
 	}
 
+	/**
+	 * Wait for a call from the client.
+	 * @return The call received.
+	 * @param <T> The type call parameters.
+	 * @throws DisconnectedClientException If the client is disconnected.
+	 */
 	private <T extends Serializable> Call<T> receive() throws DisconnectedClientException{
 		if(getStatus() == ClientStatus.Disconnected){
 			throw new DisconnectedClientException();
@@ -100,6 +127,9 @@ public class Client extends Thread implements ClientInterface {
 		}
 	}
 
+	/**
+	 * disconnect the client and close the socket.
+	 */
 	public void disconnect(){
 		setStatus(ClientStatus.Disconnected);
 		synchronized (socket){
@@ -111,10 +141,12 @@ public class Client extends Thread implements ClientInterface {
 		}
 	}
 
+	@Override
 	public boolean isDisconnected(){
 		return getStatus() == ClientStatus.Disconnected;
 	}
-	
+
+	@Override
 	public boolean checkPing() {
 		if(getStatus() == ClientStatus.Disconnected){
 			return false;
@@ -148,19 +180,26 @@ public class Client extends Thread implements ClientInterface {
 		}
 	}
 
+	@Override
 	public void setCallHandler(BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> handler){
 		synchronized (this.handlerLock) {
 			this.handler = handler;
 		}
 	}
 
-	protected void setUsername(String username) throws ClientAlreadyConnectedExeption {
+	/**
+	 * Set the username of the client.
+	 * @param username The username to set.
+	 * @throws ClientAlreadyIdentifiedException If the client is already connected and identified.
+	 */
+	protected void setUsername(String username) throws ClientAlreadyIdentifiedException {
 		if(this.username != null){
-			throw new ClientAlreadyConnectedExeption();
+			throw new ClientAlreadyIdentifiedException();
 		}
 		this.username = username;
 	}
 
+	@Override
 	public String getUsername() throws ClientNotIdentifiedException {
 		if(this.username == null){
 			throw new ClientNotIdentifiedException();
@@ -168,12 +207,14 @@ public class Client extends Thread implements ClientInterface {
 		return this.username;
 	}
 
+	@Override
 	public LocalDateTime getLastMessageTime(){
 		synchronized (lastMessageTimeLock){
 			return lastMessageTime;
 		}
 	}
 
+	@Override
 	public BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> getCallHandler() {
 		synchronized (this.handlerLock) {
 			return handler;

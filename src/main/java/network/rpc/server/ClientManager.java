@@ -3,7 +3,7 @@ package network.rpc.server;
 import controller.lobby.LobbyController;
 import controller.game.GameController;
 import network.*;
-import network.errors.ClientAlreadyConnectedExeption;
+import network.errors.ClientAlreadyConnectedException;
 import network.errors.ClientNotIdentifiedException;
 import network.errors.InvalidUsernameException;
 import network.parameters.Login;
@@ -97,7 +97,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
             ClientManagerInterface globalManager = GlobalClientManager.getInstance();
             if(globalManager.isUsernameTaken(username)){
                 if(!identifiedClients.containsKey(username) || !identifiedClients.get(username).isDisconnected()) {
-                    throw new ClientAlreadyConnectedExeption();
+                    throw new ClientAlreadyConnectedException();
                 }
             }
             if(identifiedClients.containsKey(username)){
