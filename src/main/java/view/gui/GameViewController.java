@@ -22,10 +22,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.*;
-import network.ClientStatus;
-import network.NetworkManagerInterface;
-import network.Result;
-import network.ServerEvent;
+import network.*;
 import network.parameters.CardSelect;
 import network.parameters.Message;
 import network.parameters.Update;
@@ -76,8 +73,6 @@ public class GameViewController implements Initializable {
     private Label messageLabel;
     @FXML
     private TextField columnInput;
-    @FXML
-    private Label pointsLabel;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
     public static Lobby lobby;
@@ -123,6 +118,12 @@ public class GameViewController implements Initializable {
         startLobby();
         fillScene(gameData.getTableTop());
         fillShelf(gameData.getMyShelf());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                sendMessageButton.setDefaultButton(true);
+            }
+        });
         serverThread = new Thread(() -> {
             while (state != ClientStatus.Disconnected) {
                 synchronized (networkManager) {
@@ -336,6 +337,11 @@ public class GameViewController implements Initializable {
         String column = columnInput.getText();
         String columnHelper = columnInput.getText();
 
+        if(!column.matches("\\d+")){
+            messageLabel.setText("Select a valid column!");
+            return;
+        }
+
         if(selectedImages.size() == 0){
             messageLabel.setText("Select cards!");
             return;
@@ -378,7 +384,6 @@ public class GameViewController implements Initializable {
                             System.out.println("[ERROR] " + result[0].getException().orElse("Cannot select cards"));
                             messageLabel.setText("[ERROR] " + result[0].getException().orElse("Cannot select cards"));
                         } else {
-                            changeLabel(pointsLabel, "");
                             return;
                         }
                     } catch (Exception e) {
@@ -386,7 +391,6 @@ public class GameViewController implements Initializable {
                     }
                 }
             });
-
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
         }
@@ -518,6 +522,15 @@ public class GameViewController implements Initializable {
         if(minute.length() == 1){
             minute = "0" + minute;
         }
+
+        if(message.idSender().equals(Server.SERVER_NAME)){
+            chat.getItems().add(String.format("[%s:%s] %s ", hour, minute, "From server: " + message.message()));
+            if(chat.getItems().size() != 3){
+                chat.scrollTo(chat.getItems().size()-1);
+            }
+            return;
+        }
+
         if (message.idReceiver().isEmpty()) {
             chat.getItems().add(String.format("[%s:%s] %s to everyone: %s", hour, minute, message.idSender(), message.message()));
         } else {
@@ -680,11 +693,20 @@ public class GameViewController implements Initializable {
                 for (Cockade commonObjective : update.completedObjectives()) {
                     if (update.idPlayer().equals(username)) {
                         System.out.format("[*] You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
-                        changeLabel(pointsLabel,"You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points");
-
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                addMessageToChat(new Message(Server.SERVER_NAME,"You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points"));
+                            }
+                        });
                     } else {
                         System.out.format("[*] %s completed %s getting %d points%n", update.idPlayer(), commonObjective.name(), commonObjective.points());
-                        changeLabel(pointsLabel, update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points");
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                addMessageToChat(new Message(Server.SERVER_NAME, update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points"));
+                            }
+                        });
                     }
                 }
                 gameData.update(update);
@@ -721,17 +743,26 @@ public class GameViewController implements Initializable {
                 String joinedPlayer = (String)event.get().getData();
                 try {
                     lobby.addPlayer(joinedPlayer);
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
+                        }
+                    });
                 } catch (Exception e) {  // Cannot happen
                     throw new RuntimeException("Added already existing player to lobby");
                 }
-                System.out.println("[*] " + joinedPlayer + " joined the lobby");
-                changeLabel(messageLabel, joinedPlayer + " joined the lobby");
             }
             case Leave -> {
                 String leftPlayer = (String)event.get().getData();
                 try {
                     lobby.removePlayer(leftPlayer);
-                    changeLabel(messageLabel, leftPlayer + " left the lobby");
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
+                        }
+                    });
 
                 } catch (Exception e) {  // Cannot happen
                     throw new RuntimeException("Removed non existing player from lobby");

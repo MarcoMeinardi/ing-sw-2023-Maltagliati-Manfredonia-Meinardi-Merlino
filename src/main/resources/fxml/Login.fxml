@@ -37,6 +37,11 @@
             <Font name="Arial" size="26.0" />
          </font>
       </TextField>
+      <TextField fx:id="selectedIp" alignment="CENTER" layoutX="296.0" layoutY="419.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="Ip" style="-fx-background-color: white; -fx-opacity: 80%;">
+         <font>
+            <Font name="Arial" size="26.0" />
+         </font>
+      </TextField>
       <RadioButton fx:id="RMIButton" layoutX="74.0" layoutY="648.0" mnemonicParsing="false" selected="true" text="RMI">
          <font>
             <Font name="Arial" size="26.0" />
@@ -55,10 +60,5 @@
             <Font size="39.0" />
          </font>
       </Label>
-      <TextField fx:id="selectedIp" alignment="CENTER" layoutX="296.0" layoutY="419.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="550.0" promptText="Ip" style="-fx-background-color: white; -fx-opacity: 80%;">
-         <font>
-            <Font name="Arial" size="26.0" />
-         </font>
-      </TextField>
    </children>
 </Pane>

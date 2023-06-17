@@ -17,10 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import network.ClientStatus;
-import network.NetworkManagerInterface;
-import network.Result;
-import network.ServerEvent;
+import network.*;
 import network.parameters.GameInfo;
 import network.parameters.Message;
 
@@ -66,6 +63,7 @@ public class LobbyViewController implements Initializable{
     private Stage stage;
     private Thread serverThread;
     public static GameInfo gameInfo;
+    private boolean alreadyShowedHostMessage = false;
 
 
     /**
@@ -157,11 +155,16 @@ public class LobbyViewController implements Initializable{
      */
 
     public void showStart(){
-        if(username.equals(lobby.getPlayers().get(0))) {
+        if(lobby.isHost(username)){
             startButton.setVisible(true);
             loadButton.setVisible(true);
+            if(!alreadyShowedHostMessage){
+                addMessageToChat(new Message(Server.SERVER_NAME, "You are the owner of the lobby, you can start the game when you want!"));
+                alreadyShowedHostMessage = true;
+            }
         }
         else {
+            alreadyShowedHostMessage = false;
             startButton.setVisible(false);
             loadButton.setVisible(false);
         }
@@ -359,6 +362,15 @@ public class LobbyViewController implements Initializable{
         if(minute.length() == 1){
             minute = "0" + minute;
         }
+
+        if(message.idSender().equals(Server.SERVER_NAME)){
+            chat.getItems().add(String.format("[%s:%s] %s ", hour, minute, "From server: " + message.message()));
+            if(chat.getItems().size() != 3){
+                chat.scrollTo(chat.getItems().size()-1);
+            }
+            return;
+        }
+
         if (message.idReceiver().isEmpty()) {
             chat.getItems().add(String.format("[%s:%s] %s to everyone: %s", hour, minute, message.idSender(), message.message()));
         } else {
@@ -436,6 +448,7 @@ public class LobbyViewController implements Initializable{
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
+                            addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
                             updateLobby();
                             showStart();
                         }
@@ -452,6 +465,7 @@ public class LobbyViewController implements Initializable{
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
+                            addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
                             updateLobby();
                             showStart();
                         }

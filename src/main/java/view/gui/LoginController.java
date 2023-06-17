@@ -20,6 +20,7 @@ import network.Result;
 import network.Server;
 import network.parameters.GameInfo;
 import network.parameters.Login;
+import network.parameters.Message;
 
 import java.io.IOException;
 
@@ -68,7 +69,13 @@ public class LoginController implements Initializable {
      * @author Ludovico
      */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
-        loginButton.setDefaultButton(true);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                loginButton.setDefaultButton(true);
+            }
+        });
+
     }
 
     /**
