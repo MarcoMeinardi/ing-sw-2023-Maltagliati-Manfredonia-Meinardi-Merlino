@@ -23,7 +23,7 @@ public class CLI {
 
 	private ClientStatus state;
 	private Lobby lobby;
-	private boolean hasConnected;
+	private boolean needQuit;
 
 	private String ip;
 	private int port;
@@ -41,10 +41,9 @@ public class CLI {
 	private CLI() {
 		IO = new Utils();
 		state = ClientStatus.Disconnected;
-		hasConnected = false;
+		needQuit = false;
 		doPrint = true;
 		gameStarted = false;
-
 	}
 	public static CLI getInstance() {
 		if(instance == null){
@@ -55,7 +54,7 @@ public class CLI {
 
 	public void run() {
 		printWelcome();
-		while (state != ClientStatus.Disconnected || !hasConnected) {
+		while (!needQuit) {
 			switch (state) {
 				case Disconnected -> state = connect();
 				case Idle -> state = login();
@@ -76,7 +75,6 @@ public class CLI {
 
 		try {
 			networkManager.connect(new Server(this.ip, this.port));
-			hasConnected = true;
 			return ClientStatus.Idle;
 		} catch (Exception e) {
 			System.out.println("[ERROR] " + e.getMessage());
@@ -95,9 +93,6 @@ public class CLI {
 				networkManager = network.rmi.client.NetworkManager.getInstance();
 			}
 		}
-		// this.ip = "localhost";
-		// this.port = 8000;
-		// networkManager = network.rpc.client.NetworkManager.getInstance();
 		IO.setNetworkManager(networkManager);
 	}
 
@@ -173,6 +168,7 @@ public class CLI {
 				case QUIT -> {
 					networkManager.disconnect();
 					networkManager.join();
+					needQuit = true;
 					System.out.println("[*] Bye bye!");
 					return ClientStatus.Disconnected;
 				}
@@ -559,6 +555,12 @@ public class CLI {
 			case ExitGame -> {
 				System.out.println("[*] Game has been stopped");
 				return ClientStatus.InLobbySearch;
+			}
+			case ServerDisconnect -> {
+				System.out.println("[WARNING] Server disconnected");
+				networkManager.disconnect();
+				doPrint = true;
+				return ClientStatus.Disconnected;
 			}
 			case Pause -> {
 				if (!isPaused) {
