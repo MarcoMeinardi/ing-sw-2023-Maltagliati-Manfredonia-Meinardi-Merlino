@@ -101,7 +101,6 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
         if(wasConnected && game.isPresent()){
             GameController gameController = game.get();
             Player player = gameController.getPlayer(username);
-            gameController.getLobby().addPlayer(username);
             return Result.ok(game.get().getGameInfo(player), callId);
         }else {
             synchronized (availablePortLock) {
