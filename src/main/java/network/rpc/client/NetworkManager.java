@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class NetworkManager extends Thread implements NetworkManagerInterface {
+public class NetworkManager implements NetworkManagerInterface {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -30,6 +30,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     private Function<LocalDateTime,Boolean> lastPing = null;
     private static final int PING_TIMEOUT = 1;
     private Thread checkPingThread;
+    private Thread mainThread;
     private NetworkManager(){}
 
     /**
@@ -52,7 +53,8 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         this.in = new ObjectInputStream(socket.getInputStream());
         testConnection();
         setConnected(true);
-        this.start();
+        mainThread = new Thread(this::run);
+        mainThread.start();
         logger.info("Connected to server");
     }
 
@@ -284,6 +286,11 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         callQueue.put(login.id(), login);
         login.call(out);
         return login;
+    }
+
+    @Override
+    public void join() throws Exception {
+        mainThread.join();
     }
 
     @Override
