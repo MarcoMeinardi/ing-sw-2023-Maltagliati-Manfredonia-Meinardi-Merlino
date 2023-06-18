@@ -36,9 +36,7 @@ public class NetworkManager implements NetworkManagerInterface {
     private final Object lastMessageLock = new Object();
     private final int PING_TIMEOUT = 1;
     private Server serverInfo;
-
     private Thread mainThread;
-
     private final Queue<ServerEvent> eventQueue = new LinkedList<>();
     @Override
     public void connect(Server server) throws Exception {
