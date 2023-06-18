@@ -129,7 +129,7 @@ public class LoginController implements Initializable {
                     state = ClientStatus.Idle;
                 }catch (Exception e) {
                     errorLabel.setText("Connection failed");
-                    System.out.println("[ERROR] " + e.getMessage());
+                    System.out.println("[ERROR] " + e.toString());
                     state = ClientStatus.Disconnected;
                     return;
                 }

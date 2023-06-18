@@ -97,3 +97,4 @@ save-states/
 # Chino
 .ctags*
 /docs/
+pom.xml

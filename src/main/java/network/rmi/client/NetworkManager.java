@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.logging.Logger;
 
-public class NetworkManager extends Thread implements NetworkManagerInterface {
+public class NetworkManager implements NetworkManagerInterface {
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private static NetworkManager instance = null;
     private Registry registry;
@@ -37,6 +37,8 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     private final int PING_TIMEOUT = 1;
     private Server serverInfo;
 
+    private Thread mainThread;
+
     private final Queue<ServerEvent> eventQueue = new LinkedList<>();
     @Override
     public void connect(Server server) throws Exception {
@@ -46,7 +48,8 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         setConnected(true);
         pingTime = LocalDateTime.now();
         serverInfo = server;
-        this.start();
+        mainThread = new Thread(this::run);
+        mainThread.start();
     }
 
     /**
@@ -89,7 +92,6 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         }
     }
 
-    @Override
     public void run(){
         while(isConnected()){
             try{
@@ -221,6 +223,11 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         }
         fn.setResult(result);
         return fn;
+    }
+
+    @Override
+    public void join() throws Exception {
+        mainThread.join();
     }
 
     @Override
