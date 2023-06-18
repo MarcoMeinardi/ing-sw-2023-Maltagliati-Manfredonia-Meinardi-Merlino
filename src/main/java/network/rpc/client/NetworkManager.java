@@ -59,6 +59,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     @Override
     public void disconnect(){
         if(isConnected()){
+            setConnected(false);
             logger.info("Disconnecting from server");
             synchronized (eventQueue){
                 eventQueue.add(ServerEvent.ServerDisconnect());
@@ -74,7 +75,6 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
             }catch(Exception e) {
                 logger.warning(e.getMessage());
             }
-            setConnected(false);
         }
     }
 
