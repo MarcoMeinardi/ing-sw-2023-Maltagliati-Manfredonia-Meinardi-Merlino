@@ -21,17 +21,21 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private Boolean connected = false;
-    private Object connectedLock = new Object();
+    private final Object connectedLock = new Object();
     private Server server;
     private static NetworkManager instance;
-    private HashMap<UUID, Function> callQueue = new HashMap<>();
-    private Queue<ServerEvent> eventQueue = new LinkedList<>();
-    private Logger logger = Logger.getLogger(NetworkManager.class.getName());
+    private final HashMap<UUID, Function> callQueue = new HashMap<>();
+    private final Queue<ServerEvent> eventQueue = new LinkedList<>();
+    private final Logger logger = Logger.getLogger(NetworkManager.class.getName());
     private Function<LocalDateTime,Boolean> lastPing = null;
     private static final int PING_TIMEOUT = 1;
     private Thread checkPingThread;
     private NetworkManager(){}
 
+    /**
+     * Get the singleton instance of the network manager
+     * @return the singleton instance of the network manager
+     */
     public static NetworkManager getInstance(){
         if(instance == null){
             instance = new NetworkManager();
@@ -53,16 +57,32 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     }
 
     @Override
-    public void disconnect(){
-        logger.info("Disconnecting from server");
-        setConnected(false);
-        try{
-            this.socket.close();
-        }catch(Exception e) {
-            logger.warning(e.getMessage());
+    synchronized public void disconnect(){
+        if(isConnected()){
+            setConnected(false);
+            logger.info("Disconnecting from server");
+            synchronized (eventQueue){
+                eventQueue.add(ServerEvent.ServerDisconnect());
+            }
+            synchronized(callQueue){
+                callQueue.clear();
+            }
+            synchronized (instance){
+                instance.notifyAll();
+            }
+            try{
+                this.socket.close();
+            }catch(Exception e) {
+                logger.warning(e.getMessage());
+            }
         }
     }
 
+    /**
+     * Wait a result from the server
+     * @return the result
+     * @throws Exception if an error occurs while receiving the result
+     */
     private Result<Serializable> receive() throws Exception{
         synchronized(in){
             Object obj = in.readObject();
@@ -73,6 +93,10 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         }
     }
 
+    /**
+     * Test the connection to the server
+     * @throws Exception if an error occurs while testing the connection
+     */
     private void testConnection() throws Exception {
         LocalDateTime now = LocalDateTime.now();
         lastPing = new Function<>(now, Service.Ping);
@@ -84,13 +108,9 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         lastPing.setResult((Result<Boolean>)obj);
     }
 
-    private long secondsSinceLastPing(){
-        if(lastPing == null){
-            return 0;
-        }
-        return Duration.between(lastPing.getParams(), LocalDateTime.now()).getSeconds();
-    }
-
+    /**
+     * Check if the client is connected to the server and update the lastPing
+     */
     private void checkPing() {
         while (isConnected()) {
             try {
@@ -153,12 +173,17 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         }
     }
 
+
     @Override
     public void reconnect() throws Exception{
         disconnect();
         connect(server);
     }
 
+    /**
+     * Set the connection status
+     * @param connected the connection status
+     */
     private void setConnected(boolean connected){
         synchronized (connectedLock){
             this.connected = connected;

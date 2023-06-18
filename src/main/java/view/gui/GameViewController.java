@@ -10,10 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -22,10 +19,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.*;
-import network.ClientStatus;
-import network.NetworkManagerInterface;
-import network.Result;
-import network.ServerEvent;
+import network.*;
 import network.parameters.CardSelect;
 import network.parameters.Message;
 import network.parameters.Update;
@@ -44,7 +38,6 @@ public class GameViewController implements Initializable {
 
     private  static final int POPUP_WIDTH = 600;
     private static final int POPUP_HEIGHT = 400;
-
     private  static final int SHELVES_POPUP_WIDTH = 800;
     private static final int SHELVES_POPUP_HEIGHT = 800;
     private static final int WIDTH = 1140;
@@ -63,7 +56,23 @@ public class GameViewController implements Initializable {
     private Stage stage;
     private Scene scene;
     @FXML
+    private Label sureLabel;
+    @FXML
+    private RadioButton yesSureButton;
+    @FXML
+    private RadioButton noSureButton;
+    @FXML
+    private Button sureChoiceButton;
+    @FXML
     public Button sendMessageButton;
+    @FXML
+    private Button printAllShelvesButton;
+    @FXML
+    private Button printCommonObjectivesButton;
+    @FXML
+    private Button printPersonalObjectivesButton;
+    @FXML
+    private Button endGame;
     @FXML
     public TextField messageInput;
     @FXML
@@ -76,8 +85,6 @@ public class GameViewController implements Initializable {
     private Label messageLabel;
     @FXML
     private TextField columnInput;
-    @FXML
-    private Label pointsLabel;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
     public static Lobby lobby;
@@ -123,6 +130,22 @@ public class GameViewController implements Initializable {
         startLobby();
         fillScene(gameData.getTableTop());
         fillShelf(gameData.getMyShelf());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                sendMessageButton.setDefaultButton(true);
+                if(lobby.isHost(username)){
+                    endGame.setVisible(true);
+                }
+                else{
+                    endGame.setVisible(false);
+                }
+                yesSureButton.setVisible(false);
+                noSureButton.setVisible(false);
+                sureChoiceButton.setVisible(false);
+                sureLabel.setVisible(false);
+            }
+        });
         serverThread = new Thread(() -> {
             while (state != ClientStatus.Disconnected) {
                 synchronized (networkManager) {
@@ -336,6 +359,11 @@ public class GameViewController implements Initializable {
         String column = columnInput.getText();
         String columnHelper = columnInput.getText();
 
+        if(!column.matches("\\d+")){
+            messageLabel.setText("Select a valid column!");
+            return;
+        }
+
         if(selectedImages.size() == 0){
             messageLabel.setText("Select cards!");
             return;
@@ -368,14 +396,23 @@ public class GameViewController implements Initializable {
         }
 
         try {
-            Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
-            if (result.isErr()) {
-                System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
-                messageLabel.setText("[ERROR] " + result.getException().orElse("Cannot select cards"));
-            } else {
-                changeLabel(pointsLabel, "");
-                return;
-            }
+            final Result[] result = {null};
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        result[0] = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
+                        if (result[0].isErr()) {
+                            System.out.println("[ERROR] " + result[0].getException().orElse("Cannot select cards"));
+                            messageLabel.setText("[ERROR] " + result[0].getException().orElse("Cannot select cards"));
+                        } else {
+                            return;
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
         }
@@ -507,6 +544,15 @@ public class GameViewController implements Initializable {
         if(minute.length() == 1){
             minute = "0" + minute;
         }
+
+        if(message.idSender().equals(Server.SERVER_NAME)){
+            chat.getItems().add(String.format("[%s:%s] %s ", hour, minute, "From server: " + message.message()));
+            if(chat.getItems().size() != 3){
+                chat.scrollTo(chat.getItems().size()-1);
+            }
+            return;
+        }
+
         if (message.idReceiver().isEmpty()) {
             chat.getItems().add(String.format("[%s:%s] %s to everyone: %s", hour, minute, message.idSender(), message.message()));
         } else {
@@ -560,7 +606,13 @@ public class GameViewController implements Initializable {
         try {
             Stage newStage = new Stage();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/Shelves.fxml"));
-            Scene newScene = new Scene(newRoot, SHELVES_POPUP_WIDTH, SHELVES_POPUP_HEIGHT);
+            Scene newScene;
+            if(lobby.getPlayers().size() == 2){
+                newScene = new Scene(newRoot, SHELVES_POPUP_WIDTH, SHELVES_POPUP_HEIGHT/2);
+            }
+            else {
+                newScene = new Scene(newRoot, SHELVES_POPUP_WIDTH, SHELVES_POPUP_HEIGHT);
+            }
             newStage.setScene(newScene);
             newStage.setResizable(false);
             newStage.show();
@@ -611,6 +663,86 @@ public class GameViewController implements Initializable {
             throw new RuntimeException(e);
         }
     }
+
+    private void goToMessage(){
+        try {
+            serverThread.interrupt();
+            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MessageStoppedGame.fxml"));
+            stage = (Stage) (sendMessageButton.getScene().getWindow());
+            scene = new Scene(newRoot, WIDTH, HEIGHT);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void returnToLoginMessage(){
+        try {
+            serverThread.interrupt();
+            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MessageReturnToLogin.fxml"));
+            stage = (Stage) (sendMessageButton.getScene().getWindow());
+            scene = new Scene(newRoot, WIDTH, HEIGHT);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void endTheGame(ActionEvent actionEvent) {
+        sureLabel.setVisible(true);
+        yesSureButton.setVisible(true);
+        noSureButton.setVisible(true);
+        sureChoiceButton.setVisible(true);
+        printCommonObjectivesButton.setVisible(false);
+        printPersonalObjectivesButton.setVisible(false);
+        printAllShelvesButton.setVisible(false);
+        endGame.setVisible(false);
+    }
+
+    public void submitChoice(ActionEvent actionEvent){
+        if(yesSureButton.isSelected()){
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Result result = networkManager.exitGame().waitResult();
+                        if (result.isErr()) {
+                            System.out.println("[ERROR] " + result.getException().orElse("Cannot stop the game"));
+                            changeLabel(messageLabel, "Cannot stop the game");
+                            sureLabel.setVisible(false);
+                            yesSureButton.setVisible(false);
+                            noSureButton.setVisible(false);
+                            sureChoiceButton.setVisible(false);
+                            printCommonObjectivesButton.setVisible(true);
+                            printPersonalObjectivesButton.setVisible(true);
+                            printAllShelvesButton.setVisible(true);
+                            endGame.setVisible(true);
+                        } else {
+                            return;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("[ERROR] " + e.getMessage());
+                    }
+                }
+            });
+        }
+        else{
+            sureLabel.setVisible(false);
+            yesSureButton.setVisible(false);
+            noSureButton.setVisible(false);
+            sureChoiceButton.setVisible(false);
+            printCommonObjectivesButton.setVisible(true);
+            printPersonalObjectivesButton.setVisible(true);
+            printAllShelvesButton.setVisible(true);
+            endGame.setVisible(true);
+        }
+    }
+
+
 
     /**
      * method that takes a `String` and Label parameters..
@@ -669,11 +801,20 @@ public class GameViewController implements Initializable {
                 for (Cockade commonObjective : update.completedObjectives()) {
                     if (update.idPlayer().equals(username)) {
                         System.out.format("[*] You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
-                        changeLabel(pointsLabel,"You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points");
-
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                addMessageToChat(new Message(Server.SERVER_NAME,"You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points"));
+                            }
+                        });
                     } else {
                         System.out.format("[*] %s completed %s getting %d points%n", update.idPlayer(), commonObjective.name(), commonObjective.points());
-                        changeLabel(pointsLabel, update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points");
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                addMessageToChat(new Message(Server.SERVER_NAME, update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points"));
+                            }
+                        });
                     }
                 }
                 gameData.update(update);
@@ -710,17 +851,32 @@ public class GameViewController implements Initializable {
                 String joinedPlayer = (String)event.get().getData();
                 try {
                     lobby.addPlayer(joinedPlayer);
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
+                        }
+                    });
                 } catch (Exception e) {  // Cannot happen
                     throw new RuntimeException("Added already existing player to lobby");
                 }
-                System.out.println("[*] " + joinedPlayer + " joined the lobby");
-                changeLabel(messageLabel, joinedPlayer + " joined the lobby");
             }
             case Leave -> {
                 String leftPlayer = (String)event.get().getData();
                 try {
                     lobby.removePlayer(leftPlayer);
-                    changeLabel(messageLabel, leftPlayer + " left the lobby");
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
+                            if(lobby.isHost(username)){
+                                endGame.setVisible(true);
+                            }
+                            else{
+                                endGame.setVisible(false);
+                            }
+                        }
+                    });
 
                 } catch (Exception e) {  // Cannot happen
                     throw new RuntimeException("Removed non existing player from lobby");
@@ -738,6 +894,24 @@ public class GameViewController implements Initializable {
                 System.out.println("Game resumed");
                 changeLabel(messageLabel, "Game resumed");
                 isPaused = false;
+            }
+            case ExitGame -> {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        goToMessage();
+                    }
+                });
+            }
+            case ServerDisconnect -> {
+                System.out.println("[WARNING] Server disconnected");
+                changeLabel(messageLabel, "Server disconnected");
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        returnToLoginMessage();
+                    }
+                });
             }
             default -> throw new RuntimeException("Unhandled event");
         }

@@ -135,5 +135,7 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
     public ArrayList<Cockade> getCockades(String playerName) {
         return cockades.get(playerName);
     }
-
+    public int size(){
+        return scores.size();
+    }
 }

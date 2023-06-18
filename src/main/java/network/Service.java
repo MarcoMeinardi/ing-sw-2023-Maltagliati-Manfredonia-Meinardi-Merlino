@@ -1,5 +1,8 @@
 package network;
 
+/**
+ * Services that can be called on the server
+ */
 public enum Service {
     Ping,
     Login,

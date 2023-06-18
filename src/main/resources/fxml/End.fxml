@@ -29,7 +29,7 @@
             <Font name="Arial" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="titleLabel" alignment="CENTER" layoutY="560.0" prefHeight="80.0" prefWidth="1140.0" text="asdd">
+      <Label fx:id="titleLabel" alignment="CENTER" layoutY="560.0" prefHeight="80.0" prefWidth="1140.0">
          <font>
             <Font name="Arial" size="18.0" />
          </font>

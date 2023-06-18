@@ -2,7 +2,6 @@ package network.rmi.client;
 
 import controller.lobby.Lobby;
 import network.*;
-import network.errors.ClientAlreadyConnectedExeption;
 import network.errors.ClientNeverConnectedException;
 import network.errors.ClientNotIdentifiedException;
 import network.parameters.CardSelect;
@@ -13,6 +12,7 @@ import network.rmi.ClientService;
 import network.rmi.LoginService;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.time.Duration;
@@ -37,7 +37,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     private final int PING_TIMEOUT = 1;
     private Server serverInfo;
 
-    private Queue<ServerEvent> eventQueue = new LinkedList<>();
+    private final Queue<ServerEvent> eventQueue = new LinkedList<>();
     @Override
     public void connect(Server server) throws Exception {
         registry = LocateRegistry.getRegistry(server.ip(), server.port());
@@ -49,12 +49,20 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         this.start();
     }
 
+    /**
+     * Set the connected status of the client.
+     * @param connected the new status.
+     */
     private void setConnected(boolean connected){
         synchronized (connectedLock){
             this.connected = connected;
         }
     }
 
+    /**
+     * Method to get the instance of the class.
+     * @return the instance of the class.
+     */
     public static NetworkManagerInterface getInstance(){
         if(instance == null){
             instance = new NetworkManager();
@@ -62,12 +70,19 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         return instance;
     }
 
+    /**
+     * Set ping time to now.
+     */
     private void setLastMessage(){
         synchronized (lastMessageLock){
             this.pingTime = LocalDateTime.now();
         }
     }
 
+    /**
+     * Get the elapsed time since the last message.
+     * @return the elapsed time in seconds.
+     */
     private long getElapsedTimeSinceLastMessage(){
         synchronized (lastMessageLock){
             return Duration.between(pingTime, LocalDateTime.now()).getSeconds();
@@ -103,8 +118,16 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     }
 
     @Override
-    public void disconnect() {
-        setConnected(false);
+    synchronized public void disconnect() {
+        if(isConnected()){
+            setConnected(false);
+            synchronized (eventQueue){
+                eventQueue.add(ServerEvent.ServerDisconnect());
+            }
+            synchronized (instance) {
+                instance.notifyAll();
+            }
+        }
     }
 
     @Override
@@ -190,6 +213,9 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
             if(result.isOk()){
                 clientService = Optional.of((ClientService) registry.lookup(info.username()));
             }
+        }catch (RemoteException re){
+            disconnect();
+            throw re;
         }catch(Exception e){
             result = Result.err(e,fn.id());
         }
@@ -202,13 +228,22 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
         return handleService(new Function(message, Service.GameChatSend));
     }
 
-    public Function handleService(Function fn){
+    /**
+     * Wrapper to handle the service call.
+     * @param fn the function to handle.
+     * @return the function with the result.
+     * @throws Exception if an error occurs while communicating with the server.
+     */
+    private Function handleService(Function fn) throws Exception{
         Result<Serializable> result;
         try{
             if(clientService.isEmpty()){
                 throw new ClientNotIdentifiedException();
             }
             result = clientService.get().requestService(fn.getCall());
+        }catch (RemoteException re){
+            disconnect();
+            throw re;
         }catch(Exception e){
             result = Result.err(e,fn.id());
         }
