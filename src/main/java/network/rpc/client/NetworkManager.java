@@ -57,7 +57,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     }
 
     @Override
-    public void disconnect(){
+    synchronized public void disconnect(){
         if(isConnected()){
             setConnected(false);
             logger.info("Disconnecting from server");
