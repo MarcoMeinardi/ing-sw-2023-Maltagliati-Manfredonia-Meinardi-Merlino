@@ -419,6 +419,19 @@ public class LobbyViewController implements Initializable{
         }
     }
 
+    private void returnToLoginMessage(){
+        try {
+            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MessageReturnToLogin.fxml"));
+            stage = (Stage) (sendMessageButton.getScene().getWindow());
+            scene = new Scene(newRoot, WIDTH, HEIGHT);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * method called to handle the events received from the server.
      * It is called every time the server sends an event.
@@ -503,7 +516,15 @@ public class LobbyViewController implements Initializable{
                 });
 
             }
-
+            case ServerDisconnect -> {
+                System.out.println("[WARNING] Server disconnected");
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        returnToLoginMessage();
+                    }
+                });
+            }
             default -> throw new RuntimeException("Unhandled event");
         }
     }
