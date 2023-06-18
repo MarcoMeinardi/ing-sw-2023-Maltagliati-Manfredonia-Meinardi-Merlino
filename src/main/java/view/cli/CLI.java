@@ -443,6 +443,49 @@ public class CLI {
 		}
 	}
 
+	private void printEndGame(ScoreBoard scoreboard) {
+		String your_title = "HEY! Where is my title?";
+		System.out.println("[*] Game over!");
+		System.out.println();
+		System.out.println("Leaderboard:");
+		int position = 1;
+		for (Score score : scoreboard) {
+			System.out.format(" [%d] %s: %d points %n", position++, score.username(), score.score());
+			if (score.username().equals(username)) {
+				your_title = score.title();
+			}
+		}
+		System.out.println();
+		System.out.format("%nYour final grade: %s%n%n", your_title);
+		System.out.println();
+
+		System.out.println("Cockades:");
+		ArrayList<Cockade> yourCockades = scoreboard.getCockades(username);
+		if (yourCockades.isEmpty()) {
+			System.out.println("You: not even a single cockade, what a shame");
+		} else {
+			System.out.println("You:");
+			for (Cockade cockade : yourCockades) {
+				System.out.format("  - %s%n", cockade.name());
+			}
+		}
+
+		for (String player : lobby.getPlayers()) {
+			if (player.equals(username)) {
+				continue;
+			}
+			ArrayList<Cockade> cockades = scoreboard.getCockades(player);
+			if (cockades.isEmpty()) {
+				System.out.format("%s: not even a single cockade, what a looser%n", player);
+			} else {
+				System.out.format("%s:%n", player);
+				for (Cockade cockade : cockades) {
+					System.out.format("  - %s%n", cockade.name());
+				}
+			}
+		}
+	}
+
 	private ClientStatus waitGlobalUpdate() {
 		try {
 			synchronized (networkManager) {
@@ -522,18 +565,7 @@ public class CLI {
 			}
 			case End -> {
 				ScoreBoard scoreboard = (ScoreBoard)event.get().getData();
-				String your_title = "HEY! Where is my title?";
-				System.out.println("[*] Game over!");
-				System.out.println();
-				System.out.println("Leaderboard:");
-				int position = 1;
-				for (Score score : scoreboard) {
-					System.out.format(" [%d] %s: %d points %n", position++, score.username(), score.score());
-					if (score.username().equals(username)) {
-						your_title = score.title();
-					}
-				}
-				System.out.format("%nYour final grade: %s%n%n", your_title);
+				printEndGame(scoreboard);
 				IO.askString("[+] Press enter to continue");
 				doPrint = true;
 				return ClientStatus.InLobbySearch;
