@@ -848,10 +848,10 @@ public class GameViewController implements Initializable {
                         public void run() {
                             addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
                             if(lobby.isHost(username)){
-                                endGame.setDisable(true);
+                                endGame.setVisible(true);
                             }
                             else{
-                                endGame.setDisable(false);
+                                endGame.setVisible(false);
                             }
                         }
                     });
