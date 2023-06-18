@@ -61,7 +61,7 @@ public interface NetworkManagerInterface {
     /**
      * Get a list of all the lobbies on the server
      * @return the remote function handler for this call
-     * @throws Exception if there is any kind of problem during the call
+     * @throws Exception if the network manager is not connected to the server
      */
     public Function<Boolean, ArrayList<Lobby>> lobbyList() throws Exception;
 
@@ -69,7 +69,7 @@ public interface NetworkManagerInterface {
      * Create a new lobby
      * @param lobbyName the name of the lobby to create
      * @return the remote function handler for this call
-     * @throws Exception if there is any kind of problem during the call
+     * @throws Exception if the network manager is not connected to the server
      */
     public Function<LobbyCreateInfo, Lobby> lobbyCreate(LobbyCreateInfo lobbyName) throws Exception;
 
@@ -77,35 +77,35 @@ public interface NetworkManagerInterface {
      * Join a lobby with the given name
      * @param lobbyName the name of the lobby to join
      * @return the remote function handler for this call
-     * @throws Exception if there is any kind of problem during the call
+     * @throws Exception if the network manager is not connected to the server
      */
     public Function<String, Lobby> lobbyJoin(String lobbyName) throws Exception;
 
     /**
      * Leave the current lobby
      * @return the remote function handler for this call
-     * @throws Exception if there is any kind of problem during the call
+     * @throws Exception if the network manager is not connected to the server
      */
     public Function<Boolean, Boolean> lobbyLeave() throws Exception;
 
     /**
      * Update the current lobby info
      * @return the remote function handler for this call
-     * @throws Exception if there is any kind of problem during the call
+     * @throws Exception if the network manager is not connected to the server
      */
     public Function<Boolean, Lobby> updateLobby() throws Exception;
 
     /**
      * Start a new game
      * @return the remote function handler for this call
-     * @throws Exception if there is any kind of problem during the call
+     * @throws Exception if the network manager is not connected to the server
      */
     public Function<Boolean, Boolean> gameStart() throws Exception;
 
     /**
      * Load a saved game
      * @return the remote function handler for this call
-     * @throws Exception if there is any kind of problem during the call
+     * @throws Exception if the network manager is not connected to the server
      */
     public Function<Boolean, Boolean> gameLoad() throws Exception;
 
@@ -113,7 +113,7 @@ public interface NetworkManagerInterface {
      * Select cards during the game
      * @param selected the cards selected
      * @return the remote function handler for this call
-     * @throws Exception if there is any kind of problem during the call
+     * @throws Exception if the network manager is not connected to the server
      */
     public Function<CardSelect, Boolean> cardSelect(CardSelect selected) throws Exception;
     public Function<Boolean, Boolean> exitGame() throws Exception;
@@ -136,7 +136,7 @@ public interface NetworkManagerInterface {
      * Send a chat message
      * @param message the message to send
      * @return the remote function handler for this call
-     * @throws Exception if there is any kind of problem during the call
+     * @throws Exception if the network manager is not connected to the server
      */
     public Function<Message, Boolean> chat(Message message) throws Exception;
 

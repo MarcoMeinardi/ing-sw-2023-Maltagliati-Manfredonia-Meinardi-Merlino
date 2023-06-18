@@ -12,6 +12,7 @@ import network.rmi.ClientService;
 import network.rmi.LoginService;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.time.Duration;
@@ -36,7 +37,7 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     private final int PING_TIMEOUT = 1;
     private Server serverInfo;
 
-    private Queue<ServerEvent> eventQueue = new LinkedList<>();
+    private final Queue<ServerEvent> eventQueue = new LinkedList<>();
     @Override
     public void connect(Server server) throws Exception {
         registry = LocateRegistry.getRegistry(server.ip(), server.port());
@@ -119,6 +120,12 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
     @Override
     public void disconnect() {
         setConnected(false);
+        synchronized (eventQueue){
+            eventQueue.add(ServerEvent.ServerDisconnect());
+        }
+        synchronized (instance) {
+            instance.notifyAll();
+        }
     }
 
     @Override
@@ -204,6 +211,9 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
             if(result.isOk()){
                 clientService = Optional.of((ClientService) registry.lookup(info.username()));
             }
+        }catch (RemoteException re){
+            disconnect();
+            throw re;
         }catch(Exception e){
             result = Result.err(e,fn.id());
         }
@@ -220,14 +230,18 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
      * Wrapper to handle the service call.
      * @param fn the function to handle.
      * @return the function with the result.
+     * @throws Exception if an error occurs while communicating with the server.
      */
-    private Function handleService(Function fn){
+    private Function handleService(Function fn) throws Exception{
         Result<Serializable> result;
         try{
             if(clientService.isEmpty()){
                 throw new ClientNotIdentifiedException();
             }
             result = clientService.get().requestService(fn.getCall());
+        }catch (RemoteException re){
+            disconnect();
+            throw re;
         }catch(Exception e){
             result = Result.err(e,fn.id());
         }
