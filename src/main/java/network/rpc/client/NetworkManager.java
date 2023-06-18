@@ -58,21 +58,23 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public void disconnect(){
-        logger.info("Disconnecting from server");
-        setConnected(false);
-        synchronized (eventQueue){
-            eventQueue.add(ServerEvent.ServerDisconnect());
-        }
-        synchronized(callQueue){
-            callQueue.clear();
-        }
-        synchronized (instance){
-            instance.notifyAll();
-        }
-        try{
-            this.socket.close();
-        }catch(Exception e) {
-            logger.warning(e.getMessage());
+        if(isConnected()){
+            logger.info("Disconnecting from server");
+            synchronized (eventQueue){
+                eventQueue.add(ServerEvent.ServerDisconnect());
+            }
+            synchronized(callQueue){
+                callQueue.clear();
+            }
+            synchronized (instance){
+                instance.notifyAll();
+            }
+            try{
+                this.socket.close();
+            }catch(Exception e) {
+                logger.warning(e.getMessage());
+            }
+            setConnected(false);
         }
     }
 
