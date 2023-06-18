@@ -20,6 +20,9 @@ import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
+/**
+ * Class to represent a client connected to the server via rmi.
+ */
 public class Client implements ClientService, ClientInterface {
     ClientStatusHandler statusHandler;
     Queue<ServerEvent> serverEvents = new LinkedList<>();
@@ -35,6 +38,13 @@ public class Client implements ClientService, ClientInterface {
 
     public static final int TIMEOUT = 5;
 
+    /**
+     * Constructor of the class.
+     * @param username Username of the client.
+     * @param registry Registry of the server.
+     * @param port Port of the client.
+     * @throws RemoteException If an error occurs.
+     */
     public Client(String username , Registry registry, int port) throws RemoteException {
         this.username = username;
         statusHandler = new ClientStatusHandler();
@@ -42,6 +52,7 @@ public class Client implements ClientService, ClientInterface {
         setCallHandler(LobbyController.getInstance()::handleLobbySearch);
         registry.rebind(username, stub);
     }
+
     @Override
     public ClientStatus getStatus() {
         return statusHandler.getStatus();
@@ -108,9 +119,6 @@ public class Client implements ClientService, ClientInterface {
         }
     }
 
-    /**
-     * @return the next event for the event queue of the client, or null if there are no events
-     */
     @Override
     public ServerEvent pollEvent() {
         synchronized (messageTimeLock){
