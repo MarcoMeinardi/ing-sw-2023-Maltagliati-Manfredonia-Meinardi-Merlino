@@ -421,6 +421,7 @@ public class LobbyViewController implements Initializable{
 
     private void returnToLoginMessage(){
         try {
+            serverThread.interrupt();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MessageReturnToLogin.fxml"));
             stage = (Stage) (sendMessageButton.getScene().getWindow());
             scene = new Scene(newRoot, WIDTH, HEIGHT);

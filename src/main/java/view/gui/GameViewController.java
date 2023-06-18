@@ -672,6 +672,20 @@ public class GameViewController implements Initializable {
         }
     }
 
+    private void returnToLoginMessage(){
+        try {
+            serverThread.interrupt();
+            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MessageReturnToLogin.fxml"));
+            stage = (Stage) (sendMessageButton.getScene().getWindow());
+            scene = new Scene(newRoot, WIDTH, HEIGHT);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void endTheGame(ActionEvent actionEvent) {
         sureLabel.setVisible(true);
         yesSureButton.setVisible(true);
@@ -722,18 +736,7 @@ public class GameViewController implements Initializable {
         }
     }
 
-    private void returnToLoginMessage(){
-        try {
-            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MessageReturnToLogin.fxml"));
-            stage = (Stage) (sendMessageButton.getScene().getWindow());
-            scene = new Scene(newRoot, WIDTH, HEIGHT);
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     /**
      * method that takes a `String` and Label parameters..
