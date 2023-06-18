@@ -88,7 +88,6 @@
                     <version>0.0.8</version>
                     <configuration>
                         <mainClass>view.gui.Main</mainClass>
-                        <executable>/home/pinguinobiricchino/.jdks/openjdk-19.0.2/bin/java</executable>
                     </configuration>
                 </plugin>
             </plugins>
