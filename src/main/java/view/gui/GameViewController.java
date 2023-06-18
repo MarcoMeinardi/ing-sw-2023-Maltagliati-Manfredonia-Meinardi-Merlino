@@ -606,7 +606,13 @@ public class GameViewController implements Initializable {
         try {
             Stage newStage = new Stage();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/Shelves.fxml"));
-            Scene newScene = new Scene(newRoot, SHELVES_POPUP_WIDTH, SHELVES_POPUP_HEIGHT);
+            Scene newScene;
+            if(lobby.getPlayers().size() == 2){
+                newScene = new Scene(newRoot, SHELVES_POPUP_WIDTH, SHELVES_POPUP_HEIGHT/2);
+            }
+            else {
+                newScene = new Scene(newRoot, SHELVES_POPUP_WIDTH, SHELVES_POPUP_HEIGHT);
+            }
             newStage.setScene(newScene);
             newStage.setResizable(false);
             newStage.show();
