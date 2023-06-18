@@ -79,7 +79,7 @@ public class LoginController implements Initializable {
     }
 
     /**
-     * Method called when the user presses the login button. It switches to the main menu scene.
+     * Method called when the user presses the l ogin button. It switches to the main menu scene.
      * It checks if the input is valid and if the connection to the server is successful.
      * If the login is successful, it switches to the main menu scene.
      * If the login is not successful, it prints an error message.

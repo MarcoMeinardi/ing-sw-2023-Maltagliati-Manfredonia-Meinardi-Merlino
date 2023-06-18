@@ -112,7 +112,7 @@ public class GameViewController implements Initializable {
             gameData = new GameData(LoginController.gameInfo, LoginController.username);
             username = LoginController.username;
             networkManager = LoginController.networkManager;
-            lobby = LoginController.lobby;
+            lobby = LoginController.gameInfo.lobby();
         } else {
             gameData = new GameData(LobbyViewController.gameInfo, LobbyViewController.username);
             username = LobbyViewController.username;
@@ -607,7 +607,7 @@ public class GameViewController implements Initializable {
             Stage newStage = new Stage();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/Shelves.fxml"));
             Scene newScene;
-            if(lobby.getPlayers().size() == 2){
+            if(gameData.getPlayersNames().size() == 2){
                 newScene = new Scene(newRoot, SHELVES_POPUP_WIDTH, SHELVES_POPUP_HEIGHT/2);
             }
             else {
