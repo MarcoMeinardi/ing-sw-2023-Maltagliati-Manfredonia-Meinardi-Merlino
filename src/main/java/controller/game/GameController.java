@@ -429,6 +429,10 @@ public class GameController {
         throw new RuntimeException("Player not found");
     }
 
+	public Lobby getLobby() {
+		return lobby;
+	}
+
     /**
      * Return the order of the players
      * @return
@@ -530,11 +534,6 @@ public class GameController {
                         if (wasDisconnected) {
                             playerDisconnected.set(i, false);
                             logger.info("Player " + players.get(i).getName() + " reconnected");
-                            try {
-                                lobby.addPlayer(players.get(i).getName());
-                            } catch (Exception e) {
-                                throw new RuntimeException("Broken reconnection in game");
-                            }
                             ServerEvent event = ServerEvent.Join(players.get(i).getName());
                             globalUpdate(event);
                         }
