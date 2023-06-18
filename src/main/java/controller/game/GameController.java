@@ -80,6 +80,7 @@ public class GameController {
         }
         disconnectionChecker = new Thread(this::checkDisconnections);
         disconnectionChecker.start();
+        saveGame();
     }
 
     public GameController(File saveFile, Lobby lobby) throws Exception {
