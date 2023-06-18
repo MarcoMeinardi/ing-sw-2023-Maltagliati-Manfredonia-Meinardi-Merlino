@@ -3,7 +3,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -26,7 +28,7 @@
             <Image url="@../img/boards/livingroom.png" />
          </image>
       </ImageView>
-      <Button fx:id="printPersonalObjectivesButton" layoutX="451.0" layoutY="673.0" mnemonicParsing="false" onAction="#printPersonalObjectivesButton" text="Show Personal Obj">
+      <Button fx:id="printPersonalObjectivesButton" layoutX="333.0" layoutY="673.0" mnemonicParsing="false" onAction="#printPersonalObjectivesButton" text="Show Personal Obj">
          <font>
             <Font name="Arial" size="12.0" />
          </font></Button>
@@ -34,7 +36,7 @@
          <font>
             <Font name="Arial" size="12.0" />
          </font></Button>
-      <Button fx:id="printCommonObjectivesButton" layoutX="231.0" layoutY="673.0" mnemonicParsing="false" onAction="#printCommonObjectivesButton" text="Show Common Obj">
+      <Button fx:id="printCommonObjectivesButton" layoutX="167.0" layoutY="673.0" mnemonicParsing="false" onAction="#printCommonObjectivesButton" text="Show Common Obj">
          <font>
             <Font name="Arial" size="12.0" />
          </font></Button>
@@ -66,5 +68,22 @@
             <Font name="Arial" size="13.0" />
          </font>
       </Label>
+      <Button fx:id="endGame" layoutX="495.0" layoutY="673.0" mnemonicParsing="false" onAction="#endTheGame" text="Stop game">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font>
+      </Button>
+      <Label fx:id="sureLabel" alignment="CENTER" layoutX="147.0" layoutY="629.0" prefHeight="17.0" prefWidth="309.0" text="Are you sure you want to stop the game?">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <RadioButton fx:id="yesSureButton" layoutX="228.0" layoutY="676.0" mnemonicParsing="false" text="YES">
+         <toggleGroup>
+            <ToggleGroup fx:id="SureEnd" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="noSureButton" layoutX="313.0" layoutY="676.0" mnemonicParsing="false" selected="true" text="NO" toggleGroup="$SureEnd" />
+      <Button fx:id="sureChoiceButton" layoutX="231.0" layoutY="707.0" mnemonicParsing="false" onAction="#submitChoice" text="Submit my choice!" />
    </children>
 </AnchorPane>

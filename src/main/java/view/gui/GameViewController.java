@@ -10,10 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -41,7 +38,6 @@ public class GameViewController implements Initializable {
 
     private  static final int POPUP_WIDTH = 600;
     private static final int POPUP_HEIGHT = 400;
-
     private  static final int SHELVES_POPUP_WIDTH = 800;
     private static final int SHELVES_POPUP_HEIGHT = 800;
     private static final int WIDTH = 1140;
@@ -60,7 +56,23 @@ public class GameViewController implements Initializable {
     private Stage stage;
     private Scene scene;
     @FXML
+    private Label sureLabel;
+    @FXML
+    private RadioButton yesSureButton;
+    @FXML
+    private RadioButton noSureButton;
+    @FXML
+    private Button sureChoiceButton;
+    @FXML
     public Button sendMessageButton;
+    @FXML
+    private Button printAllShelvesButton;
+    @FXML
+    private Button printCommonObjectivesButton;
+    @FXML
+    private Button printPersonalObjectivesButton;
+    @FXML
+    private Button endGame;
     @FXML
     public TextField messageInput;
     @FXML
@@ -122,6 +134,16 @@ public class GameViewController implements Initializable {
             @Override
             public void run() {
                 sendMessageButton.setDefaultButton(true);
+                if(lobby.isHost(username)){
+                    endGame.setVisible(true);
+                }
+                else{
+                    endGame.setVisible(false);
+                }
+                yesSureButton.setVisible(false);
+                noSureButton.setVisible(false);
+                sureChoiceButton.setVisible(false);
+                sureLabel.setVisible(false);
             }
         });
         serverThread = new Thread(() -> {
@@ -636,6 +658,70 @@ public class GameViewController implements Initializable {
         }
     }
 
+    private void goToMessage(){
+        try {
+            serverThread.interrupt();
+            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MessageStoppedGame.fxml"));
+            stage = (Stage) (sendMessageButton.getScene().getWindow());
+            scene = new Scene(newRoot, WIDTH, HEIGHT);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void endTheGame(ActionEvent actionEvent) {
+        sureLabel.setVisible(true);
+        yesSureButton.setVisible(true);
+        noSureButton.setVisible(true);
+        sureChoiceButton.setVisible(true);
+        printCommonObjectivesButton.setVisible(false);
+        printPersonalObjectivesButton.setVisible(false);
+        printAllShelvesButton.setVisible(false);
+        endGame.setVisible(false);
+    }
+
+    public void submitChoice(ActionEvent actionEvent){
+        if(yesSureButton.isSelected()){
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Result result = networkManager.exitGame().waitResult();
+                        if (result.isErr()) {
+                            System.out.println("[ERROR] " + result.getException().orElse("Cannot stop the game"));
+                            changeLabel(messageLabel, "Cannot stop the game");
+                            sureLabel.setVisible(false);
+                            yesSureButton.setVisible(false);
+                            noSureButton.setVisible(false);
+                            sureChoiceButton.setVisible(false);
+                            printCommonObjectivesButton.setVisible(true);
+                            printPersonalObjectivesButton.setVisible(true);
+                            printAllShelvesButton.setVisible(true);
+                            endGame.setVisible(true);
+                        } else {
+                            return;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("[ERROR] " + e.getMessage());
+                    }
+                }
+            });
+        }
+        else{
+            sureLabel.setVisible(false);
+            yesSureButton.setVisible(false);
+            noSureButton.setVisible(false);
+            sureChoiceButton.setVisible(false);
+            printCommonObjectivesButton.setVisible(true);
+            printPersonalObjectivesButton.setVisible(true);
+            printAllShelvesButton.setVisible(true);
+            endGame.setVisible(true);
+        }
+    }
+
     /**
      * method that takes a `String` and Label parameters..
      * The method uses `Platform.runLater` to update the label with the new text value.
@@ -761,6 +847,12 @@ public class GameViewController implements Initializable {
                         @Override
                         public void run() {
                             addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
+                            if(lobby.isHost(username)){
+                                endGame.setDisable(true);
+                            }
+                            else{
+                                endGame.setDisable(false);
+                            }
                         }
                     });
 
@@ -780,6 +872,14 @@ public class GameViewController implements Initializable {
                 System.out.println("Game resumed");
                 changeLabel(messageLabel, "Game resumed");
                 isPaused = false;
+            }
+            case ExitGame -> {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        goToMessage();
+                    }
+                });
             }
             default -> throw new RuntimeException("Unhandled event");
         }
