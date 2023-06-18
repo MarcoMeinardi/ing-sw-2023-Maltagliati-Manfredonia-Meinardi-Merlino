@@ -855,6 +855,8 @@ public class GameViewController implements Initializable {
                         @Override
                         public void run() {
                             addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
+                            players.getItems().removeAll();
+                            players.getItems().addAll(lobby.getPlayers());
                         }
                     });
                 } catch (Exception e) {  // Cannot happen
@@ -869,6 +871,8 @@ public class GameViewController implements Initializable {
                         @Override
                         public void run() {
                             addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
+                            players.getItems().removeAll();
+                            players.getItems().addAll(lobby.getPlayers());
                             if(lobby.isHost(username)){
                                 endGame.setVisible(true);
                             }
