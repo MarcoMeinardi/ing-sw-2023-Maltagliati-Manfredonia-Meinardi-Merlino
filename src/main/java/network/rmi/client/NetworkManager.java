@@ -119,12 +119,14 @@ public class NetworkManager extends Thread implements NetworkManagerInterface {
 
     @Override
     public void disconnect() {
-        setConnected(false);
-        synchronized (eventQueue){
-            eventQueue.add(ServerEvent.ServerDisconnect());
-        }
-        synchronized (instance) {
-            instance.notifyAll();
+        if(isConnected()){
+            setConnected(false);
+            synchronized (eventQueue){
+                eventQueue.add(ServerEvent.ServerDisconnect());
+            }
+            synchronized (instance) {
+                instance.notifyAll();
+            }
         }
     }
 
