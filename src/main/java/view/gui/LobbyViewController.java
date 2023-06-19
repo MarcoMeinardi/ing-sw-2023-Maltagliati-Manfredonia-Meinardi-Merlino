@@ -110,7 +110,7 @@ public class LobbyViewController implements Initializable{
         serverThread.start();
     }
 
-    /**
+    /**  TODO WRONG DOCS
      * method called to add items to the list view showing the names of the players.
      * It is called when the lobby is created and when a player joins the lobby.
      * Calls updateLobby() method to fill the names in the right spots after they
@@ -118,15 +118,8 @@ public class LobbyViewController implements Initializable{
      *
      * @author Ludovico
      */
-
-    public void startLobby(){
-        //initialize the list view with blank spaces
-        for (int i = 0; i < 4; i++) {
-            players.getItems().add("");
-        }
-        //add messages to the chat
+    public void startLobby() {
         chat.getItems().add("[Type /help to see the list of commands]");
-        //call method to fill the list view with the names of the players
         updateLobby();
     }
 
@@ -136,16 +129,9 @@ public class LobbyViewController implements Initializable{
      *
      * @author Ludovico
      */
-
     public void updateLobby() {
-        //fill the list with blank spaces everytime it is updated
-        for(int i = 0; i<4;i++){
-            players.getItems().set(i,"");
-        }
-        //fill the list with the names of the players
-        for(int i = 0; i < lobby.getNumberOfPlayers() ;i++){
-            players.getItems().set(i, lobby.getPlayers().get(i));
-        }
+        players.getItems().clear();
+        players.getItems().addAll(lobby.getPlayers());
     }
 
     /**
@@ -153,7 +139,6 @@ public class LobbyViewController implements Initializable{
      * (aka the first one in the list of players of the lobby).
      * @author Ludovico
      */
-
     public void showStart(){
         if(lobby.isHost(username)){
             startButton.setVisible(true);

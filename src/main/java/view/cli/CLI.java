@@ -23,7 +23,7 @@ public class CLI {
 
 	private ClientStatus state;
 	private Lobby lobby;
-	private boolean hasConnected;
+	private boolean needQuit;
 
 	private String ip;
 	private int port;
@@ -41,10 +41,9 @@ public class CLI {
 	private CLI() {
 		IO = new Utils();
 		state = ClientStatus.Disconnected;
-		hasConnected = false;
+		needQuit = false;
 		doPrint = true;
 		gameStarted = false;
-
 	}
 	public static CLI getInstance() {
 		if(instance == null){
@@ -55,7 +54,7 @@ public class CLI {
 
 	public void run() {
 		printWelcome();
-		while (state != ClientStatus.Disconnected || !hasConnected) {
+		while (!needQuit) {
 			switch (state) {
 				case Disconnected -> state = connect();
 				case Idle -> state = login();
@@ -76,7 +75,6 @@ public class CLI {
 
 		try {
 			networkManager.connect(new Server(this.ip, this.port));
-			hasConnected = true;
 			return ClientStatus.Idle;
 		} catch (Exception e) {
 			System.out.println("[ERROR] " + e.getMessage());
@@ -95,9 +93,6 @@ public class CLI {
 				networkManager = network.rmi.client.NetworkManager.getInstance();
 			}
 		}
-		// this.ip = "localhost";
-		// this.port = 8000;
-		// networkManager = network.rpc.client.NetworkManager.getInstance();
 		IO.setNetworkManager(networkManager);
 	}
 
@@ -173,6 +168,7 @@ public class CLI {
 				case QUIT -> {
 					networkManager.disconnect();
 					networkManager.join();
+					needQuit = true;
 					System.out.println("[*] Bye bye!");
 					return ClientStatus.Disconnected;
 				}
@@ -447,6 +443,49 @@ public class CLI {
 		}
 	}
 
+	private void printEndGame(ScoreBoard scoreboard) {
+		String your_title = "HEY! Where is my title?";
+		System.out.println("[*] Game over!");
+		System.out.println();
+		System.out.println("Leaderboard:");
+		int position = 1;
+		for (Score score : scoreboard) {
+			System.out.format(" [%d] %s: %d points %n", position++, score.username(), score.score());
+			if (score.username().equals(username)) {
+				your_title = score.title();
+			}
+		}
+		System.out.println();
+		System.out.format("%nYour final grade: %s%n%n", your_title);
+		System.out.println();
+
+		System.out.println("Cockades:");
+		ArrayList<Cockade> yourCockades = scoreboard.getCockades(username);
+		if (yourCockades.isEmpty()) {
+			System.out.println("You: not even a single cockade, what a shame");
+		} else {
+			System.out.println("You:");
+			for (Cockade cockade : yourCockades) {
+				System.out.format("  - %s%n", cockade.name());
+			}
+		}
+
+		for (String player : lobby.getPlayers()) {
+			if (player.equals(username)) {
+				continue;
+			}
+			ArrayList<Cockade> cockades = scoreboard.getCockades(player);
+			if (cockades.isEmpty()) {
+				System.out.format("%s: not even a single cockade, what a looser%n", player);
+			} else {
+				System.out.format("%s:%n", player);
+				for (Cockade cockade : cockades) {
+					System.out.format("  - %s%n", cockade.name());
+				}
+			}
+		}
+	}
+
 	private ClientStatus waitGlobalUpdate() {
 		try {
 			synchronized (networkManager) {
@@ -526,18 +565,7 @@ public class CLI {
 			}
 			case End -> {
 				ScoreBoard scoreboard = (ScoreBoard)event.get().getData();
-				String your_title = "HEY! Where is my title?";
-				System.out.println("[*] Game over!");
-				System.out.println();
-				System.out.println("Leaderboard:");
-				int position = 1;
-				for (Score score : scoreboard) {
-					System.out.format(" [%d] %s: %d points %n", position++, score.username(), score.score());
-					if (score.username().equals(username)) {
-						your_title = score.title();
-					}
-				}
-				System.out.format("%nYour final grade: %s%n%n", your_title);
+				printEndGame(scoreboard);
 				IO.askString("[+] Press enter to continue");
 				doPrint = true;
 				return ClientStatus.InLobbySearch;
@@ -559,6 +587,12 @@ public class CLI {
 			case ExitGame -> {
 				System.out.println("[*] Game has been stopped");
 				return ClientStatus.InLobbySearch;
+			}
+			case ServerDisconnect -> {
+				System.out.println("[WARNING] Server disconnected");
+				networkManager.disconnect();
+				doPrint = true;
+				return ClientStatus.Disconnected;
 			}
 			case Pause -> {
 				if (!isPaused) {

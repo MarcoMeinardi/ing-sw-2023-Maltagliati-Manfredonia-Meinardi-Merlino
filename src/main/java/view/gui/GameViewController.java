@@ -112,7 +112,7 @@ public class GameViewController implements Initializable {
             gameData = new GameData(LoginController.gameInfo, LoginController.username);
             username = LoginController.username;
             networkManager = LoginController.networkManager;
-            lobby = LoginController.lobby;
+            lobby = LoginController.gameInfo.lobby();
         } else {
             gameData = new GameData(LobbyViewController.gameInfo, LobbyViewController.username);
             username = LobbyViewController.username;
@@ -427,10 +427,8 @@ public class GameViewController implements Initializable {
      */
     @FXML
     public void startLobby(){
-        //initialize the list view with blank spaces
-        for (int i = 0; i < lobby.getNumberOfPlayers(); i++) {
-            players.getItems().add(lobby.getPlayers().get(i));
-        }
+		players.getItems().clear();
+		players.getItems().addAll(lobby.getPlayers());
         //add messages to the chat
         chat.getItems().add("[Type /help to see the list of commands]");
     }
@@ -607,7 +605,7 @@ public class GameViewController implements Initializable {
             Stage newStage = new Stage();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/Shelves.fxml"));
             Scene newScene;
-            if(lobby.getPlayers().size() == 2){
+            if(gameData.getPlayersNames().size() == 2){
                 newScene = new Scene(newRoot, SHELVES_POPUP_WIDTH, SHELVES_POPUP_HEIGHT/2);
             }
             else {
@@ -851,11 +849,10 @@ public class GameViewController implements Initializable {
                 String joinedPlayer = (String)event.get().getData();
                 try {
                     lobby.addPlayer(joinedPlayer);
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
-                        }
+                    Platform.runLater(() -> {
+                        addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
+                        players.getItems().clear();
+                        players.getItems().addAll(lobby.getPlayers());
                     });
                 } catch (Exception e) {  // Cannot happen
                     throw new RuntimeException("Added already existing player to lobby");
@@ -865,16 +862,14 @@ public class GameViewController implements Initializable {
                 String leftPlayer = (String)event.get().getData();
                 try {
                     lobby.removePlayer(leftPlayer);
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
-                            if(lobby.isHost(username)){
-                                endGame.setVisible(true);
-                            }
-                            else{
-                                endGame.setVisible(false);
-                            }
+                    Platform.runLater(() -> {
+                        addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
+                        players.getItems().clear();
+                        players.getItems().addAll(lobby.getPlayers());
+                        if (lobby.isHost(username)) {
+                            endGame.setVisible(true);
+                        } else {
+                            endGame.setVisible(false);
                         }
                     });
 

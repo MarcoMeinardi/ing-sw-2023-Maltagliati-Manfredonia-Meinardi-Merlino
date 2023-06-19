@@ -94,6 +94,6 @@ fabric.properties
 db.srl
 save-states/
 
-# Chino
 .ctags*
-/docs/
+
+docs/

@@ -104,10 +104,6 @@ public class CommonObjective extends Objective {
 	 * @author Marco, Ludovico, Lorenzo, Riccardo
 	 */
 	public Optional<Cockade> isCompleted(Shelf shelf, String player) {
-		System.out.println("player: " + player);
-		for (String name : completedBy) {
-			System.out.println(name);
-		}
 		Optional<Cockade> cockade = Optional.empty();
 		if (!completedBy.contains(player) && checkCompleted.apply(shelf)) {
 			cockade = Optional.of(new Cockade(name, value));
