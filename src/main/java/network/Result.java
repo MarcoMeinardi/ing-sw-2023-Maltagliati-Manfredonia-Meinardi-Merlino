@@ -1,4 +1,6 @@
 package network;
+import com.thoughtworks.qdox.model.expression.Equals;
+
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.UUID;
@@ -145,5 +147,16 @@ public class Result<T extends Serializable> implements Serializable{
      */
     public UUID id(){
         return id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Result<?> other){
+            boolean equals_value = this.value == null ? other.value == null : this.value.equals(other.value);
+            boolean equals_exception = this.exception == null ? other.exception == null : this.exception.equals(other.exception);
+            boolean equals_id = this.id == null ? other.id == null : this.id.equals(other.id);
+            return equals_value && equals_exception && equals_id;
+        }
+        return false;
     }
 }
