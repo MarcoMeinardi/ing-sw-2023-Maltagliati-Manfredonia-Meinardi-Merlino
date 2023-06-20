@@ -662,6 +662,14 @@ public class GameViewController implements Initializable {
         }
     }
 
+    /**
+     * This method is responsible for printing the last view of the program if the host stops the game.
+     * It interrupts the server thread,
+     * loads the MessageStoppedGame.fxml file using FXMLLoader,
+     * sets the new scene to the stage, and displays the stage.
+     *
+     */
+
     private void goToMessage(){
         try {
             serverThread.interrupt();
@@ -675,6 +683,14 @@ public class GameViewController implements Initializable {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * This method is responsible for printing the last view of the program if the server stopped.
+     * It interrupts the server thread,
+     * loads the MessageReturnToLogin.fxml file using FXMLLoader,
+     * sets the new scene to the stage, and displays the stage.
+     *
+     */
 
     private void returnToLoginMessage(){
         try {
@@ -690,6 +706,13 @@ public class GameViewController implements Initializable {
         }
     }
 
+    /**
+     * This method is called when the host clicks the stop game button.
+     * It modifies the visibility of the buttons and labels in the scene to ask the host if he is sure to stop the game.
+     *
+     * @param actionEvent
+     */
+
     public void endTheGame(ActionEvent actionEvent) {
         sureLabel.setVisible(true);
         yesSureButton.setVisible(true);
@@ -700,6 +723,16 @@ public class GameViewController implements Initializable {
         printAllShelvesButton.setVisible(false);
         endGame.setVisible(false);
     }
+
+    /**
+     * This method is called when the host submits their choice about stopping the game.
+     * If the host decided to stop the game and everything works, the method just returns
+     * waiting for the server to end the game.
+     * if something went wrong or the host decided to continue the game, the method changes the visibility of the buttons and labels
+     * to the original state.
+     *
+     * @param actionEvent
+     */
 
     public void submitChoice(ActionEvent actionEvent){
         if(yesSureButton.isSelected()){
@@ -773,6 +806,8 @@ public class GameViewController implements Initializable {
      * - Join and Leave: updates the list of players in the game and notifies the players
      * - Pause: pauses the game and notifies the players
      * - Resume: resumes the game and notifies the players
+     * - ExitGame: notifies the players that the game has been stopped sending them to a scene explaining the situation
+     * - ServerDisconnect: notifies the players that the server has been disconnected sending them to a scene explaining the situation
      *
      * @author Ludovico
      */
