@@ -164,6 +164,7 @@ public class MainMenuController implements Initializable {
             } else {
                 noFound.setText("Login failed");
                 System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
+                return;
             }
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/Lobby.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
