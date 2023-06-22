@@ -93,7 +93,7 @@ public class EndController implements Initializable {
     }
 
     /**
-     * Method that shows the game results and the final grade of the player.
+     * Method that shows the game results and the final grade of the player with all the objectives completed.
      *
      * @author Ludovico
      */
@@ -170,6 +170,19 @@ public class EndController implements Initializable {
 
     }
 
+    /**
+     * Method that handles the selection of a cockade in the list.
+     * It shows the correct token next to the list of cockades of the player.
+     *
+     * @param player
+     * The player that completed the objective selected.
+     *
+     * @param selectedCockade
+     * The cockade selected by the user.
+     *
+     * @author Ludovico
+     */
+
     private void handleCockadeSelection(int player, String selectedCockade){
         Pattern pattern = Pattern.compile("\\d+");
 
@@ -241,6 +254,8 @@ public class EndController implements Initializable {
      *
      * @param actionEvent
      * Click of the exit button by the player.
+     *
+     * @author
      *
      * @throws IOException
      */

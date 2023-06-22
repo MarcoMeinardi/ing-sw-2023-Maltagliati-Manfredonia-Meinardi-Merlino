@@ -20,7 +20,6 @@ import network.Result;
 import network.Server;
 import network.parameters.GameInfo;
 import network.parameters.Login;
-import network.parameters.Message;
 
 import java.io.IOException;
 
@@ -101,11 +100,7 @@ public class LoginController implements Initializable {
             if(username == null || username.equals("") || username.equals(" ")){
                 errorLabel.setText("Invalid name!");
                 return;
-            } else if (username.length() > 16) {
-                errorLabel.setText("max 8 letters in name!");
-                return;
             }
-
 
             if (selectedIp.getText().equals("")) {
                 errorLabel.setText("Insert an IP address!");

@@ -137,6 +137,7 @@ public class LobbyViewController implements Initializable{
     /**
      * method called to show the start button if the player is the owner of the lobby
      * (aka the first one in the list of players of the lobby).
+     *
      * @author Ludovico
      */
     public void showStart(){
@@ -162,7 +163,9 @@ public class LobbyViewController implements Initializable{
      * handling events from server is interrupted.
      *
      * @param actionEvent quit lobby button is clicked
+     *
      * @throws Exception
+     *
      * @author Ludovico
      */
 
@@ -427,6 +430,7 @@ public class LobbyViewController implements Initializable{
      * - Leave: a player left the lobby
      * - newMessage: a message was sent in the lobby chat
      * - Start: the game is starting
+     * - ServerDisconnect: the server disconnected
      *
      * In the join and leave cases the lobby is updated and the start button is shown if the player is the first in the lobby.
      * In the start case the game starts and the players are brought to the game scene.

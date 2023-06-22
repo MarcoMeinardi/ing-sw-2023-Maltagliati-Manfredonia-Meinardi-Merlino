@@ -85,6 +85,14 @@ public class ShelvesController implements Initializable {
         }
     }
 
+    /**
+     * Method used to associate the item to the correct image.
+     *
+     * @param card
+     *
+     * @author Marco
+     */
+
     private String cardToImageName(Card card) {
         switch (card.getType()) {
             case Gatto   -> { return String.format("/img/item tiles/Gatti1.%d.png", card.getImageIndex()); }

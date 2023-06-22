@@ -105,6 +105,8 @@ public class GameViewController implements Initializable {
      * Updates the GUI adding the list of the players, the chat and the game board.
      * It then starts the server thread that will handle the events received from the server.
      *
+     * @author Ludovico
+     *
     **/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
