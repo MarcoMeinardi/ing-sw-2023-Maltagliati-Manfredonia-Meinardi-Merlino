@@ -16,6 +16,14 @@ import model.TableTop;
 
 import static network.Server.SERVER_NAME;
 
+/**
+ * Class that handles the CLI functions
+ * This class is a singleton.
+ * To run the CLI do:
+ * CLI cli = CLI.getInstance();
+ * cli.run();
+ * @author Marco
+ */
 public class CLI {
 	private static CLI instance;
 	public static NetworkManagerInterface networkManager;
@@ -38,6 +46,10 @@ public class CLI {
 
 	private CLIGame game;
 
+	/**
+	 * Constructor for the CLI class
+	 * @author Marco
+	 */
 	private CLI() {
 		IO = new Utils();
 		state = ClientStatus.Disconnected;
@@ -45,6 +57,11 @@ public class CLI {
 		doPrint = true;
 		gameStarted = false;
 	}
+	/**
+	 * Return the instance of the CLI singleton
+	 * @return the CLI instance
+	 * @author Marco
+	 */
 	public static CLI getInstance() {
 		if(instance == null){
 			instance = new CLI();
@@ -52,6 +69,11 @@ public class CLI {
 		return instance;
 	}
 
+	/**
+	 * Infinite loop to handle the whole game events
+	 * @throws RuntimeException if we fall in a state that does not exist
+	 * @author Marco
+	 */
 	public void run() {
 		printWelcome();
 		while (!needQuit) {
@@ -66,10 +88,22 @@ public class CLI {
 		}
 	}
 
+	/**
+	 * Print the initial banner.
+	 * It is called only once in the beginning of the game
+	 * @author Marco
+	 */
 	private void printWelcome() {
+		// TODO create a banner
 		System.out.println("Welcome to this beautiful game, that has been accidentally written in Rust");
 	}
 
+	/**
+	 * Ask for the server information and try to connect to the specified server
+	 * with the specified method.
+	 * @return `Idle` if the connection succeed, `Disconnected` otherwise
+	 * @author Marco
+	 */
 	private ClientStatus connect() {
 		askIpAndMethod();
 
@@ -81,6 +115,11 @@ public class CLI {
 			return ClientStatus.Disconnected;
 		}
 	}
+
+	/**
+	 * Ask for the server ip and connection method.
+	 * @author Marco
+	 */
 	private void askIpAndMethod() {
 		this.ip = IO.askString("[+] Server IP: ");
 		switch (IO.askOption(ConnectionModeOptions.class)) {
@@ -96,6 +135,14 @@ public class CLI {
 		IO.setNetworkManager(networkManager);
 	}
 
+	/**
+	 * Handle login.
+	 * Ask for username and try to connect with that.
+	 * If the connection is successful, check if the user was already in game and
+	 * if so, bring him back in the game pre-disconnection.
+	 * @return `Idle` if login fails, `InLobbySearch` if new user, `InGame` if reconnected user.
+	 * @author Marco
+	 */
 	private ClientStatus login() {
 		username = IO.askString("[+] Username: ");
 		try {
@@ -119,6 +166,18 @@ public class CLI {
 		return ClientStatus.Idle;
 	}
 
+	/**
+	 * Handle the `InLobbySearch` state.
+	 * Ask the user what to do:
+	 *  - `CREATE_LOBBY`: create a lobby with the given name
+	 *  - `JOIN_LOBBY`: join the lobby with the given name
+	 *  - `LIST_LOBBIES`: list all the available lobbies
+	 *  - `QUIT`: quit the game
+	 * @return `InLobbySearch` if any error occurs, `InLobby` if the user entered a lobby,
+	 * `InLobbySearch` if the user listed the lobbies and `Disconnected` if the user choose to quit
+	 * @throws RuntimeException if we try to handle a non-existing option.
+	 * @author Marco
+	 */
 	private ClientStatus searchLobby() {
 		SelectLobbyOptions option = IO.askOption(SelectLobbyOptions.class);
 		String lobbyName;
@@ -180,6 +239,19 @@ public class CLI {
 		}
 	}
 
+	/**
+	 * Handle the `InLobby` state.
+	 * Ask the user what to do:
+	 *  - `SEND_MESSAGE`: send a message to the selected player or everyone
+	 *  - `LIST_PLAYERS`: display the players in the lobby (the host is marked with a `+`)
+	 *  - `LEAVE_LOBBY`: leave the current lobby
+	 *  - `START_GAME`: (host only) start the game with the players in the lobby
+	 *  - `LOAD_GAME`: (host only) attempt to load the game from the server
+	 * @return `InLobby` if any error occurs or if the player sends a message or list the players,
+	 * `InGame` if the host starts or loads a game, `InLobbySearch` if the players leaves the lobby.
+	 * @throws RuntimeException if we try to handle a non-existing option.
+	 * @author Marco
+	 */
 	private ClientStatus inLobby() {
 		Optional<InLobbyOptions> option = IO.askOptionOrEvent(InLobbyOptions.class, doPrint, isHost, false);
 		if (option.isEmpty()) {
@@ -247,6 +319,23 @@ public class CLI {
 		}
 	}
 
+	/**
+	 * Handle the `InGame` state.
+	 * Ask the user what to do:
+	 *  - `SEND_MESSAGE`: send a message to the selected player or everyone
+	 *  - `SHOW_YOUR_SHELF`: display the player's shelf
+	 *  - `SHOW_ALL_SHELVES`: display all the players' shelves
+	 *  - `SHOW_TABLETOP`: display the current tabletop
+	 *  - `SHOW_PERSONAL_OBJECTIVE`: display the player's personal objective
+	 *  - `SHOW_COMMON_OBJECTIVES`: display the common objectives
+	 *  - `STOP_GAME`: (host only) tell the server to save and stop the game
+	 *  - `PICK_CARDS: ask the player for the cards he wants to pick. This option is available only during the player's turn
+	 * If the player is the host and jus started the game, he has to wait for the `Start` server event.
+	 * @return `InGame` if any error occurs or if the players sends a message or displays anything, otherwise
+	 * it returns whatever the function corresponding to the selected options returns.
+	 * @throws RuntimeException if we try to handle a non-existing option.
+	 * @author Marco
+	 */
 	private ClientStatus inGame() {
 		if (!gameStarted) {
 			return waitGlobalUpdate();
@@ -294,6 +383,12 @@ public class CLI {
 		}
 	}
 
+	/**
+	 * Checks if the player has the ability to start the game, so if it is the host of the lobby
+	 * and if we have at least two players.
+	 * @return if the player can start the game
+	 * @author Marco
+	 */
 	private boolean checkCanStartGame() {
 		if (!lobby.isHost(username)) {  // This is not needed
 			System.out.println("[ERROR] You are not the lobby's host");
@@ -305,6 +400,12 @@ public class CLI {
 		return true;
 	}
 
+	/**
+	 * Convert an input string to a `Point` object with the corresponding coordinates.
+	 * @param line a string with the wanted coordinates in the form (`a1` or `1a`)
+	 * @return the `Point` object corresponding to the input coordinates.
+	 * @author Marco
+	 */
 	private Point stringToPoint(String line) {
 		int y, x;
 		if ('0' <= line.charAt(0) && line.charAt(0) <= '9') {
@@ -321,6 +422,13 @@ public class CLI {
 		return new Point(y, x);
 	}
 
+	/**
+	 * Handle the `PICK_CARDS` interaction.
+	 * Ask the player which cards to pick and in which column to place those.
+	 * @return `InGame` if any error occurs or if the player aborts the selection,
+	 * otherwise what the `waitGlobalUpdate` call returns
+	 * @author Marco
+	 */
 	private ClientStatus handlePickCard() {
 		ArrayList<Point> selectedCards = new ArrayList<>();
 		int column;
@@ -389,6 +497,12 @@ public class CLI {
 		return ClientStatus.InGame;
 	}
 
+	/**
+	 * Handle the `STOP_GAME` interaction.
+	 * Ask the host for confirmation and send to the server the request to stop the game.
+	 * @return `InGame` if any error occurs or if the player aborts the operation, otherwise what the `waitGlobalUpdate` call returns
+	 * @author Marco
+	 */
 	private ClientStatus handleStopGame() {
 		String yn = IO.askString("Do you really want to stop the game (y/n)? ");
 		if (yn.toLowerCase().charAt(0) == 'y') {
@@ -406,6 +520,11 @@ public class CLI {
 		return ClientStatus.InGame;
 	}
 
+	/**
+	 * Handle the `SEND_MESSAGE` interaction.
+	 * Ask the player for the receiver and the message to send.
+	 * @author Marco
+	 */
 	private void sendMessage() {
 		System.out.println();
 		int cnt = 0;
@@ -443,6 +562,11 @@ public class CLI {
 		}
 	}
 
+	/**
+	 * Print the scoreboard as received from the server.
+	 * @param scoreboard The scoreboard to print, a `Scoreboard` object
+	 * @author Marco
+	 */
 	private void printEndGame(ScoreBoard scoreboard) {
 		String your_title = "HEY! Where is my title?";
 		System.out.println("[*] Game over!");
@@ -486,6 +610,11 @@ public class CLI {
 		}
 	}
 
+	/**
+	 * Asynchronously wait for a global update from the server.
+	 * @return The status of the client after the update or the current status if an error occurs
+	 * @author Marco
+	 */
 	private ClientStatus waitGlobalUpdate() {
 		try {
 			synchronized (networkManager) {
@@ -493,10 +622,33 @@ public class CLI {
 					networkManager.wait();
 				}
 			}
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {
+			return state;
+		}
 		return handleEvent();
 	}
 
+	/**
+	 * Handler for the server events.
+	 * The handled events are:
+	 *  - `Join`: a new player joins the lobby
+	 *  - `Leave`: a player leaves the lobby
+	 *  - `Start`: the game starts
+	 *  - `Update`: The game state is updated after someone moved
+	 *  - `End`: The game ends
+	 *  - `NewMessage`: A message is received
+	 *  - `ExitGame`: The host stopped the game
+	 *  - `ServerDisconnect`: The server connection is lost
+	 *  - `Pause`: TODO not needed anymore
+	 *  - `Resume`: TODO not needed anymore
+	 * @return The previous state by default, `InGame` for the `Start` event,
+	 * `InLobbySearch` for the `ExitGame` and `End` event and `Disconnected` for the `ServerDisconnect` event
+	 * @throws RuntimeException if:
+	 *	- We call this method with an empty event queue
+	 *	- We try to handle a non-existing event
+	 *	- An internal error (not caused by the server) occurs during the event handling (should never happen)
+	 * @author Marco
+	 */
 	private ClientStatus handleEvent() {
 		Optional<ServerEvent> event = networkManager.getEvent();
 		if (event.isEmpty()) {
