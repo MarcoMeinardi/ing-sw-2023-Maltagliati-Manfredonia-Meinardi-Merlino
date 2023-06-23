@@ -446,17 +446,21 @@ public class LobbyViewController implements Initializable{
         switch (event.get().getType()) {
             case Join -> {
                 String joinedPlayer = (String)event.get().getData();
-                try {
-                    lobby.addPlayer(joinedPlayer);
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
-                            updateLobby();
-                            showStart();
-                        }
-                    });
-                } catch (Exception e) {}  // Cannot happen
+                if (!lobby.getPlayers().contains(joinedPlayer)) {
+                    try {
+                        lobby.addPlayer(joinedPlayer);
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
+                                updateLobby();
+                                showStart();
+                            }
+                        });
+                    } catch (Exception e) {
+                        throw new RuntimeException("Removed non existing player from lobby");
+                    }
+                }
                 if (!joinedPlayer.equals(username)) {
                     System.out.println(joinedPlayer + " joined the lobby");
                 }
@@ -473,7 +477,9 @@ public class LobbyViewController implements Initializable{
                             showStart();
                         }
                     });
-                } catch (Exception e) {}  // Cannot happen
+                } catch (Exception e) {
+                    throw new RuntimeException("Removed non existing player from lobby");
+                }
                 System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
             }
             case NewMessage -> {

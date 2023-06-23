@@ -891,7 +891,7 @@ public class GameViewController implements Initializable {
                         players.getItems().clear();
                         players.getItems().addAll(lobby.getPlayers());
                     });
-                } catch (Exception e) {  // Cannot happen
+                } catch (Exception e) {
                     throw new RuntimeException("Added already existing player to lobby");
                 }
             }
@@ -910,7 +910,7 @@ public class GameViewController implements Initializable {
                         }
                     });
 
-                } catch (Exception e) {  // Cannot happen
+                } catch (Exception e) {
                     throw new RuntimeException("Removed non existing player from lobby");
                 }
                 System.out.format("[*] %s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");

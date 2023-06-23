@@ -154,7 +154,7 @@ public class CLI {
 					GameInfo gameInfo = (GameInfo)result.unwrap();
 					game = new CLIGame(gameInfo, username);
 					lobby = gameInfo.lobby();
-					yourTurn = game.players.get(0).equals(username);
+					yourTurn = gameInfo.currentPlayer().equals(username);
 					gameStarted = true;
 					return ClientStatus.InGame;
 				}
@@ -657,10 +657,10 @@ public class CLI {
 		switch (event.get().getType()) {
 			case Join -> {
 				String joinedPlayer = (String)event.get().getData();
-				if (!joinedPlayer.equals(username)) {
+				if (!lobby.getPlayers().contains(joinedPlayer)) {
 					try {
 						lobby.addPlayer(joinedPlayer);
-					} catch (Exception e) {  // Cannot happen
+					} catch (Exception e) {
 						throw new RuntimeException("Added already existing player to lobby");
 					}
 					System.out.println("[*] " + joinedPlayer + " joined the lobby");
@@ -673,7 +673,7 @@ public class CLI {
 					wasHost = isHost;
 					lobby.removePlayer(leftPlayer);
 					isHost = lobby.isHost(username);
-				} catch (Exception e) {  // Cannot happen
+				} catch (Exception e) {
 					throw new RuntimeException("Removed non existing player from lobby");
 				}
 				System.out.format("[*] %s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
