@@ -7,6 +7,12 @@ import model.*;
 import network.parameters.GameInfo;
 import network.parameters.Update;
 
+/**
+ * This class contains all the data needed to update the GUI.
+ * It is used by the GUI to update the view.
+ *
+ */
+
 public class GameData {
     private ArrayList<Shelf> shelves;
     private Shelf myShelf;
@@ -19,6 +25,14 @@ public class GameData {
     private ArrayList<Integer> commonObjectivesPoints;
     private ScoreBoard scoreBoard;
     private String currentPlayer;
+
+    /**
+     *
+     * This constructor is used to create the GameData object when the game starts.
+     * @param data contains all the data needed to create the GameData object.
+     * @param me is the name of the player using the GUI.
+     *
+     */
 
     public GameData(GameInfo data, String me){
         this.me = me;
@@ -39,6 +53,14 @@ public class GameData {
             }
         }
     }
+
+    /**
+     * This method is used to update the GameData object.
+     * It updates the shelves of the players, the tabletop and the common objectives.
+     *
+     * @param update contains all the data needed to update the GameData object.
+     *
+     */
 
     public void update(Update update) {
         updateTableTop(update.tableTop());
@@ -62,6 +84,13 @@ public class GameData {
             }
         }
     }
+
+    /**
+     * This method is used to update the tableTop.
+     *
+     * @param tableTop is the new tableTop.
+     *
+     */
 
     private void updateTableTop(Card[][] tableTop) {
         this.tableTop = new Optional[TableTop.SIZE][TableTop.SIZE];
