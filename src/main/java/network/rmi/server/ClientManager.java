@@ -99,20 +99,19 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
             wasConnected = true;
         }
         Optional<GameController> game = LobbyController.getInstance().searchGame(username);
-        if(wasConnected){
-            if(game.isPresent()){
+        if (wasConnected) {
+            Client client = clients.get(username);
+            if (client == null) {
+                return Result.err(new ClientConnectedButNotFoundException(), callId);
+            }
+            client.recoverStatus();
+            client.clearEventQueue();
+            if (game.isPresent()) {
                 GameController gameController = game.get();
                 Player player = gameController.getPlayer(username);
                 return Result.ok(game.get().getGameInfo(player), callId);
             }
-            Client client = clients.get(username);
-            if(client == null){
-                return Result.err(new ClientConnectedButNotFoundException(), callId);
-
-            }
-            client.recoverStatus();
-            client.clearEventQueue();
-        }else {
+        } else {
             synchronized (availablePortLock) {
                 Client client = new Client(username, registry, availablePort);
                 clients.put(username, client);
