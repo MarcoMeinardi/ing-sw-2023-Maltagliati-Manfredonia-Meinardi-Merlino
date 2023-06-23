@@ -1,6 +1,7 @@
 package view.gui;
 
 import controller.lobby.Lobby;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,9 +17,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import network.ClientStatus;
 import network.Result;
+import network.ServerEvent;
 import network.parameters.LobbyCreateInfo;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static view.gui.LoginController.networkManager;
 
@@ -41,6 +44,8 @@ public class CreateLobbyController implements Initializable {
     private Pane pane;
     @FXML
     private Button btnSelect;
+    private Thread serverThread;
+    private ClientStatus state;
 
     /**
      * dummy constructor
@@ -64,6 +69,22 @@ public class CreateLobbyController implements Initializable {
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         btnSelect.setDefaultButton(true);
         nameUser.setText(LoginController.username);
+        state = ClientStatus.InLobbySearch;
+        serverThread = new Thread(() -> {
+            while (state != ClientStatus.Disconnected) {
+                synchronized (networkManager) {
+                    try {
+                        while (!networkManager.hasEvent()) {
+                            networkManager.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                }
+                handleEvent();
+            }
+        });
+        serverThread.start();
     }
 
 
@@ -102,6 +123,7 @@ public class CreateLobbyController implements Initializable {
         }
 
         try {
+            serverThread.interrupt();
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/Lobby.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root, WIDTH, HEIGHT);
@@ -113,5 +135,54 @@ public class CreateLobbyController implements Initializable {
         }
 
     }
+
+    /**
+     * This method is responsible for printing the last view of the program if the server stopped.
+     * It interrupts the server thread,
+     * loads the MessageReturnToLogin.fxml file using FXMLLoader,
+     * sets the new scene to the stage, and displays the stage.
+     *
+     */
+
+    private void returnToLoginMessage(){
+        try {
+            serverThread.interrupt();
+            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MessageReturnToLogin.fxml"));
+            stage = (Stage) (nameUser.getScene().getWindow());
+            scene = new Scene(newRoot, WIDTH, HEIGHT);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * method that handles events received from the server.
+     * It first checks if there is an event available, and if not, it returns.
+     * If there is an event, it switches on the type of the event and performs the appropriate action.
+     * - ServerDisconnect: notifies the players that the server has been disconnected sending them to a scene explaining the situation
+     *
+     * @author Ludovico
+     */
+    private void handleEvent() {
+        Optional<ServerEvent> event = networkManager.getEvent();
+        if (event.isEmpty()) {
+            return; // No event
+        }
+        switch (event.get().getType()) {
+            case ServerDisconnect -> {
+                System.out.println("[WARNING] Server disconnected");
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        returnToLoginMessage();
+                    }
+                });
+            }
+        }
+    }
+
 
 }
