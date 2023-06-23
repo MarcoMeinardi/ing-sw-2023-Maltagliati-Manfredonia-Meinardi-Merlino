@@ -412,7 +412,7 @@ public class LobbyController extends Thread {
      *
      * @param username the username of the player to search for
      * @return an Optional object containing the GameController object representing the game, if found, or an empty Optional object otherwise
-     * @autor Marco
+     * @author Marco
      */
     public Optional<GameController> searchGame(String username) {
         synchronized (games) {
