@@ -40,14 +40,14 @@
          <font>
             <Font name="Arial" size="12.0" />
          </font></Button>
-      <ListView fx:id="chat" editable="true" layoutX="715.0" layoutY="510.0" prefHeight="71.0" prefWidth="327.0" />
-      <Button fx:id="sendMessageButton" layoutX="801.0" layoutY="619.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="37.0" prefWidth="142.0" text="Send message">
+      <ListView fx:id="chat" editable="true" layoutX="715.0" layoutY="513.0" prefHeight="119.0" prefWidth="327.0" />
+      <Button fx:id="sendMessageButton" layoutX="801.0" layoutY="667.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="37.0" prefWidth="142.0" text="Send message">
          <font>
             <Font name="Arial" size="16.0" />
          </font></Button>
-      <TextField fx:id="messageInput" layoutX="715.0" layoutY="582.0" prefHeight="37.0" prefWidth="327.0" promptText="Type your message...">
+      <TextField fx:id="messageInput" layoutX="715.0" layoutY="632.0" prefHeight="37.0" prefWidth="327.0" promptText="Type your message...">
          <font>
-            <Font name="Arial" size="10.0" />
+            <Font name="Arial" size="11.0" />
          </font></TextField>
       <ListView fx:id="players" layoutX="743.0" layoutY="385.0" prefHeight="94.0" prefWidth="271.0" />
       <Label fx:id="messageLabel" alignment="CENTER" layoutX="641.0" layoutY="42.0" prefHeight="37.0" prefWidth="474.0" textFill="#a1ff00">
@@ -63,11 +63,6 @@
          <font>
             <Font name="Arial" size="12.0" />
          </font></TextField>
-      <Label fx:id="pointsLabel" alignment="CENTER" layoutX="620.0" layoutY="661.0" prefHeight="71.0" prefWidth="517.0" textFill="#a1ff00">
-         <font>
-            <Font name="Arial" size="13.0" />
-         </font>
-      </Label>
       <Button fx:id="endGame" layoutX="495.0" layoutY="673.0" mnemonicParsing="false" onAction="#endTheGame" text="Stop game">
          <font>
             <Font name="Arial" size="12.0" />

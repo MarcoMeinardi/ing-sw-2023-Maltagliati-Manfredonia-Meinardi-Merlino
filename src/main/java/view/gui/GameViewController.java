@@ -458,7 +458,7 @@ public class GameViewController implements Initializable {
         if (messageText.isEmpty()) {
             System.out.println("[ERROR] Empty message");
             chat.getItems().add("[ERROR] Empty message");
-            if(chat.getItems().size() != 3){
+            if(chat.getItems().size() != 5){
                 chat.scrollTo(chat.getItems().size()-1);
             }
             return;
@@ -466,7 +466,7 @@ public class GameViewController implements Initializable {
         if (messageText.length() > 100) {
             System.out.println("[ERROR] Message too long");
             chat.getItems().add("[ERROR] Message too long");
-            if(chat.getItems().size() != 3){
+            if(chat.getItems().size() != 5){
                 chat.scrollTo(chat.getItems().size()-1);
             }
             return;
@@ -474,7 +474,7 @@ public class GameViewController implements Initializable {
         if (messageText.startsWith(".") || messageText.startsWith("?")) {
             System.out.println("[ERROR] Commands not supported, use /help for more info");
             chat.getItems().add("[ERROR] Commands not supported. Use /help for more info");
-            if(chat.getItems().size() != 3){
+            if(chat.getItems().size() != 5){
                 chat.scrollTo(chat.getItems().size()-1);
             }
             return;
@@ -483,7 +483,7 @@ public class GameViewController implements Initializable {
             chat.getItems().add("[-Select a name from the list above to send a private message]");
             chat.getItems().add("[-Specific commands supported:]");
             chat.getItems().add("[/help: shows this message]");
-            if(chat.getItems().size() != 3){
+            if(chat.getItems().size() != 5){
                 chat.scrollTo(chat.getItems().size()-1);
             }
             return;
@@ -496,7 +496,7 @@ public class GameViewController implements Initializable {
                 if (result.isErr()) {
                     System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
                     chat.getItems().add("[ERROR] We could not send your message, please try again later");
-                    if(chat.getItems().size() != 3){
+                    if(chat.getItems().size() != 5){
                         chat.scrollTo(chat.getItems().size()-1);
                     }
                     return;
@@ -510,7 +510,7 @@ public class GameViewController implements Initializable {
             if (result.isErr()) {
                 System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
                 chat.getItems().add("[ERROR] We could not send your message, please try again later");
-                if(chat.getItems().size() != 3){
+                if(chat.getItems().size() != 5){
                     chat.scrollTo(chat.getItems().size()-1);
                 }
                 return;
@@ -547,7 +547,7 @@ public class GameViewController implements Initializable {
 
         if(message.idSender().equals(Server.SERVER_NAME)){
             chat.getItems().add(String.format("[%s:%s] %s ", hour, minute, "From server: " + message.message()));
-            if(chat.getItems().size() != 3){
+            if(chat.getItems().size() != 5){
                 chat.scrollTo(chat.getItems().size()-1);
             }
             return;
@@ -568,7 +568,7 @@ public class GameViewController implements Initializable {
                 }
             }
         }
-        if(chat.getItems().size() != 3){
+        if(chat.getItems().size() != 5){
             chat.scrollTo(chat.getItems().size()-1);
         }
     }
