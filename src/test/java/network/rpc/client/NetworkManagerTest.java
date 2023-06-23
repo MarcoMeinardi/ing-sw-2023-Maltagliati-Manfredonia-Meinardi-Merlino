@@ -1,10 +1,8 @@
 package network.rpc.client;
 
 import com.sun.jdi.connect.spi.Connection;
-import network.Function;
-import network.Result;
-import network.Server;
-import network.Service;
+import junit.framework.AssertionFailedError;
+import network.*;
 
 
 import java.io.ObjectInputStream;
@@ -12,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import static org.junit.Assert.*;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class NetworkManagerTest {
