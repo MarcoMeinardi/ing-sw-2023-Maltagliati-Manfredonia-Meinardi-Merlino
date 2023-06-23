@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 public class NetworkManager implements NetworkManagerInterface {
+    static private final int socketTimeout = 60000;
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -51,6 +52,7 @@ public class NetworkManager implements NetworkManagerInterface {
         this.socket = new Socket(server.ip(), server.port());
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
+        this.socket.setSoTimeout(socketTimeout);
         testConnection();
         setConnected(true);
         mainThread = new Thread(this::run);
