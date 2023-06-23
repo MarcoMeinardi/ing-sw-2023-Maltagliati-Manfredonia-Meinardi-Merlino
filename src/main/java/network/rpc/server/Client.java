@@ -220,4 +220,9 @@ public class Client extends Thread implements ClientInterface {
 			return handler;
 		}
 	}
+
+	@Override
+	public void recoverStatus(){
+		statusHandler.setStatus(statusHandler.getLastValidStatus());
+	}
 }

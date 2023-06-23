@@ -25,12 +25,12 @@ import java.util.logging.Logger;
  */
 public class Client implements ClientService, ClientInterface {
     ClientStatusHandler statusHandler;
-    Queue<ServerEvent> serverEvents = new LinkedList<>();
+    private final Queue<ServerEvent> serverEvents = new LinkedList<>();
     BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> callHandler;
-    Object handlerLock = new Object();
+    final Object handlerLock = new Object();
     String username;
     LocalDateTime lastMessageTime = LocalDateTime.now();
-    Object messageTimeLock = new Object();
+    final Object messageTimeLock = new Object();
     ClientService stub;
     private static final DateTimeFormatter format = new DateTimeFormatterBuilder().appendPattern("HH:mm:ss").toFormatter();
     private static final Logger logger = Logger.getLogger(Client.class.getName());
@@ -147,5 +147,19 @@ public class Client implements ClientService, ClientInterface {
             }
         }
         return true;
+    }
+
+    /**
+     * Method to clear the event queue and avoid old event to be pulled.
+     */
+    protected void clearEventQueue(){
+        synchronized (serverEvents){
+            serverEvents.clear();
+        }
+    }
+
+    @Override
+    public void recoverStatus(){
+        statusHandler.setStatus(statusHandler.getLastValidStatus());
     }
 }

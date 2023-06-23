@@ -5,6 +5,7 @@ import controller.lobby.LobbyController;
 import model.Player;
 import network.*;
 import network.errors.ClientAlreadyConnectedException;
+import network.errors.ClientConnectedButNotFoundException;
 import network.errors.InvalidUsernameException;
 import network.parameters.Login;
 import network.rmi.LoginService;
@@ -98,10 +99,19 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
             wasConnected = true;
         }
         Optional<GameController> game = LobbyController.getInstance().searchGame(username);
-        if(wasConnected && game.isPresent()){
-            GameController gameController = game.get();
-            Player player = gameController.getPlayer(username);
-            return Result.ok(game.get().getGameInfo(player), callId);
+        if(wasConnected){
+            if(game.isPresent()){
+                GameController gameController = game.get();
+                Player player = gameController.getPlayer(username);
+                return Result.ok(game.get().getGameInfo(player), callId);
+            }
+            Client client = clients.get(username);
+            if(client == null){
+                return Result.err(new ClientConnectedButNotFoundException(), callId);
+
+            }
+            client.recoverStatus();
+            client.clearEventQueue();
         }else {
             synchronized (availablePortLock) {
                 Client client = new Client(username, registry, availablePort);

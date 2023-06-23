@@ -70,4 +70,9 @@ public interface ClientInterface {
      * @return true if the client is still connected, false otherwise
      */
     public boolean checkPing();
+
+    /**
+     * Set Status to last valid status
+     */
+    public void recoverStatus();
 }
