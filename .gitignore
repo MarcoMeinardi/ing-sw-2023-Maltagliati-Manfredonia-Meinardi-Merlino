@@ -8,7 +8,11 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # Ignore game assets
+!src/main/resources/img/
 src/main/resources/img/*
+!src/main/resources/img/scoring tokens/
+src/main/resources/img/scoring tokens/*
+!src/main/resources/img/scoring tokens/transparent.jpg
 
 # User-specific stuff
 .idea/**/workspace.xml
