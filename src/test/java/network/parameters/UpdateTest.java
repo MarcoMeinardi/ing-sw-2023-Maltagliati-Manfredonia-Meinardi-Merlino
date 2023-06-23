@@ -40,7 +40,7 @@ public class UpdateTest extends TestCase {
     public void testCompletedObjectives() {
         ArrayList<Cockade> completedObjectives = new ArrayList<>();
         completedObjectives.add(new Cockade("Obiettivo 1", 1));
-        Update update = new Update(null, null, null, null, null, null);
+        Update update = new Update(null, null, null, null, completedObjectives, null);
         assertEquals(completedObjectives, update.completedObjectives());
     }
 
