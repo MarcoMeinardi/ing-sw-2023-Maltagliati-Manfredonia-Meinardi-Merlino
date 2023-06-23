@@ -181,6 +181,7 @@ public class CreateLobbyController implements Initializable {
                     }
                 });
             }
+            default -> throw new RuntimeException("Unhandled event");
         }
     }
 
