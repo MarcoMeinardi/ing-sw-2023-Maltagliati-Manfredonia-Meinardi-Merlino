@@ -254,6 +254,7 @@ public class MainMenuController implements Initializable {
                     }
                 });
             }
+            default -> throw new RuntimeException("Unhandled event");
         }
     }
 
