@@ -82,17 +82,20 @@ public class LobbyController extends Thread {
         try {
             while (true) {
                 Thread.sleep(1000);
+                ArrayList<String> toRemove = new ArrayList<>();
                 synchronized (lobbies) {
                     for (Lobby lobby : lobbies.values()) {
                         ArrayList<String> players = lobby.getPlayers();
-                        for (int i = 0; i < players.size(); i++) {
-                            Optional<ClientInterface> client = clientManager.getClient(players.get(i));
+                        for (String player : players) {
+                            Optional<ClientInterface> client = clientManager.getClient(player);
                             if (client.isEmpty() || client.get().isDisconnected()) {
-                                    leaveLobby(players.get(i));
-                                    client.get().setCallHandler(LobbyController.getInstance()::handleLobbySearch);
-                                    i--;
+                                toRemove.add(player);
+                                client.get().setCallHandler(LobbyController.getInstance()::handleLobbySearch);
                             }
                         }
+                    }
+                    for (String player : toRemove) {
+                        leaveLobby(player);
                     }
                 }
             }
