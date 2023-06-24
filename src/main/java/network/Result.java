@@ -9,10 +9,10 @@ import java.util.UUID;
  * @param <T> the type of the result
  */
 public class Result<T extends Serializable> implements Serializable{
-    private T value;
-    private Exception exception;
+    private final T value;
+    private final Exception exception;
 
-    private UUID id;
+    private final UUID id;
 
     /**
      * Create a new result

@@ -44,6 +44,7 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
         availablePortLock = new Object();
         stub = (LoginService) UnicastRemoteObject.exportObject(this, availablePort);
         availablePort++;
+        System.setProperty("java.rmi.server.hostname", "0.0.0.0");
         registry = LocateRegistry.createRegistry(port);
         registry.rebind("LoginService", stub);
     }

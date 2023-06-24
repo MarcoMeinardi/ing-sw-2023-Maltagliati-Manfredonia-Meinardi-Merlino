@@ -57,7 +57,7 @@ public class Function<P extends Serializable,R extends Serializable>{
      * @return the Call object of the function.
      */
     public Call<P> getCall(){
-        return new Call(params, service, id);
+        return new Call<>(params, service, id);
     }
 
     /**
