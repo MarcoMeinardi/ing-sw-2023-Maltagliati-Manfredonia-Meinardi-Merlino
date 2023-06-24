@@ -254,6 +254,9 @@ public class MainMenuController implements Initializable {
                     }
                 });
             }
+            case Join -> {
+                System.out.println("[INFO] you joined the lobby");
+            }
             default -> throw new RuntimeException("Unhandled event");
         }
     }
