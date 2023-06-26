@@ -17,11 +17,10 @@ import model.TableTop;
 import static network.Server.SERVER_NAME;
 
 /**
- * Class that handles the CLI functions
- * This class is a singleton.
+ * Singleton class that handles the CLI functions
  * To run the CLI do:
- * CLI cli = CLI.getInstance();
- * cli.run();
+ * `CLI cli = CLI.getInstance();`
+ * `cli.run();`
  * @author Marco
  */
 public class CLI {
@@ -47,7 +46,8 @@ public class CLI {
 	private CLIGame game;
 
 	/**
-	 * Constructor for the CLI class
+	 * Class constructor
+	 *
 	 * @author Marco
 	 */
 	private CLI() {
@@ -57,9 +57,11 @@ public class CLI {
 		doPrint = true;
 		gameStarted = false;
 	}
+
 	/**
-	 * Return the instance of the CLI singleton
-	 * @return the CLI instance
+	 * Return the instance of the `CLI` singleton
+	 * @return the `CLI` instance
+	 *
 	 * @author Marco
 	 */
 	public static CLI getInstance() {
@@ -72,6 +74,7 @@ public class CLI {
 	/**
 	 * Infinite loop to handle the whole game events
 	 * @throws RuntimeException if we fall in a state that does not exist
+	 *
 	 * @author Marco
 	 */
 	public void run() {
@@ -91,6 +94,7 @@ public class CLI {
 	/**
 	 * Print the initial banner.
 	 * It is called only once in the beginning of the game
+	 *
 	 * @author Marco
 	 */
 	private void printWelcome() {
@@ -102,6 +106,7 @@ public class CLI {
 	 * Ask for the server information and try to connect to the specified server
 	 * with the specified method.
 	 * @return `Idle` if the connection succeed, `Disconnected` otherwise
+	 *
 	 * @author Marco
 	 */
 	private ClientStatus connect() {
@@ -118,6 +123,7 @@ public class CLI {
 
 	/**
 	 * Ask for the server ip and connection method.
+	 *
 	 * @author Marco
 	 */
 	private void askIpAndMethod() {
@@ -141,6 +147,7 @@ public class CLI {
 	 * If the connection is successful, check if the user was already in game and
 	 * if so, bring him back in the game pre-disconnection.
 	 * @return `Idle` if login fails, `InLobbySearch` if new user, `InGame` if reconnected user.
+	 *
 	 * @author Marco
 	 */
 	private ClientStatus login() {
@@ -183,6 +190,7 @@ public class CLI {
 	 * @return `InLobbySearch` if any error occurs, `InLobby` if the user entered a lobby,
 	 * `InLobbySearch` if the user listed the lobbies and `Disconnected` if the user choose to quit
 	 * @throws RuntimeException if we try to handle a non-existing option.
+	 *
 	 * @author Marco
 	 */
 	private ClientStatus searchLobby() {
@@ -257,6 +265,7 @@ public class CLI {
 	 * @return `InLobby` if any error occurs or if the player sends a message or list the players,
 	 * `InGame` if the host starts or loads a game, `InLobbySearch` if the players leaves the lobby.
 	 * @throws RuntimeException if we try to handle a non-existing option.
+	 *
 	 * @author Marco
 	 */
 	private ClientStatus inLobby() {
@@ -341,6 +350,7 @@ public class CLI {
 	 * @return `InGame` if any error occurs or if the players sends a message or displays anything, otherwise
 	 * it returns whatever the function corresponding to the selected options returns.
 	 * @throws RuntimeException if we try to handle a non-existing option.
+	 *
 	 * @author Marco
 	 */
 	private ClientStatus inGame() {
@@ -394,6 +404,7 @@ public class CLI {
 	 * Checks if the player has the ability to start the game, so if it is the host of the lobby
 	 * and if we have at least two players.
 	 * @return if the player can start the game
+	 *
 	 * @author Marco
 	 */
 	private boolean checkCanStartGame() {
@@ -411,6 +422,7 @@ public class CLI {
 	 * Convert an input string to a `Point` object with the corresponding coordinates.
 	 * @param line a string with the wanted coordinates in the form (`a1` or `1a`)
 	 * @return the `Point` object corresponding to the input coordinates.
+	 *
 	 * @author Marco
 	 */
 	private Point stringToPoint(String line) {
@@ -434,6 +446,7 @@ public class CLI {
 	 * Ask the player which cards to pick and in which column to place those.
 	 * @return `InGame` if any error occurs or if the player aborts the selection,
 	 * otherwise what the `waitGlobalUpdate` call returns
+	 *
 	 * @author Marco
 	 */
 	private ClientStatus handlePickCard() {
@@ -508,6 +521,7 @@ public class CLI {
 	 * Handle the `STOP_GAME` interaction.
 	 * Ask the host for confirmation and send to the server the request to stop the game.
 	 * @return `InGame` if any error occurs or if the player aborts the operation, otherwise what the `waitGlobalUpdate` call returns
+	 *
 	 * @author Marco
 	 */
 	private ClientStatus handleStopGame() {
@@ -530,6 +544,7 @@ public class CLI {
 	/**
 	 * Handle the `SEND_MESSAGE` interaction.
 	 * Ask the player for the receiver and the message to send.
+	 *
 	 * @author Marco
 	 */
 	private void sendMessage() {
@@ -572,6 +587,7 @@ public class CLI {
 	/**
 	 * Print the scoreboard as received from the server.
 	 * @param scoreboard The scoreboard to print, a `Scoreboard` object
+	 *
 	 * @author Marco
 	 */
 	private void printEndGame(ScoreBoard scoreboard) {
@@ -620,6 +636,7 @@ public class CLI {
 	/**
 	 * Asynchronously wait for a global update from the server.
 	 * @return The status of the client after the update or the current status if an error occurs
+	 *
 	 * @author Marco
 	 */
 	private ClientStatus waitGlobalUpdate() {
@@ -654,6 +671,7 @@ public class CLI {
 	 *	- We call this method with an empty event queue
 	 *	- We try to handle a non-existing event
 	 *	- An internal error (not caused by the server) occurs during the event handling (should never happen)
+	 *
 	 * @author Marco
 	 */
 	private ClientStatus handleEvent() {
