@@ -162,6 +162,7 @@ public class LoginController implements Initializable {
             stage.show();
 
         } catch (IOException e) {
+            errorLabel.setText("Login failed");
             e.printStackTrace();
         }
 
@@ -186,6 +187,7 @@ public class LoginController implements Initializable {
                 stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
+                errorLabel.setText("Couldn't log you in ongoing game");
                 e.printStackTrace();
             }
         });

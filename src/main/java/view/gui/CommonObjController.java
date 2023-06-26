@@ -26,6 +26,8 @@ public class CommonObjController implements Initializable {
     private Label firstObj;
     @FXML
     private Label secObj;
+    @FXML
+    private Label errorLabel;
 
     /**
      * Method called to load the scene with the two common objectives of the game.
@@ -45,37 +47,41 @@ public class CommonObjController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        GameData gameData = GameViewController.getGameData();
-        ArrayList<String>commonObjectives = gameData.getCommonObjectives();
-        ArrayList<String> allObjectives = CommonObjective.generateAllCommonObjectives(gameData.getPlayersNames().size())
-            .stream()
-            .map(CommonObjective::getName)
-            .collect(Collectors.toCollection(ArrayList::new));
+        try {
+            GameData gameData = GameViewController.getGameData();
+            ArrayList<String> commonObjectives = gameData.getCommonObjectives();
+            ArrayList<String> allObjectives = CommonObjective.generateAllCommonObjectives(gameData.getPlayersNames().size())
+                    .stream()
+                    .map(CommonObjective::getName)
+                    .collect(Collectors.toCollection(ArrayList::new));
 
-        for (String commonObjective : commonObjectives) {
-            int objectiveIndex = allObjectives.indexOf(commonObjective);
-            if (objectiveIndex == -1) {
-                throw new RuntimeException("Cannot find objective");
-            }
+            for (String commonObjective : commonObjectives) {
+                int objectiveIndex = allObjectives.indexOf(commonObjective);
+                if (objectiveIndex == -1) {
+                    throw new RuntimeException("Cannot find objective");
+                }
 
-            String imageName = String.format("/img/common goal cards/%d.jpg", objectiveIndex + 1);
-            String imagePath = getClass().getResource(imageName).toExternalForm();
-            Image image = new Image(imagePath);
-            ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(240);
-            imageView.setFitHeight(155);
-            if(commonObjectives.indexOf(commonObjective) == 0) {
-                firstObj.setText(commonObjective);
-                imageView.setX(30);
-            }
-            else {
-                secObj.setText(commonObjective);
-                imageView.setX(330);
-            }
+                String imageName = String.format("/img/common goal cards/%d.jpg", objectiveIndex + 1);
+                String imagePath = getClass().getResource(imageName).toExternalForm();
+                Image image = new Image(imagePath);
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(240);
+                imageView.setFitHeight(155);
+                if (commonObjectives.indexOf(commonObjective) == 0) {
+                    firstObj.setText(commonObjective);
+                    imageView.setX(30);
+                } else {
+                    secObj.setText(commonObjective);
+                    imageView.setX(330);
+                }
                 imageView.setY(60);
-            pane.getChildren().add(imageView);
-        }
+                pane.getChildren().add(imageView);
+            }
 
+        }
+        catch (Exception e) {
+            errorLabel.setText("Couldn't find objectives");
+        }
     }
 
 }

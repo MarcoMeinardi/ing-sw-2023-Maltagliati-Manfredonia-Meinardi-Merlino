@@ -130,6 +130,7 @@ public class CreateLobbyController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+            messageDisplay.setText("Couldn't create lobby");
         }
 
     }
@@ -152,6 +153,7 @@ public class CreateLobbyController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            messageDisplay.setText("Couldn't take you to login");
             throw new RuntimeException(e);
         }
     }

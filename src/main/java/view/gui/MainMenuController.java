@@ -126,6 +126,7 @@ public class MainMenuController implements Initializable {
                 System.out.println("[ERROR] " + result.getException());
             }
         } catch (Exception e) {
+            noFound.setText("Error when asking server for lobbies");
             throw new RuntimeException(e);
         }
     }
@@ -151,6 +152,7 @@ public class MainMenuController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
+            noFound.setText("Error loading the page");
             e.printStackTrace();
         }
 
@@ -196,7 +198,9 @@ public class MainMenuController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+            noFound.setText("Could not load the lobby scene");
         } catch (Exception e) {
+            noFound.setText("Could not join the lobby");
             System.out.println("[ERROR] " + e.getMessage());
         }
 
@@ -220,6 +224,7 @@ public class MainMenuController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            noFound.setText("Could not load the final message scene");
             throw new RuntimeException(e);
         }
     }

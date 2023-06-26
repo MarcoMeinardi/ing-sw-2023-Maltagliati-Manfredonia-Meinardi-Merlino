@@ -225,7 +225,6 @@ public class GameViewController implements Initializable {
                 if(shelfCards[y][x].isPresent()){
                     imageName = cardToImageName(shelfCards[y][x].get());
                     putImageOnScene(imageName, y, x,  shelfCardSize, shelfCardSize, shelfOffSetX, shelfOffSetY, shelfCardStepX, shelfCardStepY, true);
-
                 }
             }
         }
@@ -416,6 +415,7 @@ public class GameViewController implements Initializable {
             });
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
+            changeLabel(messageLabel, "Couln't perform the move");
         }
 
     }
@@ -518,6 +518,7 @@ public class GameViewController implements Initializable {
             addMessageToChat(message);
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
+            changeLabel(messageLabel, "Couln't send the message");
         }
 
     }
@@ -589,6 +590,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
+            messageLabel.setText("Couldn't load the personal objectives");
             throw new RuntimeException(e);
         }
     }
@@ -616,6 +618,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
+            messageLabel.setText("Couldn't load the shelves");
             throw new RuntimeException(e);
         }
     }
@@ -637,6 +640,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
+            messageLabel.setText("Couldn't load the common objectives");
             throw new RuntimeException(e);
         }
     }
@@ -659,6 +663,7 @@ public class GameViewController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            changeLabel(messageLabel, "Couldn't load the end screen");
             throw new RuntimeException(e);
         }
     }
@@ -681,6 +686,7 @@ public class GameViewController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            changeLabel(messageLabel, "Couldn't load the final message screen");
             throw new RuntimeException(e);
         }
     }
@@ -703,6 +709,7 @@ public class GameViewController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            changeLabel(messageLabel, "Couldn't load the final message screen");
             throw new RuntimeException(e);
         }
     }
@@ -757,6 +764,7 @@ public class GameViewController implements Initializable {
                             return;
                         }
                     } catch (Exception e) {
+                        changeLabel(messageLabel, "Cannot stop the game");
                         System.out.println("[ERROR] " + e.getMessage());
                     }
                 }
@@ -891,6 +899,7 @@ public class GameViewController implements Initializable {
                         players.getItems().addAll(lobby.getPlayers());
                     });
                 } catch (Exception e) {
+                    changeLabel(messageLabel, "Player already in lobby");
                     throw new RuntimeException("Added already existing player to lobby");
                 }
             }
@@ -910,6 +919,7 @@ public class GameViewController implements Initializable {
                     });
 
                 } catch (Exception e) {
+                    changeLabel(messageLabel, "Player not in lobby");
                     throw new RuntimeException("Removed non existing player from lobby");
                 }
                 System.out.format("[*] %s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");

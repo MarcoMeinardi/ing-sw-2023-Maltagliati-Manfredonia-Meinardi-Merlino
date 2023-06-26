@@ -38,10 +38,6 @@ public class ShelvesController implements Initializable {
     @FXML
     private Label player4;
     @FXML
-    private ImageView shelf;
-    @FXML
-    private ImageView shelf2;
-    @FXML
     private ImageView shelf3;
     @FXML
     private ImageView shelf4;

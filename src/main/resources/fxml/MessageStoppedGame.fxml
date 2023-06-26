@@ -18,7 +18,7 @@
             <Rectangle2D height="760.0" width="1140.0" />
          </viewport>
       </ImageView>
-      <Label alignment="CENTER" layoutX="270.0" layoutY="198.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="600.0" text="You host decided to stop the game! Too bad loser!">
+      <Label fx:id="messageLabel" alignment="CENTER" layoutX="270.0" layoutY="198.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="600.0" text="You host decided to stop the game! Too bad loser!" textFill="#a1ff00">
          <font>
             <Font size="20.0" />
          </font>
