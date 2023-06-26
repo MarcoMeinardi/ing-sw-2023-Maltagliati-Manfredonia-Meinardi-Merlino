@@ -590,7 +590,7 @@ public class CLI {
 		} else {
 			System.out.println("You:");
 			for (Cockade cockade : yourCockades) {
-				System.out.format("  - %s%n", cockade.name());
+				System.out.format("  - %s ( %d points )%n", cockade.name(), cockade.points());
 			}
 		}
 
@@ -604,7 +604,7 @@ public class CLI {
 			} else {
 				System.out.format("%s:%n", player);
 				for (Cockade cockade : cockades) {
-					System.out.format("  - %s%n", cockade.name());
+					System.out.format("  - %s ( %d points )%n", cockade.name(), cockade.points());
 				}
 			}
 		}
