@@ -74,7 +74,7 @@ public class GameViewController implements Initializable {
     @FXML
     private Button endGame;
     @FXML
-    public TextField messageInput;
+    private TextField messageInput;
     @FXML
     private ListView chat;
     @FXML
@@ -92,7 +92,6 @@ public class GameViewController implements Initializable {
     public static GameData gameData;
     private String username;
     private Map<ImageView, int[]> imageToIndices = new HashMap<>();
-    private Map<int[], ImageView> indicesToImage = new HashMap<>();
     private List<ImageView> selectedImages = new ArrayList<>();
     private boolean yourTurn = false;
     private boolean isPaused = false;
@@ -252,7 +251,7 @@ public class GameViewController implements Initializable {
      * @param isShelf Specifies whether the image is being placed on a shelf or not
      * @author Ludovico
      */
-    public void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY, boolean isShelf){
+    private void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY, boolean isShelf){
         String imagePath = getClass().getResource(imageName).toExternalForm();
         Image image = new Image(imagePath);
         ImageView imageView = new ImageView(image);
@@ -289,7 +288,7 @@ public class GameViewController implements Initializable {
      * @param isShelf specifies whether the images to be removed are on the shelf or not
      * @author Ludovico
      */
-    public void removeImages(boolean isShelf){
+    private void removeImages(boolean isShelf){
         List<Node> toRemove = new ArrayList<>();
         for(Node child : pane.getChildren()){
             if(child.getId() != null){
@@ -534,7 +533,7 @@ public class GameViewController implements Initializable {
      * @author Ludovico
      */
 
-    public void addMessageToChat(Message message){
+    private void addMessageToChat(Message message){
         Calendar calendar = GregorianCalendar.getInstance();
         String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
         String minute = String.valueOf(calendar.get(Calendar.MINUTE));
@@ -650,7 +649,7 @@ public class GameViewController implements Initializable {
      *
      * @author Ludovico
      */
-    public void printEnd(){
+    private void printEnd(){
         try {
             serverThread.interrupt();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/End.fxml"));

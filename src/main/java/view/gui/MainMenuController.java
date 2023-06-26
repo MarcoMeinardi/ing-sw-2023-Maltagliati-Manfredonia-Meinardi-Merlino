@@ -10,17 +10,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.Cockade;
-import model.ScoreBoard;
 import network.ClientStatus;
 import network.Result;
-import network.Server;
 import network.ServerEvent;
-import network.parameters.Message;
-import network.parameters.Update;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,8 +38,6 @@ public class MainMenuController implements Initializable {
     private Label noFound;
     @FXML
     private ListView<String> listView;
-    @FXML
-    private Pane pane;
     private Thread serverThread;
     private ClientStatus state;
 

@@ -59,10 +59,6 @@ public class EndController implements Initializable {
     @FXML
     private ListView cockadesList4;
     @FXML
-    private Button exitButton;
-    @FXML
-    private Pane shelfPane;
-    @FXML
     private ImageView cockadeImage1;
     @FXML
     private ImageView cockadeImage2;

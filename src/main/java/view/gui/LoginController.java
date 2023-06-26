@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import network.ClientStatus;
@@ -37,13 +36,11 @@ public class LoginController implements Initializable {
     @FXML
     private Label errorLabel;
     @FXML
-    private RadioButton RMIButton, serverButton;
+    private RadioButton RMIButton;
     @FXML
     private Button loginButton;
     @FXML
     private TextField selectedIp;
-    @FXML
-    private Pane pane;
     public static String username;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
@@ -180,7 +177,7 @@ public class LoginController implements Initializable {
      * @author Ludovico
      */
 
-    public void switchToGame() throws IOException {
+    private void switchToGame() throws IOException {
         Platform.runLater(() -> {
             try {
                 Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));

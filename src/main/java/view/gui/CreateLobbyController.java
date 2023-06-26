@@ -41,8 +41,6 @@ public class CreateLobbyController implements Initializable {
     @FXML
     private Label messageDisplay;
     @FXML
-    private Pane pane;
-    @FXML
     private Button btnSelect;
     private Thread serverThread;
     private ClientStatus state;
@@ -52,7 +50,7 @@ public class CreateLobbyController implements Initializable {
      *
     **/
 
-    public CreateLobbyController() {
+    private CreateLobbyController() {
     }
 
 
