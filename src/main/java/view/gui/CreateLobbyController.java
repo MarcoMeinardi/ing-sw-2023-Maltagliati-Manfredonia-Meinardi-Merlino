@@ -118,6 +118,7 @@ public class CreateLobbyController implements Initializable {
         } else {
             messageDisplay.setText("Lobby name already exists");
             System.out.println("[ERROR] " + result.getException());
+            return;
         }
 
         try {
