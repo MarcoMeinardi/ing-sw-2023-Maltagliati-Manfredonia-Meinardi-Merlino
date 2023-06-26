@@ -8,13 +8,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.Cockade;
 import model.Score;
@@ -58,10 +56,6 @@ public class EndController implements Initializable {
     private ListView cockadesList3;
     @FXML
     private ListView cockadesList4;
-    @FXML
-    private Button exitButton;
-    @FXML
-    private Pane shelfPane;
     @FXML
     private ImageView cockadeImage1;
     @FXML
@@ -263,12 +257,18 @@ public class EndController implements Initializable {
 
     @FXML
     private void goToLobbies(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
-        stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root, WIDTH, HEIGHT);
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
+            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            scene = new Scene(root, WIDTH, HEIGHT);
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+            titleLabel.setText("Error loading the main menu");
+        }
     }
 
 

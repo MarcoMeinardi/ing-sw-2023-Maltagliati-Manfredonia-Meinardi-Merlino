@@ -41,8 +41,6 @@ public class CreateLobbyController implements Initializable {
     @FXML
     private Label messageDisplay;
     @FXML
-    private Pane pane;
-    @FXML
     private Button btnSelect;
     private Thread serverThread;
     private ClientStatus state;
@@ -102,8 +100,8 @@ public class CreateLobbyController implements Initializable {
      *
      * @author Ludovico
      * */
-
-    public void createLobby(ActionEvent actionEvent) throws Exception {
+    @FXML
+    private void createLobby(ActionEvent actionEvent) throws Exception {
 
         String lobbyName = nameLobby.getText();
         if(lobbyName.isEmpty()) {
@@ -132,6 +130,7 @@ public class CreateLobbyController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+            messageDisplay.setText("Couldn't create lobby");
         }
 
     }
@@ -154,6 +153,7 @@ public class CreateLobbyController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            messageDisplay.setText("Couldn't take you to login");
             throw new RuntimeException(e);
         }
     }

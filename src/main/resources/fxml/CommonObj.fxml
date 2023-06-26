@@ -26,4 +26,9 @@
          <Font name="Arial" size="14.0" />
       </font>
    </Label>
+   <Label fx:id="errorLabel" alignment="CENTER" layoutX="150.0" layoutY="346.0" maxWidth="333.0" minHeight="40.0" minWidth="300.0" textFill="#a1ff00">
+      <font>
+         <Font name="Arial" size="16.0" />
+      </font>
+   </Label>
 </AnchorPane>

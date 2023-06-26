@@ -1,11 +1,13 @@
 package view.gui;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,6 +24,8 @@ public class MessageStoppedGameController implements Initializable {
     private static final int HEIGHT = 760;
     private Stage stage;
     private Scene scene;
+    @FXML
+    private Label messageLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -36,7 +40,8 @@ public class MessageStoppedGameController implements Initializable {
      * @author Ludovico
      */
 
-    public void backToLobbies(ActionEvent actionEvent) {
+    @FXML
+    private void backToLobbies(ActionEvent actionEvent) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
@@ -45,6 +50,7 @@ public class MessageStoppedGameController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
+            messageLabel.setText("Error while loading the main menu");
             e.printStackTrace();
         }
     }

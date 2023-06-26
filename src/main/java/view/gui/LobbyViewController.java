@@ -14,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import network.*;
@@ -37,23 +36,21 @@ public class LobbyViewController implements Initializable{
     private static final int WIDTH = 1140;
     private static final int HEIGHT = 760;
     @FXML
-    public TextField messageInput;
+    private TextField messageInput;
     @FXML
-    public Button startButton;
+    private Button startButton;
     @FXML
-    public Button sendMessageButton;
+    private Button sendMessageButton;
     @FXML
     private ListView chat;
     @FXML
-    public Button quitLobby;
+    private Button quitLobby;
     @FXML
-    public ListView players;
+    private ListView players;
     @FXML
-    public Label descriptorLabel;
+    private Label descriptorLabel;
     @FXML
     private Button loadButton;
-    @FXML
-    private Pane pane;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
     public static Lobby lobby;
@@ -110,15 +107,15 @@ public class LobbyViewController implements Initializable{
         serverThread.start();
     }
 
-    /**  TODO WRONG DOCS
-     * method called to add items to the list view showing the names of the players.
+    /**
+     * method called to add items to the list view showing
+     * the names of the players and add the help message in chat.
      * It is called when the lobby is created and when a player joins the lobby.
-     * Calls updateLobby() method to fill the names in the right spots after they
-     * are initialized.
+     * Calls updateLobby() method to fill the names in the right spots
      *
      * @author Ludovico
      */
-    public void startLobby() {
+    private void startLobby() {
         chat.getItems().add("[Type /help to see the list of commands]");
         updateLobby();
     }
@@ -129,7 +126,7 @@ public class LobbyViewController implements Initializable{
      *
      * @author Ludovico
      */
-    public void updateLobby() {
+    private void updateLobby() {
         players.getItems().clear();
         players.getItems().addAll(lobby.getPlayers());
     }
@@ -140,7 +137,7 @@ public class LobbyViewController implements Initializable{
      *
      * @author Ludovico
      */
-    public void showStart(){
+    private void showStart(){
         if(lobby.isHost(username)){
             startButton.setVisible(true);
             loadButton.setVisible(true);
@@ -169,7 +166,8 @@ public class LobbyViewController implements Initializable{
      * @author Ludovico
      */
 
-    public void quitLobby(ActionEvent actionEvent) throws Exception {
+    @FXML
+    private void quitLobby(ActionEvent actionEvent) throws Exception {
         Result result = networkManager.lobbyLeave().waitResult();
         if (result.isOk()) {
             LoginController.state = ClientStatus.InLobbySearch;
@@ -182,6 +180,7 @@ public class LobbyViewController implements Initializable{
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
+                descriptorLabel.setText("Couldn't load the main menu");
                 e.printStackTrace();
             }
         } else {
@@ -201,8 +200,8 @@ public class LobbyViewController implements Initializable{
      * @throws Exception
      * @author Riccardo, Ludovico
      */
-
-    public void startGame(ActionEvent actionEvent) throws Exception{
+    @FXML
+    private void startGame(ActionEvent actionEvent) throws Exception{
         if(lobby.getPlayers().size() < 2){
             descriptorLabel.setText("");
             descriptorLabel.setText("Not enough players");
@@ -223,7 +222,7 @@ public class LobbyViewController implements Initializable{
      * @author Ludovico
      */
 
-    public void switchToGame() throws IOException{
+    private void switchToGame() throws IOException{
         LoginController.state = ClientStatus.InGame;
         state = ClientStatus.InGame;
         try {
@@ -236,6 +235,7 @@ public class LobbyViewController implements Initializable{
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
+            descriptorLabel.setText("Couldn't load the game");
             e.printStackTrace();
         }
     }
@@ -256,7 +256,8 @@ public class LobbyViewController implements Initializable{
      * @author Ludovico
      */
 
-    public void sendMessage(ActionEvent actionEvent) throws Exception{
+    @FXML
+    private void sendMessage(ActionEvent actionEvent) throws Exception{
         String messageText = messageInput.getText();
         messageInput.clear();
 
@@ -324,6 +325,7 @@ public class LobbyViewController implements Initializable{
             Message message = new Message(username, messageText);
             addMessageToChat(message);
         } catch (Exception e) {
+            descriptorLabel.setText("Couldn't send message");
             System.out.println("[ERROR] " + e.getMessage());
         }
 
@@ -340,7 +342,7 @@ public class LobbyViewController implements Initializable{
      * @author Ludovico
      */
 
-    public void addMessageToChat(Message message){
+    private void addMessageToChat(Message message){
         Calendar calendar = GregorianCalendar.getInstance();
         String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
         String minute = String.valueOf(calendar.get(Calendar.MINUTE));
@@ -400,7 +402,6 @@ public class LobbyViewController implements Initializable{
         Result result = networkManager.gameLoad().waitResult();
         if(result.isOk()){
             System.out.println("[INFO] Game loaded");
-            return;
         }
         else{
             descriptorLabel.setText("We could not load the game");
@@ -417,6 +418,7 @@ public class LobbyViewController implements Initializable{
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            descriptorLabel.setText("Couldn't load the error message scene");
             throw new RuntimeException(e);
         }
     }
@@ -458,7 +460,13 @@ public class LobbyViewController implements Initializable{
                             }
                         });
                     } catch (Exception e) {
-                        throw new RuntimeException("Removed non existing player from lobby");
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                descriptorLabel.setText("We could not add the player to the lobby");
+                            }
+                        });
+                        throw new RuntimeException("Coulnt' add player to lobby");
                     }
                 }
                 if (!joinedPlayer.equals(username)) {
@@ -478,6 +486,12 @@ public class LobbyViewController implements Initializable{
                         }
                     });
                 } catch (Exception e) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            descriptorLabel.setText("We could not remove the player from the lobby");
+                        }
+                    });
                     throw new RuntimeException("Removed non existing player from lobby");
                 }
                 System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
@@ -502,11 +516,10 @@ public class LobbyViewController implements Initializable{
                     @Override
                     public void run() {
                         try {
-
                             switchToGame();
-
                         } catch (Exception e) {
                             e.printStackTrace();
+                            descriptorLabel.setText("We could not switch to the game scene");
                         }
                     }
                 });

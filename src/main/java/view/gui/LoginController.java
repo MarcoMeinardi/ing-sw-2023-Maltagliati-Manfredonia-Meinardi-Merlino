@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import network.ClientStatus;
@@ -37,13 +36,11 @@ public class LoginController implements Initializable {
     @FXML
     private Label errorLabel;
     @FXML
-    private RadioButton RMIButton, serverButton;
+    private RadioButton RMIButton;
     @FXML
     private Button loginButton;
     @FXML
     private TextField selectedIp;
-    @FXML
-    private Pane pane;
     public static String username;
     public static NetworkManagerInterface networkManager;
     public static ClientStatus state;
@@ -89,7 +86,8 @@ public class LoginController implements Initializable {
      * The click of the login button.
      * */
 
-    public void switchToMainMenu(javafx.event.ActionEvent actionEvent) {
+    @FXML
+    private void switchToMainMenu(javafx.event.ActionEvent actionEvent) {
 
         try {
             stage = (Stage)(loginButton.getScene().getWindow());
@@ -165,6 +163,7 @@ public class LoginController implements Initializable {
             stage.show();
 
         } catch (IOException e) {
+            errorLabel.setText("Login failed");
             e.printStackTrace();
         }
 
@@ -180,7 +179,7 @@ public class LoginController implements Initializable {
      * @author Ludovico
      */
 
-    public void switchToGame() throws IOException {
+    private void switchToGame() throws IOException {
         Platform.runLater(() -> {
             try {
                 Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
@@ -189,6 +188,7 @@ public class LoginController implements Initializable {
                 stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
+                errorLabel.setText("Couldn't log you in ongoing game");
                 e.printStackTrace();
             }
         });

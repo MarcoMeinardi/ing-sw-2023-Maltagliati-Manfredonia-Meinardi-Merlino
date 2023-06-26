@@ -38,10 +38,6 @@ public class ShelvesController implements Initializable {
     @FXML
     private Label player4;
     @FXML
-    private ImageView shelf;
-    @FXML
-    private ImageView shelf2;
-    @FXML
     private ImageView shelf3;
     @FXML
     private ImageView shelf4;
@@ -199,7 +195,7 @@ public class ShelvesController implements Initializable {
      * @author Ludovico
      */
 
-    public void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY){
+    private void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY){
         String imagePath = getClass().getResource(imageName).toExternalForm();
         Image image = new Image(imagePath);
         ImageView imageView = new ImageView(image);

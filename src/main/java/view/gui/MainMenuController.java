@@ -10,17 +10,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.Cockade;
-import model.ScoreBoard;
 import network.ClientStatus;
 import network.Result;
-import network.Server;
 import network.ServerEvent;
-import network.parameters.Message;
-import network.parameters.Update;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,8 +38,6 @@ public class MainMenuController implements Initializable {
     private Label noFound;
     @FXML
     private ListView<String> listView;
-    @FXML
-    private Pane pane;
     private Thread serverThread;
     private ClientStatus state;
 
@@ -106,7 +99,8 @@ public class MainMenuController implements Initializable {
      * @author Ludovico
      */
 
-    public void refreshLobbies(javafx.event.ActionEvent actionEvent){
+    @FXML
+    private void refreshLobbies(javafx.event.ActionEvent actionEvent){
         listView.getItems().clear();
         askNetForLobbies();
     }
@@ -117,7 +111,7 @@ public class MainMenuController implements Initializable {
      * @author Ludovico
      */
 
-    public void askNetForLobbies(){
+    private void askNetForLobbies(){
         try {
             Result<ArrayList<Lobby>> result = networkManager.lobbyList().waitResult();
             if (result.isOk()) {
@@ -133,6 +127,7 @@ public class MainMenuController implements Initializable {
                 System.out.println("[ERROR] " + result.getException());
             }
         } catch (Exception e) {
+            noFound.setText("Error when asking server for lobbies");
             throw new RuntimeException(e);
         }
     }
@@ -147,7 +142,8 @@ public class MainMenuController implements Initializable {
      * @author Ludovico
      */
 
-    public void switchToCreateLobby(javafx.event.ActionEvent actionEvent ) {
+    @FXML
+    private void switchToCreateLobby(javafx.event.ActionEvent actionEvent ) {
 
         try {
             serverThread.interrupt();
@@ -158,6 +154,7 @@ public class MainMenuController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
+            noFound.setText("Error loading the page");
             e.printStackTrace();
         }
 
@@ -174,7 +171,8 @@ public class MainMenuController implements Initializable {
      * @author Ludovico
      */
 
-    public void joinLobby(javafx.event.ActionEvent actionEvent) {
+    @FXML
+    private void joinLobby(javafx.event.ActionEvent actionEvent) {
 
         String lobbyName = listView.getSelectionModel().getSelectedItem();
         if(lobbyName == null) {
@@ -203,7 +201,9 @@ public class MainMenuController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+            noFound.setText("Could not load the lobby scene");
         } catch (Exception e) {
+            noFound.setText("Could not join the lobby");
             System.out.println("[ERROR] " + e.getMessage());
         }
 
@@ -227,6 +227,7 @@ public class MainMenuController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            noFound.setText("Could not load the final message scene");
             throw new RuntimeException(e);
         }
     }

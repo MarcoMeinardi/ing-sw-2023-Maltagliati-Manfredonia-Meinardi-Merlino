@@ -74,7 +74,7 @@ public class GameViewController implements Initializable {
     @FXML
     private Button endGame;
     @FXML
-    public TextField messageInput;
+    private TextField messageInput;
     @FXML
     private ListView chat;
     @FXML
@@ -92,7 +92,6 @@ public class GameViewController implements Initializable {
     public static GameData gameData;
     private String username;
     private Map<ImageView, int[]> imageToIndices = new HashMap<>();
-    private Map<int[], ImageView> indicesToImage = new HashMap<>();
     private List<ImageView> selectedImages = new ArrayList<>();
     private boolean yourTurn = false;
     private boolean isPaused = false;
@@ -226,7 +225,6 @@ public class GameViewController implements Initializable {
                 if(shelfCards[y][x].isPresent()){
                     imageName = cardToImageName(shelfCards[y][x].get());
                     putImageOnScene(imageName, y, x,  shelfCardSize, shelfCardSize, shelfOffSetX, shelfOffSetY, shelfCardStepX, shelfCardStepY, true);
-
                 }
             }
         }
@@ -252,7 +250,7 @@ public class GameViewController implements Initializable {
      * @param isShelf Specifies whether the image is being placed on a shelf or not
      * @author Ludovico
      */
-    public void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY, boolean isShelf){
+    private void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY, boolean isShelf){
         String imagePath = getClass().getResource(imageName).toExternalForm();
         Image image = new Image(imagePath);
         ImageView imageView = new ImageView(image);
@@ -289,7 +287,7 @@ public class GameViewController implements Initializable {
      * @param isShelf specifies whether the images to be removed are on the shelf or not
      * @author Ludovico
      */
-    public void removeImages(boolean isShelf){
+    private void removeImages(boolean isShelf){
         List<Node> toRemove = new ArrayList<>();
         for(Node child : pane.getChildren()){
             if(child.getId() != null){
@@ -417,6 +415,7 @@ public class GameViewController implements Initializable {
             });
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
+            changeLabel(messageLabel, "Couln't perform the move");
         }
 
     }
@@ -428,7 +427,7 @@ public class GameViewController implements Initializable {
      * @author Ludovico
      */
     @FXML
-    public void startLobby(){
+    private void startLobby(){
 		players.getItems().clear();
 		players.getItems().addAll(lobby.getPlayers());
         //add messages to the chat
@@ -450,7 +449,8 @@ public class GameViewController implements Initializable {
      * @author Ludovico
      */
 
-    public void sendMessage(ActionEvent actionEvent) throws Exception{
+    @FXML
+    private void sendMessage(ActionEvent actionEvent) throws Exception{
         String messageText = messageInput.getText();
         messageInput.clear();
 
@@ -519,6 +519,7 @@ public class GameViewController implements Initializable {
             addMessageToChat(message);
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
+            changeLabel(messageLabel, "Couln't send the message");
         }
 
     }
@@ -534,7 +535,7 @@ public class GameViewController implements Initializable {
      * @author Ludovico
      */
 
-    public void addMessageToChat(Message message){
+    private void addMessageToChat(Message message){
         Calendar calendar = GregorianCalendar.getInstance();
         String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
         String minute = String.valueOf(calendar.get(Calendar.MINUTE));
@@ -581,7 +582,8 @@ public class GameViewController implements Initializable {
      * @param actionEvent the event that triggered the method
      * @author Ludovico
      */
-    public void printPersonalObjectivesButton(ActionEvent actionEvent) {
+    @FXML
+    private void printPersonalObjectivesButton(ActionEvent actionEvent) {
         try {
             Stage newStage = new Stage();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/PersonalObj.fxml"));
@@ -590,6 +592,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
+            messageLabel.setText("Couldn't load the personal objectives");
             throw new RuntimeException(e);
         }
     }
@@ -602,7 +605,8 @@ public class GameViewController implements Initializable {
      * @param actionEvent the event that triggered the method
      * @author Ludovico
      */
-    public void printAllShelvesObjectivesButton(ActionEvent actionEvent) {
+    @FXML
+    private void printAllShelvesObjectivesButton(ActionEvent actionEvent) {
         try {
             Stage newStage = new Stage();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/Shelves.fxml"));
@@ -617,6 +621,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
+            messageLabel.setText("Couldn't load the shelves");
             throw new RuntimeException(e);
         }
     }
@@ -629,7 +634,8 @@ public class GameViewController implements Initializable {
      * @param actionEvent the event that triggered the method
      * @author Ludovico
      */
-    public void printCommonObjectivesButton(ActionEvent actionEvent) {
+    @FXML
+    private void printCommonObjectivesButton(ActionEvent actionEvent) {
         try {
             Stage newStage = new Stage();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/CommonObj.fxml"));
@@ -638,6 +644,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
+            messageLabel.setText("Couldn't load the common objectives");
             throw new RuntimeException(e);
         }
     }
@@ -650,7 +657,7 @@ public class GameViewController implements Initializable {
      *
      * @author Ludovico
      */
-    public void printEnd(){
+    private void printEnd(){
         try {
             serverThread.interrupt();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/End.fxml"));
@@ -660,6 +667,7 @@ public class GameViewController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            changeLabel(messageLabel, "Couldn't load the end screen");
             throw new RuntimeException(e);
         }
     }
@@ -682,6 +690,7 @@ public class GameViewController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            changeLabel(messageLabel, "Couldn't load the final message screen");
             throw new RuntimeException(e);
         }
     }
@@ -704,6 +713,7 @@ public class GameViewController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            changeLabel(messageLabel, "Couldn't load the final message screen");
             throw new RuntimeException(e);
         }
     }
@@ -714,8 +724,8 @@ public class GameViewController implements Initializable {
      *
      * @param actionEvent
      */
-
-    public void endTheGame(ActionEvent actionEvent) {
+    @FXML
+    private void endTheGame(ActionEvent actionEvent) {
         sureLabel.setVisible(true);
         yesSureButton.setVisible(true);
         noSureButton.setVisible(true);
@@ -735,8 +745,8 @@ public class GameViewController implements Initializable {
      *
      * @param actionEvent
      */
-
-    public void submitChoice(ActionEvent actionEvent){
+    @FXML
+    private void submitChoice(ActionEvent actionEvent){
         if(yesSureButton.isSelected()){
             Platform.runLater(new Runnable() {
                 @Override
@@ -758,6 +768,7 @@ public class GameViewController implements Initializable {
                             return;
                         }
                     } catch (Exception e) {
+                        changeLabel(messageLabel, "Cannot stop the game");
                         System.out.println("[ERROR] " + e.getMessage());
                     }
                 }
@@ -892,6 +903,7 @@ public class GameViewController implements Initializable {
                         players.getItems().addAll(lobby.getPlayers());
                     });
                 } catch (Exception e) {
+                    changeLabel(messageLabel, "Player already in lobby");
                     throw new RuntimeException("Added already existing player to lobby");
                 }
             }
@@ -911,6 +923,7 @@ public class GameViewController implements Initializable {
                     });
 
                 } catch (Exception e) {
+                    changeLabel(messageLabel, "Player not in lobby");
                     throw new RuntimeException("Removed non existing player from lobby");
                 }
                 System.out.format("[*] %s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
