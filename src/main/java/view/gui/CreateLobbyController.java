@@ -50,7 +50,7 @@ public class CreateLobbyController implements Initializable {
      *
     **/
 
-    private CreateLobbyController() {
+    public CreateLobbyController() {
     }
 
 
