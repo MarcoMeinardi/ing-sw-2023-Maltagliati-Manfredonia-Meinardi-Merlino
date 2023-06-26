@@ -343,7 +343,7 @@ public class CLIGame {
 	}
 
 	/**
-	 * Print the common ojbectives and their current values
+	 * Print the common objectives and their current values
 	 *
 	 * @author Marco
 	 */
