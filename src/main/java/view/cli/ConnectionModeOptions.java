@@ -1,6 +1,11 @@
 package view.cli;
 
-// To use the `askOption` method, we need to implement this interface
+// To use the `askOption` method, we need to implement this interface if this enum doesn't use the interface utilities
+/**
+ * Options to ask the connection method
+ *
+ * @author Lorenzo
+ */
 public enum ConnectionModeOptions implements OptionsInterface {
 	SOCKET,
 	RMI;

@@ -1,6 +1,11 @@
 package view.cli;
 
-// To use the `askOption` method, we need to implement this interface
+// To use the `askOption` method, we need to implement this interface if this enum doesn't use the interface utilities
+/**
+ * Options to ask what to do in the lobby selection
+ *
+ * @author Marco
+ */
 public enum SelectLobbyOptions implements OptionsInterface {
 	CREATE_LOBBY,
 	JOIN_LOBBY,

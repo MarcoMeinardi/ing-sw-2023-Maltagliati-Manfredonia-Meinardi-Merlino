@@ -1,5 +1,10 @@
 package view.cli;
 
+/**
+ * Options to ask what to do in the lobby
+ *
+ * @author Marco
+ */
 public enum InLobbyOptions implements OptionsInterface {
 	SEND_MESSAGE,
 	LIST_PLAYERS,

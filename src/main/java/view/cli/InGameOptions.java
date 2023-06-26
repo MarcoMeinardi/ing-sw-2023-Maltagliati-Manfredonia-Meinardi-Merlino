@@ -1,5 +1,10 @@
 package view.cli;
 
+/**
+ * Options to ask what to do during the game
+ *
+ * @author Marco
+ */
 public enum InGameOptions implements OptionsInterface {
 	SEND_MESSAGE,
 	SHOW_YOUR_SHELF,
