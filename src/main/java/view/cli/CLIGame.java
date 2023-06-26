@@ -14,6 +14,11 @@ import model.TableTop;
 import network.parameters.GameInfo;
 import network.parameters.Update;
 
+/**
+ * Class that contains the game's information needed in the CLI
+ *
+ * @author Marco
+ */
 public class CLIGame {
 	String me;
 
@@ -26,6 +31,13 @@ public class CLIGame {
 	ArrayList<Integer> commonObjectivesPoints;
 	PersonalObjective personalObjective;
 
+	/**
+	 * Constructor of the class
+	 * @param data the game's information
+	 * @param me the player's name
+	 *
+	 * @author Marco
+	 */
 	public CLIGame(GameInfo data, String me) {
 		this.me = me;
 		this.players = data.players();
@@ -46,6 +58,12 @@ public class CLIGame {
 		}
 	}
 
+	/**
+	 * Update the game state
+	 * @param update an `Update` object from the server
+	 *
+	 * @author Marco
+	 */
 	public void update(Update update) {
 		updateTableTop(update.tableTop());
 
@@ -69,6 +87,12 @@ public class CLIGame {
 		}
 	}
 
+	/**
+	 * Update the tabletop state. Called only from `update` and constructor
+	 * @param tableTop a `Card` matrix representing the new tabletop
+	 *
+	 * @author Marco
+	 */
 	private void updateTableTop(Card[][] tableTop) {
 		this.tableTop = new Optional[TableTop.SIZE][TableTop.SIZE];
 
@@ -80,11 +104,24 @@ public class CLIGame {
 			}
 		}
 	}
-
+	
+	/**
+	 * Get the number of players in the game
+	 * @return the number of players in the game
+	 *
+	 * @author Marco
+	 */
 	public int getNumberOfPlayers() {
 		return nPlayers;
 	}
 
+	/**
+	 * Print an ascii-art representing the given shelf
+	 * @param shelf a `Shelf` object containing the shelf to print
+	 * @throws RuntimeException if the shelf contains a non existing card or the shelf object is broken
+	 *
+	 * @author Marco
+	 */
 	private void printShelf(Shelf shelf) {
 		System.out.println();
 		System.out.println("┌───┬───┬───┬───┬───┐");
@@ -114,6 +151,14 @@ public class CLIGame {
 		System.out.println();
 	}
 
+	/**
+	 * Convert a `Card` object to a single char representing it
+	 * @param card the card to convert
+	 * @throws RuntimeException if the card doesn't exist
+	 * @return a single char representing the card
+	 *
+	 * @author Marco
+	 */
 	private String cardToChar(Card card) {
 		switch (card.getType()) {
 			case Gatto   -> { return "C"; }
@@ -126,10 +171,20 @@ public class CLIGame {
 		}
 	}
 
+	/**
+	 * Print the player's shelf
+	 *
+	 * @author Marco
+	 */
 	public void printYourShelf() {
 		printShelf(myShelf);
 	}
 
+	/**
+	 * Print all the players' shelves
+	 *
+	 * @author Marco
+	 */
 	public void printAllShelves() {
 		for (int i = 0; i < nPlayers; i++) {
 			System.out.println(players.get(i) + ":");
@@ -138,6 +193,14 @@ public class CLIGame {
 		}
 	}
 
+	/**
+	 * Utility function to get the ascii-art corner for the tabletop at the given coordinates
+	 * @param y the y coordinate
+	 * @param x the x coordinate
+	 * @return the ascii-art corner for the tabletop at the given coordinates
+	 *
+	 * @author Marco
+	 */
 	private String getCorner(int y, int x) {
 		boolean here = y >= 0 && x < TableTop.SIZE && TableTop.PLAYER_NUMBER_MASK[y][x] <= nPlayers;
 		boolean left = y >= 0 && x > 0 && TableTop.PLAYER_NUMBER_MASK[y][x - 1] <= nPlayers;
@@ -195,6 +258,11 @@ public class CLIGame {
 		}
 	}
 
+	/**
+	 * Print an ascii-art representing the current tabletop
+	 *
+	 * @author Marco
+	 */
 	public void printTableTop() {
 		int firstRow = nPlayers == 2 ? TableTop.SIZE - 2 : TableTop.SIZE - 1;
 		int lastRow = nPlayers == 2 ? 1 : 0;
@@ -243,6 +311,12 @@ public class CLIGame {
 		System.out.println();
 	}
 
+	/**
+	 * Print all the player's personal objectives as shelves and the points
+	 * that they would give at the current state
+	 *
+	 * @author Marco
+	 */
 	public void printPersonalObjective() {
 		Optional<Card>[][] shelfLikePersonalObjective = new Optional[Shelf.ROWS][Shelf.COLUMNS];
 
@@ -268,6 +342,11 @@ public class CLIGame {
 		}
 	}
 
+	/**
+	 * Print the common ojbectives and their current values
+	 *
+	 * @author Marco
+	 */
 	public void printCommonObjectives() {
 		System.out.println("[*] Common objectives:");
 		for (int i = 0; i < CommonObjective.N_COMMON_OBJECTIVES; i++) {
