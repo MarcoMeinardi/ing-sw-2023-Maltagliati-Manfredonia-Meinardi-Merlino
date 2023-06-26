@@ -156,6 +156,13 @@ public class CLI {
 					lobby = gameInfo.lobby();
 					yourTurn = gameInfo.currentPlayer().equals(username);
 					gameStarted = true;
+					if (gameInfo.currentPlayer().equals(username)) {  // shouldn't be possible
+						yourTurn = true;
+						System.out.println("[*] It's your turn");
+					} else {
+						yourTurn = false;
+						System.out.println("[*] It's " + gameInfo.currentPlayer() + "'s turn");
+					}
 					return ClientStatus.InGame;
 				}
 			}
