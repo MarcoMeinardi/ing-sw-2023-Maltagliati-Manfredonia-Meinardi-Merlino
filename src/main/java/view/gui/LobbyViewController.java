@@ -126,7 +126,7 @@ public class LobbyViewController implements Initializable{
      *
      * @author Ludovico
      */
-    public void updateLobby() {
+    private void updateLobby() {
         players.getItems().clear();
         players.getItems().addAll(lobby.getPlayers());
     }
@@ -137,7 +137,7 @@ public class LobbyViewController implements Initializable{
      *
      * @author Ludovico
      */
-    public void showStart(){
+    private void showStart(){
         if(lobby.isHost(username)){
             startButton.setVisible(true);
             loadButton.setVisible(true);
@@ -166,7 +166,8 @@ public class LobbyViewController implements Initializable{
      * @author Ludovico
      */
 
-    public void quitLobby(ActionEvent actionEvent) throws Exception {
+    @FXML
+    private void quitLobby(ActionEvent actionEvent) throws Exception {
         Result result = networkManager.lobbyLeave().waitResult();
         if (result.isOk()) {
             LoginController.state = ClientStatus.InLobbySearch;
@@ -199,8 +200,8 @@ public class LobbyViewController implements Initializable{
      * @throws Exception
      * @author Riccardo, Ludovico
      */
-
-    public void startGame(ActionEvent actionEvent) throws Exception{
+    @FXML
+    private void startGame(ActionEvent actionEvent) throws Exception{
         if(lobby.getPlayers().size() < 2){
             descriptorLabel.setText("");
             descriptorLabel.setText("Not enough players");
@@ -255,7 +256,8 @@ public class LobbyViewController implements Initializable{
      * @author Ludovico
      */
 
-    public void sendMessage(ActionEvent actionEvent) throws Exception{
+    @FXML
+    private void sendMessage(ActionEvent actionEvent) throws Exception{
         String messageText = messageInput.getText();
         messageInput.clear();
 

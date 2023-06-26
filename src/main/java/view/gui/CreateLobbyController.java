@@ -100,8 +100,8 @@ public class CreateLobbyController implements Initializable {
      *
      * @author Ludovico
      * */
-
-    public void createLobby(ActionEvent actionEvent) throws Exception {
+    @FXML
+    private void createLobby(ActionEvent actionEvent) throws Exception {
 
         String lobbyName = nameLobby.getText();
         if(lobbyName.isEmpty()) {

@@ -86,7 +86,8 @@ public class LoginController implements Initializable {
      * The click of the login button.
      * */
 
-    public void switchToMainMenu(javafx.event.ActionEvent actionEvent) {
+    @FXML
+    private void switchToMainMenu(javafx.event.ActionEvent actionEvent) {
 
         try {
             stage = (Stage)(loginButton.getScene().getWindow());

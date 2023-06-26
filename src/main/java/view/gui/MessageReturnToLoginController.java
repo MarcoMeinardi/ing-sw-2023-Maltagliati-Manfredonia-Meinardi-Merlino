@@ -32,7 +32,9 @@ public class MessageReturnToLoginController {
      *
      * @author Ludovico
      */
-    public void backToLogin(ActionEvent actionEvent) {
+
+    @FXML
+    private void backToLogin(ActionEvent actionEvent) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();

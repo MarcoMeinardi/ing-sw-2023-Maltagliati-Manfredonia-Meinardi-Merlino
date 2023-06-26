@@ -99,7 +99,8 @@ public class MainMenuController implements Initializable {
      * @author Ludovico
      */
 
-    public void refreshLobbies(javafx.event.ActionEvent actionEvent){
+    @FXML
+    private void refreshLobbies(javafx.event.ActionEvent actionEvent){
         listView.getItems().clear();
         askNetForLobbies();
     }
@@ -110,7 +111,7 @@ public class MainMenuController implements Initializable {
      * @author Ludovico
      */
 
-    public void askNetForLobbies(){
+    private void askNetForLobbies(){
         try {
             Result<ArrayList<Lobby>> result = networkManager.lobbyList().waitResult();
             if (result.isOk()) {
@@ -141,7 +142,8 @@ public class MainMenuController implements Initializable {
      * @author Ludovico
      */
 
-    public void switchToCreateLobby(javafx.event.ActionEvent actionEvent ) {
+    @FXML
+    private void switchToCreateLobby(javafx.event.ActionEvent actionEvent ) {
 
         try {
             serverThread.interrupt();
@@ -169,7 +171,8 @@ public class MainMenuController implements Initializable {
      * @author Ludovico
      */
 
-    public void joinLobby(javafx.event.ActionEvent actionEvent) {
+    @FXML
+    private void joinLobby(javafx.event.ActionEvent actionEvent) {
 
         String lobbyName = listView.getSelectionModel().getSelectedItem();
         if(lobbyName == null) {

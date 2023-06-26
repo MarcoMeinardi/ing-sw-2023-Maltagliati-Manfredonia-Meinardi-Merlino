@@ -40,7 +40,8 @@ public class MessageStoppedGameController implements Initializable {
      * @author Ludovico
      */
 
-    public void backToLobbies(ActionEvent actionEvent) {
+    @FXML
+    private void backToLobbies(ActionEvent actionEvent) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();

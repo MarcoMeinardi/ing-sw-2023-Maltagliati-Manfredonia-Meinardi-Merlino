@@ -427,7 +427,7 @@ public class GameViewController implements Initializable {
      * @author Ludovico
      */
     @FXML
-    public void startLobby(){
+    private void startLobby(){
 		players.getItems().clear();
 		players.getItems().addAll(lobby.getPlayers());
         //add messages to the chat
@@ -449,7 +449,8 @@ public class GameViewController implements Initializable {
      * @author Ludovico
      */
 
-    public void sendMessage(ActionEvent actionEvent) throws Exception{
+    @FXML
+    private void sendMessage(ActionEvent actionEvent) throws Exception{
         String messageText = messageInput.getText();
         messageInput.clear();
 
@@ -581,7 +582,8 @@ public class GameViewController implements Initializable {
      * @param actionEvent the event that triggered the method
      * @author Ludovico
      */
-    public void printPersonalObjectivesButton(ActionEvent actionEvent) {
+    @FXML
+    private void printPersonalObjectivesButton(ActionEvent actionEvent) {
         try {
             Stage newStage = new Stage();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/PersonalObj.fxml"));
@@ -603,7 +605,8 @@ public class GameViewController implements Initializable {
      * @param actionEvent the event that triggered the method
      * @author Ludovico
      */
-    public void printAllShelvesObjectivesButton(ActionEvent actionEvent) {
+    @FXML
+    private void printAllShelvesObjectivesButton(ActionEvent actionEvent) {
         try {
             Stage newStage = new Stage();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/Shelves.fxml"));
@@ -631,7 +634,8 @@ public class GameViewController implements Initializable {
      * @param actionEvent the event that triggered the method
      * @author Ludovico
      */
-    public void printCommonObjectivesButton(ActionEvent actionEvent) {
+    @FXML
+    private void printCommonObjectivesButton(ActionEvent actionEvent) {
         try {
             Stage newStage = new Stage();
             Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/CommonObj.fxml"));
@@ -720,8 +724,8 @@ public class GameViewController implements Initializable {
      *
      * @param actionEvent
      */
-
-    public void endTheGame(ActionEvent actionEvent) {
+    @FXML
+    private void endTheGame(ActionEvent actionEvent) {
         sureLabel.setVisible(true);
         yesSureButton.setVisible(true);
         noSureButton.setVisible(true);
@@ -741,8 +745,8 @@ public class GameViewController implements Initializable {
      *
      * @param actionEvent
      */
-
-    public void submitChoice(ActionEvent actionEvent){
+    @FXML
+    private void submitChoice(ActionEvent actionEvent){
         if(yesSureButton.isSelected()){
             Platform.runLater(new Runnable() {
                 @Override
