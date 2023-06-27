@@ -143,10 +143,10 @@ public class EndController implements Initializable {
             if (score.username().equals(username)) {
                 your_title = score.title();
             }
-            System.out.println("Your final grade: "+your_title);
-            Utils.changeLabel(titleLabel, "Your final grade: "+your_title);
             position++;
         }
+        System.out.println("Your final grade: "+your_title);
+        Utils.changeLabel(titleLabel, "Your final grade: "+your_title);
 
         addChangeOfImage(cockadesList1, 1);
         addChangeOfImage(cockadesList2, 2);
@@ -159,7 +159,7 @@ public class EndController implements Initializable {
         ObservableList<String> items = cockadesList.getItems();
 
         cockadesList.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> handleCockadeSelection(player, newValue.toString())
+            (observable, oldValue, newValue) -> handleCockadeSelection(player, newValue.toString())
         );
 
     }
@@ -190,12 +190,11 @@ public class EndController implements Initializable {
             return;
         }
 
-        if((lastNumber.contains("2") ||
-                lastNumber.contains("4") ||
-                    lastNumber.contains("6") ||
-                        lastNumber.contains("8") ||
-                            (lastNumber.contains("1") && selectedCockade.contains("finish"))) &&
-                                !lastNumber.contains("12")){
+        if (
+            (lastNumber.contains("2") || lastNumber.contains("4") || lastNumber.contains("6") || lastNumber.contains("8") ||
+            (lastNumber.contains("1") && selectedCockade.contains("finish"))) &&
+            !lastNumber.contains("12")
+        ) {
 
             if (lastNumber.equals("1")){
                 if(player == 1){
