@@ -74,7 +74,6 @@ public class GameData {
                 break;
             }
         }
-
         for (int i = 0; i < update.completedObjectives().size(); i++) {
             for (int j = 0; j < commonObjectives.size(); j++) {
                 if (update.completedObjectives().get(i).name().equals(commonObjectives.get(j))) {

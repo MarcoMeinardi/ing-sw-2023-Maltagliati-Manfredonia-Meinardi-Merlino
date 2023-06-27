@@ -123,10 +123,10 @@ public class GameViewController implements Initializable {
         state = ClientStatus.InGame;
         if(gameData.getCurrentPlayer().equals(username)){
             yourTurn = true;
-            messageLabel.setText("It's your turn!");
+            Utils.changeLabel(messageLabel, "It's your turn!");
         }
         else{
-            messageLabel.setText("It's " + gameData.getCurrentPlayer() + "'s turn!");
+            Utils.changeLabel(messageLabel, "It's " + gameData.getCurrentPlayer() + "'s turn!");
         }
         startLobby();
         fillScene(gameData.getTableTop());
@@ -160,25 +160,6 @@ public class GameViewController implements Initializable {
         });
         serverThread.start();
     }
-
-    /**
-     * Method that associates the card passed as parameter to an index to decide which image to show.
-
-     * @param card
-     * @return
-     */
-
-    private String cardToImageName(Card card) {
-        switch (card.getType()) {
-            case Gatto   -> { return String.format("/img/item tiles/Gatti1.%d.png", card.getImageIndex()); }
-            case Libro   -> { return String.format("/img/item tiles/Libri1.%d.png", card.getImageIndex()); }
-            case Cornice -> { return String.format("/img/item tiles/Cornici1.%d.png", card.getImageIndex()); }
-            case Gioco   -> { return String.format("/img/item tiles/Giochi1.%d.png", card.getImageIndex()); }
-            case Pianta  -> { return String.format("/img/item tiles/Piante1.%d.png", card.getImageIndex()); }
-            case Trofeo  -> { return String.format("/img/item tiles/Trofei1.%d.png", card.getImageIndex()); }
-            default -> throw new RuntimeException("Invalid card type");
-        }
-    }
     
     /**
      * This method fills the game scene with images of items based on the contents of the `table` array.
@@ -195,7 +176,7 @@ public class GameViewController implements Initializable {
         for (int y = 0; y < SIZE; y++) {
             for (int x = 0; x < SIZE; x++) {
                 if (table[y][x].isPresent()) {
-                    String imageName = cardToImageName(table[y][x].get());
+                    String imageName = Utils.cardToImageName(table[y][x].get());
                     putImageOnScene(imageName, y, x, cardSize, cardSize, cardOffSet, cardOffSet, cardStep, cardStep, false);
                 }
             }
@@ -203,7 +184,7 @@ public class GameViewController implements Initializable {
     }
 
     /**
-     * method that takes a `Shelf` object as input and fills the shelf with images of items based on the cards present on the shelf.
+     * Method that takes a `Shelf` object as input and fills the shelf with images of items based on the cards present on the shelf.
      * The `putImageOnScene` method is then called to place the image on the scene.
      * The method also calls `removeImages` to remove any existing images on the shelf before filling it with new images.
      *
@@ -220,7 +201,7 @@ public class GameViewController implements Initializable {
             for(int x = 0; x < shelfColumns; x++){
                 String imageName;
                 if(shelfCards[y][x].isPresent()){
-                    imageName = cardToImageName(shelfCards[y][x].get());
+                    imageName = Utils.cardToImageName(shelfCards[y][x].get());
                     putImageOnScene(imageName, y, x,  shelfCardSize, shelfCardSize, shelfOffSetX, shelfOffSetY, shelfCardStepX, shelfCardStepY, true);
                 }
             }
@@ -273,7 +254,7 @@ public class GameViewController implements Initializable {
 
 
     /**
-     * method that removes images from a pane.
+     * Method that removes images from a pane.
      * The method takes a boolean parameter `isShelf`
      * which determines whether to remove only images with "Shelf and Card" in their ID or all images with "Card" in their ID.
      * The method loops through all the children of the pane and adds the appropriate images to a list of nodes to be removed.
@@ -304,7 +285,7 @@ public class GameViewController implements Initializable {
     }
 
     /**
-     * method that handles the selection of a card represented by an ImageView object.
+     * Method that handles the selection of a card represented by an ImageView object.
      * It checks if the card is already selected, and if so,
      * it removes it from the list of selected images and removes the selection effect.
      * If the card is not already selected, it adds it to the list of selected images
@@ -330,14 +311,14 @@ public class GameViewController implements Initializable {
                 image.setEffect(selectionEffect);
             }
             else{
-                messageLabel.setText("You can't select more than 3 cards");
+                Utils.changeLabel(messageLabel, "You can't select more than 3 cards");
             }
         }
 
     }
 
     /**
-     * method that is called when the player tries to move selected cards to a specified column.
+     * Method that is called when the player tries to move selected cards to a specified column.
      * It first checks if any cards are selected, if the column input is empty or null,
      * if the column input is a valid number between 1 and 5,
      * if it's the player's turn, and if the game is paused.
@@ -355,16 +336,16 @@ public class GameViewController implements Initializable {
         String columnHelper = columnInput.getText();
 
         if(!column.matches("\\d+")){
-            messageLabel.setText("Select a valid column!");
+            Utils.changeLabel(messageLabel, "Select a valid column!");
             return;
         }
 
         if(selectedImages.size() == 0){
-            messageLabel.setText("Select cards!");
+            Utils.changeLabel(messageLabel, "Select cards!");
             return;
         }
         if(columnHelper.trim().isEmpty() || column == null) {
-            messageLabel.setText("Left blank!");
+            Utils.changeLabel(messageLabel, "Left blank!");
             return;
         }
         if(
@@ -372,15 +353,15 @@ public class GameViewController implements Initializable {
             Integer.parseInt(column) > 5 ||
             Integer.parseInt(column) < 1
         ) {
-            messageLabel.setText("Select a valid column!");
+            Utils.changeLabel(messageLabel, "Select a valid column!");
             return;
         }
         if(!yourTurn){
-            messageLabel.setText("It's not your turn!");
+            Utils.changeLabel(messageLabel, "It's not your turn!");
             return;
         }
         if(isPaused){
-            messageLabel.setText("Game is paused!");
+            Utils.changeLabel(messageLabel, "Game is paused!");
             return;
         }
 
@@ -395,7 +376,7 @@ public class GameViewController implements Initializable {
                     Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
                     if (result.isErr()) {
                         System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
-                        messageLabel.setText("[ERROR] " + result.getException().orElse("Cannot select cards"));
+                        Utils.changeLabel(messageLabel, "[ERROR] " + result.getException().orElse("Cannot select cards"));
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -403,13 +384,13 @@ public class GameViewController implements Initializable {
             });
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
-            changeLabel(messageLabel, "Couldn't perform the move");
+            Utils.changeLabel(messageLabel, "Couldn't perform the move");
         }
 
     }
 
     /**
-     * method that initializes the lobby scene.
+     * Method that initializes the lobby scene.
      * It adds the players to the list view and adds the messages to the chat.
      *
      * @author Ludovico
@@ -423,143 +404,14 @@ public class GameViewController implements Initializable {
     }
 
     /**
-     * method called to send a message to the server and add it to the chat.
-     * It checks if the message is valid and if it is not it returns after adding the
-     * error to the chat, visible only by the sender and not the others in the lobby (length check,
-     * empty message check, trying to use commands).
-     * Scrolls the chat to the bottom after adding the error message.
-     * If the message is valid it sends it to the server and adds it to the chat calling the
-     * addMessageToChat() method.
-     * It is called when the send button is clicked.
-     *
-     * @param actionEvent the send button is clicked
-     * @throws Exception
+     * Method called to send a message.
+     * It is called when the "send" button is clicked.
+     * @param actionEvent the "send" button is clicked
      * @author Ludovico
      */
-
     @FXML
-    private void sendMessage(ActionEvent actionEvent) throws Exception{
-        String messageText = messageInput.getText();
-        messageInput.clear();
-
-        //check message integrity and return if not valid
-        if (messageText.isEmpty()) {
-            System.out.println("[ERROR] Empty message");
-            chat.getItems().add("[ERROR] Empty message");
-            if(chat.getItems().size() != 5){
-                chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-        if (messageText.length() > 100) {
-            System.out.println("[ERROR] Message too long");
-            chat.getItems().add("[ERROR] Message too long");
-            if(chat.getItems().size() != 5){
-                chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-        if (messageText.startsWith(".") || messageText.startsWith("?")) {
-            System.out.println("[ERROR] Commands not supported, use /help for more info");
-            chat.getItems().add("[ERROR] Commands not supported. Use /help for more info");
-            if(chat.getItems().size() != 5){
-                chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-        if(messageText.startsWith("/help")){
-            chat.getItems().add("[-Select a name from the list above to send a private message]");
-            chat.getItems().add("[-Specific commands supported:]");
-            chat.getItems().add("[/help: shows this message]");
-            if(chat.getItems().size() != 5){
-                chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-
-        //try to send it to the server and add it to chat
-        try{
-            if(players.getSelectionModel().getSelectedItem() != null && !players.getSelectionModel().getSelectedItem().toString().equals("")){
-                Result result = networkManager.chat(new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString())).waitResult();
-                if (result.isErr()) {
-                    System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-                    chat.getItems().add("[ERROR] We could not send your message, please try again later");
-                    if(chat.getItems().size() != 5){
-                        chat.scrollTo(chat.getItems().size()-1);
-                    }
-                    return;
-                }
-                Message message = new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString());
-                players.getSelectionModel().clearSelection();
-                addMessageToChat(message);
-                return;
-            }
-            Result result = networkManager.chat(new Message(username, messageText)).waitResult();
-            if (result.isErr()) {
-                System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-                chat.getItems().add("[ERROR] We could not send your message, please try again later");
-                if(chat.getItems().size() != 5){
-                    chat.scrollTo(chat.getItems().size()-1);
-                }
-                return;
-            }
-            Message message = new Message(username, messageText);
-            addMessageToChat(message);
-        } catch (Exception e) {
-            System.out.println("[ERROR] " + e.getMessage());
-            changeLabel(messageLabel, "Couldn't send the message");
-        }
-
-    }
-
-    /**
-     * method called to add a message to the chat.
-     * It automatically adds to the message the username of the sender
-     * and the hour and minute the message was sent.
-     * Scrolls the chat to the bottom to show the last message.
-     * It is called when the server sends a message to the lobby chat.
-     *
-     * @param message the message to add to the chat
-     * @author Ludovico
-     */
-
-    private void addMessageToChat(Message message){
-        Calendar calendar = GregorianCalendar.getInstance();
-        String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
-        String minute = String.valueOf(calendar.get(Calendar.MINUTE));
-        if(hour.length() == 1){
-            hour = "0" + hour;
-        }
-        if(minute.length() == 1){
-            minute = "0" + minute;
-        }
-
-        if(message.idSender().equals(Server.SERVER_NAME)){
-            chat.getItems().add(String.format("[%s:%s] %s ", hour, minute, "From server: " + message.message()));
-            if(chat.getItems().size() != 5){
-                chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-
-        if (message.idReceiver().isEmpty()) {
-            chat.getItems().add(String.format("[%s:%s] %s to everyone: %s", hour, minute, message.idSender(), message.message()));
-        } else {
-            if(!message.idSender().equals(username)) {
-                chat.getItems().add(String.format("[%s:%s] %s to you: %s", hour, minute, message.idSender(), message.message()));
-            }
-            else{
-                if(message.idReceiver().get().equals(message.idSender())){
-                    chat.getItems().add(String.format("[%s:%s] %s to himself: you are a schizo", hour, minute, message.idSender()));
-                }
-                else {
-                    chat.getItems().add(String.format("[%s:%s] you to %s: %s", hour, minute, message.idReceiver().get(), message.message()));
-                }
-            }
-        }
-        if(chat.getItems().size() != 5){
-            chat.scrollTo(chat.getItems().size()-1);
-        }
+    private void sendMessage(ActionEvent actionEvent) {
+        Utils.sendMessage(username, networkManager, messageInput, chat, players, messageLabel);
     }
 
     /**
@@ -580,7 +432,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
-            messageLabel.setText("Couldn't load the personal objectives");
+            Utils.changeLabel(messageLabel, "Couldn't load the personal objectives");
             throw new RuntimeException(e);
         }
     }
@@ -609,7 +461,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
-            messageLabel.setText("Couldn't load the shelves");
+            Utils.changeLabel(messageLabel, "Couldn't load the shelves");
             throw new RuntimeException(e);
         }
     }
@@ -632,7 +484,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
-            messageLabel.setText("Couldn't load the common objectives");
+            Utils.changeLabel(messageLabel, "Couldn't load the common objectives");
             throw new RuntimeException(e);
         }
     }
@@ -655,7 +507,7 @@ public class GameViewController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            changeLabel(messageLabel, "Couldn't load the end screen");
+            Utils.changeLabel(messageLabel, "Couldn't load the end screen");
             throw new RuntimeException(e);
         }
     }
@@ -678,7 +530,7 @@ public class GameViewController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            changeLabel(messageLabel, "Couldn't load the final message screen");
+            Utils.changeLabel(messageLabel, "Couldn't load the final message screen");
             throw new RuntimeException(e);
         }
     }
@@ -701,7 +553,7 @@ public class GameViewController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            changeLabel(messageLabel, "Couldn't load the final message screen");
+            Utils.changeLabel(messageLabel, "Couldn't load the final message screen");
             throw new RuntimeException(e);
         }
     }
@@ -725,10 +577,29 @@ public class GameViewController implements Initializable {
     }
 
     /**
+     * Show normal game buttons after the stop game confirms selection failed or has been aborted
+     *
+     * @author Ludovico
+     */
+    private void afterStopConfirmFail() {
+        Platform.runLater(() -> {
+            sureLabel.setVisible(false);
+            yesSureButton.setVisible(false);
+            noSureButton.setVisible(false);
+            sureChoiceButton.setVisible(false);
+            printCommonObjectivesButton.setVisible(true);
+            printPersonalObjectivesButton.setVisible(true);
+            printAllShelvesButton.setVisible(true);
+            endGame.setVisible(true);
+        });
+    }
+
+    /**
      * This method is called when the host submits their choice about stopping the game.
      * If the host decided to stop the game and everything works, the method just returns
      * waiting for the server to end the game.
-     * if something went wrong or the host decided to continue the game, the method changes the visibility of the buttons and labels
+     * If something went wrong or the host decided to continue the game,
+     * the method changes the visibility of the buttons and labels
      * to the original state.
      *
      * @param actionEvent
@@ -741,52 +612,21 @@ public class GameViewController implements Initializable {
                     Result result = networkManager.exitGame().waitResult();
                     if (result.isErr()) {
                         System.out.println("[ERROR] " + result.getException().orElse("Cannot stop the game"));
-                        changeLabel(messageLabel, "Cannot stop the game");
-                        sureLabel.setVisible(false);
-                        yesSureButton.setVisible(false);
-                        noSureButton.setVisible(false);
-                        sureChoiceButton.setVisible(false);
-                        printCommonObjectivesButton.setVisible(true);
-                        printPersonalObjectivesButton.setVisible(true);
-                        printAllShelvesButton.setVisible(true);
-                        endGame.setVisible(true);
+                        Utils.changeLabel(messageLabel, "Cannot stop the game");
+                        afterStopConfirmFail();
                     }
                 } catch (Exception e) {
-                    changeLabel(messageLabel, "Cannot stop the game");
+                    Utils.changeLabel(messageLabel, "Cannot stop the game");
                     System.out.println("[ERROR] " + e.getMessage());
                 }
             });
-        }
-        else{
-            sureLabel.setVisible(false);
-            yesSureButton.setVisible(false);
-            noSureButton.setVisible(false);
-            sureChoiceButton.setVisible(false);
-            printCommonObjectivesButton.setVisible(true);
-            printPersonalObjectivesButton.setVisible(true);
-            printAllShelvesButton.setVisible(true);
-            endGame.setVisible(true);
+        } else {
+            afterStopConfirmFail();
         }
     }
 
-
-
     /**
-     * method that takes a `String` and Label parameters.
-     * The method uses `Platform.runLater` to update the label with the new text value.
-     * `Platform.runLater` is used to ensure that the update is executed on the JavaFX application thread,
-     * which is necessary for updating UI components.
-     *
-     * @param text
-     * @author Ludovico
-     */
-    private void changeLabel(Label label, String text){
-        Platform.runLater(() -> label.setText(text));
-    }
-
-
-    /**
-     * method that handles events received from the server.
+     * Method that handles events received from the server.
      * It first checks if there is an event available, and if not, it returns.
      * If there is an event, it switches on the type of the event and performs the appropriate action.
      *
@@ -812,7 +652,7 @@ public class GameViewController implements Initializable {
                 Message message = (Message)event.get().getData();
                 if (!message.idSender().equals(username)) {
                     System.out.format("%s: %s%n", message.idSender(), message.message());
-                    Platform.runLater(() -> addMessageToChat(message));
+                    Platform.runLater(() -> Utils.addMessageToChat(username, message, chat));
                 }
             }
             case Update -> {
@@ -820,21 +660,21 @@ public class GameViewController implements Initializable {
                 for (Cockade commonObjective : update.completedObjectives()) {
                     if (update.idPlayer().equals(username)) {
                         System.out.format("[*] You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
-                        Platform.runLater(() -> addMessageToChat(new Message(Server.SERVER_NAME,"You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points")));
+                        Platform.runLater(() -> Utils.addMessageToChat(username, new Message(Server.SERVER_NAME,"You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points"), chat));
                     } else {
                         System.out.format("[*] %s completed %s getting %d points%n", update.idPlayer(), commonObjective.name(), commonObjective.points());
-                        Platform.runLater(() -> addMessageToChat(new Message(Server.SERVER_NAME, update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points")));
+                        Platform.runLater(() -> Utils.addMessageToChat(username, new Message(Server.SERVER_NAME, update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points"), chat));
                     }
                 }
                 gameData.update(update);
                 if (update.nextPlayer().equals(username)) {
                     yourTurn = true;
                     System.out.println("[*] It's your turn");
-                    changeLabel(messageLabel, "It's your turn");
+                    Utils.changeLabel(messageLabel, "It's your turn");
                 } else {
                     yourTurn = false;
                     System.out.println("[*] It's " + update.nextPlayer() + "'s turn");
-                    changeLabel(messageLabel, "It's " + update.nextPlayer() + "'s turn");
+                    Utils.changeLabel(messageLabel, "It's " + update.nextPlayer() + "'s turn");
                 }
                 Platform.runLater(() -> {
                     fillScene(gameData.getTableTop());
@@ -853,12 +693,12 @@ public class GameViewController implements Initializable {
                 try {
                     lobby.addPlayer(joinedPlayer);
                     Platform.runLater(() -> {
-                        addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
+                        Utils.addMessageToChat(username, new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"), chat);
                         players.getItems().clear();
                         players.getItems().addAll(lobby.getPlayers());
                     });
                 } catch (Exception e) {
-                    changeLabel(messageLabel, "Player already in lobby");
+                    Utils.changeLabel(messageLabel, "Player already in lobby");
                     throw new RuntimeException("Added already existing player to lobby");
                 }
             }
@@ -867,7 +707,7 @@ public class GameViewController implements Initializable {
                 try {
                     lobby.removePlayer(leftPlayer);
                     Platform.runLater(() -> {
-                        addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
+                        Utils.addMessageToChat(username, new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"), chat);
                         players.getItems().clear();
                         players.getItems().addAll(lobby.getPlayers());
                         if (lobby.isHost(username)) {
@@ -878,7 +718,7 @@ public class GameViewController implements Initializable {
                     });
 
                 } catch (Exception e) {
-                    changeLabel(messageLabel, "Player not in lobby");
+                    Utils.changeLabel(messageLabel, "Player not in lobby");
                     throw new RuntimeException("Removed non existing player from lobby");
                 }
                 System.out.format("[*] %s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
@@ -886,13 +726,13 @@ public class GameViewController implements Initializable {
             case Pause -> {
                 if (!isPaused) {
                     System.out.println("[WARNING] Someone has disconnected");
-                    changeLabel(messageLabel, "Someone has disconnected");
+                    Utils.changeLabel(messageLabel, "Someone has disconnected");
                 }
                 isPaused = true;
             }
             case Resume -> {
                 System.out.println("Game resumed");
-                changeLabel(messageLabel, "Game resumed");
+                Utils.changeLabel(messageLabel, "Game resumed");
                 isPaused = false;
             }
             case ExitGame -> {
@@ -900,7 +740,7 @@ public class GameViewController implements Initializable {
             }
             case ServerDisconnect -> {
                 System.out.println("[WARNING] Server disconnected");
-                changeLabel(messageLabel, "Server disconnected");
+                Utils.changeLabel(messageLabel, "Server disconnected");
                 Platform.runLater(() -> returnToLoginMessage());
             }
             default -> throw new RuntimeException("Unhandled event");
@@ -908,7 +748,7 @@ public class GameViewController implements Initializable {
     }
 
     /**
-     *  method that returns an instance of the `GameData` class.
+     *  Method that returns an instance of the `GameData` class.
      *  The `static` keyword means that the method can be called without creating an instance of the class.
      *  The `GameData` object being returned is a singleton instance that holds data related to the game being played.
      *

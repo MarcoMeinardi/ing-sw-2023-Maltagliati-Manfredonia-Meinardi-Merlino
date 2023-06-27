@@ -68,10 +68,10 @@ public class CommonObjController implements Initializable {
                 imageView.setFitWidth(240);
                 imageView.setFitHeight(155);
                 if (commonObjectives.indexOf(commonObjective) == 0) {
-                    firstObj.setText(commonObjective);
+                    Utils.changeLabel(firstObj, commonObjective);
                     imageView.setX(30);
                 } else {
-                    secObj.setText(commonObjective);
+                    Utils.changeLabel(secObj, commonObjective);
                     imageView.setX(330);
                 }
                 imageView.setY(60);
@@ -80,7 +80,7 @@ public class CommonObjController implements Initializable {
 
         }
         catch (Exception e) {
-            errorLabel.setText("Couldn't find objectives");
+            Utils.changeLabel(errorLabel, "Couldn't find objectives");
         }
     }
 

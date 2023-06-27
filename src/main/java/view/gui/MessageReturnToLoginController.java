@@ -43,7 +43,7 @@ public class MessageReturnToLoginController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            messageLabel.setText("Error while loading the login page");
+            Utils.changeLabel(messageLabel, "Error while loading the login page");
             e.printStackTrace();
         }
     }
