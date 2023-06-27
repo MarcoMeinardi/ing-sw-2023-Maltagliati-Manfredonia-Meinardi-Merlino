@@ -190,12 +190,11 @@ public class EndController implements Initializable {
             return;
         }
 
-        if((lastNumber.contains("2") ||
-                lastNumber.contains("4") ||
-                    lastNumber.contains("6") ||
-                        lastNumber.contains("8") ||
-                            (lastNumber.contains("1") && selectedCockade.contains("finish"))) &&
-                                !lastNumber.contains("12")){
+        if (
+            (lastNumber.contains("2") || lastNumber.contains("4") || lastNumber.contains("6") || lastNumber.contains("8") ||
+            (lastNumber.contains("1") && selectedCockade.contains("finish"))) &&
+            !lastNumber.contains("12")
+        ) {
 
             if (lastNumber.equals("1")){
                 if(player == 1){
