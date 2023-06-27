@@ -113,28 +113,28 @@ public class EndController implements Initializable {
 
         for (Score score : scoreBoard) {
             if(position == 1){
-                Utils.changeLabel(messageLabel1, " [" + position + "] " + score.username() + ": " + score.score() +" points");
+                messageLabel1.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
                 for(Cockade cockade : playerCockades){
                     cockadesList1.getItems().add(cockade.name() + " giving points: "+ cockade.points());
                 }
             }
             else if(position == 2){
-                Utils.changeLabel(messageLabel2, " [" + position + "] " + score.username() + ": " + score.score() +" points");
+                messageLabel2.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
                 for(Cockade cockade : playerCockades){
                     cockadesList2.getItems().add(cockade.name() + " giving points: "+ cockade.points());
                 }
             }
             else if(position == 3){
-                Utils.changeLabel(messageLabel3, " [" + position + "] " + score.username() + ": " + score.score() +" points");
+                messageLabel3.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
                 for(Cockade cockade : playerCockades){
                     cockadesList3.getItems().add(cockade.name() + " giving points: "+ cockade.points());
                 }
             }
             else if(position == 4){
-                Utils.changeLabel(messageLabel4, " [" + position + "] " + score.username() + ": " + score.score() +" points");
+                messageLabel4.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
                 for(Cockade cockade : playerCockades){
                     cockadesList4.getItems().add(cockade.name() + " giving points: "+ cockade.points());
@@ -146,7 +146,7 @@ public class EndController implements Initializable {
             position++;
         }
         System.out.println("Your final grade: "+your_title);
-        Utils.changeLabel(titleLabel, "Your final grade: "+your_title);
+        titleLabel.setText("Your final grade: "+your_title);
 
         addChangeOfImage(cockadesList1, 1);
         addChangeOfImage(cockadesList2, 2);
@@ -266,7 +266,7 @@ public class EndController implements Initializable {
         }
         catch (IOException e){
             e.printStackTrace();
-            Utils.changeLabel(titleLabel, "Error loading the main menu");
+            titleLabel.setText("Error loading the main menu");
         }
     }
 

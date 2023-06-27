@@ -180,12 +180,11 @@ public class LobbyViewController implements Initializable{
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
-                Utils.changeLabel(descriptorLabel, "Couldn't load the main menu");
+                descriptorLabel.setText("Couldn't load the main menu");
                 e.printStackTrace();
             }
         } else {
-            Utils.changeLabel(descriptorLabel, "");
-            Utils.changeLabel(descriptorLabel, "Leave lobby failed");
+            descriptorLabel.setText("Leave lobby failed");
             System.out.println("[ERROR] " + result.getException().orElse("Leave lobby failed"));
         }
     }
@@ -203,14 +202,12 @@ public class LobbyViewController implements Initializable{
     @FXML
     private void startGame(ActionEvent actionEvent) throws Exception {
         if(lobby.getPlayers().size() < 2){
-            Utils.changeLabel(descriptorLabel, "");
-            Utils.changeLabel(descriptorLabel, "Not enough players");
+            descriptorLabel.setText("Not enough players");
             return;
         }
         Result result = networkManager.gameStart().waitResult();
         if (!result.isOk()) {
-            Utils.changeLabel(descriptorLabel, "");
-            Utils.changeLabel(descriptorLabel, "Start game failed");
+            descriptorLabel.setText("Start game failed");
             System.out.println("[ERROR] " + result.getException().orElse("Start game failed"));
         }
     }
@@ -220,7 +217,6 @@ public class LobbyViewController implements Initializable{
      *
      * @author Ludovico
      */
-
     private void switchToGame() {
         LoginController.state = ClientStatus.InGame;
         state = ClientStatus.InGame;
@@ -234,8 +230,8 @@ public class LobbyViewController implements Initializable{
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            Utils.changeLabel(descriptorLabel, "Couldn't load the game");
             e.printStackTrace();
+            descriptorLabel.setText("Couldn't load the game");
         }
     }
 
@@ -274,7 +270,7 @@ public class LobbyViewController implements Initializable{
     @FXML
     private void loadGame(ActionEvent actionEvent) throws Exception {
         if(lobby.getNumberOfPlayers() < 2){
-            Utils.changeLabel(descriptorLabel, "You need at least 2 players to start a game");
+            descriptorLabel.setText("You need at least 2 players to start a game");
             return;
         }
         Result result = networkManager.gameLoad().waitResult();
@@ -282,7 +278,7 @@ public class LobbyViewController implements Initializable{
             System.out.println("[INFO] Game loaded");
         }
         else{
-            Utils.changeLabel(descriptorLabel, "We could not load the game");
+            descriptorLabel.setText("We could not load the game");
         }
     }
 
@@ -296,7 +292,7 @@ public class LobbyViewController implements Initializable{
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            Utils.changeLabel(descriptorLabel, "Couldn't load the error message scene");
+            descriptorLabel.setText("Couldn't load the error message scene");
         }
     }
 
@@ -334,7 +330,7 @@ public class LobbyViewController implements Initializable{
                             showStart();
                         });
                     } catch (Exception e) {
-                        Platform.runLater(() -> Utils.changeLabel(descriptorLabel, "We could not add the player to the lobby"));
+                        Platform.runLater(() -> descriptorLabel.setText("We could not add the player to the lobby"));
                     }
                 }
                 if (!joinedPlayer.equals(username)) {
@@ -351,7 +347,7 @@ public class LobbyViewController implements Initializable{
                         showStart();
                     });
                 } catch (Exception e) {
-                    Platform.runLater(() -> Utils.changeLabel(descriptorLabel, "We could not remove the player from the lobby"));
+                    Platform.runLater(() -> descriptorLabel.setText("We could not remove the player from the lobby"));
                 }
                 System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
             }
@@ -371,7 +367,7 @@ public class LobbyViewController implements Initializable{
                         switchToGame();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Utils.changeLabel(descriptorLabel, "We could not switch to the game scene");
+                        descriptorLabel.setText("We could not switch to the game scene");
                     }
                 });
 

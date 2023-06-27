@@ -51,20 +51,6 @@ public class Utils {
     }
 
     /**
-     * Method that takes a `String` and a `Text` parameters.
-     * The method uses `Platform.runLater` to update the label with the new text value.
-     * `Platform.runLater` is used to ensure that the update is executed on the JavaFX application thread,
-     * which is necessary for updating UI components.
-     *
-     * @param textLabel the `Text` JavaFX component to change
-     * @param text the new text to display on the label
-     * @author Ludovico
-     */
-    public static void changeLabel(Text textLabel, String text) {
-        Platform.runLater(() -> textLabel.setText(text));
-    }
-
-    /**
      * Method called to add a message to the chat.
      * It automatically adds to the message the username of the sender,
      * and the hour and minute the message was sent.
@@ -202,7 +188,7 @@ public class Utils {
             addMessageToChat(username, message, chat);
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
-            changeLabel(messageLabel, "Couldn't send the message");
+            messageLabel.setText("Couldn't send the message");
         }
     }
 }

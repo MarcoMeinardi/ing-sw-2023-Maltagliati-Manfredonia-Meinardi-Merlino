@@ -65,7 +65,7 @@ public class CreateLobbyController implements Initializable {
      * */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         btnSelect.setDefaultButton(true);
-        Utils.changeLabel(nameUser, LoginController.username);
+        nameUser.setText(LoginController.username);
         state = ClientStatus.InLobbySearch;
         serverThread = new Thread(() -> {
             while (state != ClientStatus.Disconnected) {
@@ -105,7 +105,7 @@ public class CreateLobbyController implements Initializable {
         String lobbyName = nameLobby.getText();
         if(lobbyName.isEmpty()) {
             System.out.println("[ERROR] Lobby name is empty");
-            Utils.changeLabel(messageDisplay, "Lobby name is empty");
+            messageDisplay.setText("Lobby name is empty");
             return;
         }
 
@@ -115,7 +115,7 @@ public class CreateLobbyController implements Initializable {
             LoginController.state = ClientStatus.InLobby;
             System.out.println("Lobby created: " + LoginController.lobby.getName());
         } else {
-            Utils.changeLabel(messageDisplay, "Lobby name already exists");
+            messageDisplay.setText("Lobby name already exists");
             System.out.println("[ERROR] " + result.getException());
             return;
         }
@@ -130,7 +130,7 @@ public class CreateLobbyController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            Utils.changeLabel(messageDisplay, "Couldn't create lobby");
+            messageDisplay.setText("Couldn't create lobby");
         }
 
     }
@@ -153,7 +153,7 @@ public class CreateLobbyController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            Utils.changeLabel(messageDisplay, "Couldn't take you to login");
+            messageDisplay.setText("Couldn't take you to login");
         }
     }
 

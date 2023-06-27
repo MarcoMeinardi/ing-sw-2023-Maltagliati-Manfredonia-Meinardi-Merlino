@@ -128,16 +128,16 @@ public class ShelvesController implements Initializable {
 
         for(int i = 0; i < playersNames.size(); i++){
             if(i == 0){
-                Utils.changeLabel(player, playersNames.get(i));
+                player.setText(playersNames.get(i));
             }
             if(i == 1){
-                Utils.changeLabel(player2, playersNames.get(i));
+                player2.setText(playersNames.get(i));
             }
             if(i == 2){
-                Utils.changeLabel(player3, playersNames.get(i));
+                player3.setText(playersNames.get(i));
             }
             if(i == 3){
-                Utils.changeLabel(player4, playersNames.get(i));
+                player4.setText(playersNames.get(i));
             }
         }
 

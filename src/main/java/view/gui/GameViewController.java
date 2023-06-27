@@ -123,10 +123,10 @@ public class GameViewController implements Initializable {
         state = ClientStatus.InGame;
         if(gameData.getCurrentPlayer().equals(username)){
             yourTurn = true;
-            Utils.changeLabel(messageLabel, "It's your turn!");
+            messageLabel.setText("It's your turn!");
         }
         else{
-            Utils.changeLabel(messageLabel, "It's " + gameData.getCurrentPlayer() + "'s turn!");
+            messageLabel.setText("It's " + gameData.getCurrentPlayer() + "'s turn!");
         }
         startLobby();
         fillScene(gameData.getTableTop());
@@ -336,16 +336,16 @@ public class GameViewController implements Initializable {
         String columnHelper = columnInput.getText();
 
         if(!column.matches("\\d+")){
-            Utils.changeLabel(messageLabel, "Select a valid column!");
+            messageLabel.setText("Select a valid column!");
             return;
         }
 
         if(selectedImages.size() == 0){
-            Utils.changeLabel(messageLabel, "Select cards!");
+            messageLabel.setText("Select cards!");
             return;
         }
         if(columnHelper.trim().isEmpty() || column == null) {
-            Utils.changeLabel(messageLabel, "Left blank!");
+            messageLabel.setText("Left blank!");
             return;
         }
         if(
@@ -353,15 +353,15 @@ public class GameViewController implements Initializable {
             Integer.parseInt(column) > 5 ||
             Integer.parseInt(column) < 1
         ) {
-            Utils.changeLabel(messageLabel, "Select a valid column!");
+            messageLabel.setText("Select a valid column!");
             return;
         }
         if(!yourTurn){
-            Utils.changeLabel(messageLabel, "It's not your turn!");
+            messageLabel.setText("It's not your turn!");
             return;
         }
         if(isPaused){
-            Utils.changeLabel(messageLabel, "Game is paused!");
+            messageLabel.setText("Game is paused!");
             return;
         }
 
@@ -376,7 +376,7 @@ public class GameViewController implements Initializable {
                     Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
                     if (result.isErr()) {
                         System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
-                        Utils.changeLabel(messageLabel, "[ERROR] " + result.getException().orElse("Cannot select cards"));
+                        messageLabel.setText("[ERROR] " + result.getException().orElse("Cannot select cards"));
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -384,7 +384,7 @@ public class GameViewController implements Initializable {
             });
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
-            Utils.changeLabel(messageLabel, "Couldn't perform the move");
+            messageLabel.setText("Couldn't perform the move");
         }
 
     }
@@ -432,7 +432,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
-            Utils.changeLabel(messageLabel, "Couldn't load the personal objectives");
+            messageLabel.setText("Couldn't load the personal objectives");
         }
     }
 
@@ -460,7 +460,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
-            Utils.changeLabel(messageLabel, "Couldn't load the shelves");
+            messageLabel.setText("Couldn't load the shelves");
         }
     }
 
@@ -482,7 +482,7 @@ public class GameViewController implements Initializable {
             newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
-            Utils.changeLabel(messageLabel, "Couldn't load the common objectives");
+            messageLabel.setText("Couldn't load the common objectives");
         }
     }
 
@@ -526,7 +526,7 @@ public class GameViewController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            Utils.changeLabel(messageLabel, "Couldn't load the final message screen");
+            messageLabel.setText("Couldn't load the final message screen");
         }
     }
 
@@ -548,7 +548,7 @@ public class GameViewController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            Utils.changeLabel(messageLabel, "Couldn't load the final message screen");
+            messageLabel.setText("Couldn't load the final message screen");
         }
     }
 
@@ -606,11 +606,11 @@ public class GameViewController implements Initializable {
                     Result result = networkManager.exitGame().waitResult();
                     if (result.isErr()) {
                         System.out.println("[ERROR] " + result.getException().orElse("Cannot stop the game"));
-                        Utils.changeLabel(messageLabel, "Cannot stop the game");
+                        messageLabel.setText("Cannot stop the game");
                         afterStopConfirmFail();
                     }
                 } catch (Exception e) {
-                    Utils.changeLabel(messageLabel, "Cannot stop the game");
+                    messageLabel.setText("Cannot stop the game");
                     System.out.println("[ERROR] " + e.getMessage());
                 }
             });
