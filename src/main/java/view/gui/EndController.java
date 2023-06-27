@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.Cockade;
+import model.PersonalObjective;
 import model.Score;
 import model.ScoreBoard;
 
@@ -78,7 +79,6 @@ public class EndController implements Initializable {
      *
      * @author Ludovico
      */
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.scoreBoard = GameViewController.gameData.getScoreBoard();
@@ -91,11 +91,10 @@ public class EndController implements Initializable {
      *
      * @author Ludovico
      */
-
     private void showScoreBoard() {
         int position = 1;
         String your_title = "Why is my life like this";
-        ArrayList<Cockade> playerCockades = new ArrayList<>();
+        ArrayList<Cockade> playerCockades;
 
         if(scoreBoard.size() == 2){
             messageLabel3.setVisible(false);
@@ -115,29 +114,29 @@ public class EndController implements Initializable {
             if(position == 1){
                 messageLabel1.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
-                for(Cockade cockade : playerCockades){
-                    cockadesList1.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                for (Cockade cockade : playerCockades) {
+                    addCockadeToList(cockadesList1, cockade);
                 }
             }
             else if(position == 2){
                 messageLabel2.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
-                for(Cockade cockade : playerCockades){
-                    cockadesList2.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                for (Cockade cockade : playerCockades) {
+                    addCockadeToList(cockadesList2, cockade);
                 }
             }
             else if(position == 3){
                 messageLabel3.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
                 for(Cockade cockade : playerCockades){
-                    cockadesList3.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                    addCockadeToList(cockadesList3, cockade);
                 }
             }
             else if(position == 4){
                 messageLabel4.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
                 for(Cockade cockade : playerCockades){
-                    cockadesList4.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                    addCockadeToList(cockadesList4, cockade);
                 }
             }
             if (score.username().equals(username)) {
@@ -145,14 +144,19 @@ public class EndController implements Initializable {
             }
             position++;
         }
-        System.out.println("Your final grade: "+your_title);
-        titleLabel.setText("Your final grade: "+your_title);
+        System.out.println("Your final grade: " + your_title);
+        titleLabel.setText("Your final grade: " + your_title);
 
         addChangeOfImage(cockadesList1, 1);
         addChangeOfImage(cockadesList2, 2);
         addChangeOfImage(cockadesList3, 3);
         addChangeOfImage(cockadesList4, 4);
 
+    }
+
+    private void addCockadeToList(ListView cockadeList, Cockade cockade) {
+        String text = String.format("%s giving points: %d", cockade.name().indexOf(PersonalObjective.MARKER) == 0 ? "Personal objective" : cockade.name(), cockade.points());
+        cockadeList.getItems().add(text);
     }
 
     private void addChangeOfImage(ListView cockadesList, int player){
@@ -176,7 +180,6 @@ public class EndController implements Initializable {
      *
      * @author Ludovico
      */
-
     private void handleCockadeSelection(int player, String selectedCockade){
         Pattern pattern = Pattern.compile("\\d+");
 
@@ -253,7 +256,6 @@ public class EndController implements Initializable {
      *
      * @throws IOException
      */
-
     @FXML
     private void goToLobbies(ActionEvent actionEvent) throws IOException {
         try {

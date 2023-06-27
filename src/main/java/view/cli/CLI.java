@@ -13,6 +13,7 @@ import model.Score;
 import model.ScoreBoard;
 import model.Shelf;
 import model.TableTop;
+import model.PersonalObjective;
 
 import static network.Server.SERVER_NAME;
 
@@ -613,7 +614,7 @@ public class CLI {
 		} else {
 			System.out.println("You:");
 			for (Cockade cockade : yourCockades) {
-				System.out.format("  - %s ( %d points )%n", cockade.name(), cockade.points());
+				System.out.format("  - %s ( %d points )%n", cockade.name().indexOf(PersonalObjective.MARKER) == 0 ? "Personal objective" : cockade.name(), cockade.points());
 			}
 		}
 
@@ -627,7 +628,7 @@ public class CLI {
 			} else {
 				System.out.format("%s:%n", player);
 				for (Cockade cockade : cockades) {
-					System.out.format("  - %s ( %d points )%n", cockade.name(), cockade.points());
+					System.out.format("  - %s ( %d points )%n", cockade.name().indexOf(PersonalObjective.MARKER) == 0 ? "Personal objective" : cockade.name(), cockade.points());
 				}
 			}
 		}

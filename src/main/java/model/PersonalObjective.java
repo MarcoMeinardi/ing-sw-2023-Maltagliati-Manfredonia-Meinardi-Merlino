@@ -7,6 +7,7 @@ import java.util.Optional;
 public class PersonalObjective extends Objective {
     private final Cell[] cellsCheck;
     private static final int[] points = {1, 2, 4, 6, 9, 12};
+    public static final String MARKER = "PERSONAL_OBJECTIVE";
 
     /**
      * Constructor that creates a new personal objective with a specified name and
@@ -83,7 +84,7 @@ public class PersonalObjective extends Objective {
     public static ArrayList<PersonalObjective> generateAllPersonalObjectives() {
         ArrayList<PersonalObjective> allObjectives = new ArrayList<>();
 
-        allObjectives.add(new PersonalObjective("First", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "1", new Cell[]{
                 new Cell(5, 0, Card.Type.Pianta),
                 new Cell(5, 2, Card.Type.Cornice),
                 new Cell(4, 4, Card.Type.Gatto),
@@ -92,7 +93,7 @@ public class PersonalObjective extends Objective {
                 new Cell(0, 2, Card.Type.Trofeo)
         }));
 
-        allObjectives.add(new PersonalObjective("Second", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "2", new Cell[]{
                 new Cell(4,1, Card.Type.Pianta),
                 new Cell(3,0, Card.Type.Gatto),
                 new Cell(3,2, Card.Type.Gioco),
@@ -101,17 +102,16 @@ public class PersonalObjective extends Objective {
                 new Cell(0,4, Card.Type.Cornice)
         }));
 
-        allObjectives.add(new PersonalObjective("Third", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "3", new Cell[]{
                 new Cell(4,0, Card.Type.Cornice),
                 new Cell(4,3, Card.Type.Gioco),
                 new Cell(3,2, Card.Type.Pianta),
                 new Cell(2,1, Card.Type.Gatto),
                 new Cell(2,4, Card.Type.Trofeo),
                 new Cell(0,0, Card.Type.Libro)
-
         }));
 
-        allObjectives.add(new PersonalObjective("Fourth", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "4", new Cell[]{
                 new Cell(5,4, Card.Type.Gioco),
                 new Cell(3,0, Card.Type.Trofeo),
                 new Cell(3,2, Card.Type.Cornice),
@@ -120,7 +120,7 @@ public class PersonalObjective extends Objective {
                 new Cell(1,1, Card.Type.Libro)
         }));
 
-        allObjectives.add(new PersonalObjective("Fifth", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "5", new Cell[]{
                 new Cell(4,1, Card.Type.Trofeo),
                 new Cell(2,1, Card.Type.Cornice),
                 new Cell(2,2, Card.Type.Libro),
@@ -129,7 +129,7 @@ public class PersonalObjective extends Objective {
                 new Cell(0,3, Card.Type.Gatto)
         }));
 
-        allObjectives.add(new PersonalObjective("Sixth", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "6", new Cell[]{
                 new Cell(5,2, Card.Type.Trofeo),
                 new Cell(5,4, Card.Type.Gatto),
                 new Cell(3,3, Card.Type.Libro),
@@ -138,7 +138,7 @@ public class PersonalObjective extends Objective {
                 new Cell(0,0, Card.Type.Pianta)
         }));
 
-        allObjectives.add(new PersonalObjective("Seventh", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "7", new Cell[]{
                 new Cell(5,0, Card.Type.Gatto),
                 new Cell(4,3, Card.Type.Cornice),
                 new Cell(3,1, Card.Type.Pianta),
@@ -147,7 +147,7 @@ public class PersonalObjective extends Objective {
                 new Cell(0,2, Card.Type.Libro)
         }));
 
-        allObjectives.add(new PersonalObjective("Eight", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "8", new Cell[]{
                 new Cell(5,4, Card.Type.Cornice),
                 new Cell(4,1, Card.Type.Gatto),
                 new Cell(3,2, Card.Type.Trofeo),
@@ -156,7 +156,7 @@ public class PersonalObjective extends Objective {
                 new Cell(0,3, Card.Type.Gioco)
         }));
 
-        allObjectives.add(new PersonalObjective("Ninth", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "9", new Cell[]{
                 new Cell(5,2, Card.Type.Gioco),
                 new Cell(3,2, Card.Type.Gatto),
                 new Cell(2,4, Card.Type.Libro),
@@ -165,7 +165,7 @@ public class PersonalObjective extends Objective {
                 new Cell(0,0, Card.Type.Cornice)
         }));
 
-        allObjectives.add(new PersonalObjective("Tenth", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "10", new Cell[]{
                 new Cell(5,4, Card.Type.Trofeo),
                 new Cell(4,1, Card.Type.Gioco),
                 new Cell(3,0, Card.Type.Libro),
@@ -174,7 +174,7 @@ public class PersonalObjective extends Objective {
                 new Cell(0,3, Card.Type.Pianta)
         }));
 
-        allObjectives.add(new PersonalObjective("Eleventh", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "11", new Cell[]{
                 new Cell(5,2, Card.Type.Pianta),
                 new Cell(4,1, Card.Type.Libro),
                 new Cell(3,0, Card.Type.Gioco),
@@ -183,7 +183,7 @@ public class PersonalObjective extends Objective {
                 new Cell(0,3, Card.Type.Trofeo)
         }));
 
-        allObjectives.add(new PersonalObjective("Twelfth", new Cell[]{
+        allObjectives.add(new PersonalObjective(MARKER + "12", new Cell[]{
                 new Cell(5,2, Card.Type.Libro),
                 new Cell(4,1, Card.Type.Pianta),
                 new Cell(3,2, Card.Type.Cornice),
