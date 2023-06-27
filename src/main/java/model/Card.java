@@ -4,12 +4,12 @@ import java.io.Serializable;
 
 public class Card implements Serializable {
 	public enum Type {
-		Gatto,
-		Libro,
-		Gioco,
-		Cornice,
-		Trofeo,
-		Pianta
+		Cat,
+		Book,
+		Game,
+		Frame,
+		Trophy,
+		Plant
 	}
 
 	private int imageIndex;

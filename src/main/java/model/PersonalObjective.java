@@ -85,111 +85,111 @@ public class PersonalObjective extends Objective {
         ArrayList<PersonalObjective> allObjectives = new ArrayList<>();
 
         allObjectives.add(new PersonalObjective(MARKER + "1", new Cell[]{
-                new Cell(5, 0, Card.Type.Pianta),
-                new Cell(5, 2, Card.Type.Cornice),
-                new Cell(4, 4, Card.Type.Gatto),
-                new Cell(3, 3, Card.Type.Libro),
-                new Cell(2, 1, Card.Type.Gioco),
-                new Cell(0, 2, Card.Type.Trofeo)
+                new Cell(5, 0, Card.Type.Plant),
+                new Cell(5, 2, Card.Type.Frame),
+                new Cell(4, 4, Card.Type.Cat),
+                new Cell(3, 3, Card.Type.Book),
+                new Cell(2, 1, Card.Type.Game),
+                new Cell(0, 2, Card.Type.Trophy)
         }));
 
         allObjectives.add(new PersonalObjective(MARKER + "2", new Cell[]{
-                new Cell(4,1, Card.Type.Pianta),
-                new Cell(3,0, Card.Type.Gatto),
-                new Cell(3,2, Card.Type.Gioco),
-                new Cell(2,4, Card.Type.Libro),
-                new Cell(1,3, Card.Type.Trofeo),
-                new Cell(0,4, Card.Type.Cornice)
+                new Cell(4,1, Card.Type.Plant),
+                new Cell(3,0, Card.Type.Cat),
+                new Cell(3,2, Card.Type.Game),
+                new Cell(2,4, Card.Type.Book),
+                new Cell(1,3, Card.Type.Trophy),
+                new Cell(0,4, Card.Type.Frame)
         }));
 
         allObjectives.add(new PersonalObjective(MARKER + "3", new Cell[]{
-                new Cell(4,0, Card.Type.Cornice),
-                new Cell(4,3, Card.Type.Gioco),
-                new Cell(3,2, Card.Type.Pianta),
-                new Cell(2,1, Card.Type.Gatto),
-                new Cell(2,4, Card.Type.Trofeo),
-                new Cell(0,0, Card.Type.Libro)
+                new Cell(4,0, Card.Type.Frame),
+                new Cell(4,3, Card.Type.Game),
+                new Cell(3,2, Card.Type.Plant),
+                new Cell(2,1, Card.Type.Cat),
+                new Cell(2,4, Card.Type.Trophy),
+                new Cell(0,0, Card.Type.Book)
         }));
 
         allObjectives.add(new PersonalObjective(MARKER + "4", new Cell[]{
-                new Cell(5,4, Card.Type.Gioco),
-                new Cell(3,0, Card.Type.Trofeo),
-                new Cell(3,2, Card.Type.Cornice),
-                new Cell(2,3, Card.Type.Pianta),
-                new Cell(1,2, Card.Type.Gatto),
-                new Cell(1,1, Card.Type.Libro)
+                new Cell(5,4, Card.Type.Game),
+                new Cell(3,0, Card.Type.Trophy),
+                new Cell(3,2, Card.Type.Frame),
+                new Cell(2,3, Card.Type.Plant),
+                new Cell(1,2, Card.Type.Cat),
+                new Cell(1,1, Card.Type.Book)
         }));
 
         allObjectives.add(new PersonalObjective(MARKER + "5", new Cell[]{
-                new Cell(4,1, Card.Type.Trofeo),
-                new Cell(2,1, Card.Type.Cornice),
-                new Cell(2,2, Card.Type.Libro),
-                new Cell(1,4, Card.Type.Pianta),
-                new Cell(0,0, Card.Type.Gioco),
-                new Cell(0,3, Card.Type.Gatto)
+                new Cell(4,1, Card.Type.Trophy),
+                new Cell(2,1, Card.Type.Frame),
+                new Cell(2,2, Card.Type.Book),
+                new Cell(1,4, Card.Type.Plant),
+                new Cell(0,0, Card.Type.Game),
+                new Cell(0,3, Card.Type.Cat)
         }));
 
         allObjectives.add(new PersonalObjective(MARKER + "6", new Cell[]{
-                new Cell(5,2, Card.Type.Trofeo),
-                new Cell(5,4, Card.Type.Gatto),
-                new Cell(3,3, Card.Type.Libro),
-                new Cell(1,1, Card.Type.Gioco),
-                new Cell(1,3, Card.Type.Cornice),
-                new Cell(0,0, Card.Type.Pianta)
+                new Cell(5,2, Card.Type.Trophy),
+                new Cell(5,4, Card.Type.Cat),
+                new Cell(3,3, Card.Type.Book),
+                new Cell(1,1, Card.Type.Game),
+                new Cell(1,3, Card.Type.Frame),
+                new Cell(0,0, Card.Type.Plant)
         }));
 
         allObjectives.add(new PersonalObjective(MARKER + "7", new Cell[]{
-                new Cell(5,0, Card.Type.Gatto),
-                new Cell(4,3, Card.Type.Cornice),
-                new Cell(3,1, Card.Type.Pianta),
-                new Cell(2,0, Card.Type.Trofeo),
-                new Cell(1,4, Card.Type.Gioco),
-                new Cell(0,2, Card.Type.Libro)
+                new Cell(5,0, Card.Type.Cat),
+                new Cell(4,3, Card.Type.Frame),
+                new Cell(3,1, Card.Type.Plant),
+                new Cell(2,0, Card.Type.Trophy),
+                new Cell(1,4, Card.Type.Game),
+                new Cell(0,2, Card.Type.Book)
         }));
 
         allObjectives.add(new PersonalObjective(MARKER + "8", new Cell[]{
-                new Cell(5,4, Card.Type.Cornice),
-                new Cell(4,1, Card.Type.Gatto),
-                new Cell(3,2, Card.Type.Trofeo),
-                new Cell(2,0, Card.Type.Pianta),
-                new Cell(1,3, Card.Type.Libro),
-                new Cell(0,3, Card.Type.Gioco)
+                new Cell(5,4, Card.Type.Frame),
+                new Cell(4,1, Card.Type.Cat),
+                new Cell(3,2, Card.Type.Trophy),
+                new Cell(2,0, Card.Type.Plant),
+                new Cell(1,3, Card.Type.Book),
+                new Cell(0,3, Card.Type.Game)
         }));
 
         allObjectives.add(new PersonalObjective(MARKER + "9", new Cell[]{
-                new Cell(5,2, Card.Type.Gioco),
-                new Cell(3,2, Card.Type.Gatto),
-                new Cell(2,4, Card.Type.Libro),
-                new Cell(1,1, Card.Type.Trofeo),
-                new Cell(1,4, Card.Type.Pianta),
-                new Cell(0,0, Card.Type.Cornice)
+                new Cell(5,2, Card.Type.Game),
+                new Cell(3,2, Card.Type.Cat),
+                new Cell(2,4, Card.Type.Book),
+                new Cell(1,1, Card.Type.Trophy),
+                new Cell(1,4, Card.Type.Plant),
+                new Cell(0,0, Card.Type.Frame)
         }));
 
         allObjectives.add(new PersonalObjective(MARKER + "10", new Cell[]{
-                new Cell(5,4, Card.Type.Trofeo),
-                new Cell(4,1, Card.Type.Gioco),
-                new Cell(3,0, Card.Type.Libro),
-                new Cell(2,3, Card.Type.Gatto),
-                new Cell(1,1, Card.Type.Cornice),
-                new Cell(0,3, Card.Type.Pianta)
+                new Cell(5,4, Card.Type.Trophy),
+                new Cell(4,1, Card.Type.Game),
+                new Cell(3,0, Card.Type.Book),
+                new Cell(2,3, Card.Type.Cat),
+                new Cell(1,1, Card.Type.Frame),
+                new Cell(0,3, Card.Type.Plant)
         }));
 
         allObjectives.add(new PersonalObjective(MARKER + "11", new Cell[]{
-                new Cell(5,2, Card.Type.Pianta),
-                new Cell(4,1, Card.Type.Libro),
-                new Cell(3,0, Card.Type.Gioco),
-                new Cell(2,2, Card.Type.Cornice),
-                new Cell(1,4, Card.Type.Gatto),
-                new Cell(0,3, Card.Type.Trofeo)
+                new Cell(5,2, Card.Type.Plant),
+                new Cell(4,1, Card.Type.Book),
+                new Cell(3,0, Card.Type.Game),
+                new Cell(2,2, Card.Type.Frame),
+                new Cell(1,4, Card.Type.Cat),
+                new Cell(0,3, Card.Type.Trophy)
         }));
 
         allObjectives.add(new PersonalObjective(MARKER + "12", new Cell[]{
-                new Cell(5,2, Card.Type.Libro),
-                new Cell(4,1, Card.Type.Pianta),
-                new Cell(3,2, Card.Type.Cornice),
-                new Cell(2,3, Card.Type.Trofeo),
-                new Cell(1,4, Card.Type.Gioco),
-                new Cell(0,0, Card.Type.Gatto)
+                new Cell(5,2, Card.Type.Book),
+                new Cell(4,1, Card.Type.Plant),
+                new Cell(3,2, Card.Type.Frame),
+                new Cell(2,3, Card.Type.Trophy),
+                new Cell(1,4, Card.Type.Game),
+                new Cell(0,0, Card.Type.Cat)
         }));
 
         return allObjectives;

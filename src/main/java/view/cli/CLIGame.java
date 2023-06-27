@@ -159,12 +159,12 @@ public class CLIGame {
 	 */
 	private String cardToChar(Card card) {
 		switch (card.getType()) {
-			case Gatto   -> { return "C"; }
-			case Libro   -> { return "B"; }
-			case Gioco   -> { return "G"; }
-			case Cornice -> { return "F"; }
-			case Trofeo  -> { return "T"; }
-			case Pianta  -> { return "P"; }
+			case Cat -> { return "C"; }
+			case Book -> { return "B"; }
+			case Game -> { return "G"; }
+			case Frame -> { return "F"; }
+			case Trophy -> { return "T"; }
+			case Plant -> { return "P"; }
 			default -> throw new RuntimeException("Invalid card");
 		}
 	}

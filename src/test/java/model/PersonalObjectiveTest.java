@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -23,21 +22,21 @@ public class PersonalObjectiveTest {
     public void testConstructor(){
 
         PersonalObjective objective = new PersonalObjective("test", new Cell[]{
-                new Cell(5, 0, Card.Type.Pianta),
-                new Cell(5, 1, Card.Type.Gatto),
-                new Cell(4, 4, Card.Type.Gatto),
-                new Cell(3, 3, Card.Type.Libro),
-                new Cell(2, 1, Card.Type.Gioco),
-                new Cell(0, 2, Card.Type.Trofeo)
+                new Cell(5, 0, Card.Type.Plant),
+                new Cell(5, 1, Card.Type.Cat),
+                new Cell(4, 4, Card.Type.Cat),
+                new Cell(3, 3, Card.Type.Book),
+                new Cell(2, 1, Card.Type.Game),
+                new Cell(0, 2, Card.Type.Trophy)
         });
 
         assertArrayEquals(objective.getCellsCheck(), new Cell[]{
-                new Cell(5, 0, Card.Type.Pianta),
-                new Cell(5, 1, Card.Type.Gatto),
-                new Cell(4, 4, Card.Type.Gatto),
-                new Cell(3, 3, Card.Type.Libro),
-                new Cell(2, 1, Card.Type.Gioco),
-                new Cell(0, 2, Card.Type.Trofeo)
+                new Cell(5, 0, Card.Type.Plant),
+                new Cell(5, 1, Card.Type.Cat),
+                new Cell(4, 4, Card.Type.Cat),
+                new Cell(3, 3, Card.Type.Book),
+                new Cell(2, 1, Card.Type.Game),
+                new Cell(0, 2, Card.Type.Trophy)
         });
 
         assertEquals(objective.getName(), "test");

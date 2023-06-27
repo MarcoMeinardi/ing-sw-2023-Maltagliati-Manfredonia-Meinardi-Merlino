@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 
 import model.Card;
 import network.NetworkManagerInterface;
@@ -26,12 +25,12 @@ public class Utils {
      */
     public static String cardToImageName(Card card) {
         switch (card.getType()) {
-            case Gatto   -> { return String.format("/img/item tiles/Gatti1.%d.png", card.getImageIndex()); }
-            case Libro   -> { return String.format("/img/item tiles/Libri1.%d.png", card.getImageIndex()); }
-            case Cornice -> { return String.format("/img/item tiles/Cornici1.%d.png", card.getImageIndex()); }
-            case Gioco   -> { return String.format("/img/item tiles/Giochi1.%d.png", card.getImageIndex()); }
-            case Pianta  -> { return String.format("/img/item tiles/Piante1.%d.png", card.getImageIndex()); }
-            case Trofeo  -> { return String.format("/img/item tiles/Trofei1.%d.png", card.getImageIndex()); }
+            case Cat -> { return String.format("/img/item tiles/Gatti1.%d.png", card.getImageIndex()); }
+            case Book -> { return String.format("/img/item tiles/Libri1.%d.png", card.getImageIndex()); }
+            case Frame -> { return String.format("/img/item tiles/Cornici1.%d.png", card.getImageIndex()); }
+            case Game -> { return String.format("/img/item tiles/Giochi1.%d.png", card.getImageIndex()); }
+            case Plant -> { return String.format("/img/item tiles/Piante1.%d.png", card.getImageIndex()); }
+            case Trophy -> { return String.format("/img/item tiles/Trofei1.%d.png", card.getImageIndex()); }
             default -> throw new RuntimeException("Invalid card type");
         }
     }

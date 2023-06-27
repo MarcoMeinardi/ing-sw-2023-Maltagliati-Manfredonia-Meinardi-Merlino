@@ -32,12 +32,12 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
         cockades = new HashMap<>();
         ArrayList<Player> players = game.finalRanks();
         winner = players.get(0).getName();
-        mostCats = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Gatto))).get().getName();
-        mostBooks = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Libro))).get().getName();
-        mostGames = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Gioco))).get().getName();
-        mostFrames = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Cornice))).get().getName();
-        mostTrophies = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Trofeo))).get().getName();
-        mostPlants = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Pianta))).get().getName();
+        mostCats = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Cat))).get().getName();
+        mostBooks = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Book))).get().getName();
+        mostGames = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Game))).get().getName();
+        mostFrames = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Frame))).get().getName();
+        mostTrophies = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Trophy))).get().getName();
+        mostPlants = players.stream().max(Comparator.comparingInt(p -> p.getShelf().countCard(Card.Type.Plant))).get().getName();
 
         soleSurvivor = findSoleSurvivor(players);
         if (soleSurvivor != null) {
