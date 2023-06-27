@@ -16,7 +16,7 @@
             <Image url="@/img/Publisher material/Display_1.jpg" />
          </image>
       </ImageView>
-      <Text fx:id="nameUser" fill="WHITE" layoutX="85.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" underline="true" wrappingWidth="210.0911102294922">
+      <Text fx:id="nameUser" fill="WHITE" layoutX="85.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" underline="true" wrappingWidth="210.0911102294922">
          <font>
             <Font name="Arial" size="35.0" />
          </font>
