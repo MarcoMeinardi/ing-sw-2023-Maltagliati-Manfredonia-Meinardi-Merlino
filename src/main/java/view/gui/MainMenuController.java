@@ -188,7 +188,7 @@ public class MainMenuController implements Initializable {
                 LoginController.state = ClientStatus.InLobby;
                 System.out.println(LoginController.username + " joined: " + LoginController.lobby.getName());
             } else {
-                noFound.setText("Cannot join the lobby");
+                noFound.setText("Cannot join lobby");
                 System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
                 return;
             }
