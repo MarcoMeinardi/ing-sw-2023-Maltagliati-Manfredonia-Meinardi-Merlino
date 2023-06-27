@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class LobbyControllerTest {
     @Test
-    public void testGetIstance(){
+    public void testGetInstance () {
         LobbyController lobbyController = LobbyController.getInstance();
         assertNotNull(lobbyController);
     }

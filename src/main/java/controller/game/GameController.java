@@ -202,7 +202,7 @@ public class GameController {
             for (int j = i + 1; j < positions.size(); j++) {
                 int dist = positions.get(i).distance(positions.get(j));
                 if (dist != 1 && (positions.size() != 3 || dist != 2)) {
-                    throw new InvalidMoveException("Cards are not pickable (not adjacient)");
+                    throw new InvalidMoveException("Cards are not pickable (not adjacent)");
                 }
             }
         }

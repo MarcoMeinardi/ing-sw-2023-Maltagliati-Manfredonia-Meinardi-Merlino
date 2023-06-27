@@ -34,7 +34,7 @@ public class Server {
 				System.out.println("Invalid IP address");
 				continue;
 			}
-			logger.info("RMI hostaname set to IP address: " + ip);
+			logger.info("RMI hostname set to IP address: " + ip);
 			return ip;
 		}
 	}

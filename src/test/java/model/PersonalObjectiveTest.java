@@ -15,7 +15,7 @@ public class PersonalObjectiveTest {
 
     /**
      * Test for the constructor. Checks that the cells are correctly
-     * initialized and that the name is correctly setted.
+     * initialized and that the name is correctly set.
      *
      * @author Ludovico
      */

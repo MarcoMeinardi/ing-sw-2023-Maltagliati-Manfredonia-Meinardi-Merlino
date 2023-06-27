@@ -58,7 +58,7 @@ public class CommonObjectiveTest {
     }
 
     /**
-     * Test the objective "FiveCardsInDiagonal" sud-west to nord-east
+     * Test the objective "FiveCardsInDiagonal" sud-west to north-east
      *
      * @throws InvalidMoveException
      * @author Ludovico, Marco

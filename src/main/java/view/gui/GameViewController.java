@@ -162,7 +162,7 @@ public class GameViewController implements Initializable {
     }
 
     /**
-     * Method that associates the card passed as parameter to an index to decide wich image to show.
+     * Method that associates the card passed as parameter to an index to decide which image to show.
 
      * @param card
      * @return
@@ -425,7 +425,7 @@ public class GameViewController implements Initializable {
     /**
      * method called to send a message to the server and add it to the chat.
      * It checks if the message is valid and if it is not it returns after adding the
-     * error to the chat, visible only by the sender and not the others in the lobby (lenght check,
+     * error to the chat, visible only by the sender and not the others in the lobby (length check,
      * empty message check, trying to use commands).
      * Scrolls the chat to the bottom after adding the error message.
      * If the message is valid it sends it to the server and adds it to the chat calling the
@@ -507,7 +507,7 @@ public class GameViewController implements Initializable {
             addMessageToChat(message);
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
-            changeLabel(messageLabel, "Couln't send the message");
+            changeLabel(messageLabel, "Couldn't send the message");
         }
 
     }
