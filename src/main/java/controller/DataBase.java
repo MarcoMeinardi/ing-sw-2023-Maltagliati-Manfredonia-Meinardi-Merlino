@@ -11,8 +11,6 @@ import java.util.HashSet;
 
 /**
  * A minimal db to associate a set of players to their save file.
- * 
- * @author Marco
  */
 public class DataBase extends HashMap<HashSet<String>, File> {
 	private static DataBase instance = null;
@@ -20,7 +18,6 @@ public class DataBase extends HashMap<HashSet<String>, File> {
 
 	/**
 	 * Private constructor that loads the database from the file "db.srl" if it exists, or creates a new database otherwise.
-	 * 
 	 * @author Marco
 	 */
 	private DataBase() {
@@ -33,9 +30,8 @@ public class DataBase extends HashMap<HashSet<String>, File> {
 	}
 	/**
 	 * Returns the instance of the database. If the database has not been created yet, it creates a new instance.
-	 * 
+	 * @return The instance of the database
 	 * @author Marco
-	 * @return the instance of the database
 	 */
 	public static DataBase getInstance() {
 		if (instance == null) {
@@ -46,11 +42,10 @@ public class DataBase extends HashMap<HashSet<String>, File> {
 
 	/**
 	 * Loads the database from the file "db.srl".
-	 * 
-	 * @author Marco
 	 * @return the loaded database
 	 * @throws IOException if an I/O error occurs while reading the file
 	 * @throws ClassNotFoundException if the class of the serialized object cannot be found
+	 * @author Marco
 	 */
 	private DataBase loadDb() throws IOException, ClassNotFoundException {
 		DataBase savedDb;
@@ -65,9 +60,8 @@ public class DataBase extends HashMap<HashSet<String>, File> {
 
 	/**
 	 * Writes the database to the file "db.srl".
-	 * 
-	 * @author Marco
 	 * @throws IOException if an I/O error occurs while writing the file
+	 * @author Marco
 	 */
 	public void write() throws IOException {
 		synchronized(instance) {

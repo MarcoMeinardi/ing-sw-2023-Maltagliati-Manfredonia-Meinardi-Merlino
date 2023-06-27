@@ -25,10 +25,7 @@ import static network.Server.SERVER_NAME;
 
 /**
  * This class runs an instance of game and controls it.
- * @author Ludovico, Marco, Lorenzo
- *
  */
-
 public class GameController {
 
     private final Game game;
@@ -54,6 +51,7 @@ public class GameController {
 
     /**
      * Constructor that creates a new game with the specified players.
+	 * @param lobby The lobby containing the players
      * @author Ludovico
      */
     public GameController(Lobby lobby) throws Exception {
@@ -83,6 +81,12 @@ public class GameController {
         saveGame();
     }
 
+	/**
+	 * Constructor that loads a game from a save file.
+	 * @param saveFile The path of the save file
+	 * @param lobby The lobby containing the players
+	 * @author Marco
+	 */
     public GameController(File saveFile, Lobby lobby) throws Exception {
         this.lobby = lobby;
         game = Game.loadGame(saveFile);
@@ -108,14 +112,18 @@ public class GameController {
         disconnectionChecker.start();
     }
 
+	/**
+	 * Getter for the `game` object
+	 * @return The current game object
+	 * @author Marco
+	 */
     public Game getGame() {
         return game;
     }
 
     /**
-     * Checks when table needs a refill.
-     *
-     * @return True if refill needed, false otherwise
+     * Checks if the tabletop needs a refill.
+     * @return true if refill needed, false otherwise
      * @author Ludovico
      */
     private boolean checkRefillTable() {
@@ -125,7 +133,6 @@ public class GameController {
     /**
      * Refills the table if needed.
      * @author Ludovico
-     *
      */
     private void refillTable() {
         if (checkRefillTable()) {
@@ -134,9 +141,9 @@ public class GameController {
     }
 
     /**
-     * Adds the personal cockade to the player's shelf if the player has completed the personal objective.
-     *
-     * @param player The player
+     * Check if the given player has completed the personal objective,
+	 * if this is the case, add the corresponding cockade to him.
+     * @param player The player to consider
      * @author Ludovico
      */
     private void addPersonalCockade(Player player) {
@@ -145,12 +152,12 @@ public class GameController {
     }
 
     /**
-     * Adds the common cockade to the player's shelf if the player has completed the common objective.
-     * Also save the cockades and the new objective values to be returned to the client.
-     *
-     * @param player The player
-     * @param completedObjectives The list of completed objectives
-     * @param newCommonObjectivesScores The list of new common objectives scores
+     * Check for completed common objectives by the player.
+     * This function takes two parameters in addition to the player, references to two `ArrayList`s
+	 * in which the caller will find the cockades for the completed objectives and the corresponding updated scores.
+     * @param player The player to consider
+     * @param completedObjectives A reference to the list of completed objectives
+     * @param newCommonObjectivesScores A reference to the list of updated scores
      * @author Ludovico, Marco
      */
     private void addCommonCockade(Player player, ArrayList<Cockade> completedObjectives, ArrayList<Integer> newCommonObjectivesScores) {
@@ -166,7 +173,7 @@ public class GameController {
 
     /**
      * Checks if the player is the first to finish the game.
-     * If true adds the first to finish cockade to the player's shelf.
+     * If true, add the first to finish cockade to the player's shelf.
      * @param player The player to check
      */
     private void addFirstToFinish(Player player){
@@ -178,12 +185,11 @@ public class GameController {
     }
 
     /**
-     * Tries to execute the move requested by the player.
-     * @author Marco
-     *
-     * @param player The player
+     * Check if the move selected by the player is valid and make it.
+     * @param player The player making the move
      * @param positions The positions of the cards to pick
      * @param column The column where the cards will be placed
+	 * @throws InvalidMoveException If the move is not valid
      * @author Marco, Ludovico
      */
     private void doMove(Player player, ArrayList<Point> positions, int column) throws InvalidMoveException {
@@ -237,9 +243,9 @@ public class GameController {
     }
 
     /**
-     * Sends the global update event to all the clients.
+     * Send the global update event to all the clients.
      * @param event The event to send
-     * @author Ludovico, Lorenzo, Marco, Riccardo, Momo
+     * @author Lorenzo
      */
     public void globalUpdate(ServerEvent event) {
         for (Player player : game.getPlayers()) {
@@ -256,7 +262,8 @@ public class GameController {
 
     /**
      * Finds the next player that is not disconnected.
-     * @return A pair containing a boolean that is true if the game is not finished and an optional player that is Some only if there is a next valid player
+     * @return The player that will do the next turn, or empty if everyone is disconnected
+	 * @author Marco, Lorenzo
      */
     private Optional<Player> nextNotDisconnected() {
         int count = 0;
@@ -275,17 +282,25 @@ public class GameController {
     }
 
     /**
-     * Handles the game send by the client. Executes all the methods in this class that are needed to process
-     * the turns. Utilizes iterator to iterate over the players. Every turn of every player the method checks if
-     * the correct player is trying a move, tries to execute the move requested by the player and checks if the
-     * common objectives are completed. At the end of turn the method checks if the game is over and in that case
-     * checks the personal objectives completed and sends the final ranking to the clients; otherwise it moves to the next turn.
-     * Handles when a player sends a message in the chat.
+     * Handles the game events sent by the client.
+     * The handle events are: card selection, messages and game stop.
+	 * All the actions are checked to ensure no cheating.
+	 * - `CardSelect`: the player selects the cards to pick and the column where to place them.
+     *   If the move is valid, and it is the turn of the requesting player,
+     *   the move is made and the game is updated.
+     *   If the move brings to the game end, the personal objectives are applied,
+     *   the scoreboard is created and sent to all the clients,
+     *   otherwise the standard checks are made (common objectives,
+     *   first to finish) and the new game state is sent.
+	 * - `GameChatSend`: the player sends a message to the chat.
+     * The message is checked and sent to the specified client/s.
+	 * - `GameStop`: the host stops the game.
+     * The game is stopped and the clients are notified.
      *
-     * @param call The call from the client
-     * @param client The client
-     * @return The result of the call
-     * @author Ludovico, Lorenzo
+     * @param call A `Call` object containing the event requested by the client
+     * @param client The client object
+     * @return A `Result` object containing the result of the event handling
+     * @author Ludovico, Lorenzo, Marco
      */
     public Result handleGame(Call call, ClientInterface client) {
         Result result;
@@ -355,9 +370,9 @@ public class GameController {
     }
 
     /**
-     * makes the players exit the game
-     * if endGame is true, end the game, send the final ranking to the clients and cancel the game from disk
-     * @param endGame if set to true, completely end the game, otherwise just make the players exit the game, but keep the save
+     * Method to handle the end of the game.
+     * If endGame is true, end the game, send the final ranking to the clients and cancel the game from disk
+     * @param endGame If set to true, completely end the game, otherwise just make the players exit the game, but keep the save
      * @author Ludovico, Lorenzo, Marco
      */
     public void exitGame(boolean endGame) {
@@ -398,10 +413,9 @@ public class GameController {
     }
 
     /**
-     * return the players of the game
-     *
-     * @return the players of the game
-     * @author marco
+     * Getter for the players `ArrayList`
+     * @return The players of the game
+     * @author Marco
      */
     public ArrayList<Player> getPlayers() {
         synchronized (game.getPlayers()) {
@@ -410,13 +424,11 @@ public class GameController {
     }
 
     /**
-     * return the player with the given username
-     *
-     * @assumes the player is in the game
+     * Return the `Player` object with the given username
      * @param username The username of the player to search
-     * @return the player with the given username
+     * @return the `Player` object with the given username
      * @throws RuntimeException if the player is not found
-     * @author marco
+     * @author Marco
      */
     public Player getPlayer(String username) {
         synchronized (game.getPlayers()) {
@@ -429,21 +441,15 @@ public class GameController {
         throw new RuntimeException("Player not found");
     }
 
-    /**
-     * Return the order of the players
-     * @return
-     * @author Lorenzo
-     */
-    public ArrayList<String> getPlayersOrder() {
-        ArrayList<String> playersOrder = new ArrayList<>();
-        synchronized (game.getPlayers()) {
-            for (Player player: game.getPlayers()) {
-                playersOrder.add(player.getName());
-            }
-        }
-        return playersOrder;
-    }
-
+	/**
+	 * Method to update the scoring status of the game. It is called at the end of each turn.
+	 * It checks for common objectives, first to finish, tabletop refill and game end.
+	 * If the game is over, call the `exitGame` method with `true` as parameter, if only one player
+	 * is connected, set pause to true, otherwise update all the client with the new game state.
+	 * @param player The player that just finished the turn
+	 * @return true if the game is over, false otherwise
+	 * @author Marco, Lorenzo
+	 */
     private boolean completePlayerTurn(Player player) {
         ArrayList<Cockade> completedObjectives = new ArrayList<>();
         ArrayList<Integer> newCommonObjectivesScores = new ArrayList<>();
@@ -474,10 +480,10 @@ public class GameController {
     }
 
     /**
-     * Prepares the game for the start
-     * @param player
-     * @throws Exception
-     * @author Marco, Lorenzo
+     * Get a `GameInfo` object containing the state of the game after with all the visible information
+	 * for the given player.
+     * @param player The player requesting the information
+     * @author Marco
      */
     public GameInfo getGameInfo(Player player) {
         ArrayList<Card[][]> shelves = game.getPlayers().stream().map(p -> p.getShelf().getSerializable()).collect(Collectors.toCollection(ArrayList::new));
@@ -496,6 +502,10 @@ public class GameController {
         );
     }
 
+	/**
+	 * Call the `Game`'s method to save to file the current state.
+	 * @author Marco
+	 */
     private void saveGame() {
         try {
             game.saveGame(saveFile);
@@ -504,12 +514,31 @@ public class GameController {
         }
     }
 
+	/**
+	 * Delete the save for this game.
+	 * @author Marco
+	 */
     private void deleteSave() {
         if (!saveFile.delete()) {
             logger.warning("Failed to delete save file (" + saveFile + ")");
         }
     }
 
+	/**
+	 * Method that runs in a thread to handle client disconnections.
+	 * It runs every 'DISCONNECTION_CHECK_INTERVAL`'s seconds.
+     * For every player, if he has changed state (connected/disconnected) since the last check,
+     * all the clients are notified.
+	 * If the disconnected player was the lobby host, the ownership of the lobby is passed to the next
+	 * player in the list.
+     * If the disconnected player was the current player, his turn is ended.
+	 * If only one player is connected, the game is paused.
+     * If only one player remains in the game for more than `SOLE_SURVIVOR_TIMER checks,
+     * it is decreed as the winner and the game is terminated.
+	 * If no one is connected anymore, the game is ended keeping the save file.
+	 * @throws RuntimeException If the game state is broken and an illegal action happens
+	 * @author Marco
+	 */
     private void checkDisconnections() {
         boolean wasPaused = false;
         while (true) {
@@ -569,7 +598,6 @@ public class GameController {
                 if (!currentPlayerActive) {
                     logger.info("Current player disconnected, skipping turn");
                     if (completePlayerTurn(currentPlayer)) {
-                        // Shouldn't happen
                         return;
                     }
                 }
