@@ -128,7 +128,6 @@ public class MainMenuController implements Initializable {
             }
         } catch (Exception e) {
             Utils.changeLabel(noFound, "Error when asking server for lobbies");
-            throw new RuntimeException(e);
         }
     }
 
@@ -228,7 +227,6 @@ public class MainMenuController implements Initializable {
             stage.show();
         } catch (IOException e) {
             Utils.changeLabel(noFound, "Could not load the final message scene");
-            throw new RuntimeException(e);
         }
     }
 

@@ -297,7 +297,6 @@ public class LobbyViewController implements Initializable{
             stage.show();
         } catch (IOException e) {
             Utils.changeLabel(descriptorLabel, "Couldn't load the error message scene");
-            throw new RuntimeException(e);
         }
     }
 
@@ -336,7 +335,6 @@ public class LobbyViewController implements Initializable{
                         });
                     } catch (Exception e) {
                         Platform.runLater(() -> Utils.changeLabel(descriptorLabel, "We could not add the player to the lobby"));
-                        throw new RuntimeException("Couldn't add player to lobby");
                     }
                 }
                 if (!joinedPlayer.equals(username)) {
@@ -354,7 +352,6 @@ public class LobbyViewController implements Initializable{
                     });
                 } catch (Exception e) {
                     Platform.runLater(() -> Utils.changeLabel(descriptorLabel, "We could not remove the player from the lobby"));
-                    throw new RuntimeException("Removed non existing player from lobby");
                 }
                 System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
             }

@@ -433,7 +433,6 @@ public class GameViewController implements Initializable {
             newStage.show();
         } catch (IOException e) {
             Utils.changeLabel(messageLabel, "Couldn't load the personal objectives");
-            throw new RuntimeException(e);
         }
     }
 
@@ -462,7 +461,6 @@ public class GameViewController implements Initializable {
             newStage.show();
         } catch (IOException e) {
             Utils.changeLabel(messageLabel, "Couldn't load the shelves");
-            throw new RuntimeException(e);
         }
     }
 
@@ -485,7 +483,6 @@ public class GameViewController implements Initializable {
             newStage.show();
         } catch (IOException e) {
             Utils.changeLabel(messageLabel, "Couldn't load the common objectives");
-            throw new RuntimeException(e);
         }
     }
 
@@ -508,7 +505,6 @@ public class GameViewController implements Initializable {
             stage.show();
         } catch (IOException e) {
             Utils.changeLabel(messageLabel, "Couldn't load the end screen");
-            throw new RuntimeException(e);
         }
     }
 
@@ -531,7 +527,6 @@ public class GameViewController implements Initializable {
             stage.show();
         } catch (IOException e) {
             Utils.changeLabel(messageLabel, "Couldn't load the final message screen");
-            throw new RuntimeException(e);
         }
     }
 
@@ -554,7 +549,6 @@ public class GameViewController implements Initializable {
             stage.show();
         } catch (IOException e) {
             Utils.changeLabel(messageLabel, "Couldn't load the final message screen");
-            throw new RuntimeException(e);
         }
     }
 
@@ -698,7 +692,6 @@ public class GameViewController implements Initializable {
                         players.getItems().addAll(lobby.getPlayers());
                     });
                 } catch (Exception e) {
-                    Utils.changeLabel(messageLabel, "Player already in lobby");
                     throw new RuntimeException("Added already existing player to lobby");
                 }
             }
@@ -718,7 +711,6 @@ public class GameViewController implements Initializable {
                     });
 
                 } catch (Exception e) {
-                    Utils.changeLabel(messageLabel, "Player not in lobby");
                     throw new RuntimeException("Removed non existing player from lobby");
                 }
                 System.out.format("[*] %s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");

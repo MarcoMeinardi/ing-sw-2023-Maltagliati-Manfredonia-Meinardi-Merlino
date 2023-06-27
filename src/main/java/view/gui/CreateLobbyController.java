@@ -154,7 +154,6 @@ public class CreateLobbyController implements Initializable {
             stage.show();
         } catch (IOException e) {
             Utils.changeLabel(messageDisplay, "Couldn't take you to login");
-            throw new RuntimeException(e);
         }
     }
 
