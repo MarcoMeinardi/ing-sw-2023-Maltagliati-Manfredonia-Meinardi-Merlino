@@ -21,8 +21,6 @@ import network.parameters.GameInfo;
 import network.parameters.Message;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Optional;
 
 
@@ -281,6 +279,14 @@ public class LobbyViewController implements Initializable{
             descriptorLabel.setText("We could not load the game");
         }
     }
+
+    /**
+     * This method is responsible for printing the last view of the program if the server stopped.
+     * It interrupts the server thread,
+     * loads the MessageReturnToLogin.fxml file using FXMLLoader,
+     * sets the new scene to the stage, and displays the stage.
+     *
+     */
 
     private void returnToLoginMessage(){
         try {
