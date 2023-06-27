@@ -50,7 +50,7 @@ public class MessageStoppedGameController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            messageLabel.setText("Error while loading the main menu");
+            Utils.changeLabel(messageLabel, "Error while loading the main menu");
             e.printStackTrace();
         }
     }

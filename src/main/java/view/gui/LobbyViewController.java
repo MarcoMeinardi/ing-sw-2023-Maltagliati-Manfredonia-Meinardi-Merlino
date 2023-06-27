@@ -142,7 +142,7 @@ public class LobbyViewController implements Initializable{
             startButton.setVisible(true);
             loadButton.setVisible(true);
             if(!alreadyShowedHostMessage){
-                addMessageToChat(new Message(Server.SERVER_NAME, "You are the owner of the lobby, you can start the game when you want!"));
+                Utils.addMessageToChat(username, new Message(Server.SERVER_NAME, "You are the owner of the lobby, you can start the game when you want!"), chat);
                 alreadyShowedHostMessage = true;
             }
         }
@@ -180,12 +180,12 @@ public class LobbyViewController implements Initializable{
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
-                descriptorLabel.setText("Couldn't load the main menu");
+                Utils.changeLabel(descriptorLabel, "Couldn't load the main menu");
                 e.printStackTrace();
             }
         } else {
-            descriptorLabel.setText("");
-            descriptorLabel.setText("Leave lobby failed");
+            Utils.changeLabel(descriptorLabel, "");
+            Utils.changeLabel(descriptorLabel, "Leave lobby failed");
             System.out.println("[ERROR] " + result.getException().orElse("Leave lobby failed"));
         }
     }
@@ -203,14 +203,14 @@ public class LobbyViewController implements Initializable{
     @FXML
     private void startGame(ActionEvent actionEvent) throws Exception {
         if(lobby.getPlayers().size() < 2){
-            descriptorLabel.setText("");
-            descriptorLabel.setText("Not enough players");
+            Utils.changeLabel(descriptorLabel, "");
+            Utils.changeLabel(descriptorLabel, "Not enough players");
             return;
         }
         Result result = networkManager.gameStart().waitResult();
         if (!result.isOk()) {
-            descriptorLabel.setText("");
-            descriptorLabel.setText("Start game failed");
+            Utils.changeLabel(descriptorLabel, "");
+            Utils.changeLabel(descriptorLabel, "Start game failed");
             System.out.println("[ERROR] " + result.getException().orElse("Start game failed"));
         }
     }
@@ -234,7 +234,7 @@ public class LobbyViewController implements Initializable{
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            descriptorLabel.setText("Couldn't load the game");
+            Utils.changeLabel(descriptorLabel, "Couldn't load the game");
             e.printStackTrace();
         }
     }
@@ -256,127 +256,7 @@ public class LobbyViewController implements Initializable{
 
     @FXML
     private void sendMessage(ActionEvent actionEvent) {
-        String messageText = messageInput.getText();
-        messageInput.clear();
-
-        //check message integrity and return if not valid
-        if (messageText.isEmpty()) {
-            System.out.println("[ERROR] Empty message");
-            chat.getItems().add("[ERROR] Empty message");
-            if(chat.getItems().size() != 5){
-                chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-        if (messageText.length() > 100) {
-            System.out.println("[ERROR] Message too long");
-            chat.getItems().add("[ERROR] Message too long");
-            if(chat.getItems().size() != 5){
-                chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-        if (messageText.startsWith(".") || messageText.startsWith("?")) {
-            System.out.println("[ERROR] Commands not supported, use /help for more info");
-            chat.getItems().add("[ERROR] Commands not supported. Use /help for more info");
-            if(chat.getItems().size() != 5){
-                chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-        if(messageText.startsWith("/help")){
-            chat.getItems().add("[-Select a name from the list above to send a private message]");
-            chat.getItems().add("[-Specific commands supported:]");
-            chat.getItems().add("[/help: shows this message]");
-            if(chat.getItems().size() != 5){
-                chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-
-        //try to send it to the server and add it to chat
-        try{
-            if(players.getSelectionModel().getSelectedItem() != null && !players.getSelectionModel().getSelectedItem().toString().equals("")){
-                Result result = networkManager.chat(new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString())).waitResult();
-                if (result.isErr()) {
-                    System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-                    chat.getItems().add("[ERROR] We could not send your message, please try again later");
-                    if(chat.getItems().size() != 5){
-                        chat.scrollTo(chat.getItems().size()-1);
-                    }
-                    return;
-                }
-                Message message = new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString());
-                players.getSelectionModel().clearSelection();
-                addMessageToChat(message);
-                return;
-            }
-            Result result = networkManager.chat(new Message(username, messageText)).waitResult();
-            if (result.isErr()) {
-                System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-                chat.getItems().add("[ERROR] We could not send your message, please try again later");
-                if(chat.getItems().size() != 5){
-                    chat.scrollTo(chat.getItems().size()-1);
-                }
-                return;
-            }
-            Message message = new Message(username, messageText);
-            addMessageToChat(message);
-        } catch (Exception e) {
-            descriptorLabel.setText("Couldn't send message");
-            System.out.println("[ERROR] " + e.getMessage());
-        }
-
-    }
-
-    /**
-     * method called to add a message to the chat.
-     * It automatically adds to the message the username of the sender
-     * and the hour and minute the message was sent.
-     * Scrolls the chat to the bottom to show the last message.
-     * It is called when the server sends a message to the lobby chat.
-     *
-     * @param message the message to add to the chat
-     * @author Ludovico
-     */
-
-    private void addMessageToChat(Message message){
-        Calendar calendar = GregorianCalendar.getInstance();
-        String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
-        String minute = String.valueOf(calendar.get(Calendar.MINUTE));
-        if(hour.length() == 1){
-            hour = "0" + hour;
-        }
-        if(minute.length() == 1){
-            minute = "0" + minute;
-        }
-
-        if(message.idSender().equals(Server.SERVER_NAME)){
-            chat.getItems().add(String.format("[%s:%s] %s ", hour, minute, "From server: " + message.message()));
-            if(chat.getItems().size() != 5){
-                chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-
-        if (message.idReceiver().isEmpty()) {
-            chat.getItems().add(String.format("[%s:%s] %s to everyone: %s", hour, minute, message.idSender(), message.message()));
-        } else {
-            if(!message.idSender().equals(username)) {
-                chat.getItems().add(String.format("[%s:%s] %s to you: %s", hour, minute, message.idSender(), message.message()));
-            }
-            else{
-                if(message.idReceiver().get().equals(message.idSender())){
-                    chat.getItems().add(String.format("[%s:%s] %s to himself: you are a schizo", hour, minute, message.idSender()));
-                }
-                else {
-                    chat.getItems().add(String.format("[%s:%s] you to %s: %s", hour, minute, message.idReceiver().get(), message.message()));
-                }
-            }
-        }
-        if(chat.getItems().size() != 5){
-            chat.scrollTo(chat.getItems().size()-1);
-        }
+        Utils.sendMessage(username, networkManager, messageInput, chat, players, descriptorLabel);
     }
 
     /**
@@ -394,7 +274,7 @@ public class LobbyViewController implements Initializable{
     @FXML
     private void loadGame(ActionEvent actionEvent) throws Exception {
         if(lobby.getNumberOfPlayers() < 2){
-            descriptorLabel.setText("You need at least 2 players to start a game");
+            Utils.changeLabel(descriptorLabel, "You need at least 2 players to start a game");
             return;
         }
         Result result = networkManager.gameLoad().waitResult();
@@ -402,7 +282,7 @@ public class LobbyViewController implements Initializable{
             System.out.println("[INFO] Game loaded");
         }
         else{
-            descriptorLabel.setText("We could not load the game");
+            Utils.changeLabel(descriptorLabel, "We could not load the game");
         }
     }
 
@@ -416,7 +296,7 @@ public class LobbyViewController implements Initializable{
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            descriptorLabel.setText("Couldn't load the error message scene");
+            Utils.changeLabel(descriptorLabel, "Couldn't load the error message scene");
             throw new RuntimeException(e);
         }
     }
@@ -450,12 +330,12 @@ public class LobbyViewController implements Initializable{
                     try {
                         lobby.addPlayer(joinedPlayer);
                         Platform.runLater(() -> {
-                            addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
+                            Utils.addMessageToChat(username, new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"), chat);
                             updateLobby();
                             showStart();
                         });
                     } catch (Exception e) {
-                        Platform.runLater(() -> descriptorLabel.setText("We could not add the player to the lobby"));
+                        Platform.runLater(() -> Utils.changeLabel(descriptorLabel, "We could not add the player to the lobby"));
                         throw new RuntimeException("Couldn't add player to lobby");
                     }
                 }
@@ -468,12 +348,12 @@ public class LobbyViewController implements Initializable{
                 try {
                     lobby.removePlayer(leftPlayer);
                     Platform.runLater(() -> {
-                        addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
+                        Utils.addMessageToChat(username, new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"), chat);
                         updateLobby();
                         showStart();
                     });
                 } catch (Exception e) {
-                    Platform.runLater(() -> descriptorLabel.setText("We could not remove the player from the lobby"));
+                    Platform.runLater(() -> Utils.changeLabel(descriptorLabel, "We could not remove the player from the lobby"));
                     throw new RuntimeException("Removed non existing player from lobby");
                 }
                 System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
@@ -482,7 +362,7 @@ public class LobbyViewController implements Initializable{
                 Message message = (Message)event.get().getData();
                 if (!message.idSender().equals(username)) {
                     System.out.format("%s: %s%n", message.idSender(), message.message());
-                    Platform.runLater(() -> addMessageToChat(message));
+                    Platform.runLater(() -> Utils.addMessageToChat(username, message, chat));
                 }
             }
             case Start -> {
@@ -494,7 +374,7 @@ public class LobbyViewController implements Initializable{
                         switchToGame();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        descriptorLabel.setText("We could not switch to the game scene");
+                        Utils.changeLabel(descriptorLabel, "We could not switch to the game scene");
                     }
                 });
 

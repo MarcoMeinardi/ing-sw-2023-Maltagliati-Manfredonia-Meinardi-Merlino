@@ -82,26 +82,6 @@ public class ShelvesController implements Initializable {
     }
 
     /**
-     * Method used to associate the item to the correct image.
-     *
-     * @param card
-     *
-     * @author Marco
-     */
-
-    private String cardToImageName(Card card) {
-        switch (card.getType()) {
-            case Gatto   -> { return String.format("/img/item tiles/Gatti1.%d.png", card.getImageIndex()); }
-            case Libro   -> { return String.format("/img/item tiles/Libri1.%d.png", card.getImageIndex()); }
-            case Cornice -> { return String.format("/img/item tiles/Cornici1.%d.png", card.getImageIndex()); }
-            case Gioco   -> { return String.format("/img/item tiles/Giochi1.%d.png", card.getImageIndex()); }
-            case Pianta  -> { return String.format("/img/item tiles/Piante1.%d.png", card.getImageIndex()); }
-            case Trofeo  -> { return String.format("/img/item tiles/Trofei1.%d.png", card.getImageIndex()); }
-            default -> throw new RuntimeException("Invalid card type");
-        }
-    }
-
-    /**
      * Method used to calculate the position of the image of the item on the shelf.
      * Puts the images of the shelf calling the method putImageOnScene.
      *
@@ -140,7 +120,7 @@ public class ShelvesController implements Initializable {
         for (int y = 0; y < shelfRows; y++) {
             for (int x = 0; x < shelfColumns; x++) {
                 if (shelfCards[y][x].isPresent()) {
-                    String imageName = cardToImageName(shelfCards[y][x].get());
+                    String imageName = Utils.cardToImageName(shelfCards[y][x].get());
                     putImageOnScene(imageName, y, x,  shelfCardSize, shelfCardSize, shelfOffSetX, shelfOffSetY, shelfCardStepX, shelfCardStepY);
                 }
             }
@@ -148,16 +128,16 @@ public class ShelvesController implements Initializable {
 
         for(int i = 0; i < playersNames.size(); i++){
             if(i == 0){
-                player.setText(playersNames.get(i));
+                Utils.changeLabel(player, playersNames.get(i));
             }
             if(i == 1){
-                player2.setText(playersNames.get(i));
+                Utils.changeLabel(player2, playersNames.get(i));
             }
             if(i == 2){
-                player3.setText(playersNames.get(i));
+                Utils.changeLabel(player3, playersNames.get(i));
             }
             if(i == 3){
-                player4.setText(playersNames.get(i));
+                Utils.changeLabel(player4, playersNames.get(i));
             }
         }
 
@@ -194,7 +174,6 @@ public class ShelvesController implements Initializable {
      *
      * @author Ludovico
      */
-
     private void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY){
         String imagePath = getClass().getResource(imageName).toExternalForm();
         Image image = new Image(imagePath);

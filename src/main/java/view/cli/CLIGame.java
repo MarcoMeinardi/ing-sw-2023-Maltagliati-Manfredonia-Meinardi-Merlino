@@ -89,18 +89,16 @@ public class CLIGame {
 
 	/**
 	 * Update the tabletop state. Called only from `update` and constructor
-	 * @param tableTop a `Card` matrix representing the new tabletop
+	 * @param newTableTop a `Card` matrix representing the new tabletop
 	 *
 	 * @author Marco
 	 */
-	private void updateTableTop(Card[][] tableTop) {
+	private void updateTableTop(Card[][] newTableTop) {
 		this.tableTop = new Optional[TableTop.SIZE][TableTop.SIZE];
 
 		for (int y = 0;  y < TableTop.SIZE; y++) {
 			for (int x = 0; x < TableTop.SIZE; x++) {
-				this.tableTop[y][x] = tableTop[y][x] != null ?
-					Optional.of(tableTop[y][x]) :
-					Optional.empty();
+				this.tableTop[y][x] = Optional.ofNullable(newTableTop[y][x]);
 			}
 		}
 	}

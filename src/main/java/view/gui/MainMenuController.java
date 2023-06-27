@@ -66,7 +66,7 @@ public class MainMenuController implements Initializable {
      * @author Ludovico
      */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
-        nameUser.setText(LoginController.username);
+        Utils.changeLabel(nameUser, LoginController.username);
         askNetForLobbies();
         state = ClientStatus.InLobbySearch;
         serverThread = new Thread(() -> {
@@ -117,7 +117,7 @@ public class MainMenuController implements Initializable {
             if (result.isOk()) {
                 ArrayList<Lobby> lobbies = result.unwrap();
                 if (lobbies.isEmpty()) {
-                    noFound.setText("No lobbies found");
+                    Utils.changeLabel(noFound, "No lobbies found");
                 } else {
                     for (Lobby lobby : result.unwrap()) {
                         listView.getItems().add(lobby.getName());
@@ -127,7 +127,7 @@ public class MainMenuController implements Initializable {
                 System.out.println("[ERROR] " + result.getException());
             }
         } catch (Exception e) {
-            noFound.setText("Error when asking server for lobbies");
+            Utils.changeLabel(noFound, "Error when asking server for lobbies");
             throw new RuntimeException(e);
         }
     }
@@ -154,7 +154,7 @@ public class MainMenuController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            noFound.setText("Error loading the page");
+            Utils.changeLabel(noFound, "Error loading the page");
             e.printStackTrace();
         }
 
@@ -177,7 +177,7 @@ public class MainMenuController implements Initializable {
         String lobbyName = listView.getSelectionModel().getSelectedItem();
         if(lobbyName == null) {
             System.out.println("[ERROR] No lobby selected");
-            noFound.setText("No lobby selected");
+            Utils.changeLabel(noFound, "No lobby selected");
             return;
         }
 
@@ -188,7 +188,7 @@ public class MainMenuController implements Initializable {
                 LoginController.state = ClientStatus.InLobby;
                 System.out.println(LoginController.username + " joined: " + LoginController.lobby.getName());
             } else {
-                noFound.setText("Login failed");
+                Utils.changeLabel(noFound, "Login failed");
                 System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
                 return;
             }
@@ -201,9 +201,9 @@ public class MainMenuController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            noFound.setText("Could not load the lobby scene");
+            Utils.changeLabel(noFound, "Could not load the lobby scene");
         } catch (Exception e) {
-            noFound.setText("Could not join the lobby");
+            Utils.changeLabel(noFound, "Could not join the lobby");
             System.out.println("[ERROR] " + e.getMessage());
         }
 
@@ -227,7 +227,7 @@ public class MainMenuController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            noFound.setText("Could not load the final message scene");
+            Utils.changeLabel(noFound, "Could not load the final message scene");
             throw new RuntimeException(e);
         }
     }

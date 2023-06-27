@@ -86,17 +86,17 @@ public class LoginController implements Initializable {
 
         try {
             stage = (Stage)(loginButton.getScene().getWindow());
-            errorLabel.setText("");
+            Utils.changeLabel(errorLabel, "");
             username = namePlayer.getText();
 
             //check if the input is valid
             if(username == null || username.equals("") || username.equals(" ")){
-                errorLabel.setText("Invalid name!");
+                Utils.changeLabel(errorLabel, "Invalid name!");
                 return;
             }
 
             if (selectedIp.getText().equals("")) {
-                errorLabel.setText("Insert an IP address!");
+                Utils.changeLabel(errorLabel, "Insert an IP address!");
                 return;
             }
 
@@ -116,7 +116,7 @@ public class LoginController implements Initializable {
                     networkManager.connect(new Server(this.ip, this.port));
                     state = ClientStatus.Idle;
                 }catch (Exception e) {
-                    errorLabel.setText("Connection failed");
+                    Utils.changeLabel(errorLabel, "Connection failed");
                     System.out.println("[ERROR] " + e);
                     state = ClientStatus.Disconnected;
                     return;
@@ -139,12 +139,12 @@ public class LoginController implements Initializable {
                     }
                 }
                 else{
-                    errorLabel.setText("Login failed");
+                    Utils.changeLabel(errorLabel, "Login failed");
                     System.out.println(result.getException());
                     return;
                 }
             } catch (Exception e) {
-                errorLabel.setText("Login failed");
+                Utils.changeLabel(errorLabel, "Login failed");
                 System.out.println("[ERROR] " + e.getMessage());
                 return;
             }
@@ -158,7 +158,7 @@ public class LoginController implements Initializable {
             stage.show();
 
         } catch (IOException e) {
-            errorLabel.setText("Login failed");
+            Utils.changeLabel(errorLabel, "Login failed");
             e.printStackTrace();
         }
 
@@ -183,7 +183,7 @@ public class LoginController implements Initializable {
                 stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
-                errorLabel.setText("Couldn't log you in ongoing game");
+                Utils.changeLabel(errorLabel, "Couldn't log you in ongoing game");
                 e.printStackTrace();
             }
         });
