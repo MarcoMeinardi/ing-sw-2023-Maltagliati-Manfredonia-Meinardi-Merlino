@@ -201,7 +201,7 @@ public class LobbyViewController implements Initializable{
      * @author Riccardo, Ludovico
      */
     @FXML
-    private void startGame(ActionEvent actionEvent) throws Exception{
+    private void startGame(ActionEvent actionEvent) throws Exception {
         if(lobby.getPlayers().size() < 2){
             descriptorLabel.setText("");
             descriptorLabel.setText("Not enough players");
@@ -218,11 +218,10 @@ public class LobbyViewController implements Initializable{
     /**
      * method called to switch to the game scene.
      *
-     * @throws IOException
      * @author Ludovico
      */
 
-    private void switchToGame() throws IOException{
+    private void switchToGame() {
         LoginController.state = ClientStatus.InGame;
         state = ClientStatus.InGame;
         try {
@@ -252,12 +251,11 @@ public class LobbyViewController implements Initializable{
      * It is called when the send button is clicked.
      *
      * @param actionEvent the send button is clicked
-     * @throws Exception
      * @author Ludovico
      */
 
     @FXML
-    private void sendMessage(ActionEvent actionEvent) throws Exception{
+    private void sendMessage(ActionEvent actionEvent) {
         String messageText = messageInput.getText();
         messageInput.clear();
 
@@ -451,22 +449,14 @@ public class LobbyViewController implements Initializable{
                 if (!lobby.getPlayers().contains(joinedPlayer)) {
                     try {
                         lobby.addPlayer(joinedPlayer);
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
-                                updateLobby();
-                                showStart();
-                            }
+                        Platform.runLater(() -> {
+                            addMessageToChat(new Message(Server.SERVER_NAME, joinedPlayer + " joined the lobby"));
+                            updateLobby();
+                            showStart();
                         });
                     } catch (Exception e) {
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                descriptorLabel.setText("We could not add the player to the lobby");
-                            }
-                        });
-                        throw new RuntimeException("Coulnt' add player to lobby");
+                        Platform.runLater(() -> descriptorLabel.setText("We could not add the player to the lobby"));
+                        throw new RuntimeException("Couldn't add player to lobby");
                     }
                 }
                 if (!joinedPlayer.equals(username)) {
@@ -477,21 +467,13 @@ public class LobbyViewController implements Initializable{
                 String leftPlayer = (String)event.get().getData();
                 try {
                     lobby.removePlayer(leftPlayer);
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
-                            updateLobby();
-                            showStart();
-                        }
+                    Platform.runLater(() -> {
+                        addMessageToChat(new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"));
+                        updateLobby();
+                        showStart();
                     });
                 } catch (Exception e) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            descriptorLabel.setText("We could not remove the player from the lobby");
-                        }
-                    });
+                    Platform.runLater(() -> descriptorLabel.setText("We could not remove the player from the lobby"));
                     throw new RuntimeException("Removed non existing player from lobby");
                 }
                 System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
@@ -500,39 +482,26 @@ public class LobbyViewController implements Initializable{
                 Message message = (Message)event.get().getData();
                 if (!message.idSender().equals(username)) {
                     System.out.format("%s: %s%n", message.idSender(), message.message());
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            addMessageToChat(message);
-                        }
-                    });
+                    Platform.runLater(() -> addMessageToChat(message));
                 }
             }
             case Start -> {
                 System.out.println("[*] Game has started");
                 state = ClientStatus.InGame;
                 gameInfo = (GameInfo)event.get().getData();
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            switchToGame();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            descriptorLabel.setText("We could not switch to the game scene");
-                        }
+                Platform.runLater(() -> {
+                    try {
+                        switchToGame();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        descriptorLabel.setText("We could not switch to the game scene");
                     }
                 });
 
             }
             case ServerDisconnect -> {
                 System.out.println("[WARNING] Server disconnected");
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        returnToLoginMessage();
-                    }
-                });
+                Platform.runLater(this::returnToLoginMessage);
             }
             default -> throw new RuntimeException("Unhandled event");
         }

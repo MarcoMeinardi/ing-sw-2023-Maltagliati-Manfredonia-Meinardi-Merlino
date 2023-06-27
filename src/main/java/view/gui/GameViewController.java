@@ -131,21 +131,18 @@ public class GameViewController implements Initializable {
         startLobby();
         fillScene(gameData.getTableTop());
         fillShelf(gameData.getMyShelf());
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                sendMessageButton.setDefaultButton(true);
-                if(lobby.isHost(username)){
-                    endGame.setVisible(true);
-                }
-                else{
-                    endGame.setVisible(false);
-                }
-                yesSureButton.setVisible(false);
-                noSureButton.setVisible(false);
-                sureChoiceButton.setVisible(false);
-                sureLabel.setVisible(false);
+        Platform.runLater(() -> {
+            sendMessageButton.setDefaultButton(true);
+            if(lobby.isHost(username)){
+                endGame.setVisible(true);
             }
+            else{
+                endGame.setVisible(false);
+            }
+            yesSureButton.setVisible(false);
+            noSureButton.setVisible(false);
+            sureChoiceButton.setVisible(false);
+            sureLabel.setVisible(false);
         });
         serverThread = new Thread(() -> {
             while (state != ClientStatus.Disconnected) {
@@ -221,7 +218,7 @@ public class GameViewController implements Initializable {
 
         for (int y = 0; y < shelfRows; y++){
             for(int x = 0; x < shelfColumns; x++){
-                String imageName = null;
+                String imageName;
                 if(shelfCards[y][x].isPresent()){
                     imageName = cardToImageName(shelfCards[y][x].get());
                     putImageOnScene(imageName, y, x,  shelfCardSize, shelfCardSize, shelfOffSetX, shelfOffSetY, shelfCardStepX, shelfCardStepY, true);
@@ -269,9 +266,7 @@ public class GameViewController implements Initializable {
         pane.getChildren().add(imageView);
         imageView.toFront();
         if(!isShelf){
-            imageView.setOnMouseClicked(event ->{
-                handleCardSelection(imageView);
-            });
+            imageView.setOnMouseClicked(event -> handleCardSelection(imageView));
             imageToIndices.put(imageView, new int[]{y, x});
         }
     }
@@ -368,8 +363,7 @@ public class GameViewController implements Initializable {
             messageLabel.setText("Select cards!");
             return;
         }
-        if(columnHelper.trim().isEmpty() ||
-                column == null){
+        if(columnHelper.trim().isEmpty() || column == null) {
             messageLabel.setText("Left blank!");
             return;
         }
@@ -396,26 +390,20 @@ public class GameViewController implements Initializable {
         }
 
         try {
-            final Result[] result = {null};
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        result[0] = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
-                        if (result[0].isErr()) {
-                            System.out.println("[ERROR] " + result[0].getException().orElse("Cannot select cards"));
-                            messageLabel.setText("[ERROR] " + result[0].getException().orElse("Cannot select cards"));
-                        } else {
-                            return;
-                        }
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
+            Platform.runLater(() -> {
+                try {
+                    Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
+                    if (result.isErr()) {
+                        System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
+                        messageLabel.setText("[ERROR] " + result.getException().orElse("Cannot select cards"));
                     }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             });
         } catch (Exception e) {
             System.out.println("[ERROR] " + e.getMessage());
-            changeLabel(messageLabel, "Couln't perform the move");
+            changeLabel(messageLabel, "Couldn't perform the move");
         }
 
     }
@@ -748,29 +736,24 @@ public class GameViewController implements Initializable {
     @FXML
     private void submitChoice(ActionEvent actionEvent){
         if(yesSureButton.isSelected()){
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Result result = networkManager.exitGame().waitResult();
-                        if (result.isErr()) {
-                            System.out.println("[ERROR] " + result.getException().orElse("Cannot stop the game"));
-                            changeLabel(messageLabel, "Cannot stop the game");
-                            sureLabel.setVisible(false);
-                            yesSureButton.setVisible(false);
-                            noSureButton.setVisible(false);
-                            sureChoiceButton.setVisible(false);
-                            printCommonObjectivesButton.setVisible(true);
-                            printPersonalObjectivesButton.setVisible(true);
-                            printAllShelvesButton.setVisible(true);
-                            endGame.setVisible(true);
-                        } else {
-                            return;
-                        }
-                    } catch (Exception e) {
+            Platform.runLater(() -> {
+                try {
+                    Result result = networkManager.exitGame().waitResult();
+                    if (result.isErr()) {
+                        System.out.println("[ERROR] " + result.getException().orElse("Cannot stop the game"));
                         changeLabel(messageLabel, "Cannot stop the game");
-                        System.out.println("[ERROR] " + e.getMessage());
+                        sureLabel.setVisible(false);
+                        yesSureButton.setVisible(false);
+                        noSureButton.setVisible(false);
+                        sureChoiceButton.setVisible(false);
+                        printCommonObjectivesButton.setVisible(true);
+                        printPersonalObjectivesButton.setVisible(true);
+                        printAllShelvesButton.setVisible(true);
+                        endGame.setVisible(true);
                     }
+                } catch (Exception e) {
+                    changeLabel(messageLabel, "Cannot stop the game");
+                    System.out.println("[ERROR] " + e.getMessage());
                 }
             });
         }
@@ -798,12 +781,7 @@ public class GameViewController implements Initializable {
      * @author Ludovico
      */
     private void changeLabel(Label label, String text){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                label.setText(text);
-            }
-        });
+        Platform.runLater(() -> label.setText(text));
     }
 
 
@@ -834,12 +812,7 @@ public class GameViewController implements Initializable {
                 Message message = (Message)event.get().getData();
                 if (!message.idSender().equals(username)) {
                     System.out.format("%s: %s%n", message.idSender(), message.message());
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            addMessageToChat(message);
-                        }
-                    });
+                    Platform.runLater(() -> addMessageToChat(message));
                 }
             }
             case Update -> {
@@ -847,20 +820,10 @@ public class GameViewController implements Initializable {
                 for (Cockade commonObjective : update.completedObjectives()) {
                     if (update.idPlayer().equals(username)) {
                         System.out.format("[*] You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                addMessageToChat(new Message(Server.SERVER_NAME,"You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points"));
-                            }
-                        });
+                        Platform.runLater(() -> addMessageToChat(new Message(Server.SERVER_NAME,"You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points")));
                     } else {
                         System.out.format("[*] %s completed %s getting %d points%n", update.idPlayer(), commonObjective.name(), commonObjective.points());
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                addMessageToChat(new Message(Server.SERVER_NAME, update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points"));
-                            }
-                        });
+                        Platform.runLater(() -> addMessageToChat(new Message(Server.SERVER_NAME, update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points")));
                     }
                 }
                 gameData.update(update);
@@ -873,25 +836,17 @@ public class GameViewController implements Initializable {
                     System.out.println("[*] It's " + update.nextPlayer() + "'s turn");
                     changeLabel(messageLabel, "It's " + update.nextPlayer() + "'s turn");
                 }
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        fillScene(gameData.getTableTop());
-                        fillShelf(gameData.getMyShelf());
-                        selectedImages.clear();
-                    }
+                Platform.runLater(() -> {
+                    fillScene(gameData.getTableTop());
+                    fillShelf(gameData.getMyShelf());
+                    selectedImages.clear();
                 });
             }
             case End -> {
                 ScoreBoard scoreboard = (ScoreBoard)event.get().getData();
                 gameData.setScoreBoard(scoreboard);
                 System.out.println("[*] Game ended");
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        printEnd();
-                    }
-                });
+                Platform.runLater(() -> printEnd());
             }
             case Join -> {
                 String joinedPlayer = (String)event.get().getData();
@@ -941,22 +896,12 @@ public class GameViewController implements Initializable {
                 isPaused = false;
             }
             case ExitGame -> {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        goToMessage();
-                    }
-                });
+                Platform.runLater(() -> goToMessage());
             }
             case ServerDisconnect -> {
                 System.out.println("[WARNING] Server disconnected");
                 changeLabel(messageLabel, "Server disconnected");
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        returnToLoginMessage();
-                    }
-                });
+                Platform.runLater(() -> returnToLoginMessage());
             }
             default -> throw new RuntimeException("Unhandled event");
         }

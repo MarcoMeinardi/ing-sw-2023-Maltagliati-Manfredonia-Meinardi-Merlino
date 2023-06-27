@@ -115,11 +115,11 @@ public class MainMenuController implements Initializable {
         try {
             Result<ArrayList<Lobby>> result = networkManager.lobbyList().waitResult();
             if (result.isOk()) {
-                ArrayList<Lobby> lobbies = ((Result<ArrayList<Lobby>>) result).unwrap();
+                ArrayList<Lobby> lobbies = result.unwrap();
                 if (lobbies.isEmpty()) {
                     noFound.setText("No lobbies found");
                 } else {
-                    for (Lobby lobby : ((Result<ArrayList<Lobby>>) result).unwrap()) {
+                    for (Lobby lobby : result.unwrap()) {
                         listView.getItems().add(lobby.getName());
                     }
                 }
@@ -248,12 +248,7 @@ public class MainMenuController implements Initializable {
         switch (event.get().getType()) {
             case ServerDisconnect -> {
                 System.out.println("[WARNING] Server disconnected");
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        returnToLoginMessage();
-                    }
-                });
+                Platform.runLater(() -> returnToLoginMessage());
             }
             case Join -> {
                 System.out.println("[INFO] you joined the lobby");

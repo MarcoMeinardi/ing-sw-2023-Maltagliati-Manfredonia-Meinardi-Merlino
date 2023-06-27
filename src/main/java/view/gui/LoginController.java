@@ -65,12 +65,7 @@ public class LoginController implements Initializable {
      * @author Ludovico
      */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                loginButton.setDefaultButton(true);
-            }
-        });
+        Platform.runLater(() -> loginButton.setDefaultButton(true));
 
     }
 
@@ -122,7 +117,7 @@ public class LoginController implements Initializable {
                     state = ClientStatus.Idle;
                 }catch (Exception e) {
                     errorLabel.setText("Connection failed");
-                    System.out.println("[ERROR] " + e.toString());
+                    System.out.println("[ERROR] " + e);
                     state = ClientStatus.Disconnected;
                     return;
                 }

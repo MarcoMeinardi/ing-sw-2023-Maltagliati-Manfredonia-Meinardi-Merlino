@@ -12,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import network.ClientStatus;
@@ -175,12 +174,7 @@ public class CreateLobbyController implements Initializable {
         switch (event.get().getType()) {
             case ServerDisconnect -> {
                 System.out.println("[WARNING] Server disconnected");
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        returnToLoginMessage();
-                    }
-                });
+                Platform.runLater(this::returnToLoginMessage);
             }
             case Join -> {
                 System.out.println("[INFO] you joined the lobby");
