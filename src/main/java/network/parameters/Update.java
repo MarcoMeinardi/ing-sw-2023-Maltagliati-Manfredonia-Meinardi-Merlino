@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Update class is used to send the updated game information from the server to the clients.
  * @param idPlayer id of the author of the update
- * @param tableTop current table top
+ * @param tableTop current tabletop
  * @param shelf shelf of the player
  * @param nextPlayer next player of the turn
  * @param completedObjectives list of the common objectives

@@ -5,7 +5,7 @@ import java.util.Scanner;
 import network.NetworkManagerInterface;
 
 /**
- * Singleton class to handle non blocking IO for the CLI.
+ * Singleton class to handle non-blocking IO for the CLI.
  * **DON'T** use this class directly from the CLI, use the `Utils` class.
  * For the developers of `Utils`: to use this class, get an instance
  * `NonBlockingIO IO = NonBlockingIO.getInstance()` and once you get the network manager,
@@ -13,7 +13,7 @@ import network.NetworkManagerInterface;
  * To ask for a string, call `IO.ask()` and wait until `IO.isAvailable()` is not true,
  * once this happened, you can get the result **only once** with `IO.getResult()`.
  * Note that you have to call `getResult` before calling `ask` a second time.
- * If the network manager is set, you'll might wait on it and you'll get notified either
+ * If the network manager is set, you'll might wait on it, and you'll get notified either
  * by this class, if a string has been read, or directly by the network manager if an event occurred.
  *
  * @author Marco
@@ -68,7 +68,7 @@ public class NonBlockingIO extends Thread {
 	}
 
 	/**
-	 * Thread's run function to handle the non blocking IO and server events
+	 * Thread's run function to handle the non-blocking IO and server events
 	 *
 	 * @author Marco
 	 */

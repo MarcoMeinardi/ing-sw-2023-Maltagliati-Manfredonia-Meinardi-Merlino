@@ -44,7 +44,7 @@ public class CommonObjectiveTest {
     }
 
     /**
-     * Test the Objective.equals method
+     * Test the `Objective.equals` method
      *
      * @author Marco
      */

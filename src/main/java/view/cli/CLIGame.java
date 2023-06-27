@@ -118,7 +118,7 @@ public class CLIGame {
 	/**
 	 * Print an ascii-art representing the given shelf
 	 * @param shelf a `Shelf` object containing the shelf to print
-	 * @throws RuntimeException if the shelf contains a non existing card or the shelf object is broken
+	 * @throws RuntimeException if the shelf contains a non-existing card or the shelf object is broken
 	 *
 	 * @author Marco
 	 */

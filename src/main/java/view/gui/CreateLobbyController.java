@@ -25,7 +25,7 @@ import java.util.Optional;
 import static view.gui.LoginController.networkManager;
 
 /**
- * CreateLobbyController is the class that manages the create lobby scene.
+ * CreateLobbyController is the class that manages the "create lobby" scene.
  **/
 
 public class CreateLobbyController implements Initializable {
@@ -54,7 +54,7 @@ public class CreateLobbyController implements Initializable {
 
 
     /**
-     * Method initialize is used to initialize the create lobby scene.
+     * Method initialize is used to initialize the "create lobby" scene.
      * Puts the username of the player in the text field and sets the close request of the stage.
      *
      * @param location  the location used to resolve relative paths for the root object, or null if the location is not known.

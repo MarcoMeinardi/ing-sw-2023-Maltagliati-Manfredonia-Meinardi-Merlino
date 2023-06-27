@@ -10,7 +10,7 @@ import network.NetworkManagerInterface;
  * To use do: `Utils utils = new Utils();`
  * and once you have the network manager: `utils.setNetworkManager(networkManager);`
  * this is needed, because we want to return the control to the CLI if an event arrived.
- * Not that you can't use non blocking options before the network manager has been set.
+ * Not that you can't use non-blocking options before the network manager has been set.
  *
  * @author Marco
  */
@@ -176,7 +176,7 @@ public class Utils {
 	/**
 	 * Read an option (blocking)
 	 * The enum names will be converted by the `enumToOption` method and used as a prompt.
-	 * @param enumClass the class of the enum that implements `OptionsInterface` from which to chose the option
+	 * @param enumClass the class of the enum that implements `OptionsInterface` from which to choose the option
 	 * @return the read option
 	 *
 	 * @author Marco
@@ -189,7 +189,7 @@ public class Utils {
 	 * Read an option (blocking)
 	 * The enum names will be converted by the `enumToOption` method and used as a prompt.
 	 * The parameters will be used to chose which options are available.
-	 * @param enumClass the class of the enum that implements `OptionsInterface` from which to chose the option
+	 * @param enumClass the class of the enum that implements `OptionsInterface` from which to choose the option
 	 * @param isHost if the player is the host
 	 * @param isTurn if it's the player's turn
 	 * @return the read option
@@ -232,7 +232,7 @@ public class Utils {
 	 * Since this function is designed to be called multiple time in the same way if an event arrives,
 	 * there is an option not to print anything. It is up to the developer using this method, to ensure
 	 * that the last printed options are the one from which the user can choose from.
-	 * @param enumClass the class of the enum that implements `OptionsInterface` from which to chose the option
+	 * @param enumClass the class of the enum that implements `OptionsInterface` from which to choose the option
 	 * @param doPrint if the options should be printed
 	 * @param isHost if the player is the host
 	 * @param isTurn if it's the player's turn

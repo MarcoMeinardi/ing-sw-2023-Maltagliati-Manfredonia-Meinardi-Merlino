@@ -9,7 +9,7 @@ import model.Card;
 /**
  * GameInfo class is used to send the game information from the server to the clients.
  * @param lobby the current lobby
- * @param tableTop current table top
+ * @param tableTop current tabletop
  * @param players list of the players
  * @param shelves list of the shelves of the players
  * @param commonObjectives list of the common objectives

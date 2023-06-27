@@ -772,7 +772,7 @@ public class GameViewController implements Initializable {
 
 
     /**
-     * method that takes a `String` and Label parameters..
+     * method that takes a `String` and Label parameters.
      * The method uses `Platform.runLater` to update the label with the new text value.
      * `Platform.runLater` is used to ensure that the update is executed on the JavaFX application thread,
      * which is necessary for updating UI components.

@@ -133,7 +133,7 @@ public class MainMenuController implements Initializable {
     }
 
     /**
-     * Method switchToCreateLobby is used to switch to the create lobby scene.
+     * Method switchToCreateLobby is used to switch to the "create lobby" scene.
      * It is called when the user clicks on the create lobby button.
      *
      * @param actionEvent
