@@ -143,10 +143,10 @@ public class EndController implements Initializable {
             if (score.username().equals(username)) {
                 your_title = score.title();
             }
-            System.out.println("Your final grade: "+your_title);
-            Utils.changeLabel(titleLabel, "Your final grade: "+your_title);
             position++;
         }
+        System.out.println("Your final grade: "+your_title);
+        Utils.changeLabel(titleLabel, "Your final grade: "+your_title);
 
         addChangeOfImage(cockadesList1, 1);
         addChangeOfImage(cockadesList2, 2);
@@ -159,7 +159,7 @@ public class EndController implements Initializable {
         ObservableList<String> items = cockadesList.getItems();
 
         cockadesList.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> handleCockadeSelection(player, newValue.toString())
+            (observable, oldValue, newValue) -> handleCockadeSelection(player, newValue.toString())
         );
 
     }
