@@ -129,7 +129,7 @@ public class MainMenuController implements Initializable {
             }
         } catch (Exception e) {
             noFound.setText("Error when asking server for lobbies");
-            logger.warning("Get lobby failed" + e + " " + e.getMessage());
+            logger.warning("Get lobby failed " + e + " " + e.getMessage());
         }
     }
 

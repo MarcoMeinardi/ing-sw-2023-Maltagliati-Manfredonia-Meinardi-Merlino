@@ -1,5 +1,6 @@
 package view.gui;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,16 +19,20 @@ import model.Cockade;
 import model.PersonalObjective;
 import model.Score;
 import model.ScoreBoard;
+import network.ServerEvent;
 
 
 import java.io.IOException;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static view.gui.LoginController.networkManager;
 
 /**
  * This class is the controller for the End.fxml file.
@@ -67,6 +72,8 @@ public class EndController implements Initializable {
     private ImageView cockadeImage4;
     private Stage stage;
     private Scene scene;
+    private Thread serverThread;
+
 
     private static final Logger logger = Logger.getLogger(EndController.class.getName());
 
@@ -86,6 +93,21 @@ public class EndController implements Initializable {
         this.scoreBoard = GameViewController.gameData.getScoreBoard();
         this.username = GameViewController.gameData.getMe();
         showScoreBoard();
+        serverThread = new Thread(() -> {
+            while (true) {
+                synchronized (networkManager) {
+                    try {
+                        while (!networkManager.hasEvent()) {
+                            networkManager.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                }
+                handleEvent();
+            }
+        });
+        serverThread.start();
     }
 
     /**
@@ -260,6 +282,7 @@ public class EndController implements Initializable {
     @FXML
     private void goToLobbies(ActionEvent actionEvent) {
         try {
+            serverThread.interrupt();
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
             stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root, WIDTH, HEIGHT);
@@ -270,6 +293,50 @@ public class EndController implements Initializable {
         catch (IOException e) {
             titleLabel.setText("Error loading the main menu");
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method is responsible for printing the last view of the program if the server stopped.
+     * It interrupts the server thread,
+     * loads the MessageReturnToLogin.fxml file using FXMLLoader,
+     * sets the new scene to the stage, and displays the stage.
+     *
+     */
+    private void returnToLoginMessage(){
+        try {
+            serverThread.interrupt();
+            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MessageReturnToLogin.fxml"));
+            stage = (Stage) (titleLabel.getScene().getWindow());
+            scene = new Scene(newRoot, WIDTH, HEIGHT);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            titleLabel.setText("Could not load the final message scene");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Method that handles events received from the server.
+     * It first checks if there is an event available, and if not, it returns.
+     * If there is an event, it switches on the type of the event and performs the appropriate action.
+     * - ServerDisconnect: notifies the players that the server has been disconnected sending them to a scene explaining the situation
+     *
+     * @author Ludovico
+     */
+    private void handleEvent() {
+        Optional<ServerEvent> event = networkManager.getEvent();
+        if (event.isEmpty()) {
+            return; // No event
+        }
+        switch (event.get().getType()) {
+            case ServerDisconnect -> {
+                logger.info("Server disconnected");
+                Platform.runLater(this::returnToLoginMessage);
+            }
+            default -> throw new RuntimeException("Unhandled event");
         }
     }
 
