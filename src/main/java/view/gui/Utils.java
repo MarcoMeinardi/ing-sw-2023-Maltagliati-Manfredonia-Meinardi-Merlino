@@ -174,7 +174,12 @@ public class Utils {
                     chat.scrollTo(chat.getItems().size() - 1);
                 }
             } else {
-                Message message = new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString());
+                Message message;
+                if (players.getSelectionModel().getSelectedItem() != null) {
+                    message = new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString());
+                } else {
+                    message = new Message(username, messageText);
+                }
                 if (singleReceiver) {
                     players.getSelectionModel().clearSelection();
                 }
