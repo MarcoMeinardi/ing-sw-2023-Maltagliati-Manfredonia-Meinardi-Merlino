@@ -571,7 +571,7 @@ public class CLI {
 	 */
 	private ClientStatus handleStopGame() {
 		String yn = IO.askString("Do you really want to stop the game (y/n)? ");
-		if (yn.toLowerCase().charAt(0) == 'y') {
+		if (!yn.isEmpty() && yn.toLowerCase().charAt(0) == 'y') {
 			try {
 				Result result = networkManager.exitGame().waitResult();
 				if (result.isErr()) {
