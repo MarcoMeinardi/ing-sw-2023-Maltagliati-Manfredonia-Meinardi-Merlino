@@ -216,7 +216,7 @@ public class CLI {
 	 * @author Marco
 	 */
 	private ClientStatus searchLobby() {
-		Optional<SelectLobbyOptions> option = IO.askOptionOrEvent(SelectLobbyOptions.class, doPrint, false, false);
+		Optional<SelectLobbyOptions> option = IO.askOptionOrEvent(SelectLobbyOptions.class, true, false, false);
 		if (option.isEmpty()) {
 			return handleEvent(); // must be `ServerDiscnnected`
 		}
