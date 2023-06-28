@@ -751,18 +751,20 @@ public class CLI {
 			}
 			case Leave -> {
 				String leftPlayer = (String)event.get().getData();
-				boolean wasHost;
-				try {
-					wasHost = isHost;
-					lobby.removePlayer(leftPlayer);
-					isHost = lobby.isHost(username);
-				} catch (Exception e) {
-					throw new RuntimeException("Removed non existing player from lobby");
-				}
-				System.out.format("[*] %s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
-				if (!wasHost && isHost) {
-					System.out.println("[*] You are now the host");
-					doPrint = true;
+				if (lobby.getPlayers().contains(leftPlayer)) {
+					boolean wasHost;
+					try {
+						wasHost = isHost;
+						lobby.removePlayer(leftPlayer);
+						isHost = lobby.isHost(username);
+					} catch (Exception e) {
+						throw new RuntimeException("Removed non existing player from lobby");
+					}
+					System.out.format("[*] %s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
+					if (!wasHost && isHost) {
+						System.out.println("[*] You are now the host");
+						doPrint = true;
+					}
 				}
 			}
 			case Start -> {
