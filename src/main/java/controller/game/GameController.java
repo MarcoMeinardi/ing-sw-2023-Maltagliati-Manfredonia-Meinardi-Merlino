@@ -177,7 +177,7 @@ public class GameController {
      * @param player The player to check
      */
     private void addFirstToFinish(Player player){
-        Optional<Cockade> firstToFinishCockade = player.getShelf().isFirstToFinish();
+        Optional<Cockade> firstToFinishCockade = player.getShelf().getFinishCockade();
         if(firstToFinishCockade.isPresent() && !someoneCompleted){
             player.addCockade(firstToFinishCockade.get());
             someoneCompleted = true;

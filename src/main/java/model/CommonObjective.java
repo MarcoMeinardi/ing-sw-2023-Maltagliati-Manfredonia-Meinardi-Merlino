@@ -5,11 +5,19 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
+/**
+ * Class to handle the common objectives
+ * It contains the name and the current value of the objective,
+ * plus a set of the people having completed the objective.
+ * From a game constructor, you should call `generateCommonObjectives(numberOfPlayers)`
+ * to extract the two randomly chosen objectives as an `ArrayList`
+ * and check if they have been completed with `isCompleted(shelf, playerName)`.
+ */
 public class CommonObjective extends Objective {
-	int value;
-	int pointDecrement;
-	HashSet<String> completedBy;
-	Function<Shelf, Boolean> checkCompleted;
+	private int value;
+	private final int pointDecrement;
+	private final HashSet<String> completedBy;
+	private final Function<Shelf, Boolean> checkCompleted;
 
 	private static final int INITIAL_VALUE = 8;
 	private static final int POINT_DECREMENT = 2;
@@ -34,6 +42,11 @@ public class CommonObjective extends Objective {
 		completedBy = new HashSet<>();
 	}
 
+	/**
+	 * Construct a common objective from a saved one.
+	 * @param objective The saved object
+	 * @param nPlayers The number of players in the game
+	 */
 	public CommonObjective(SaveCommonObjective objective, int nPlayers) {
 		// super constructor must be the first statement
 		super(generateAllCommonObjectives(nPlayers).stream().filter(o -> o.getName().equals(objective.name())).findFirst().get().getName());
@@ -50,6 +63,10 @@ public class CommonObjective extends Objective {
 		throw new RuntimeException("Objective not found");
 	}
 
+	/**
+	 * Get a serializable copy of the objective
+	 * @return a serializable representation of the object
+	 */
 	public SaveCommonObjective getSavable() {
 		return new SaveCommonObjective(name, value, completedBy);
 	}

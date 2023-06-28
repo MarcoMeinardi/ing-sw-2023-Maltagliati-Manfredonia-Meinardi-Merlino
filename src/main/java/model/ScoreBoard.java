@@ -27,6 +27,10 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
 
     private final VictoryType victoryType;
 
+    /**
+     * Constructor of the class to create the scoreboard from the final game state.
+     * @param game the game object to construct the scoreboard from
+     */
     public ScoreBoard(Game game) {
         scores = new ArrayList<>();
         cockades = new HashMap<>();
@@ -55,11 +59,20 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
         }
     }
 
+    /**
+     * Iterator for the scoreboard to facilitate the iteration over the scores
+     * @return the iterator for the scoreboard
+     */
     @Override
     public Iterator<Score> iterator() {
         return scores.iterator();
     }
 
+    /**
+     * Check if the game ended because a player remained alone for too long
+     * @param players the list of players
+     * @return the name of the sole survivor or null
+     */
     private String findSoleSurvivor(ArrayList<Player> players) {
 		String soleSurvivor = null;
         ClientManagerInterface clientManager;
@@ -77,11 +90,18 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
             }
         }
         if(connected == 1) return soleSurvivor;
+        // I know nulls are not best practice, but since we need to send this object over the network,
+        // it is useless to wrap it in an Optional
         return null;
     }
 
+    /**
+     * Get the type of win from the lead of the first player
+     * @param players the list of players
+     * @return the type of win
+     */
     private VictoryType findVictoryType(ArrayList<Player> players) {
-        float ratio = (float) players.get(0).getPoints() / players.get(1).getPoints();
+        float ratio = (float)players.get(0).getPoints() / players.get(1).getPoints();
         if(ratio >= 1.7){
             return VictoryType.LANDSLIDE;
         }else if(ratio >= 1.2){
@@ -91,6 +111,12 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
         }
     }
 
+    /**
+     * Create the score object for the player
+     * It contains the total points and the title
+     * @param player the player to create the score for
+     * @return the `Score` object for the given player
+     */
     private Score createScore(Player player) {
         String playerName = player.getName();
         String title = "";
@@ -132,9 +158,19 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
         return new Score(player.getName(), player.getPoints(), title);
     }
 
+    /**
+     * Get the cockades of a player
+     * @param playerName the name of the player
+     * @return the cockades of the player
+     */
     public ArrayList<Cockade> getCockades(String playerName) {
         return cockades.get(playerName);
     }
+
+    /**
+     * Get the number of players in the scoreboard
+     * @return the number of players
+     */
     public int size(){
         return scores.size();
     }

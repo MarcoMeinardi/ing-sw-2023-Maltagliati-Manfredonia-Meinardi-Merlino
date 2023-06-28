@@ -3,8 +3,14 @@ package model;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Class to handle the game's deck of cards.
+ * The deck gets filled when the object is constructed,
+ * to draw a card, call `draw()`, if it the deck is not empty, it
+ * will return an optional containing the drawn card.
+ */
 public class CardsDeck implements Serializable {
-    private Stack<Card> cards;
+    private final Stack<Card> cards;
     public static final int CARDS_PER_TYPE = 22;
     public static final int IMAGES_PER_TYPE = 3;
     public static final int TOTAL_CARDS = CARDS_PER_TYPE * Card.Type.values().length;
@@ -53,5 +59,4 @@ public class CardsDeck implements Serializable {
     public int size() {
         return cards.size();
     }
-
 }

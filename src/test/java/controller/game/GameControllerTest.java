@@ -32,7 +32,7 @@ public class GameControllerTest {
     public void FirstToFinishTest() {
         Player player1 = new Player("p1", PersonalObjective.generateAllPersonalObjectives().get(0));
         Player player2 = new Player("p2", PersonalObjective.generateAllPersonalObjectives().get(0));
-        Optional<Cockade> firstToFinishCockade = player1.getShelf().isFirstToFinish();
+        Optional<Cockade> firstToFinishCockade = player1.getShelf().getFinishCockade();
         if (firstToFinishCockade.isPresent()) {
             Cockade expectedCockade = firstToFinishCockade.get();
             assertTrue(player1.getCockades().contains(expectedCockade));

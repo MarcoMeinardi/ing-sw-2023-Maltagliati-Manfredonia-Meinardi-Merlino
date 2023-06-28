@@ -3,13 +3,18 @@ package model;
 import java.util.ArrayList;
 import java.util.Optional;
 
+/**
+ * Class that represents the shelf of a player
+ * It holds the cards that the player has placed on the shelf.
+ * You can construct an empty shelf by calling the constructor with no parameters,
+ * or give a serializable representation of the shelf (as a matrix of `Card`) to load it.
+ */
 public class Shelf {
 	// Size of the shelf 6(rows)x5(columns)
-	private Optional<Card>[][] slots;
+	private final Optional<Card>[][] slots;
 
 	public static final int COLUMNS = 5;
 	public static final int ROWS = 6;
-	private static final int N_SLOTS = 30;
 
 	private static final int[] groupPoints = {2, 3, 5, 8};
 	private static final int[] dx = {-1, 0, 1, 0};
@@ -30,6 +35,10 @@ public class Shelf {
 		}
 	}
 
+	/**
+	 * Constructor to initialize a shelf from a save state
+	 * @param cards a matrix of `Card` representing the shelf
+	 */
 	public Shelf(Card[][] cards) {
 		slots = new Optional[ROWS][COLUMNS];
 		for (int y = 0; y < ROWS; y++) {
@@ -177,7 +186,6 @@ public class Shelf {
 	 * @return True if the shelf is full, false otherwise
 	 * @author Ludovico
 	 */
-
 	public boolean isFull() {
 		for (int x = 0; x < COLUMNS; x++) {
 			if (slots[ROWS - 1][x].isEmpty()) {
@@ -209,7 +217,7 @@ public class Shelf {
 	}
 
 	/**
-	 * Method created to test isCompleted() method of PersonalObjective class.
+	 * This method must NOT be used outside of testing.
 	 * Inserts the card in the desired position, disregarding the rules of the game.
 	 *
 	 * @param column The column in which the card will be inserted
@@ -217,7 +225,6 @@ public class Shelf {
 	 * @param card   The card to be inserted
 	 * @author Ludovico
 	 */
-
 	public void insertTest(int column, int row, Card card) {
 		slots[row][column] = Optional.of(card);
 	}
@@ -241,11 +248,20 @@ public class Shelf {
 		return count;
 	}
 
+	/**
+	 * Getter for the `slots` field (they represent the whole shelf information)
+	 * @return the `slots` field
+	 */
 	public Optional<Card>[][] getShelf() {
 		return slots;
 	}
 
-	public Optional<Cockade> isFirstToFinish() {
+	/**
+	 * Return a cockade for the first player to finish the shelf if the shelf is full
+	 * The controller must not award this cockade to multiple players.
+	 * @return a cockade for the first player to finish the shelf if the shelf is full, empty otherwise
+	 */
+	public Optional<Cockade> getFinishCockade() {
 		if (isFull()) {
 			return Optional.of(new Cockade("First to finish", 1));
 		} else {

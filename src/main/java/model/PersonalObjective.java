@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
+/**
+ * Immutable class to handle the personal objectives
+ * It contains the name and the position of the cards to check for completion.
+ * From a game constructor, you should call `generatePersonalObjectives(numberOfPlayers)`
+ * to extract one randomly chosen objective for any player as an `ArrayList`
+ * and check if they have been completed with `isCompleted(shelf)`.
+ */
 public class PersonalObjective extends Objective {
     private final Cell[] cellsCheck;
     private static final int[] points = {1, 2, 4, 6, 9, 12};
@@ -22,6 +29,10 @@ public class PersonalObjective extends Objective {
         this.cellsCheck = cellsCheck;
     }
 
+    /**
+     * Constructor that finds the personal objective by name
+     * @param name the name of the wanted personal objective
+     */
     public PersonalObjective(String name) {
         // super objective must be the first statement
         super(generateAllPersonalObjectives().stream().filter(objective -> objective.getName().equals(name)).findFirst().get().getName());
@@ -45,13 +56,13 @@ public class PersonalObjective extends Objective {
         return cellsCheck;
     }
 
-    /*
-        * checks if the personal objective is completed by the player
-        * @author Marco, Ludovico, Lorenzo
-        *
-        * @param shelf The shelf of the player
-        * @returns An optional containing the cockade if the objective is completed, an empty optional otherwise
-        * @throws RuntimeException if the logic is broken
+    /**
+     * Checks if the player has completed the personal objective
+     * @author Marco, Ludovico, Lorenzo
+     *
+     * @param shelf The shelf of the player
+     * @return An optional containing the cockade if the objective is completed, an empty optional otherwise
+     * @throws RuntimeException if the logic is broken
      */
     public Optional<Cockade> isCompleted(Shelf shelf) {
         int count = 0;
@@ -80,7 +91,6 @@ public class PersonalObjective extends Objective {
      * @return An array of personal objectives
      * @author Ludovico
      */
-
     public static ArrayList<PersonalObjective> generateAllPersonalObjectives() {
         ArrayList<PersonalObjective> allObjectives = new ArrayList<>();
 
