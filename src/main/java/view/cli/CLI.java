@@ -216,11 +216,14 @@ public class CLI {
 	 * @author Marco
 	 */
 	private ClientStatus searchLobby() {
-		SelectLobbyOptions option = IO.askOption(SelectLobbyOptions.class);
+		Optional<SelectLobbyOptions> option = IO.askOptionOrEvent(SelectLobbyOptions.class, doPrint, false, false);
+		if (option.isEmpty()) {
+			return handleEvent(); // must be `ServerDiscnnected`
+		}
 		String lobbyName;
 		Result result;
 		try {
-			switch (option) {
+			switch (option.get()) {
 				case CREATE_LOBBY -> {
 					lobbyName = IO.askString("[+] Lobby name: ");
 					result = networkManager.lobbyCreate(new LobbyCreateInfo(lobbyName)).waitResult();
