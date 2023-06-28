@@ -1,4 +1,4 @@
-package controller;
+package controller.login;
 
 import controller.lobby.Lobby;
 import controller.lobby.LobbyAlreadyExistsException;
