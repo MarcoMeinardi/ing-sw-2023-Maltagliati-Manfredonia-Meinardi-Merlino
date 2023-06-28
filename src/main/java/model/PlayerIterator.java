@@ -31,8 +31,13 @@ public class PlayerIterator implements Iterator<Player>, Serializable {
      * @param index the saved index of the current player
      */
     public PlayerIterator(Game game, int index) {
-        this.index = index;
         maxIndex = game.getPlayers().size() - 1;
+        if (index == 0) {
+            this.index = maxIndex;
+        }
+        else {
+            this.index = index - 1;
+        }
         this.game = game;
     }
 

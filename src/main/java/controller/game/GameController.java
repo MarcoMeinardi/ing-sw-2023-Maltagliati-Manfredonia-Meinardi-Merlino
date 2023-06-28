@@ -456,8 +456,8 @@ public class GameController {
         addCommonCockade(player, completedObjectives, newCommonObjectivesScores);
         addFirstToFinish(player);
         refillTable();
-        saveGame();
         Optional<Player> nextToPlay = nextNotDisconnected();
+        saveGame();
         if (nextToPlay.isEmpty()) {  // Game is over
             exitGame(true);
             return true;
