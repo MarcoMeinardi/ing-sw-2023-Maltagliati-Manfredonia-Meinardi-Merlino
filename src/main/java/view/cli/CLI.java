@@ -2,6 +2,8 @@ package view.cli;
 
 import controller.IdentityTheftException;
 import controller.MessageTooLongException;
+import controller.lobby.LobbyFullException;
+import controller.lobby.LobbyNotFoundException;
 import network.*;
 import network.errors.ClientNotFoundException;
 import network.errors.WrongParametersException;
@@ -124,7 +126,7 @@ public class CLI {
 			return ClientStatus.Idle;
 		} catch (Exception e) {
 			System.out.println("[ERROR] Connection failed");
-			logger.warning("Connection failed" + e + e.getMessage());
+			logger.warning("Connection failed " + e + " " + e.getMessage());
 			return ClientStatus.Disconnected;
 		}
 	}
@@ -182,10 +184,10 @@ public class CLI {
 				}
 			}
 			System.out.println("[ERROR] Login failed (username is already taken)");
-			logger.info(result.getException().orElse("Login failed").toString());
+			logger.info(result.getException().isPresent() ? result.getException().toString() : "Login failed");
 		} catch (Exception e) {
 			System.out.println("[WARNING] Login failed");
-			logger.warning("Login failed" + e + e.getMessage());
+			logger.warning("Login failed " + e + " " + e.getMessage());
 		}
 		return ClientStatus.Idle;
 	}
@@ -218,7 +220,7 @@ public class CLI {
 						return ClientStatus.InLobby;
 					} else {
 						System.out.println("[ERROR] Lobby already exists");
-						logger.info(result.getException().orElse("Create lobby failed").toString());
+						logger.info(result.getException().isPresent() ? result.getException().toString() : "Create lobby failed");
 						return ClientStatus.InLobbySearch;
 					}
 				}
@@ -230,8 +232,15 @@ public class CLI {
 						isHost = false;
 						return ClientStatus.InLobby;
 					} else {
-						System.out.println("[ERROR] Lobby doesn't exist");
-						logger.info(result.getException().orElse("Join lobby failed").toString());
+						Exception e = (Exception)result.getException().get();
+						if (e instanceof LobbyFullException) {
+							System.out.println("[ERROR] Lobby is full");
+						} else if (e instanceof LobbyNotFoundException) {
+							System.out.println("[ERROR] Lobby not found");
+						} else {
+							System.out.println("[ERROR] Join lobby failed" + (e.getMessage() != null ? " " + e.getMessage() : ""));
+						}
+						logger.info(result.getException().isPresent() ? result.getException().toString() : "Join lobby failed");
 						return ClientStatus.InLobbySearch;
 					}
 				}
@@ -248,7 +257,7 @@ public class CLI {
 						}
 					} else {
 						System.out.println("[ERROR] List lobby failed");
-						logger.info(result.getException().orElse("List lobby failed").toString());
+						logger.info(result.getException().isPresent() ? result.getException().toString() : "List lobby failed");
 					}
 					return ClientStatus.InLobbySearch;
 				}
@@ -263,7 +272,7 @@ public class CLI {
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] Action failed");
-			logger.warning(e + e.getMessage());
+			logger.warning(e + " " + e.getMessage());
 			return ClientStatus.InLobbySearch;
 		}
 	}
@@ -312,7 +321,7 @@ public class CLI {
 						return ClientStatus.InLobbySearch;
 					} else {
 						System.out.println("[ERROR] Leave lobby failed");
-						logger.info(result.getException().orElse("Leave lobby failed").toString());
+						logger.info(result.getException().isPresent() ? result.getException().toString() : "Leave lobby failed");
 						return ClientStatus.InLobby;
 					}
 				}
@@ -326,7 +335,7 @@ public class CLI {
 						return ClientStatus.InGame;
 					} else {
 						System.out.println("[ERROR] Start game failed");
-						logger.info(result.getException().orElse("Start game failed").toString());
+						logger.info(result.getException().isPresent() ? result.getException().toString() : "Start lobby failed");
 						return ClientStatus.InLobby;
 					}
 				}
@@ -340,7 +349,7 @@ public class CLI {
 						return ClientStatus.InGame;
 					} else {
 						System.out.println("[ERROR] Load game failed");
-						logger.info(result.getException().orElse("Load game failed").toString());
+						logger.info(result.getException().isPresent() ? result.getException().toString() : "Load lobby failed");
 						return ClientStatus.InLobby;
 					}
 				}
@@ -348,7 +357,7 @@ public class CLI {
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] Action failed");
-			logger.warning(e + e.getMessage());
+			logger.warning(e + " " + e.getMessage());
 			return ClientStatus.InLobby;
 		}
 	}
@@ -524,14 +533,14 @@ public class CLI {
 		try {
 			Result result = networkManager.cardSelect(new CardSelect(column, selectedCards)).waitResult();
 			if (result.isErr()) {
-				System.out.println("[ERROR] " + result.getException().map(e -> ((Exception)e).getMessage()).orElse("Cannot select cards"));
-				logger.info(result.getException().orElse("Pick cards failed").toString());
+				System.out.println("[ERROR] " + (result.getException().isPresent() ? ((Exception)result.getException().get()).getMessage() : "Cannot select cards"));
+				logger.info(result.getException().isPresent() ? result.getException().toString() : "Pick cards failed");
 			} else {
 				return waitGlobalUpdate();
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] Pick cards failed");
-			logger.warning(e + e.getMessage());
+			logger.warning("Pick cards failed " + e + " " + e.getMessage());
 		}
 
 		return ClientStatus.InGame;
@@ -551,13 +560,13 @@ public class CLI {
 				Result result = networkManager.exitGame().waitResult();
 				if (result.isErr()) {
 					System.out.println("[ERROR] Stop game failed");
-					logger.info(result.getException().orElse("Stop game failed").toString());
+					logger.info(result.getException().isPresent() ? result.getException().toString() : "Stop game failed");
 				} else {
 					return waitGlobalUpdate();
 				}
 			} catch (Exception e) {
 				System.out.println("[ERROR] Stop game failed");
-				logger.warning(e + e.getMessage());
+				logger.warning(e + " " + e.getMessage());
 			}
 		}
 		return ClientStatus.InGame;
@@ -612,10 +621,11 @@ public class CLI {
 					System.out.println("[ERROR] Send message failed" + (e.getMessage() != null ? " " + e.getMessage() : ""));
 				}
 				logger.info(result.getException().orElse("Send message failed").toString());
+				logger.info(result.getException().isPresent() ? result.getException().toString() : "Stop game failed");
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] Send message failed");
-			logger.warning(e + e.getMessage());
+			logger.warning("Send message failed " + e + " " + e.getMessage());
 		}
 	}
 

@@ -28,12 +28,12 @@ import java.io.IOException;
 import java.net.URL;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Class that handles a new instance of game.
  *
  */
-
 public class GameViewController implements Initializable {
 
     private  static final int POPUP_WIDTH = 600;
@@ -96,6 +96,8 @@ public class GameViewController implements Initializable {
     private boolean yourTurn = false;
     private boolean isPaused = false;
 
+    private static final Logger logger = Logger.getLogger(GameViewController.class.getName());
+
     /**
      * Method that initializes the game scene.
      * Checks if the player is reconnecting from a disconnection or if it's a new game, then retrieves the game data
@@ -133,12 +135,7 @@ public class GameViewController implements Initializable {
         fillShelf(gameData.getMyShelf());
         Platform.runLater(() -> {
             sendMessageButton.setDefaultButton(true);
-            if(lobby.isHost(username)){
-                endGame.setVisible(true);
-            }
-            else{
-                endGame.setVisible(false);
-            }
+            endGame.setVisible(lobby.isHost(username));
             yesSureButton.setVisible(false);
             noSureButton.setVisible(false);
             sureChoiceButton.setVisible(false);
@@ -309,9 +306,8 @@ public class GameViewController implements Initializable {
                 selectionEffect.setRadius(10);
                 selectionEffect.setSpread(0.5);
                 image.setEffect(selectionEffect);
-            }
-            else{
-                Utils.changeLabel(messageLabel, "You can't select more than 3 cards");
+            } else {
+                messageLabel.setText("You can't select more than 3 cards");
             }
         }
 
@@ -337,56 +333,40 @@ public class GameViewController implements Initializable {
 
         if(!column.matches("\\d+")){
             messageLabel.setText("Select a valid column!");
-            return;
-        }
-
-        if(selectedImages.size() == 0){
+        } else if (selectedImages.size() == 0) {
             messageLabel.setText("Select cards!");
-            return;
-        }
-        if(columnHelper.trim().isEmpty() || column == null) {
-            messageLabel.setText("Left blank!");
-            return;
-        }
-        if(
+        } else if (columnHelper.trim().isEmpty() || column == null) {
+            messageLabel.setText("Select a column!");
+        } else if(
             column.length() > 1 ||
             Integer.parseInt(column) > 5 ||
             Integer.parseInt(column) < 1
         ) {
             messageLabel.setText("Select a valid column!");
-            return;
-        }
-        if(!yourTurn){
+        } else if (!yourTurn) {
             messageLabel.setText("It's not your turn!");
-            return;
-        }
-        if(isPaused){
+        } else if (isPaused) {
             messageLabel.setText("Game is paused!");
-            return;
-        }
+        } else {
 
-        for(ImageView image : selectedImages){
-            int[] indices = imageToIndices.get(image);
-            selectedCards.add(new Point(indices[0], indices[1]));
-        }
+            for (ImageView image : selectedImages) {
+                int[] indices = imageToIndices.get(image);
+                selectedCards.add(new Point(indices[0], indices[1]));
+            }
 
-        try {
             Platform.runLater(() -> {
                 try {
                     Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
                     if (result.isErr()) {
-                        System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
-                        messageLabel.setText("[ERROR] " + result.getException().orElse("Cannot select cards"));
+                        messageLabel.setText(result.getException().isPresent() ? ((Exception)result.getException().get()).getMessage() : "Cannot select cards");
+                        logger.info(result.getException().isPresent() ? result.getException().toString() : "Pick cards failed");
                     }
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    messageLabel.setText("Pick cards failed");
+                    logger.warning("Pick cards failed " + e + " " + e.getMessage());
                 }
             });
-        } catch (Exception e) {
-            System.out.println("[ERROR] " + e.getMessage());
-            messageLabel.setText("Couldn't perform the move");
         }
-
     }
 
     /**
@@ -433,11 +413,12 @@ public class GameViewController implements Initializable {
             newStage.show();
         } catch (IOException e) {
             messageLabel.setText("Couldn't load the personal objectives");
+            e.printStackTrace();
         }
     }
 
     /**
-     * method that is triggered when a button is clicked ("Print All Shelves" button).
+     * Method that is triggered when a button is clicked ("Print All Shelves" button).
      * It creates a new stage (window) and loads the contents of the FXML file called "Shelves.fxml" into it.
      * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
      *
@@ -461,11 +442,12 @@ public class GameViewController implements Initializable {
             newStage.show();
         } catch (IOException e) {
             messageLabel.setText("Couldn't load the shelves");
+            e.printStackTrace();
         }
     }
 
     /**
-     * method that is triggered when a button is clicked ("Print Common Objectives" button).
+     * Method that is triggered when a button is clicked ("Print Common Objectives" button).
      * It creates a new stage (window) and loads the contents of the FXML file called "CommonObj.fxml" into it.
      * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
      *
@@ -483,6 +465,7 @@ public class GameViewController implements Initializable {
             newStage.show();
         } catch (IOException e) {
             messageLabel.setText("Couldn't load the common objectives");
+            e.printStackTrace();
         }
     }
 
@@ -505,6 +488,7 @@ public class GameViewController implements Initializable {
             stage.show();
         } catch (IOException e) {
             Utils.changeLabel(messageLabel, "Couldn't load the end screen");
+            e.printStackTrace();
         }
     }
 
@@ -515,7 +499,6 @@ public class GameViewController implements Initializable {
      * sets the new scene to the stage, and displays the stage.
      *
      */
-
     private void goToMessage(){
         try {
             serverThread.interrupt();
@@ -527,6 +510,7 @@ public class GameViewController implements Initializable {
             stage.show();
         } catch (IOException e) {
             messageLabel.setText("Couldn't load the final message screen");
+            e.printStackTrace();
         }
     }
 
@@ -537,7 +521,6 @@ public class GameViewController implements Initializable {
      * sets the new scene to the stage, and displays the stage.
      *
      */
-
     private void returnToLoginMessage(){
         try {
             serverThread.interrupt();
@@ -549,6 +532,7 @@ public class GameViewController implements Initializable {
             stage.show();
         } catch (IOException e) {
             messageLabel.setText("Couldn't load the final message screen");
+            e.printStackTrace();
         }
     }
 
@@ -605,13 +589,13 @@ public class GameViewController implements Initializable {
                 try {
                     Result result = networkManager.exitGame().waitResult();
                     if (result.isErr()) {
-                        System.out.println("[ERROR] " + result.getException().orElse("Cannot stop the game"));
                         messageLabel.setText("Cannot stop the game");
+                        logger.info(result.getException().isPresent() ? result.getException().toString() : "Stop game failed");
                         afterStopConfirmFail();
                     }
                 } catch (Exception e) {
                     messageLabel.setText("Cannot stop the game");
-                    System.out.println("[ERROR] " + e.getMessage());
+                    logger.warning(e + " " + e.getMessage());
                 }
             });
         } else {
@@ -645,7 +629,6 @@ public class GameViewController implements Initializable {
             case NewMessage -> {
                 Message message = (Message)event.get().getData();
                 if (!message.idSender().equals(username)) {
-                    System.out.format("%s: %s%n", message.idSender(), message.message());
                     Platform.runLater(() -> Utils.addMessageToChat(username, message, chat));
                 }
             }
@@ -653,21 +636,17 @@ public class GameViewController implements Initializable {
                 Update update = (Update)event.get().getData();
                 for (Cockade commonObjective : update.completedObjectives()) {
                     if (update.idPlayer().equals(username)) {
-                        System.out.format("[*] You completed %s getting %d points%n", commonObjective.name(), commonObjective.points());
                         Platform.runLater(() -> Utils.addMessageToChat(username, new Message(Server.SERVER_NAME,"You completed " + commonObjective.name() + " getting " + commonObjective.points() + " points"), chat));
                     } else {
-                        System.out.format("[*] %s completed %s getting %d points%n", update.idPlayer(), commonObjective.name(), commonObjective.points());
                         Platform.runLater(() -> Utils.addMessageToChat(username, new Message(Server.SERVER_NAME, update.idPlayer() + " completed " + commonObjective.name() + " getting " + commonObjective.points() + " points"), chat));
                     }
                 }
                 gameData.update(update);
                 if (update.nextPlayer().equals(username)) {
                     yourTurn = true;
-                    System.out.println("[*] It's your turn");
                     Utils.changeLabel(messageLabel, "It's your turn");
                 } else {
                     yourTurn = false;
-                    System.out.println("[*] It's " + update.nextPlayer() + "'s turn");
                     Utils.changeLabel(messageLabel, "It's " + update.nextPlayer() + "'s turn");
                 }
                 Platform.runLater(() -> {
@@ -679,7 +658,6 @@ public class GameViewController implements Initializable {
             case End -> {
                 ScoreBoard scoreboard = (ScoreBoard)event.get().getData();
                 gameData.setScoreBoard(scoreboard);
-                System.out.println("[*] Game ended");
                 Platform.runLater(() -> printEnd());
             }
             case Join -> {
@@ -703,37 +681,29 @@ public class GameViewController implements Initializable {
                         Utils.addMessageToChat(username, new Message(Server.SERVER_NAME, leftPlayer + " left the lobby"), chat);
                         players.getItems().clear();
                         players.getItems().addAll(lobby.getPlayers());
-                        if (lobby.isHost(username)) {
-                            endGame.setVisible(true);
-                        } else {
-                            endGame.setVisible(false);
-                        }
+                        endGame.setVisible(lobby.isHost(username));
                     });
 
                 } catch (Exception e) {
                     throw new RuntimeException("Removed non existing player from lobby");
                 }
-                System.out.format("[*] %s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
             }
             case Pause -> {
                 if (!isPaused) {
-                    System.out.println("[WARNING] Someone has disconnected");
                     Utils.changeLabel(messageLabel, "Someone has disconnected");
                 }
                 isPaused = true;
             }
             case Resume -> {
-                System.out.println("Game resumed");
                 Utils.changeLabel(messageLabel, "Game resumed");
                 isPaused = false;
             }
-            case ExitGame -> {
-                Platform.runLater(() -> goToMessage());
-            }
+            case ExitGame -> Platform.runLater(this::goToMessage);
             case ServerDisconnect -> {
-                System.out.println("[WARNING] Server disconnected");
-                Utils.changeLabel(messageLabel, "Server disconnected");
-                Platform.runLater(() -> returnToLoginMessage());
+                Platform.runLater(() -> {
+                    messageLabel.setText("Server disconnected");
+                    returnToLoginMessage();
+                });
             }
             default -> throw new RuntimeException("Unhandled event");
         }
@@ -750,5 +720,4 @@ public class GameViewController implements Initializable {
     public static GameData getGameData(){
         return gameData;
     }
-
 }

@@ -18,7 +18,6 @@ import java.util.ResourceBundle;
  * class controller for the scene shown in case the host of a game decides to stop the game
  *
  */
-
 public class MessageStoppedGameController implements Initializable {
     private static final int WIDTH = 1140;
     private static final int HEIGHT = 760;
@@ -35,11 +34,10 @@ public class MessageStoppedGameController implements Initializable {
     /**
      * Method that is called when the button to return to lobbies is clicked
      *
-     * @param actionEvent: event of the button to return to lobbies clicked
+     * @param actionEvent event of the button to return to lobbies clicked
      *
      * @author Ludovico
      */
-
     @FXML
     private void backToLobbies(ActionEvent actionEvent) {
         try {
@@ -50,7 +48,7 @@ public class MessageStoppedGameController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            Utils.changeLabel(messageLabel, "Error while loading the main menu");
+            messageLabel.setText("Error while loading the main menu");
             e.printStackTrace();
         }
     }

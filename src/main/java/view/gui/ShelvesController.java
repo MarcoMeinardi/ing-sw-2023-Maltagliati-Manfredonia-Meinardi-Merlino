@@ -19,7 +19,6 @@ import java.util.ResourceBundle;
  * Controller class for the shelves scene showing the four shelves of the players.
  *
  */
-
 public class ShelvesController implements Initializable {
 
     private static final int shelfCardSize = 24;
@@ -98,23 +97,23 @@ public class ShelvesController implements Initializable {
         int shelfOffSetY = 0;
         int shelfOffSetX = 0;
 
-        switch (playerIndex){
-            case 0:
+        switch (playerIndex) {
+            case 0 -> {
                 shelfOffSetY = 228;
                 shelfOffSetX = 126;
-                break;
-            case 1:
+            }
+            case 1 -> {
                 shelfOffSetY = 228;
                 shelfOffSetX = 526;
-                break;
-            case 2:
+            }
+            case 2 -> {
                 shelfOffSetY = 588;
                 shelfOffSetX = 126;
-                break;
-            case 3:
+            }
+            case 3 -> {
                 shelfOffSetY = 588;
                 shelfOffSetX = 526;
-                break;
+            }
         }
 
         for (int y = 0; y < shelfRows; y++) {
@@ -174,7 +173,7 @@ public class ShelvesController implements Initializable {
      *
      * @author Ludovico
      */
-    private void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY){
+    private void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY) {
         String imagePath = getClass().getResource(imageName).toExternalForm();
         Image image = new Image(imagePath);
         ImageView imageView = new ImageView(image);
@@ -184,6 +183,4 @@ public class ShelvesController implements Initializable {
         imageView.setY(offsetY - stepY*y);
         pane.getChildren().add(imageView);
     }
-
-
 }

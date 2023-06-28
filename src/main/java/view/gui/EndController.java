@@ -25,6 +25,7 @@ import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +34,6 @@ import java.util.regex.Pattern;
  * It is responsible for the end screen of the game.
  *
  */
-
 public class EndController implements Initializable {
     private static final int WIDTH = 1140;
     private static final int HEIGHT = 760;
@@ -67,6 +67,8 @@ public class EndController implements Initializable {
     private ImageView cockadeImage4;
     private Stage stage;
     private Scene scene;
+
+    private static final Logger logger = Logger.getLogger(EndController.class.getName());
 
     /**
      * This method is called when the End.fxml file is loaded.
@@ -144,7 +146,6 @@ public class EndController implements Initializable {
             }
             position++;
         }
-        System.out.println("Your final grade: " + your_title);
         titleLabel.setText("Your final grade: " + your_title);
 
         addChangeOfImage(cockadesList1, 1);
@@ -257,7 +258,7 @@ public class EndController implements Initializable {
      * @throws IOException
      */
     @FXML
-    private void goToLobbies(ActionEvent actionEvent) throws IOException {
+    private void goToLobbies(ActionEvent actionEvent) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
             stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -266,9 +267,9 @@ public class EndController implements Initializable {
             stage.setScene(scene);
             stage.show();
         }
-        catch (IOException e){
-            e.printStackTrace();
+        catch (IOException e) {
             titleLabel.setText("Error loading the main menu");
+            e.printStackTrace();
         }
     }
 

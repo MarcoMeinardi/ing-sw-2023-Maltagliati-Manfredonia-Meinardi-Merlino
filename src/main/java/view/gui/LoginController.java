@@ -21,6 +21,7 @@ import network.parameters.GameInfo;
 import network.parameters.Login;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * LoginController is the class that manages the login scene.
@@ -48,11 +49,11 @@ public class LoginController implements Initializable {
     public static int port;
     public static Lobby lobby;
     public static GameInfo gameInfo;
+    private static final Logger logger = Logger.getLogger(LoginController.class.getName());
 
     /**
      * Method initialize is used to initialize the login scene.
-     * sets the default button to the login button and sets the close request of the stage.
-     *
+     * Sets the default button to the login button and sets the close request of the stage.
      *
      * @param location
      * The location used to resolve relative paths for the root object, or
@@ -66,7 +67,6 @@ public class LoginController implements Initializable {
      */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         Platform.runLater(() -> loginButton.setDefaultButton(true));
-
     }
 
     /**
@@ -86,17 +86,17 @@ public class LoginController implements Initializable {
 
         try {
             stage = (Stage)(loginButton.getScene().getWindow());
-            Utils.changeLabel(errorLabel, "");
+            errorLabel.setText("");
             username = namePlayer.getText();
 
             //check if the input is valid
             if(username == null || username.equals("") || username.equals(" ")){
-                Utils.changeLabel(errorLabel, "Invalid name!");
+                errorLabel.setText("Invalid name!");
                 return;
             }
 
             if (selectedIp.getText().equals("")) {
-                Utils.changeLabel(errorLabel, "Insert an IP address!");
+                errorLabel.setText("Insert an IP address!");
                 return;
             }
 
@@ -116,8 +116,8 @@ public class LoginController implements Initializable {
                     networkManager.connect(new Server(this.ip, this.port));
                     state = ClientStatus.Idle;
                 }catch (Exception e) {
-                    Utils.changeLabel(errorLabel, "Connection failed");
-                    System.out.println("[ERROR] " + e);
+                    errorLabel.setText("Connection failed");
+                    logger.warning("Connection failed" + e + " " + e.getMessage());
                     state = ClientStatus.Disconnected;
                     return;
                 }
@@ -139,13 +139,13 @@ public class LoginController implements Initializable {
                     }
                 }
                 else{
-                    Utils.changeLabel(errorLabel, "Login failed");
-                    System.out.println(result.getException());
+                    errorLabel.setText("Username unavailable");
+                    logger.info(result.getException().orElse("Login failed").toString());
                     return;
                 }
             } catch (Exception e) {
-                Utils.changeLabel(errorLabel, "Login failed");
-                System.out.println("[ERROR] " + e.getMessage());
+                errorLabel.setText("Login failed");
+                logger.warning("Login failed" + e + " " + e.getMessage());
                 return;
             }
 
@@ -158,7 +158,8 @@ public class LoginController implements Initializable {
             stage.show();
 
         } catch (IOException e) {
-            Utils.changeLabel(errorLabel, "Login failed");
+            errorLabel.setText("Login failed");
+            logger.severe(e + e.getMessage());
             e.printStackTrace();
         }
 
@@ -183,7 +184,8 @@ public class LoginController implements Initializable {
                 stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
-                Utils.changeLabel(errorLabel, "Couldn't log you in ongoing game");
+                errorLabel.setText("Couldn't log you in ongoing game");
+                logger.severe(e + e.getMessage());
                 e.printStackTrace();
             }
         });

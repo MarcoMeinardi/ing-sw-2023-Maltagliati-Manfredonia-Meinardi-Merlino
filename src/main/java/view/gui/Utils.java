@@ -1,5 +1,7 @@
 package view.gui;
 
+import controller.IdentityTheftException;
+import controller.MessageTooLongException;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -9,13 +11,18 @@ import model.Card;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.Server;
+import network.errors.ClientNotFoundException;
+import network.errors.WrongParametersException;
 import network.parameters.Message;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.logging.Logger;
 
 public class Utils {
     public static final int CHAT_HEIGHT = 5;
+
+    private static final Logger logger = Logger.getLogger(Utils.class.getName());
 
     /**
      * Method that associates the card passed as parameter to it's corresponding image.
@@ -158,35 +165,40 @@ public class Utils {
         }
 
         // Try to send it to the server and add it to chat
-        try{
-            if(players.getSelectionModel().getSelectedItem() != null && !players.getSelectionModel().getSelectedItem().toString().equals("")){
-                Result result = networkManager.chat(new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString())).waitResult();
-                if (result.isErr()) {
-                    System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-                    chat.getItems().add("[ERROR] We could not send your message, please try again later");
-                    if (chat.getItems().size() != CHAT_HEIGHT) {
-                        chat.scrollTo(chat.getItems().size() - 1);
-                    }
-                    return;
-                }
-                Message message = new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString());
-                players.getSelectionModel().clearSelection();
-                addMessageToChat(username, message, chat);
-                return;
+        try {
+            boolean singleReceiver = players.getSelectionModel().getSelectedItem() != null && !players.getSelectionModel().getSelectedItem().toString().equals("");
+            Result result;
+            if (singleReceiver) {
+                result = networkManager.chat(new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString())).waitResult();
+            } else {
+                result = networkManager.chat(new Message(username, messageText)).waitResult();
             }
-            Result result = networkManager.chat(new Message(username, messageText)).waitResult();
             if (result.isErr()) {
-                System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-                chat.getItems().add("[ERROR] We could not send your message, please try again later");
+                Exception e = (Exception)result.getException().get();
+                if (e instanceof WrongParametersException) {
+                    chat.getItems().add("[ERROR] " + e.getMessage());
+                } else if (e instanceof MessageTooLongException) {
+                    chat.getItems().add("[ERROR] Message is too long");
+                } else if (e instanceof IdentityTheftException) {
+                    chat.getItems().add("[ERROR] Identity theft is not a joke, Bob!");
+                } else if (e instanceof ClientNotFoundException) {
+                    chat.getItems().add("[ERROR] The player has disconnected");
+                } else {
+                    chat.getItems().add("[ERROR] Send message failed" + (e.getMessage() != null ? " " + e.getMessage() : ""));
+                }
+                logger.info(result.getException().isPresent() ? result.getException().toString() : "Send message failed");
                 if (chat.getItems().size() != CHAT_HEIGHT) {
                     chat.scrollTo(chat.getItems().size() - 1);
                 }
-                return;
+            } else {
+                Message message = new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString());
+                if (singleReceiver) {
+                    players.getSelectionModel().clearSelection();
+                }
+                addMessageToChat(username, message, chat);
             }
-            Message message = new Message(username, messageText);
-            addMessageToChat(username, message, chat);
         } catch (Exception e) {
-            System.out.println("[ERROR] " + e.getMessage());
+            logger.warning("Send message failed " + e + " " + e.getMessage());
             messageLabel.setText("Couldn't send the message");
         }
     }

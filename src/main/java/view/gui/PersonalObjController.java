@@ -13,8 +13,7 @@ import model.PersonalObjective;
 
 /**
  * PersonalObjController is the class that manages the personal objective scene.
- **/
-
+ */
 public class PersonalObjController implements Initializable {
 
     @FXML

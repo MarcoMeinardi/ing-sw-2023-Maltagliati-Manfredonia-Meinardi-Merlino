@@ -15,7 +15,6 @@ import java.io.IOException;
  * class controller for the scene shown in case the server is stopped
  *
  */
-
 public class MessageReturnToLoginController {
 
     private static final int WIDTH = 1140;
@@ -28,11 +27,10 @@ public class MessageReturnToLoginController {
     /**
      * Method that is called when the button to return to login is clicked
      *
-     * @param actionEvent: event of the button to return to login clicked
+     * @param actionEvent event of the button to return to login clicked
      *
      * @author Ludovico
      */
-
     @FXML
     private void backToLogin(ActionEvent actionEvent) {
         try {
@@ -43,7 +41,7 @@ public class MessageReturnToLoginController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            Utils.changeLabel(messageLabel, "Error while loading the login page");
+            messageLabel.setText("Error while loading the login page");
             e.printStackTrace();
         }
     }

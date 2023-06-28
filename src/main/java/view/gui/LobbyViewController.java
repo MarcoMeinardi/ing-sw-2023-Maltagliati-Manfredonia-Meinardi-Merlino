@@ -22,6 +22,7 @@ import network.parameters.Message;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 
 /**
@@ -59,6 +60,8 @@ public class LobbyViewController implements Initializable{
     private Thread serverThread;
     public static GameInfo gameInfo;
     private boolean alreadyShowedHostMessage = false;
+
+    private static final Logger logger = Logger.getLogger(LobbyViewController.class.getName());
 
 
     /**
@@ -106,10 +109,10 @@ public class LobbyViewController implements Initializable{
     }
 
     /**
-     * method called to add items to the list view showing
+     * Method called to add items to the list view showing
      * the names of the players and add the help message in chat.
      * It is called when the lobby is created and when a player joins the lobby.
-     * Calls updateLobby() method to fill the names in the right spots
+     * Call updateLobby() method to fill the names in the right spots
      *
      * @author Ludovico
      */
@@ -119,7 +122,7 @@ public class LobbyViewController implements Initializable{
     }
 
     /**
-     * method called to update the names on the list view showing the names of the players.
+     * Method called to update the names on the list view showing the names of the players.
      * It is called when a player joins or leaves the lobby.
      *
      * @author Ludovico
@@ -130,8 +133,8 @@ public class LobbyViewController implements Initializable{
     }
 
     /**
-     * method called to show the start button if the player is the owner of the lobby
-     * (aka the first one in the list of players of the lobby).
+     * Method called to show the start button if the player is the owner of the lobby
+     * (The first one in the list of players of the lobby).
      *
      * @author Ludovico
      */
@@ -179,11 +182,12 @@ public class LobbyViewController implements Initializable{
                 stage.show();
             } catch (IOException e) {
                 descriptorLabel.setText("Couldn't load the main menu");
+                logger.severe(e + e.getMessage());
                 e.printStackTrace();
             }
         } else {
             descriptorLabel.setText("Leave lobby failed");
-            System.out.println("[ERROR] " + result.getException().orElse("Leave lobby failed"));
+            logger.info(result.getException().orElse("Leave lobby failed").toString());
         }
     }
 
@@ -199,19 +203,21 @@ public class LobbyViewController implements Initializable{
      */
     @FXML
     private void startGame(ActionEvent actionEvent) throws Exception {
-        if(lobby.getPlayers().size() < 2){
+        if (lobby.getPlayers().size() < 2) {
             descriptorLabel.setText("Not enough players");
-            return;
-        }
-        Result result = networkManager.gameStart().waitResult();
-        if (!result.isOk()) {
-            descriptorLabel.setText("Start game failed");
-            System.out.println("[ERROR] " + result.getException().orElse("Start game failed"));
+        } else if (!lobby.isHost(username)) {
+            descriptorLabel.setText("Only the host can start the game");
+        } else {
+            Result result = networkManager.gameStart().waitResult();
+            if (!result.isOk()) {
+                descriptorLabel.setText("We could not start the game");
+                logger.info(result.getException().orElse("Start game failed").toString());
+            }
         }
     }
 
     /**
-     * method called to switch to the game scene.
+     * Method called to switch to the game scene.
      *
      * @author Ludovico
      */
@@ -221,21 +227,21 @@ public class LobbyViewController implements Initializable{
         try {
             serverThread.interrupt();
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
-            //get stage from an element in the scene. Could be anything else
+            // Get stage from an element in the scene. Could be anything else
             stage = (Stage) ((Node)startButton).getScene().getWindow();
             scene = new Scene(root, WIDTH, HEIGHT);
             stage.setResizable(false);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
+            descriptorLabel.setText("Cannot switch to game scene");
             e.printStackTrace();
-            descriptorLabel.setText("Couldn't load the game");
         }
     }
 
 
     /**
-     * method called to send a message to the server and add it to the chat.
+     * Method called to send a message to the server and add it to the chat.
      * It checks if the message is valid and if it is not it returns after adding the
      * error to the chat, visible only by the sender and not the others in the lobby (length check,
      * empty message check, trying to use commands).
@@ -247,7 +253,6 @@ public class LobbyViewController implements Initializable{
      * @param actionEvent the send button is clicked
      * @author Ludovico
      */
-
     @FXML
     private void sendMessage(ActionEvent actionEvent) {
         Utils.sendMessage(username, networkManager, messageInput, chat, players, descriptorLabel);
@@ -259,7 +264,6 @@ public class LobbyViewController implements Initializable{
      * It sends a request to the server to load the game.
      * If the request is successful, the game is loaded.
      *
-     *
      * @param actionEvent
      * The click of the load button by the user.
      *
@@ -267,16 +271,18 @@ public class LobbyViewController implements Initializable{
      */
     @FXML
     private void loadGame(ActionEvent actionEvent) throws Exception {
-        if(lobby.getNumberOfPlayers() < 2){
-            descriptorLabel.setText("You need at least 2 players to start a game");
-            return;
-        }
-        Result result = networkManager.gameLoad().waitResult();
-        if(result.isOk()){
-            System.out.println("[INFO] Game loaded");
-        }
-        else{
-            descriptorLabel.setText("We could not load the game");
+        if (lobby.getPlayers().size() < 2) {
+            descriptorLabel.setText("Not enough players");
+        } else if (!lobby.isHost(username)) {
+            descriptorLabel.setText("Only the host can start the game");
+        } else {
+            Result result = networkManager.gameLoad().waitResult();
+            if (!result.isOk()) {
+                if (!result.isOk()) {
+                    descriptorLabel.setText("We could not load the game");
+                    logger.info(result.getException().orElse("Load game failed").toString());
+                }
+            }
         }
     }
 
@@ -287,7 +293,6 @@ public class LobbyViewController implements Initializable{
      * sets the new scene to the stage, and displays the stage.
      *
      */
-
     private void returnToLoginMessage(){
         try {
             serverThread.interrupt();
@@ -299,11 +304,12 @@ public class LobbyViewController implements Initializable{
             stage.show();
         } catch (IOException e) {
             descriptorLabel.setText("Couldn't load the error message scene");
+            e.printStackTrace();
         }
     }
 
     /**
-     * method called to handle the events received from the server.
+     * Method called to handle the events received from the server.
      * It is called every time the server sends an event.
      * The possible cases are:
      *
@@ -313,9 +319,9 @@ public class LobbyViewController implements Initializable{
      * - Start: the game is starting
      * - ServerDisconnect: the server disconnected
      *
-     * In the join and leave cases the lobby is updated and the start button is shown if the player is the first in the lobby.
+     * In the join and leave cases, the lobby is updated, and the start button is shown if the player is the first in the lobby.
      * In the start case the game starts and the players are brought to the game scene.
-     * In the chat case the message is added to the chat.
+     * In the chat case, the message is added to the chat.
      *
      * @author Ludovico
      */
@@ -336,11 +342,11 @@ public class LobbyViewController implements Initializable{
                             showStart();
                         });
                     } catch (Exception e) {
-                        Platform.runLater(() -> descriptorLabel.setText("We could not add the player to the lobby"));
+                        Platform.runLater(() -> {
+                            logger.warning("Lobby add failed " + e + " " + e.getMessage());
+                            descriptorLabel.setText("We could not add the player to the lobby");
+                        });
                     }
-                }
-                if (!joinedPlayer.equals(username)) {
-                    System.out.println(joinedPlayer + " joined the lobby");
                 }
             }
             case Leave -> {
@@ -353,14 +359,15 @@ public class LobbyViewController implements Initializable{
                         showStart();
                     });
                 } catch (Exception e) {
-                    Platform.runLater(() -> descriptorLabel.setText("We could not remove the player from the lobby"));
+                    Platform.runLater(() -> {
+                        logger.warning("Lobby remove failed " + e + " " + e.getMessage());
+                        descriptorLabel.setText("We could not remove the player from the lobby");
+                    });
                 }
-                System.out.format("%s left the %s%n", leftPlayer, state == ClientStatus.InLobby ? "lobby" : "game");
             }
             case NewMessage -> {
                 Message message = (Message)event.get().getData();
                 if (!message.idSender().equals(username)) {
-                    System.out.format("%s: %s%n", message.idSender(), message.message());
                     Platform.runLater(() -> Utils.addMessageToChat(username, message, chat));
                 }
             }
@@ -368,23 +375,14 @@ public class LobbyViewController implements Initializable{
                 System.out.println("[*] Game has started");
                 state = ClientStatus.InGame;
                 gameInfo = (GameInfo)event.get().getData();
-                Platform.runLater(() -> {
-                    try {
-                        switchToGame();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        descriptorLabel.setText("We could not switch to the game scene");
-                    }
-                });
+                Platform.runLater(this::switchToGame);
 
             }
             case ServerDisconnect -> {
-                System.out.println("[WARNING] Server disconnected");
+                logger.info("Server disconnected");
                 Platform.runLater(this::returnToLoginMessage);
             }
             default -> throw new RuntimeException("Unhandled event");
         }
     }
-
-
 }
