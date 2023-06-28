@@ -11,20 +11,6 @@ import static org.junit.Assert.*;
 public class CommonObjectiveTest {
 
     /**
-     * Test the constructor of CommonObjective
-     *
-     * @author Ludovico
-     */
-    @Test
-    public void testConstructor() {
-
-        CommonObjective objective = new CommonObjective("test", 2, CommonObjective::fiveCardsInDiagonalTest);
-        assertEquals("test", objective.getName());
-        assertEquals(8, objective.getValue());
-
-    }
-
-    /**
      * Test the method generateCommonObjectives
      *
      * @author Ludovico
@@ -63,12 +49,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico, Marco
      */
-
     @Test
     public void testFiveCardsInDiagonal1() throws InvalidMoveException {
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonalTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(10);
 
         shelf.insert(0,  new ArrayList<Card>(Arrays.asList(new Card(Card.Type.Plant, 0))));
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
@@ -93,12 +78,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Marco
      */
-
     @Test
     public void testFiveCardsInDiagonal2() throws InvalidMoveException {
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("5 cards in diagonal", nPlayers, CommonObjective::fiveCardsInDiagonalTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(10);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 
@@ -125,12 +109,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico
      */
-
     @Test
-    public void isEqualsCorners() throws InvalidMoveException{
+    public void isEqualCorners() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("all equal corners", nPlayers, CommonObjective::equalCornersTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(7);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 
@@ -151,12 +134,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico
      */
-
     @Test
     public void testFourRowsOfAtMostThreeDifferentCards() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("4 rows of at most 3 different cards", nPlayers, CommonObjective::fourRowsOfAtMostThreeDifferentCardsTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(6);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 
@@ -189,12 +171,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico
      */
-
     @Test
     public void testFourGroupsOfFourCards() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("4 groups of 4 cards", nPlayers, CommonObjective::fourGroupsOfFourCardsTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(2);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 
@@ -223,12 +204,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico
      */
-
     @Test
     public void testTwoColumnsOfSixDifferentCards() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("2 columns of 6 different cards", nPlayers, CommonObjective::twoColumnsOfSixDifferentCardsTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(1);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 
@@ -249,12 +229,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico
      */
-
     @Test
     public void testTwoSquareGroups() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("2 square-shaped groups", nPlayers, CommonObjective::twoSquareGroupsTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(0);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 
@@ -275,12 +254,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico
      */
-
     @Test
     public void testTwoRowsWithFIveDifferentCards() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("2 rows with 5 different cards", nPlayers, CommonObjective::twoRowsWithFiveDifferentCardsTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(5);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 
@@ -303,12 +281,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico
      */
-
     @Test
     public void testThreeColumnsOfAtMostThreeDifferentCards() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("3 columns of at most 3 different cards", nPlayers, CommonObjective::threeColumnsOfAtMostThreeDifferentCardsTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(4);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 
@@ -333,12 +310,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico
      */
-
     @Test
     public void testEqualsX() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("X shape group", nPlayers, CommonObjective::equalsXTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(9);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 
@@ -357,12 +333,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico
      */
-
     @Test
     public void testEightEquals() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("eight equal cards", nPlayers, CommonObjective::eightEqualsTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(8);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 
@@ -381,12 +356,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico
      */
-
     @Test
     public void testStairsShape() throws InvalidMoveException{
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("stair-shaped cards", nPlayers, CommonObjective::stairsShapeTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(11);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 
@@ -413,12 +387,11 @@ public class CommonObjectiveTest {
      * @throws InvalidMoveException
      * @author Ludovico
      */
-
     @Test
     public void testSixGroupOfTwoCards() throws InvalidMoveException {
         int nPlayers = 2;
         Shelf shelf = new Shelf();
-        CommonObjective objective = new CommonObjective("6 groups of 2 cards", nPlayers, CommonObjective::sixGroupsOfTwoCardsTest);
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(nPlayers).get(3);
 
         assertFalse(objective.isCompleted(shelf, "foo").isPresent());
 

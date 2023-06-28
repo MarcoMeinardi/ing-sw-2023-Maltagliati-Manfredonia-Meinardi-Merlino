@@ -164,16 +164,6 @@ public class CommonObjective extends Objective {
 	private static Boolean fourGroupsOfFourCards(Shelf shelf) {
 		return groupsOfAtLeastNCards(shelf, 4) >= 4;
 	}
-	/**
-	 * public wrapper for fourGroupsOfFourCards method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean fourGroupsOfFourCardsTest(Shelf shelf) {
-		return fourGroupsOfFourCards(shelf);
-	}
 
 	/**
 	 * Method that checks if the objective "6 groups of 2 cards" is done.
@@ -184,16 +174,6 @@ public class CommonObjective extends Objective {
 	 */
 	private static Boolean sixGroupsOfTwoCards(Shelf shelf) {
 		return groupsOfAtLeastNCards(shelf, 2) >= 6;
-	}
-	/**
-	 * public wrapper for sixGroupsOfTwoCards method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean sixGroupsOfTwoCardsTest(Shelf shelf) {
-		return sixGroupsOfTwoCards(shelf);
 	}
 
 	/**
@@ -229,16 +209,6 @@ public class CommonObjective extends Objective {
 		}
 
 		return false;
-	}
-	/**
-	 * public wrapper for twoColumnsOfSixDifferentCards method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean twoColumnsOfSixDifferentCardsTest(Shelf shelf) {
-		return twoColumnsOfSixDifferentCards(shelf);
 	}
 
 	/**
@@ -289,16 +259,6 @@ public class CommonObjective extends Objective {
 
 		return false;
 	}
-	/**
-	 * public wrapper for fiveCardsInDiagonal method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean fiveCardsInDiagonalTest(Shelf shelf) {
-		return fiveCardsInDiagonal(shelf);
-	}
 
 	/**
 	 * Method that check if the objective "four rows such that each row has at most three different cards" is done.
@@ -333,16 +293,6 @@ public class CommonObjective extends Objective {
 
 		return count == 4;
 	}
-	/**
-	 * public wrapper for fourRowsOfAtMostThreeDifferentCards method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean fourRowsOfAtMostThreeDifferentCardsTest(Shelf shelf) {
-		return fourRowsOfAtMostThreeDifferentCards(shelf);
-	}
 
 	private static final int[] cornersX = {0, 0, Shelf.COLUMNS - 1, Shelf.COLUMNS - 1};
 	private static final int[] cornersY = {0, Shelf.ROWS - 1, 0, Shelf.ROWS - 1};
@@ -371,16 +321,6 @@ public class CommonObjective extends Objective {
 		}
 
 		return true;
-	}
-	/**
-	 * public wrapper for equalCorners method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean equalCornersTest(Shelf shelf) {
-		return equalCorners(shelf);
 	}
 
 	/**
@@ -416,16 +356,6 @@ public class CommonObjective extends Objective {
 		}
 
 		return false;
-	}
-	/**
-	 * public wrapper for twoRowsWithFiveDifferentCards method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean twoRowsWithFiveDifferentCardsTest(Shelf shelf) {
-		return twoRowsWithFiveDifferentCards(shelf);
 	}
 
 	private static final int[] squareDx = {0, 1, 1};
@@ -475,16 +405,6 @@ public class CommonObjective extends Objective {
 
 		return false;
 	}
-	/**
-	 * public wrapper for twoSquareGroups method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean twoSquareGroupsTest(Shelf shelf) {
-		return twoSquareGroups(shelf);
-	}
 
 	/**
 	 * Method that checks if the objective "X-shaped equal cards" is done.
@@ -514,16 +434,6 @@ public class CommonObjective extends Objective {
 		}
 
 		return false;
-	}
-	/**
-	 * public wrapper for equalsX method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean equalsXTest(Shelf shelf) {
-		return equalsX(shelf);
 	}
 
 	/**
@@ -560,16 +470,6 @@ public class CommonObjective extends Objective {
 
 		return true;
 	}
-	/**
-	 * public wrapper for stairsShape method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean stairsShapeTest(Shelf shelf) {
-		return stairsShape(shelf);
-	}
 
 	/**
 	 * Method that checks if the objective "8 equal cards" is done.
@@ -600,16 +500,6 @@ public class CommonObjective extends Objective {
 		}
 
 		return false;
-	}
-	/**
-	 * public wrapper for eightEquals method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean eightEqualsTest(Shelf shelf) {
-		return eightEquals(shelf);
 	}
 
 	/**
@@ -645,15 +535,4 @@ public class CommonObjective extends Objective {
 
 		return count == 3;
 	}
-	/**
-	 * public wrapper for threeColumnsOfAtMostThreeDifferentCards method, only used for testing
-	 *
-	 * @param shelf The shelf object
-	 * @return true if the objective is done, false otherwise
-	 * @author Marco
-	 */
-	public static Boolean threeColumnsOfAtMostThreeDifferentCardsTest(Shelf shelf) {
-		return threeColumnsOfAtMostThreeDifferentCards(shelf);
-	}
-
 }
