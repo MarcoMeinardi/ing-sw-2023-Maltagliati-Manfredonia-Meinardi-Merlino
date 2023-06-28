@@ -107,8 +107,18 @@ public class CLI {
 	 * @author Marco
 	 */
 	private void printWelcome() {
-		// TODO create a banner
-		System.out.println("Welcome to this beautiful game, that has been accidentally written in Rust");
+		// Hey java where are r-strings?
+		System.out.println("  /\\\\\\\\            /\\\\\\\\  /\\\\\\        /\\\\\\               /\\\\\\\\\\\\\\\\\\\\\\    /\\\\\\        /\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\  /\\\\\\              /\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+		System.out.println("  \\/\\\\\\\\\\\\        /\\\\\\\\\\\\ \\///\\\\\\    /\\\\\\/              /\\\\\\/////////\\\\\\ \\/\\\\\\       \\/\\\\\\ \\/\\\\\\///////////  \\/\\\\\\             \\/\\\\\\///////////  \\/////\\\\\\///  \\/\\\\\\///////////");
+		System.out.println("   \\/\\\\\\//\\\\\\    /\\\\\\//\\\\\\   \\///\\\\\\/\\\\\\/               \\//\\\\\\      \\///  \\/\\\\\\       \\/\\\\\\ \\/\\\\\\             \\/\\\\\\             \\/\\\\\\                 \\/\\\\\\     \\/\\\\\\");
+		System.out.println("    \\/\\\\\\\\///\\\\\\/\\\\\\/ \\/\\\\\\     \\///\\\\\\/                  \\////\\\\\\         \\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \\/\\\\\\\\\\\\\\\\\\\\\\     \\/\\\\\\             \\/\\\\\\\\\\\\\\\\\\\\\\         \\/\\\\\\     \\/\\\\\\\\\\\\\\\\\\\\\\");
+		System.out.println("     \\/\\\\\\  \\///\\\\\\/   \\/\\\\\\       \\/\\\\\\                      \\////\\\\\\      \\/\\\\\\/////////\\\\\\ \\/\\\\\\///////      \\/\\\\\\             \\/\\\\\\///////          \\/\\\\\\     \\/\\\\\\///////");
+		System.out.println("      \\/\\\\\\    \\///     \\/\\\\\\       \\/\\\\\\                         \\////\\\\\\   \\/\\\\\\       \\/\\\\\\ \\/\\\\\\             \\/\\\\\\             \\/\\\\\\                 \\/\\\\\\     \\/\\\\\\");
+		System.out.println("       \\/\\\\\\             \\/\\\\\\       \\/\\\\\\                  /\\\\\\      \\//\\\\\\  \\/\\\\\\       \\/\\\\\\ \\/\\\\\\             \\/\\\\\\             \\/\\\\\\                 \\/\\\\\\     \\/\\\\\\");
+		System.out.println("        \\/\\\\\\             \\/\\\\\\       \\/\\\\\\                 \\///\\\\\\\\\\\\\\\\\\\\\\/   \\/\\\\\\       \\/\\\\\\ \\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \\/\\\\\\              /\\\\\\\\\\\\\\\\\\\\\\ \\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+		System.out.println("         \\///              \\///        \\///                    \\///////////     \\///        \\///  \\///////////////  \\///////////////  \\///              \\///////////  \\///////////////");
+		System.out.println("");
+
 	}
 
 	/**
@@ -206,11 +216,14 @@ public class CLI {
 	 * @author Marco
 	 */
 	private ClientStatus searchLobby() {
-		SelectLobbyOptions option = IO.askOption(SelectLobbyOptions.class);
+		Optional<SelectLobbyOptions> option = IO.askOptionOrEvent(SelectLobbyOptions.class, true, false, false);
+		if (option.isEmpty()) {
+			return handleEvent(); // must be `ServerDiscnnected`
+		}
 		String lobbyName;
 		Result result;
 		try {
-			switch (option) {
+			switch (option.get()) {
 				case CREATE_LOBBY -> {
 					lobbyName = IO.askString("[+] Lobby name: ");
 					result = networkManager.lobbyCreate(new LobbyCreateInfo(lobbyName)).waitResult();
@@ -558,7 +571,7 @@ public class CLI {
 	 */
 	private ClientStatus handleStopGame() {
 		String yn = IO.askString("Do you really want to stop the game (y/n)? ");
-		if (yn.toLowerCase().charAt(0) == 'y') {
+		if (!yn.isEmpty() && yn.toLowerCase().charAt(0) == 'y') {
 			try {
 				Result result = networkManager.exitGame().waitResult();
 				if (result.isErr()) {
