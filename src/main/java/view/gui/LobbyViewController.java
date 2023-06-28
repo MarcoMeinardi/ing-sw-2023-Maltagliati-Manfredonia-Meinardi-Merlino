@@ -182,12 +182,12 @@ public class LobbyViewController implements Initializable{
                 stage.show();
             } catch (IOException e) {
                 descriptorLabel.setText("Couldn't load the main menu");
-                logger.severe(e + e.getMessage());
+                logger.severe(e + " " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
             descriptorLabel.setText("Leave lobby failed");
-            logger.info(result.getException().orElse("Leave lobby failed").toString());
+            logger.info(result.getException().isPresent() ? result.getException().get().toString() : "Leave lobby failed");
         }
     }
 
@@ -211,7 +211,7 @@ public class LobbyViewController implements Initializable{
             Result result = networkManager.gameStart().waitResult();
             if (!result.isOk()) {
                 descriptorLabel.setText("We could not start the game");
-                logger.info(result.getException().orElse("Start game failed").toString());
+                logger.info(result.getException().isPresent() ? result.getException().get().toString() : "Start game failed");
             }
         }
     }
@@ -280,7 +280,7 @@ public class LobbyViewController implements Initializable{
             if (!result.isOk()) {
                 if (!result.isOk()) {
                     descriptorLabel.setText("We could not load the game");
-                    logger.info(result.getException().orElse("Load game failed").toString());
+                    logger.info(result.getException().isPresent() ? result.getException().get().toString() : "Load game failed");
                 }
             }
         }
@@ -372,7 +372,6 @@ public class LobbyViewController implements Initializable{
                 }
             }
             case Start -> {
-                System.out.println("[*] Game has started");
                 state = ClientStatus.InGame;
                 gameInfo = (GameInfo)event.get().getData();
                 Platform.runLater(this::switchToGame);

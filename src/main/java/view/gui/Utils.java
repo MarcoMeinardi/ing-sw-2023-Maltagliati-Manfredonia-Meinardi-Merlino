@@ -131,26 +131,9 @@ public class Utils {
 
         //check message integrity and return if not valid
         if (messageText.isEmpty()) {
-            System.out.println("[ERROR] Empty message");
             chat.getItems().add("[ERROR] Empty message");
             if (chat.getItems().size() != CHAT_HEIGHT) {
                 chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-        if (messageText.length() > 100) {
-            System.out.println("[ERROR] Message too long");
-            chat.getItems().add("[ERROR] Message too long");
-            if (chat.getItems().size() != CHAT_HEIGHT) {
-                chat.scrollTo(chat.getItems().size() - 1);
-            }
-            return;
-        }
-        if (messageText.startsWith(".") || messageText.startsWith("?")) {
-            System.out.println("[ERROR] Commands not supported, use /help for more info");
-            chat.getItems().add("[ERROR] Commands not supported. Use /help for more info");
-            if (chat.getItems().size() != CHAT_HEIGHT) {
-                chat.scrollTo(chat.getItems().size() - 1);
             }
             return;
         }
@@ -186,7 +169,7 @@ public class Utils {
                 } else {
                     chat.getItems().add("[ERROR] Send message failed" + (e.getMessage() != null ? " " + e.getMessage() : ""));
                 }
-                logger.info(result.getException().isPresent() ? result.getException().toString() : "Send message failed");
+                logger.info(result.getException().isPresent() ? result.getException().get().toString() : "Send message failed");
                 if (chat.getItems().size() != CHAT_HEIGHT) {
                     chat.scrollTo(chat.getItems().size() - 1);
                 }

@@ -125,7 +125,7 @@ public class MainMenuController implements Initializable {
                 }
             } else {
                 noFound.setText("Cannot get lobbies");
-                logger.warning(result.getException().isPresent() ? result.getException().toString() : "List lobby failed");
+                logger.warning(result.getException().isPresent() ? result.getException().get().toString() : "List lobby failed");
             }
         } catch (Exception e) {
             noFound.setText("Error when asking server for lobbies");
@@ -193,7 +193,7 @@ public class MainMenuController implements Initializable {
                 } else {
                     noFound.setText("Join lobby failed" + (e.getMessage() != null ? " " + e.getMessage() : ""));
                 }
-                logger.info(result.getException().isPresent() ? result.getException().toString() : "Join lobby failed");
+                logger.info(result.getException().isPresent() ? result.getException().get().toString() : "Join lobby failed");
                 return;
             }
             serverThread.interrupt();

@@ -16,7 +16,7 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
 
     private final ArrayList<Score> scores;
     private final Map<String, ArrayList<Cockade>> cockades;
-	private final String winner;
+    private final String winner;
     private final String mostCats;
     private final String mostBooks;
     private final String mostGames;
@@ -74,13 +74,13 @@ public class ScoreBoard implements Serializable, Iterable<Score> {
      * @return the name of the sole survivor or null
      */
     private String findSoleSurvivor(ArrayList<Player> players) {
-		String soleSurvivor = null;
+        String soleSurvivor = null;
         ClientManagerInterface clientManager;
         int connected = 0;
         try {
             clientManager = GlobalClientManager.getInstance();
         } catch (Exception e) {
-			throw new RuntimeException("Cannot get client manager");
+            throw new RuntimeException("Cannot get client manager");
         }
         for(Player player : players) {
             Optional<ClientInterface> client = clientManager.getClient(player.getName());

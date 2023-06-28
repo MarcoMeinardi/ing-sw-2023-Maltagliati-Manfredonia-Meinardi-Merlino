@@ -40,7 +40,6 @@ public class Main extends Application {
             stage.show();
 
         } catch (Exception e) {
-            logger.severe(e + e.getMessage());
             e.printStackTrace();
         }
     }

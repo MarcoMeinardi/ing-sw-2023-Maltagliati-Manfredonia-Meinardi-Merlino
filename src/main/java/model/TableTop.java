@@ -12,7 +12,7 @@ public class TableTop {
 	public static final int SIZE = 9;
 	public static final int MAX_PLAYERS = 6;
 
-    private final CardsDeck deck;
+	private final CardsDeck deck;
 	private final Optional<Card>[][] table;
 
 	private final int nPlayers;
@@ -147,7 +147,7 @@ public class TableTop {
 	}
 
 	/**
-     * Picks a card from the table and returns it.
+	 * Picks a card from the table and returns it.
 	 * @author Ludovico, Marco
 	 *
 	 * @param y The vertical index of the specified position.

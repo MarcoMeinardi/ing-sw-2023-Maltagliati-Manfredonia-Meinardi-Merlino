@@ -98,11 +98,11 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         try{
             if (addIdentifiedClient(login.username(), (Client) client)) {
                 Optional<GameController> game = LobbyController.getInstance().searchGame(login.username());
-				if (game.isPresent()) {
-					return Result.ok(game.get().getGameInfo(game.get().getPlayer(login.username())), call.id());
-				} else {
-					return Result.empty(call.id());
-				}
+                if (game.isPresent()) {
+                    return Result.ok(game.get().getGameInfo(game.get().getPlayer(login.username())), call.id());
+                } else {
+                    return Result.empty(call.id());
+                }
             } else {
                 return Result.empty(call.id());
             }

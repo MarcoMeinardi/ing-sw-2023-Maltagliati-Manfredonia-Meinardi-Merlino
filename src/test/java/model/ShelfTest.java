@@ -11,15 +11,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class ShelfTest {
-    @Test
-    public void testConstructor() throws InvalidMoveException {
+	@Test
+	public void testConstructor() throws InvalidMoveException {
 		Shelf shelf = new Shelf();
 		for (int y = 0; y < Shelf.ROWS; y++) {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
 				assertEquals(Optional.empty(), shelf.getCard(y, x));
 			}
 		}
-    }
+	}
 
 	@Test
 	public void testCLIConstructor() throws InvalidMoveException {

@@ -370,7 +370,7 @@ public class LobbyController extends Thread {
      * @throws Exception if the game cannot be loaded for any reason (e.g. the save file does not exist)
      * @author Marco
      */
-	private void loadGame(Lobby lobby) throws Exception {
+    private void loadGame(Lobby lobby) throws Exception {
         synchronized (lobby) {
             HashSet<String> dbKey = new HashSet<>(lobby.getPlayers());
             File saveFile = db.get(dbKey);

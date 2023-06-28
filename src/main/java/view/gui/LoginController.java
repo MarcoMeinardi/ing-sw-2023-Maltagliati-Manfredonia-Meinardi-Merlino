@@ -140,7 +140,7 @@ public class LoginController implements Initializable {
                 }
                 else{
                     errorLabel.setText("Username unavailable");
-                    logger.info(result.getException().orElse("Login failed").toString());
+                    logger.info(result.getException().isPresent() ? result.getException().get().toString() : "Login failed");
                     return;
                 }
             } catch (Exception e) {
@@ -159,7 +159,7 @@ public class LoginController implements Initializable {
 
         } catch (IOException e) {
             errorLabel.setText("Login failed");
-            logger.severe(e + e.getMessage());
+            logger.severe(e + " " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -185,7 +185,7 @@ public class LoginController implements Initializable {
                 stage.show();
             } catch (IOException e) {
                 errorLabel.setText("Couldn't log you in ongoing game");
-                logger.severe(e + e.getMessage());
+                logger.severe(e + " " + e.getMessage());
                 e.printStackTrace();
             }
         });

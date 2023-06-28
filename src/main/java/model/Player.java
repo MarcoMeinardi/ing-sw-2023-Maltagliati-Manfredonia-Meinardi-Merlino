@@ -10,8 +10,8 @@ import java.util.ArrayList;
  */
 public class Player {
 	private final String name;
-    private final PersonalObjective personalObjective;
-    private final Shelf shelf;
+	private final PersonalObjective personalObjective;
+	private final Shelf shelf;
 	private final ArrayList<Cockade> cockades;
 
 	private int points;
@@ -48,18 +48,18 @@ public class Player {
 	 * Getter for the `shelf` field
 	 * @return the `shelf` field
 	 */
-    public Shelf getShelf() {
-        return shelf;
-    }
+	public Shelf getShelf() {
+		return shelf;
+	}
 
 
 	/**
 	 * Getter for the `cockades` field
 	 * @return the `cockades` field
 	 */
-    public ArrayList<Cockade> getCockades() {
-        return cockades;
-    }
+	public ArrayList<Cockade> getCockades() {
+		return cockades;
+	}
 
 	/**
 	 * Getter for the `name` field

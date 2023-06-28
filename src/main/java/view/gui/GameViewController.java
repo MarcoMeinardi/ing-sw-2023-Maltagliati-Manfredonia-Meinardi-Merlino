@@ -359,7 +359,7 @@ public class GameViewController implements Initializable {
                     Result result = networkManager.cardSelect(new CardSelect(Integer.valueOf(column) - 1, selectedCards)).waitResult();
                     if (result.isErr()) {
                         messageLabel.setText(result.getException().isPresent() ? ((Exception)result.getException().get()).getMessage() : "Cannot select cards");
-                        logger.info(result.getException().isPresent() ? result.getException().toString() : "Pick cards failed");
+                        logger.info(result.getException().isPresent() ? result.getException().get().toString() : "Pick cards failed");
                     }
                 } catch (Exception e) {
                     messageLabel.setText("Pick cards failed");
@@ -377,8 +377,8 @@ public class GameViewController implements Initializable {
      */
     @FXML
     private void startLobby(){
-		players.getItems().clear();
-		players.getItems().addAll(lobby.getPlayers());
+        players.getItems().clear();
+        players.getItems().addAll(lobby.getPlayers());
         //add messages to the chat
         chat.getItems().add("[Type /help to see the list of commands]");
     }
@@ -590,7 +590,7 @@ public class GameViewController implements Initializable {
                     Result result = networkManager.exitGame().waitResult();
                     if (result.isErr()) {
                         messageLabel.setText("Cannot stop the game");
-                        logger.info(result.getException().isPresent() ? result.getException().toString() : "Stop game failed");
+                        logger.info(result.getException().isPresent() ? result.getException().get().toString() : "Stop game failed");
                         afterStopConfirmFail();
                     }
                 } catch (Exception e) {
