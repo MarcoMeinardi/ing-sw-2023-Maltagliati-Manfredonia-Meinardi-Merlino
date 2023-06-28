@@ -1,5 +1,6 @@
 package controller.login;
 
+import controller.game.GameController;
 import controller.lobby.Lobby;
 import controller.lobby.LobbyAlreadyExistsException;
 import controller.lobby.LobbyController;
@@ -38,6 +39,16 @@ public class LobbyControllerTest {
         lobbyController.createLobby("lobby2", "player2");
         Lobby lobby = lobbyController.findPlayerLobby("player2");
         assertEquals(lobby.getName(), "lobby2");
+    }
+
+    @Test
+    public void testGetLobbies() throws LobbyAlreadyExistsException {
+        LobbyController lobbyController = LobbyController.getInstance();
+        lobbyController.createLobby("lobby6", "player6");
+        lobbyController.createLobby("lobby7", "player7");
+        ArrayList<Lobby> lobbies = lobbyController.getLobbies();
+        assertEquals(lobbies.stream().filter(lobby -> lobby.getName().equals("lobby6")).count(), 1);
+        assertEquals(lobbies.stream().filter(lobby -> lobby.getName().equals("lobby7")).count(), 1);
     }
 
     @Test
@@ -105,4 +116,5 @@ public class LobbyControllerTest {
         lobbyController.joinLobby("lobby7", "player7_4");
         lobbyController.joinLobby("lobby7", "player7_5");
     }
+
 }

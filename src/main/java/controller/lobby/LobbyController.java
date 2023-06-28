@@ -105,7 +105,7 @@ public class LobbyController extends Thread {
     }
 
     /**
-     *  method that searches for a lobby that a player with a given name is in.
+     *  method that searches for a lobby containing a player with a given name.
      *  It takes in a String parameter `playerName` and returns a `Lobby` object.
      *  If the player is found in a lobby, the method returns that lobby.
      *  If the player is not found in any lobby, it throws a `LobbyNotFoundException`.
