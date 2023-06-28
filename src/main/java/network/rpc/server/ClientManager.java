@@ -33,6 +33,17 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         ClientManager.port = port;
     }
 
+
+    /**
+     * Method that retrieves the instance of the ClientManagerInterface.
+     * If the instance is null, a new instance of ClientManager is created with the specified port and started.
+     * The retrieval and creation of the instance are synchronized on the instanceLock object to ensure thread safety.
+     *
+     * @return The instance of the ClientManagerInterface.
+     * @throws Exception If an error occurs during the creation or start of the ClientManager instance.
+     *
+     * @author Ludovico
+     */
     public static ClientManagerInterface getInstance() throws Exception {
         synchronized (instanceLock){
             if(instance == null){
@@ -43,11 +54,36 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         }
     }
 
+    /**
+     * Constructor that creates a ClientManager object with the given port.
+     * It initializes a ServerSocket using the specified port to listen for incoming connections.
+     * It also creates a new thread that will handle accepting connections by invoking the acceptConnections method.
+     */
     private ClientManager(int port) throws Exception {
         this.socket = new ServerSocket(port);
         this.acceptConnectionsThread = new Thread(this::acceptConnections);
     }
 
+    /**
+     * Registers the service requested by the call and returns the corresponding result.
+     *
+     * Mathod that registers the service requested by the call and returns the corresponding result.
+     * - If the service of the call is not Service.Login, it returns an error Result indicating that the client is not identified.
+     * - If the parameters of the call do not match the expected Login type, it returns an error Result indicating wrong parameters.
+     * - If the length of the login username exceeds 16 characters or equals the SERVER_NAME constant, it returns an error Result indicating an invalid username.
+     * - It tries to add the identified client using the login username and the client instance. If the addition is successful:
+     *   - It searches for a game associated with the login username using the LobbyController.
+     *   - If a game is found, it returns a Result with the game information for the player.
+     *   - If no game is found, it returns an empty Result.
+     * - If the addition of the identified client fails, it returns an empty Result.
+     * - If an exception occurs during the process, it returns an error Result with the corresponding exception.
+     *
+     * @param call   The Call object representing the requested service.
+     * @param client The ClientInterface representing the client making the request.
+     * @return The Result object representing the outcome of the registration process.
+     *
+     * @author Lorenzo,Marco
+     */
     private Result<Serializable> registerService(Call<Serializable> call, ClientInterface client) {
         if(call.service() != Service.Login) {
             return Result.err(new ClientNotIdentifiedException(), call.id());
@@ -74,6 +110,18 @@ public class ClientManager extends Thread implements ClientManagerInterface{
             return Result.err(e, call.id());
         }
     }
+
+    /**
+     * Method that continuously accepts incoming connections and handles them. It runs in a loop until the instance of
+     * ClientManager is not null. Within each iteration:
+     * - Accepts a new client connection by invoking the accept method on the ServerSocket.
+     * - Creates a new Client object with the accepted socket and the registerService method as the service registration handler.
+     * - Adds the newly created client as an unidentified client.
+     * - Starts the client by invoking its start method.
+     * - If an exception occurs during the process, it logs a warning message using the Logger class.
+     *
+     * @author Lorenzo
+     */
     private void acceptConnections(){
         while(instance != null){
             try{
@@ -85,12 +133,40 @@ public class ClientManager extends Thread implements ClientManagerInterface{
             }
         }
     }
+
+    /**
+     * Method that adds the specified client to the collection of unidentified clients.
+     * It ensures thread safety by synchronizing access to the collection using the 'unidentifiedClients' object as the lock.
+     * The client is added to the collection for further processing or identification.
+     *
+     * @param client The Client object to be added as an unidentified client.
+     *
+     * @author Marco
+     */
     private void addUnidentifiedClient(Client client){
         synchronized (unidentifiedClients) {
             unidentifiedClients.add(client);
         }
     }
 
+    /**
+     * Adds an identified client to the collection of identified clients.
+     *
+     * This method adds the specified client to the collection of identified clients using the given username.
+     * - Checks if the username is already taken by another client using the GlobalClientManager. If the username is taken and the corresponding client is not disconnected, it throws a ClientAlreadyConnectedException.
+     * - If the username is already present in the identifiedClients collection, it sets the 'wasConnected' flag to true, disconnects the existing client associated with the username, and transfers data from the existing client to the new client.
+     * - If the username is not present in the identifiedClients collection, it sets the call handler for the client using the handleLobbySearch method of the LobbyController.
+     * - Sets the username for the client.
+     * - Adds the client to the identifiedClients collection and removes it from the unidentifiedClients collection.
+     *
+     * @param username The username associated with the client.
+     * @param client   The Client object to be added as an identified client.
+     * @return True if the username was already connected to another client, false otherwise.
+     * @throws ClientAlreadyConnectedException If the username is already taken by another client that is not disconnected.
+     * @throws Exception                      If an error occurs during the process.
+     *
+     * @author Lorenzo, Marco
+     */
     private boolean addIdentifiedClient(String username, Client client) throws Exception {
         boolean wasConnected = false;
         synchronized (identifiedClients) {
@@ -116,6 +192,21 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         return wasConnected;
     }
 
+    /**
+     * Executes the main logic of the ClientManager.
+     *
+     * Method that represents the main logic of the ClientManager. It starts the acceptConnectionsThread and then enters a loop
+     * to continuously check the status of identified clients and perform necessary operations.
+     * Within each iteration of the loop, it performs the following steps:
+     * - Checks if the instance of the ClientManager is still running.
+     * - Iterates over the identifiedClients collection and checks the status of each client.
+     * - If a client's status is not disconnected, it checks the client's ping. If the ping check fails, the client is interrupted.
+     * - Sleeps for a duration specified by Client.TIMEOUT to avoid excessive processing.
+     * - Checks the running status again.
+     * - If interrupted by an InterruptedException, it logs a warning message using the Logger class and interrupts the acceptConnectionsThread.
+     *
+     * @author Lorenzo
+     */
     public void run(){
         acceptConnectionsThread.start();
         try{
@@ -144,6 +235,19 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         }
     }
 
+    /**
+     * Method that attempts to retrieve the client with the given username from the identifiedClients collection.
+     * - Initializes an empty Optional<ClientInterface> object to hold the result.
+     * - Synchronizes access to the identifiedClients collection using the 'identifiedClients' object as the lock.
+     * - Checks if the identifiedClients collection contains the specified username.
+     * - If the username is found, it creates an Optional object with the corresponding client and assigns it to the 'client' variable.
+     * - Returns the 'client' Optional object, which will be empty if the username is not found in the identifiedClients collection.
+     *
+     * @param username The username associated with the client.
+     * @return An Optional containing the client with the specified username, or an empty Optional if the username is not found.
+     *
+     * @author Lorenzo
+     */
     @Override
     public Optional<ClientInterface> getClient(String username){
         Optional<ClientInterface> client = Optional.empty();
@@ -155,6 +259,14 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         return client;
     }
 
+    /**
+     * Method that waits for the acceptConnectionsThread to complete by invoking the 'join' method on the acceptConnectionsThread object.
+     * It also closes the socket associated with the ClientManager.
+     * Additionally, it waits for the current thread (ClientManager) to complete by invoking the 'join' method on itself.
+     * Furthermore, it synchronizes access to the unidentifiedClients and identifiedClients collections and disconnects all clients in these collections.
+     *
+     * @author Lorenzo
+     */
     @Override
     public void waitAndClose() {
         try{
@@ -184,12 +296,39 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         }
     }
 
+    /**
+     * Checks if a client with the specified username is currently connected.
+     *
+     * This method checks if the identifiedClients collection contains the specified username and if the corresponding client's status is not set to "Disconnected".
+     * - Synchronizes access to the identifiedClients collection using the 'identifiedClients' object as the lock.
+     * - Checks if the identifiedClients collection contains the specified username.
+     * - If the username is found, it retrieves the corresponding client and checks if its status is not set to "Disconnected".
+     * - Returns true if the username is found and the client is connected, false otherwise.
+     *
+     * @param username The username associated with the client.
+     * @return true if a client with the specified username is currently connected, false otherwise.
+     *
+     * @author Ludovico
+     */
     public boolean isClientConnected(String username){
         synchronized (identifiedClients) {
             return identifiedClients.containsKey(username) && identifiedClients.get(username).getStatus() != ClientStatus.Disconnected;
         }
     }
 
+    /**
+     * Checks if a username is already taken by an identified client.
+     *
+     * This method checks if the identifiedClients collection contains the specified username.
+     * - Synchronizes access to the identifiedClients collection using the 'identifiedClients' object as the lock.
+     * - Checks if the identifiedClients collection contains the specified username.
+     * - Returns true if the username is found in the identifiedClients collection, false otherwise.
+     *
+     * @param username The username to check.
+     * @return true if the username is already taken by an identified client, false otherwise.
+     *
+     * @author Lorenzo
+     */
     public boolean isUsernameTaken(String username){
         synchronized (identifiedClients) {
             return identifiedClients.containsKey(username);
