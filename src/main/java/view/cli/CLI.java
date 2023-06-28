@@ -463,8 +463,9 @@ public class CLI {
 			y = line.charAt(1) - '1';
 			x = line.charAt(0) - 'a';
 		}
+		y = TableTop.SIZE - y - 1;
 		if (game.getNumberOfPlayers() == 2) {
-			y++;
+			y--;
 			x++;
 		}
 		return new Point(y, x);
