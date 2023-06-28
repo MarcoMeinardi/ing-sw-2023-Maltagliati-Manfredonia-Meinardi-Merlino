@@ -710,8 +710,6 @@ public class CLI {
 	 *  - `NewMessage`: A message is received
 	 *  - `ExitGame`: The host stopped the game
 	 *  - `ServerDisconnect`: The server connection is lost
-	 *  - `Pause`: TODO not needed anymore
-	 *  - `Resume`: TODO not needed anymore
 	 * @return The previous state by default, `InGame` for the `Start` event,
 	 * `InLobbySearch` for the `ExitGame` and `End` event and `Disconnected` for the `ServerDisconnect` event
 	 * @throws RuntimeException if:
@@ -817,18 +815,6 @@ public class CLI {
 				networkManager.disconnect();
 				doPrint = true;
 				return ClientStatus.Disconnected;
-			}
-			case Pause -> {
-				if (!isPaused) {
-					System.out.println("[!] Someone has disconnected");
-					doPrint = true;
-				}
-				isPaused = true;
-			}
-			case Resume -> {
-				System.out.println("[*] Game resumed");
-				isPaused = false;
-				doPrint = true;
 			}
 			default -> throw new RuntimeException("Unhandled event");
 		}

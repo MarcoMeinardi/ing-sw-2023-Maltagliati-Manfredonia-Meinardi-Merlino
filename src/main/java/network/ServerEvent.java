@@ -13,8 +13,6 @@ public class ServerEvent <T extends Serializable> implements Serializable{
         Join,
         Leave,
         Start,
-        Pause,
-        Resume,
         End,
         Error,
         Update,
@@ -47,14 +45,6 @@ public class ServerEvent <T extends Serializable> implements Serializable{
 
     public static ServerEvent Leave(String player) {
         return new ServerEvent(Type.Leave, player);
-    }
-
-    public static ServerEvent Pause(String data){
-        return new ServerEvent(Type.Pause, data);
-    }
-
-    public static ServerEvent Resume(String data){
-        return new ServerEvent(Type.Resume, data);
     }
 
     public static ServerEvent Start(){

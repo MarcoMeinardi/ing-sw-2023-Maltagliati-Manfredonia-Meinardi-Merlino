@@ -688,16 +688,6 @@ public class GameViewController implements Initializable {
                     throw new RuntimeException("Removed non existing player from lobby");
                 }
             }
-            case Pause -> {
-                if (!isPaused) {
-                    Utils.changeLabel(messageLabel, "Someone has disconnected");
-                }
-                isPaused = true;
-            }
-            case Resume -> {
-                Utils.changeLabel(messageLabel, "Game resumed");
-                isPaused = false;
-            }
             case ExitGame -> Platform.runLater(this::goToMessage);
             case ServerDisconnect -> {
                 Platform.runLater(() -> {
