@@ -1,10 +1,15 @@
 package view.cli;
 
+import controller.IdentityTheftException;
+import controller.MessageTooLongException;
 import network.*;
+import network.errors.ClientNotFoundException;
+import network.errors.WrongParametersException;
 import network.parameters.*;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import controller.lobby.Lobby;
 import model.Cockade;
@@ -27,7 +32,8 @@ import static network.Server.SERVER_NAME;
 public class CLI {
 	private static CLI instance;
 	public static NetworkManagerInterface networkManager;
-	private Utils IO;
+	private final Utils IO;
+	private static final Logger logger = Logger.getLogger(CLI.class.getName());
 
 	private ClientStatus state;
 	private Lobby lobby;
@@ -73,7 +79,7 @@ public class CLI {
 	}
 
 	/**
-	 * Infinite loop to handle the whole game events
+	 * Loop to handle the whole game events
 	 * @throws RuntimeException if we fall in a state that does not exist
 	 *
 	 * @author Marco
@@ -106,7 +112,7 @@ public class CLI {
 	/**
 	 * Ask for the server information and try to connect to the specified server
 	 * with the specified method.
-	 * @return `Idle` if the connection succeed, `Disconnected` otherwise
+	 * @return `Idle` if the connection succeeds, `Disconnected` otherwise
 	 *
 	 * @author Marco
 	 */
@@ -117,7 +123,8 @@ public class CLI {
 			networkManager.connect(new Server(this.ip, this.port));
 			return ClientStatus.Idle;
 		} catch (Exception e) {
-			System.out.println("[ERROR] " + e.getMessage());
+			System.out.println("[ERROR] Connection failed");
+			logger.warning("Connection failed" + e + e.getMessage());
 			return ClientStatus.Disconnected;
 		}
 	}
@@ -174,9 +181,11 @@ public class CLI {
 					return ClientStatus.InGame;
 				}
 			}
-			System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
+			System.out.println("[ERROR] Login failed (username is already taken)");
+			logger.info(result.getException().orElse("Login failed").toString());
 		} catch (Exception e) {
-			System.out.println("[ERROR] " + e.getMessage());
+			System.out.println("[WARNING] Login failed");
+			logger.warning("Login failed" + e + e.getMessage());
 		}
 		return ClientStatus.Idle;
 	}
@@ -208,7 +217,8 @@ public class CLI {
 						isHost = true;
 						return ClientStatus.InLobby;
 					} else {
-						System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
+						System.out.println("[ERROR] Lobby already exists");
+						logger.info(result.getException().orElse("Create lobby failed").toString());
 						return ClientStatus.InLobbySearch;
 					}
 				}
@@ -220,7 +230,8 @@ public class CLI {
 						isHost = false;
 						return ClientStatus.InLobby;
 					} else {
-						System.out.println("[ERROR] " + result.getException().orElse("Join failed"));
+						System.out.println("[ERROR] Lobby doesn't exist");
+						logger.info(result.getException().orElse("Join lobby failed").toString());
 						return ClientStatus.InLobbySearch;
 					}
 				}
@@ -236,7 +247,8 @@ public class CLI {
 							}
 						}
 					} else {
-						System.out.println("[ERROR] " + result.getException().orElse("List lobbies failed"));
+						System.out.println("[ERROR] List lobby failed");
+						logger.info(result.getException().orElse("List lobby failed").toString());
 					}
 					return ClientStatus.InLobbySearch;
 				}
@@ -250,7 +262,8 @@ public class CLI {
 				default -> throw new RuntimeException("Invalid option");
 			}
 		} catch (Exception e) {
-			System.out.println("[ERROR] " + e.getMessage());
+			System.out.println("[ERROR] Action failed");
+			logger.warning(e + e.getMessage());
 			return ClientStatus.InLobbySearch;
 		}
 	}
@@ -298,7 +311,8 @@ public class CLI {
 					if (result.isOk()) {
 						return ClientStatus.InLobbySearch;
 					} else {
-						System.out.println("[ERROR] " + result.getException().orElse("Leave lobby failed"));
+						System.out.println("[ERROR] Leave lobby failed");
+						logger.info(result.getException().orElse("Leave lobby failed").toString());
 						return ClientStatus.InLobby;
 					}
 				}
@@ -311,7 +325,8 @@ public class CLI {
 						System.out.println("[*] Starting game");
 						return ClientStatus.InGame;
 					} else {
-						System.out.println("[ERROR] " + result.getException().orElse("Start game failed"));
+						System.out.println("[ERROR] Start game failed");
+						logger.info(result.getException().orElse("Start game failed").toString());
 						return ClientStatus.InLobby;
 					}
 				}
@@ -324,14 +339,16 @@ public class CLI {
 						System.out.println("[*] Loading game");
 						return ClientStatus.InGame;
 					} else {
-						System.out.println("[ERROR] " + result.getException().orElse("Load game failed"));
+						System.out.println("[ERROR] Load game failed");
+						logger.info(result.getException().orElse("Load game failed").toString());
 						return ClientStatus.InLobby;
 					}
 				}
 				default -> throw new RuntimeException("Invalid option");
 			}
 		} catch (Exception e) {
-			System.out.println("[ERROR] " + e.getMessage());
+			System.out.println("[ERROR] Action failed");
+			logger.warning(e + e.getMessage());
 			return ClientStatus.InLobby;
 		}
 	}
@@ -507,12 +524,14 @@ public class CLI {
 		try {
 			Result result = networkManager.cardSelect(new CardSelect(column, selectedCards)).waitResult();
 			if (result.isErr()) {
-				System.out.println("[ERROR] " + result.getException().orElse("Cannot select cards"));
+				System.out.println("[ERROR] " + result.getException().map(e -> ((Exception)e).getMessage()).orElse("Cannot select cards"));
+				logger.info(result.getException().orElse("Pick cards failed").toString());
 			} else {
 				return waitGlobalUpdate();
 			}
 		} catch (Exception e) {
-			System.out.println("[ERROR] " + e.getMessage());
+			System.out.println("[ERROR] Pick cards failed");
+			logger.warning(e + e.getMessage());
 		}
 
 		return ClientStatus.InGame;
@@ -531,12 +550,14 @@ public class CLI {
 			try {
 				Result result = networkManager.exitGame().waitResult();
 				if (result.isErr()) {
-					System.out.println("[ERROR] " + result.getException().orElse("Cannot stop the game"));
+					System.out.println("[ERROR] Stop game failed");
+					logger.info(result.getException().orElse("Stop game failed").toString());
 				} else {
 					return waitGlobalUpdate();
 				}
 			} catch (Exception e) {
-				System.out.println("[ERROR] " + e.getMessage());
+				System.out.println("[ERROR] Stop game failed");
+				logger.warning(e + e.getMessage());
 			}
 		}
 		return ClientStatus.InGame;
@@ -578,10 +599,23 @@ public class CLI {
 		try {
 			Result result = networkManager.chat(new Message(username, message, receiver)).waitResult();
 			if (result.isErr()) {
-				System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
+				Exception e = (Exception)result.getException().get();
+				if (e instanceof WrongParametersException) {
+					System.out.println("[ERROR] " + e.getMessage());
+				} else if (e instanceof MessageTooLongException) {
+					System.out.println("[ERROR] Message is too long");
+				} else if (e instanceof IdentityTheftException) {
+					System.out.println("[ERROR] Identity theft is not a joke, Bob!");
+				} else if (e instanceof ClientNotFoundException) {
+					System.out.println("[ERROR] The player has disconnected");
+				} else {
+					System.out.println("[ERROR] Send message failed" + (e.getMessage() != null ? " " + e.getMessage() : ""));
+				}
+				logger.info(result.getException().orElse("Send message failed").toString());
 			}
 		} catch (Exception e) {
-			System.out.println("[ERROR] " + e.getMessage());
+			System.out.println("[ERROR] Send message failed");
+			logger.warning(e + e.getMessage());
 		}
 	}
 
@@ -774,13 +808,13 @@ public class CLI {
 			}
 			case Pause -> {
 				if (!isPaused) {
-					System.out.println("[WARNING] Someone has disconnected");
+					System.out.println("[!] Someone has disconnected");
 					doPrint = true;
 				}
 				isPaused = true;
 			}
 			case Resume -> {
-				System.out.println("Game resumed");
+				System.out.println("[*] Game resumed");
 				isPaused = false;
 				doPrint = true;
 			}

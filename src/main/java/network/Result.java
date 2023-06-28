@@ -1,6 +1,7 @@
 package network;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -148,12 +149,18 @@ public class Result<T extends Serializable> implements Serializable{
         return id;
     }
 
+    /**
+     * Override the `equals` method
+     * Two results are equal if they have the same value, the same exception and the same id
+     * @param obj the result to compare with
+     * @return if the two results are equal
+     */
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof Result<?> other){
-            boolean equals_value = this.value == null ? other.value == null : this.value.equals(other.value);
-            boolean equals_exception = this.exception == null ? other.exception == null : this.exception.equals(other.exception);
-            boolean equals_id = this.id == null ? other.id == null : this.id.equals(other.id);
+            boolean equals_value = Objects.equals(this.value, other.value);
+            boolean equals_exception = Objects.equals(this.exception, other.exception);
+            boolean equals_id = Objects.equals(this.id, other.id);
             return equals_value && equals_exception && equals_id;
         }
         return false;
