@@ -217,6 +217,7 @@ public class CLI {
 					if (result.isOk()) {
 						lobby = ((Result<Lobby>)result).unwrap();
 						isHost = true;
+						doPrint = true;
 						return ClientStatus.InLobby;
 					} else {
 						System.out.println("[ERROR] Lobby already exists");
@@ -229,6 +230,7 @@ public class CLI {
 					result = networkManager.lobbyJoin(lobbyName).waitResult();
 					if (result.isOk()) {
 						lobby = ((Result<Lobby>)result).unwrap();
+						doPrint = true;
 						isHost = false;
 						return ClientStatus.InLobby;
 					} else {
