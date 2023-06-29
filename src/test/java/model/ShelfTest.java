@@ -204,4 +204,19 @@ public class ShelfTest {
 			}
 		}
 	}
+
+	@Test
+	public void testCountCard() {
+		Optional<Card>[][] cards = new Optional[Shelf.ROWS][Shelf.COLUMNS];
+		for (int y = 0; y < Shelf.ROWS; y++) {
+			for (int x = 0; x < Shelf.COLUMNS; x++) {
+				cards[y][x] = Optional.of(new Card(Card.Type.Plant));
+			}
+		}
+		Shelf shelf = new Shelf(cards);
+		assertEquals(shelf.getShelf(), cards);
+		assertTrue(shelf.isFull());
+		assertFalse(shelf.getFinishCockade().isEmpty());
+		assertEquals(shelf.countCard(Card.Type.Plant), Shelf.COLUMNS * Shelf.ROWS);
+	}
 }

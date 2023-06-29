@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * Class to construct a serializable scoreboard
- * Contruct it by giving the `Game` object from which to build
+ * Construct it by giving the `Game` object from which to build
  * the scoreboard, and send it over network to the clients
  */
 public class ScoreBoard implements Serializable, Iterable<Score> {
