@@ -14,7 +14,6 @@ src/main/resources/img/
 out/
 target/
 
-.idea/workspace.xml
 .classpath
 .project
 .settings/
