@@ -275,7 +275,7 @@ public class EndController implements Initializable {
      * @param actionEvent
      * Click of the exit button by the player.
      *
-     * @author
+     * @author Ludovice
      *
      * @throws IOException
      */

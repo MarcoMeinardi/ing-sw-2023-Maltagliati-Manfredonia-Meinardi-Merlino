@@ -15,16 +15,30 @@ public enum InLobbyOptions implements OptionsInterface {
 	private final boolean needHost;
 	private final boolean needTurn = false;
 
+	/**
+	 * Base constructor
+	 */
 	InLobbyOptions() {
 		this.needHost = false;
 	}
+
+	/**
+	 * Constructor with the needHost parameter
+	 */
 	InLobbyOptions(boolean needHost) {
 		this.needHost = needHost;
 	}
 
+	/**
+	 * If the action can be performed only by the host
+	 */
 	public boolean needHost() {
 		return needHost;
 	}
+
+	/**
+	 * If the action can be performed only during the player's turn
+	 */
 	public boolean needTurn() {
 		return needTurn;
 	}

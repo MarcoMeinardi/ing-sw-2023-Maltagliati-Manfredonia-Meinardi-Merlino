@@ -10,9 +10,15 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+/**
+ * Class that manages the initialization of the GUI
+ */
 public class Main extends Application {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
 
+    /**
+     * Get the resources
+     */
     private URL getResource(String name){
         URL resource = getClass().getResource(name);
         if(resource == null){
@@ -23,6 +29,9 @@ public class Main extends Application {
 
     private boolean btnPlay1;
 
+    /**
+     * JavaFX method override to start the GUI
+     */
     @Override
     public void start(Stage stage){
         try {
@@ -44,6 +53,9 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * GUI entry point
+     */
     public static void main(String[] args) {
         launch();
     }

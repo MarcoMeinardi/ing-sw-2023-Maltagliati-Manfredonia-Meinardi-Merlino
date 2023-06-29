@@ -103,8 +103,7 @@ public class GameData {
         }
     }
 
-
-
+    // Getters
     public ArrayList<String> getPlayersNames(){
         return playersNames;
     }
