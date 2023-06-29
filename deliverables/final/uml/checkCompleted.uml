@@ -1,0 +1,11 @@
+@startuml
+Client1 -> Server: call CardSelect service
+note over Server: server verifies move\n and updates model
+note over Server: server verifies common objectives states\n and updates model
+Server -> Client1: return call result
+note over Server: Update contains both\n the new tabletop state\n and the common objectives state
+Server -> Client1: Update ServerEvent
+Server -> Client2: Update ServerEvent
+Server -> Client3: Update ServerEvent
+Server -> Client4: Update ServerEvent
+@enduml
