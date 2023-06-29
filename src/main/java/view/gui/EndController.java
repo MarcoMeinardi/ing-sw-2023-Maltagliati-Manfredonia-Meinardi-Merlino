@@ -224,29 +224,37 @@ public class EndController implements Initializable {
 
             if (lastNumber.equals("1")){
                 if(player == 1){
+                    cockadeImage1.setVisible(true);
                     cockadeImage1.setImage(new Image("/img/scoring tokens/end game.jpg"));
                 }
                 else if(player == 2){
+                    cockadeImage2.setVisible(true);
                     cockadeImage2.setImage(new Image("/img/scoring tokens/end game.jpg"));
                 }
                 else if(player == 3){
+                    cockadeImage3.setVisible(true);
                     cockadeImage3.setImage(new Image("/img/scoring tokens/end game.jpg"));
                 }
                 else if(player == 4){
+                    cockadeImage4.setVisible(true);
                     cockadeImage4.setImage(new Image("/img/scoring tokens/end game.jpg"));
                 }
             }
             else{
                 if(player == 1){
+                    cockadeImage1.setVisible(true);
                     cockadeImage1.setImage(new Image("/img/scoring tokens/scoring_" + lastNumber + ".jpg"));
                 }
                 else if(player == 2){
+                    cockadeImage2.setVisible(true);
                     cockadeImage2.setImage(new Image("/img/scoring tokens/scoring_" +  lastNumber + ".jpg"));
                 }
                 else if(player == 3){
+                    cockadeImage3.setVisible(true);
                     cockadeImage3.setImage(new Image("/img/scoring tokens/scoring_" + lastNumber + ".jpg"));
                 }
                 else if(player == 4){
+                    cockadeImage4.setVisible(true);
                     cockadeImage4.setImage(new Image("/img/scoring tokens/scoring_" +  lastNumber + ".jpg"));
                 }
             }
