@@ -20,6 +20,9 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * Singleton class to handle all the lobbies
+ */
 public class LobbyController extends Thread {
     private static LobbyController instance = null;
     private HashMap<String, Lobby> lobbies = new HashMap<>();

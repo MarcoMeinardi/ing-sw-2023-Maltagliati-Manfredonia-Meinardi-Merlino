@@ -4,10 +4,22 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
+/**
+ * Class to handle lobby operations
+ * It contains the lobby name and the list of players' names.
+ * You can initialize a lobby with a the name of the lobby and
+ * the name of the player creating it (the lobby's host).
+ * Add players with `addPlayer(name)` and remove them with `removePlayer(name)`.
+ */
 public class Lobby implements Serializable {
     private String name;
     private ArrayList<String> players;
 
+    /**
+     * Class constructor
+     * @param name the name of the lobby
+     * @param host the name of the player creating the lobby
+     */
     public Lobby(String name, String host) {
         this.name = name;
         this.players = new ArrayList<>();
