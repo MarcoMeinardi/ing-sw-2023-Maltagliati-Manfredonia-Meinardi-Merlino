@@ -426,7 +426,7 @@ public class NetworkManager implements NetworkManagerInterface {
      * @return the function with the result.
      * @throws Exception if an error occurs while communicating with the server.
      *
-     * @autor Lorenzo
+     * @author Lorenzo
      */
     private Function handleService(Function fn) throws Exception{
         Result<Serializable> result;

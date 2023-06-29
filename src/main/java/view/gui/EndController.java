@@ -275,9 +275,7 @@ public class EndController implements Initializable {
      * @param actionEvent
      * Click of the exit button by the player.
      *
-     * @author Ludovice
-     *
-     * @throws IOException
+     * @author Ludovico
      */
     @FXML
     private void goToLobbies(ActionEvent actionEvent) {

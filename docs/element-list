@@ -1,0 +1,15 @@
+controller
+controller.game
+controller.lobby
+it.polimi.ingsw
+model
+network
+network.errors
+network.parameters
+network.rmi
+network.rmi.client
+network.rmi.server
+network.rpc.client
+network.rpc.server
+view.cli
+view.gui

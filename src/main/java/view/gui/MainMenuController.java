@@ -94,8 +94,6 @@ public class MainMenuController implements Initializable {
      * @param actionEvent
      * the click of the button refresh lobbies by the user
      *
-     * @throws IOException
-     *
      * @author Ludovico
      */
 

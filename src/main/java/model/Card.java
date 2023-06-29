@@ -32,6 +32,7 @@ public class Card implements Serializable {
 	/**
 	 * Constructor for a card given only the type.
 	 * This constructor should be used only where the image is not used, so in testing and in the CLI.
+	 * @param type The type of the card
 	 */
 	public Card(Type type) {
 		this.type = type;
