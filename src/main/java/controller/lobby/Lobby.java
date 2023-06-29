@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Class to handle lobby operations
  * It contains the lobby name and the list of players' names.
- * You can initialize a lobby with a the name of the lobby and
+ * You can initialize a lobby with its name and
  * the name of the player creating it (the lobby's host).
  * Add players with `addPlayer(name)` and remove them with `removePlayer(name)`.
  */

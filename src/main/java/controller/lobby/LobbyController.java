@@ -51,7 +51,7 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * method that returns an instance of the `LobbyController` class.
+     * Method that returns an instance of the `LobbyController` class.
      * It uses the Singleton design pattern to ensure that only one instance of the class is created.
      * If the `instance` variable is null, it creates a new instance of the `LobbyController` class and starts it.
      * If an exception occurs during the creation or starting of the instance, it prints the stack trace.
@@ -108,7 +108,7 @@ public class LobbyController extends Thread {
     }
 
     /**
-     *  method that searches for a lobby containing a player with a given name.
+     *  Method that searches for a lobby containing a player with a given name.
      *  It takes in a String parameter `playerName` and returns a `Lobby` object.
      *  If the player is found in a lobby, the method returns that lobby.
      *  If the player is not found in any lobby, it throws a `LobbyNotFoundException`.
@@ -131,7 +131,7 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * method that creates a new lobby with a given name and host.
+     * Method that creates a new lobby with a given name and host.
      * It first checks if a lobby with the same name already exists in the `lobbies` map, and if so,
      * it throws a `LobbyAlreadyExistsException`.
      * If not, it creates a new `Lobby` object with the given name and host,
@@ -212,7 +212,7 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * method that handles lobby search requests from clients.
+     * Method that handles lobby search requests from clients.
      * It takes in a `Call` object and a `ClientInterface` object as parameters and returns a `Result` object containing a `Serializable` object.
      *
      * @param call the Call object representing the lobby search request
@@ -253,7 +253,7 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * method that handles incoming calls from clients who are currently in a lobby.
+     * Method that handles incoming calls from clients who are currently in a lobby.
      * It takes in a `Call` object and a `ClientInterface` object as parameters, and returns a `Result` object that contains a `Serializable` object.
      *
      * @param call the Call object representing the in-lobby request
@@ -331,12 +331,12 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * method called `startGame` that takes a `Lobby` object as a parameter and throws an `Exception`.
+     * Method called `startGame` that takes a `Lobby` object as a parameter and throws an `Exception`.
      * It creates a `File` object representing a directory called `SAVESTATES_DIRECTORY` and checks if it exists.
      * If it doesn't exist, it creates the directory. If it exists but is not a directory, it throws an exception.
      *
      * @param lobby the lobby in which to start the game
-     * @throws Exception if the game cannot be started for any reason (e.g. the save directory cannot be created)
+     * @throws Exception if the game cannot be started for any reason (e.g., the save directory cannot be created)
      * @author Marco
      */
     public void startGame(Lobby lobby) throws Exception {
@@ -370,7 +370,7 @@ public class LobbyController extends Thread {
      * Loads a save game from the specified lobby.
      *
      * @param lobby the lobby from which to load the game
-     * @throws Exception if the game cannot be loaded for any reason (e.g. the save file does not exist)
+     * @throws Exception if the game cannot be loaded for any reason (e.g., the save file does not exist)
      * @author Marco
      */
     private void loadGame(Lobby lobby) throws Exception {
@@ -432,7 +432,7 @@ public class LobbyController extends Thread {
     }
 
     /**
-     * method that takes in a `Lobby` object and a `ServerEvent` object as parameters.
+     * Method that takes in a `Lobby` object and a `ServerEvent` object as parameters.
      * It synchronizes on the `Lobby` object and then iterates through all the players in the lobby.
      * For each player, it tries to get the corresponding `ClientInterface` object from a `clientManager`
      * and checks if it is present and not disconnected.

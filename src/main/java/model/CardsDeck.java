@@ -6,7 +6,7 @@ import java.util.*;
 /**
  * Class to handle the game's deck of cards.
  * The deck gets filled when the object is constructed,
- * to draw a card, call `draw()`, if it the deck is not empty, it
+ * to draw a card, call `draw()`, if the deck is not empty, it
  * will return an optional containing the drawn card.
  */
 public class CardsDeck implements Serializable {

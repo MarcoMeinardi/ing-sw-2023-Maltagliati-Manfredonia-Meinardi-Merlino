@@ -198,7 +198,7 @@ public class Shelf {
 	/**
 	 * Returns a serializable copy of the shelf
 	 * Note: this method must only be used to send the shelf over network,
-	 * DON'T use it in any other case and once received convert it immediately
+	 * DON'T use it in any other case and once received, convert it immediately
 	 * to it's `Optional` form
 	 *
 	 * @return a serializable copy of the shelf

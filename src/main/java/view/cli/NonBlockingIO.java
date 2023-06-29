@@ -13,8 +13,8 @@ import network.NetworkManagerInterface;
  * To ask for a string, call `IO.ask()` and wait until `IO.isAvailable()` is not true,
  * once this happened, you can get the result **only once** with `IO.getResult()`.
  * Note that you have to call `getResult` before calling `ask` a second time.
- * If the network manager is set, you'll might wait on it, and you'll get notified either
- * by this class, if a string has been read, or directly by the network manager if an event occurred.
+ * If the network manager is set, you'll wait on it, and you'll get notified either
+ * by this class if a string has been read, or directly by the network manager if an event occurred.
  *
  * @author Marco
  */

@@ -224,7 +224,7 @@ public class Client extends Thread implements ClientInterface {
 	/**
 	 * Method that represents the main execution loop of the client.
 	 * It continuously runs while the client's status is not set to ClientStatus.Disconnected.
-	 * The receive method is called to receive a Call object from the server.
+	 * The `receive` method is called to receive a Call object from the server.
 	 * The lastMessageTime is updated to the current time, synchronized on the lastMessageTimeLock for thread safety.
 	 * If the received call's service is Service.Ping, a response with a Result indicating a successful ping is sent back.
 	 * Otherwise, the received call is passed to the handler function along with the client instance to process it.

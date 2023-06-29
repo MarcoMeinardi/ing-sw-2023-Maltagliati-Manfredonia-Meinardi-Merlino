@@ -395,7 +395,7 @@ public class GameViewController implements Initializable {
     }
 
     /**
-     * method that is triggered when a button is clicked ("Print Personal Objectives" button).
+     * Method that is triggered when a button is clicked ("Print Personal Objectives" button).
      * It creates a new stage (window) and loads the contents of the FXML file called "PersonalObj.fxml" into it.
      * It then sets the scene of the new stage to the loaded FXML file and displays the stage to the user.
      *

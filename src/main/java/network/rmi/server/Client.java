@@ -149,7 +149,7 @@ public class Client implements ClientService, ClientInterface {
 
     /**
      * Call the client handler with the given parameters
-     * @param call the handler funciton parameters
+     * @param call the handler function parameters
      * @return a `Result` object containing the result of the handler call
      */
     @Override

@@ -116,7 +116,7 @@ public class TableTop {
 	}
 
 	/**
-	 * Determines if a specified position on the table is pickable based on whether it is adjacent to an empty space and has not already been picked.
+	 * Determines if a specified position on the table is pickable based on whether it is adjacent to an empty space and has not yet been picked.
 	 * @author Ludovico, Lorenzo, Marco, Riccardo
 	 *
 	 * @param y The vertical index of the specified position.

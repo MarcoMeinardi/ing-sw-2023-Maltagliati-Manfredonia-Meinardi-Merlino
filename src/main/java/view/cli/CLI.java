@@ -107,7 +107,7 @@ public class CLI {
 	 * @author Marco
 	 */
 	private void printWelcome() {
-		// Hey java where are r-strings?
+		// Hey java, where are r-strings?
 		System.out.println("  /\\\\\\\\            /\\\\\\\\  /\\\\\\        /\\\\\\               /\\\\\\\\\\\\\\\\\\\\\\    /\\\\\\        /\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\  /\\\\\\              /\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
 		System.out.println("  \\/\\\\\\\\\\\\        /\\\\\\\\\\\\ \\///\\\\\\    /\\\\\\/              /\\\\\\/////////\\\\\\ \\/\\\\\\       \\/\\\\\\ \\/\\\\\\///////////  \\/\\\\\\             \\/\\\\\\///////////  \\/////\\\\\\///  \\/\\\\\\///////////");
 		System.out.println("   \\/\\\\\\//\\\\\\    /\\\\\\//\\\\\\   \\///\\\\\\/\\\\\\/               \\//\\\\\\      \\///  \\/\\\\\\       \\/\\\\\\ \\/\\\\\\             \\/\\\\\\             \\/\\\\\\                 \\/\\\\\\     \\/\\\\\\");
@@ -209,7 +209,7 @@ public class CLI {
 	 *  - `LIST_LOBBIES`: list all the available lobbies
 	 *  - `QUIT`: quit the game
 	 * @return `InLobbySearch` if any error occurs, `InLobby` if the user entered a lobby,
-	 * `InLobbySearch` if the user listed the lobbies and `Disconnected` if the user choose to quit
+	 * `InLobbySearch` if the user listed the lobbies and `Disconnected` if the user chooses to quit
 	 * @throws RuntimeException if we try to handle a non-existing option.
 	 *
 	 * @author Marco
@@ -217,7 +217,7 @@ public class CLI {
 	private ClientStatus searchLobby() {
 		Optional<SelectLobbyOptions> option = IO.askOptionOrEvent(SelectLobbyOptions.class, true, false, false);
 		if (option.isEmpty()) {
-			return handleEvent(); // must be `ServerDiscnnected`
+			return handleEvent(); // must be `ServerDisconnected`
 		}
 		String lobbyName;
 		Result result;
@@ -300,7 +300,7 @@ public class CLI {
 	 *  - `START_GAME`: (host only) start the game with the players in the lobby
 	 *  - `LOAD_GAME`: (host only) attempt to load the game from the server
 	 * @return `InLobby` if any error occurs or if the player sends a message or list the players,
-	 * `InGame` if the host starts or loads a game, `InLobbySearch` if the players leaves the lobby.
+	 * `InGame` if the host starts or loads a game, `InLobbySearch` if the player leaves the lobby.
 	 * @throws RuntimeException if we try to handle a non-existing option.
 	 *
 	 * @author Marco
@@ -388,7 +388,7 @@ public class CLI {
 	 *  - `STOP_GAME`: (host only) tell the server to save and stop the game
 	 *  - `PICK_CARDS: ask the player for the cards he wants to pick. This option is available only during the player's turn
 	 * If the player is the host and jus started the game, he has to wait for the `Start` server event.
-	 * @return `InGame` if any error occurs or if the players sends a message or displays anything, otherwise
+	 * @return `InGame` if any error occurs or if the player sends a message or displays anything, otherwise
 	 * it returns whatever the function corresponding to the selected options returns.
 	 * @throws RuntimeException if we try to handle a non-existing option.
 	 *

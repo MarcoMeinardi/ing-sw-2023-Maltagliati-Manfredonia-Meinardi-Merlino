@@ -70,7 +70,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
     /**
      * Registers the service requested by the call and returns the corresponding result.
      *
-     * Mathod that registers the service requested by the call and returns the corresponding result.
+     * Method that registers the service requested by the call and returns the corresponding result.
      * - If the service of the call is not Service.Login, it returns an error Result indicating that the client is not identified.
      * - If the parameters of the call do not match the expected Login type, it returns an error Result indicating wrong parameters.
      * - If the length of the login username exceeds 16 characters or equals the SERVER_NAME constant, it returns an error Result indicating an invalid username.
@@ -165,7 +165,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
      * @param username The username associated with the client.
      * @param client   The Client object to be added as an identified client.
      * @return True if the username was already connected to another client, false otherwise.
-     * @throws ClientAlreadyConnectedException If the username is already taken by another client that is not disconnected.
+     * @throws ClientAlreadyConnectedException If the username is already taken by another client, that is not disconnected.
      * @throws Exception                      If an error occurs during the process.
      *
      * @author Lorenzo, Marco
@@ -204,7 +204,7 @@ public class ClientManager extends Thread implements ClientManagerInterface{
      * - Checks if the instance of the ClientManager is still running.
      * - Iterates over the identifiedClients collection and checks the status of each client.
      * - If a client's status is not disconnected, it checks the client's ping. If the ping check fails, the client is interrupted.
-     * - Sleeps for a duration specified by Client.TIMEOUT to avoid excessive processing.
+     * - Sleeps for a duration specified by `Client.TIMEOUT` to avoid excessive processing.
      * - Checks the running status again.
      * - If interrupted by an InterruptedException, it logs a warning message using the Logger class and interrupts the acceptConnectionsThread.
      *
@@ -302,10 +302,10 @@ public class ClientManager extends Thread implements ClientManagerInterface{
     /**
      * Checks if a client with the specified username is currently connected.
      *
-     * This method checks if the identifiedClients collection contains the specified username and if the corresponding client's status is not set to "Disconnected".
+     * This method checks if the identifiedClients collection contains the specified username and if the corresponding client's status is not set to `Disconnected`.
      * - Synchronizes access to the identifiedClients collection using the 'identifiedClients' object as the lock.
      * - Checks if the identifiedClients collection contains the specified username.
-     * - If the username is found, it retrieves the corresponding client and checks if its status is not set to "Disconnected".
+     * - If the username is found, it retrieves the corresponding client and checks if its status is not set to `Disconnected`.
      * - Returns true if the username is found and the client is connected, false otherwise.
      *
      * @param username The username associated with the client.

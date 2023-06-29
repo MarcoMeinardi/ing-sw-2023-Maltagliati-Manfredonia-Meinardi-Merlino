@@ -143,7 +143,7 @@ public class LobbyViewController implements Initializable{
             startButton.setVisible(true);
             loadButton.setVisible(true);
             if(!alreadyShowedHostMessage){
-                Utils.addMessageToChat(username, new Message(Server.SERVER_NAME, "You are the owner of the lobby, you can start the game when you want!"), chat);
+                Utils.addMessageToChat(username, new Message(Server.SERVER_NAME, "You are the owner of the lobby, you can start the game whenever you want!"), chat);
                 alreadyShowedHostMessage = true;
             }
         }
@@ -156,8 +156,8 @@ public class LobbyViewController implements Initializable{
 
     /**
      * Tries to quit the lobby after the button in the scene is clicked.
-     * Checks if the server succeeded in removing player from lobby.
-     * If all conditions are met the player returns to the main menu and the thread
+     * Checks if the server succeeded in removing the player from the lobby.
+     * If all conditions are met, the player returns to the main menu and the thread
      * handling events from server is interrupted.
      *
      * @param actionEvent quit lobby button is clicked
@@ -242,11 +242,11 @@ public class LobbyViewController implements Initializable{
 
     /**
      * Method called to send a message to the server and add it to the chat.
-     * It checks if the message is valid and if it is not it returns after adding the
+     * It checks if the message is valid and if it is not, it returns after adding the
      * error to the chat, visible only by the sender and not the others in the lobby (length check,
      * empty message check, trying to use commands).
-     * Scrolls the chat to the bottom after adding the error message.
-     * If the message is valid it sends it to the server and adds it to the chat calling the
+     * Scroll the chat to the bottom after adding the error message.
+     * If the message is valid, it sends it to the server and adds it to the chat calling the
      * addMessageToChat() method.
      * It is called when the send button is clicked.
      *

@@ -24,7 +24,7 @@ import java.util.Queue;
 import java.util.logging.Logger;
 
 /**
- * Class the handles the server-client communications, server-side
+ * Class that handles the server-client communications, server-side
  */
 public class NetworkManager implements NetworkManagerInterface {
     private Logger logger = Logger.getLogger(this.getClass().getName());
@@ -146,7 +146,7 @@ public class NetworkManager implements NetworkManagerInterface {
     }
 
     /**
-     * Method that checks if the object is connected, then sets the `connected` flag to false.
+     * Method that checks if the client is connected, then sets the `connected` flag to false.
      * It then adds a `ServerDisconnect` event to the `eventQueue` and notifies all threads waiting on the `instance` object.
      * The `synchronized` keyword ensures that only one thread can execute this method at a time.
      *

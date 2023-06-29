@@ -160,7 +160,7 @@ public class MainMenuController implements Initializable {
     /**
      * Method joinLobby is used to join a lobby.
      * It is called when the user clicks on the join lobby button after selecting a lobby from the list.
-     * It checks if the user has selected a lobby and if it is not the case it prints an error message.
+     * It checks if the user has selected a lobby and if it is not the case, it prints an error message.
      *
      * @param actionEvent
      * the click of the button join lobby by the user

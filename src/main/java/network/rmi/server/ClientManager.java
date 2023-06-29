@@ -75,7 +75,7 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
     }
 
     /**
-     * Get the client witht the given username
+     * Get the client with the given username
      * @return an optional containing the requested client or empty if not found
      */
     @Override

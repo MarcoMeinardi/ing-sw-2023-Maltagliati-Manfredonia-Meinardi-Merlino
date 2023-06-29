@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * Class that handles the netowrking server-client, server-side
+ * Class that handles the networking server-client, server-side
  */
 public class NetworkManager implements NetworkManagerInterface {
     static private final int socketTimeout = 60000;
