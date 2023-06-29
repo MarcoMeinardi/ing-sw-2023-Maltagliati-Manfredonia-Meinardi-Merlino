@@ -1,0 +1,407 @@
+@startuml
+skinparam linetype ortho
+
+package controller {
+    package game{
+        class GameController {
+            + GameController(File, Lobby):
+            + GameController(Lobby):
+        }
+        class GamePausedException {
+            + GamePausedException():
+        }
+        class NotYourTurnException {
+            + NotYourTurnException():
+        }
+    }
+    package lobby{
+
+        class Lobby {
+            + Lobby(String, String):
+        }
+        class LobbyAlreadyExistsException {
+            + LobbyAlreadyExistsException():
+        }
+        class LobbyController
+        class LobbyFullException {
+            + LobbyFullException():
+        }
+        class LobbyNotFoundException {
+            + LobbyNotFoundException():
+        }
+        class NotEnoughPlayersException {
+            + NotEnoughPlayersException():
+        }
+        class PlayerAlreadyInLobbyException {
+            + PlayerAlreadyInLobbyException():
+        }
+        class PlayerNotInLobbyException {
+            + PlayerNotInLobbyException():
+        }
+    }
+    class DataBase
+
+    class GameNotFoundException {
+        + GameNotFoundException():
+    }
+
+    class IdentityTheftException {
+        + IdentityTheftException():
+    }
+    class MessageTooLongException {
+        + MessageTooLongException():
+    }
+    class NotHostException {
+        + NotHostException():
+    }
+}
+
+package model{
+    class Card {
+        + Card(Type):
+        + Card(Type, int):
+    }
+    class CardsDeck {
+        + CardsDeck():
+    }
+    entity Cell << record >> {
+        + Cell(int, int, Type):
+    }
+    entity Cockade << record >> {
+        + Cockade(String, int):
+    }
+    class CommonObjective {
+        + CommonObjective(SaveCommonObjective, int):
+        + CommonObjective(String, int, Function<Shelf, Boolean>):
+    }
+    class Game {
+        + Game(ArrayList<String>):
+        + Game(SaveState):
+    }
+    class InvalidMoveException {
+        + InvalidMoveException(String):
+    }
+    class Objective {
+        + Objective(String):
+    }
+    class PersonalObjective {
+        + PersonalObjective(String, Cell[]):
+        + PersonalObjective(String):
+    }
+    class Player {
+        + Player(String, PersonalObjective):
+        + Player(SavePlayer):
+    }
+    class PlayerIterator {
+        + PlayerIterator(Game):
+        + PlayerIterator(Game, int):
+    }
+    entity Point << record >> {
+        + Point(int, int):
+    }
+    entity SaveCommonObjective << record >> {
+        + SaveCommonObjective(String, int, HashSet<String>):
+    }
+    entity SavePlayer << record >> {
+        + SavePlayer(String, String, Card[][], ArrayList<Cockade>, int):
+    }
+    entity SaveState << record >> {
+        + SaveState(SaveTableTop, ArrayList<SavePlayer>, ArrayList<SaveCommonObjective>, int):
+    }
+    entity SaveTableTop << record >> {
+        + SaveTableTop(Card[][], CardsDeck):
+    }
+    entity Score << record >> {
+        + Score(String, int, String):
+    }
+    class ScoreBoard {
+        + ScoreBoard(Game):
+    }
+    class Shelf {
+        + Shelf(Optional<Card>[][]):
+        + Shelf(Card[][]):
+        + Shelf():
+    }
+    class TableTop {
+        + TableTop(SaveTableTop, int):
+        + TableTop(int):
+    }
+    enum Type << enumeration >> {
+        + Type():
+    }
+    enum VictoryType << enumeration >> {
+        + VictoryType():
+    }
+}
+package view{
+    package gui{
+        class CommonObjController {
+            + CommonObjController():
+        }
+        class CreateLobbyController {
+            + CreateLobbyController():
+        }
+        class EndController {
+            + EndController():
+        }
+        class GameData {
+            + GameData(GameInfo, String):
+        }
+        class GameViewController {
+            + GameViewController():
+        }
+        class LobbyViewController {
+            + LobbyViewController():
+        }
+        class LoginController {
+            + LoginController():
+        }
+        class Main {
+            + Main():
+        }
+        class MainMenuController {
+            + MainMenuController():
+        }
+        class MessageReturnToLoginController {
+            + MessageReturnToLoginController():
+        }
+        class MessageStoppedGameController {
+            + MessageStoppedGameController():
+        }
+        class PersonalObjController {
+            + PersonalObjController():
+        }
+        class ShelvesController {
+            + ShelvesController():
+        }
+        class Utils {
+            + Utils():
+        }
+    }
+    package cli{
+        class CLI
+        class CLIGame {
+            + CLIGame(GameInfo, String):
+        }
+        enum ConnectionModeOptions << enumeration >> {
+            + ConnectionModeOptions():
+        }
+        enum InGameOptions << enumeration >>
+        enum InLobbyOptions << enumeration >>
+        class NonBlockingIO
+        interface OptionsInterface << interface >>
+        enum SelectLobbyOptions << enumeration >> {
+            + SelectLobbyOptions():
+        }
+        class Utils {
+            + Utils():
+        }
+    }
+}
+package network{
+    entity Call<P> << record >> {
+        + Call(P, Service, UUID):
+    }
+    interface ClientInterface << interface >>
+    interface ClientManagerInterface << interface >>
+    enum ClientStatus << enumeration >> {
+        + ClientStatus():
+    }
+    class ClientStatusHandler {
+        + ClientStatusHandler():
+    }
+    class Function<P, R> {
+        + Function(P, Service):
+    }
+    class GlobalClientManager
+    interface NetworkManagerInterface << interface >>
+    class Result<T>
+    entity Server << record >> {
+        + Server(String, int):
+    }
+    class ServerEvent<T> {
+        + ServerEvent(Type, T):
+    }
+    enum Service << enumeration >> {
+        + Service():
+    }
+    enum Type << enumeration >> {
+        + Type():
+    }
+    class WrongServiceException {
+        + WrongServiceException():
+    }
+    package errors{
+        class ClientAlreadyConnectedException {
+            + ClientAlreadyConnectedException():
+        }
+        class ClientAlreadyIdentifiedException {
+            + ClientAlreadyIdentifiedException():
+        }
+        class ClientConnectedButNotFoundException {
+            + ClientConnectedButNotFoundException():
+        }
+        class ClientNeverConnectedException {
+            + ClientNeverConnectedException():
+        }
+        class ClientNotFoundException {
+            + ClientNotFoundException():
+        }
+        class ClientNotIdentifiedException {
+            + ClientNotIdentifiedException():
+        }
+        class DisconnectedClientException {
+            + DisconnectedClientException():
+        }
+        class InvalidUsernameException {
+            + InvalidUsernameException():
+        }
+        class ServerDisconnectedException {
+            + ServerDisconnectedException():
+        }
+        class WrongParametersException {
+            + WrongParametersException(String, String, String):
+        }
+    }
+    package parameters{
+        entity CardSelect << record >> {
+            + CardSelect(int, ArrayList<Point>):
+        }
+        entity GameInfo << record >> {
+            + GameInfo(Lobby, Card[][], ArrayList<String>, ArrayList<Card[][]>, ArrayList<String>, ArrayList<Integer>, String, String):
+        }
+        entity LobbyCreateInfo << record >> {
+            + LobbyCreateInfo(String):
+        }
+        entity Login << record >> {
+            + Login(String):
+        }
+        class Message {
+            + Message(String, String, String):
+            + Message(String, String):
+        }
+        entity Update << record >> {
+            + Update(String, Card[][], Card[][], String, ArrayList<Cockade>, ArrayList<Integer>):
+        }
+    }
+    package rpc{
+        package client{
+            class NetworkManager
+        }
+        package server{
+
+            class Client {
+                + Client(Socket, BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>>):
+            }
+            class ClientManager
+        }
+    }
+    package rmi{
+        interface LoginService << interface >>
+        interface ClientService << interface >>
+        package client{
+            class NetworkManager {
+            }
+        }
+        package server{
+
+            class Client {
+                + Client(String, Registry, int):
+            }
+            class ClientManager
+        }
+    }
+}
+CLI                                 "1" *-[#595959,plain]-> "game\n1" CLIGame
+CLI                                 "1" *-[#595959,plain]-> "state\n1" ClientStatus
+CLI                                 "1" *-[#595959,plain]-> "lobby\n1" Lobby
+CLI                                 "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+CLI                                 "1" *-[#595959,plain]-> "IO\n1" view.cli.Utils
+CLIGame                             "1" *-[#595959,plain]-> "personalObjective\n1" PersonalObjective
+CLIGame                             "1" *-[#595959,plain]-> "shelves\n*" Shelf
+Card                                "1" *-[#595959,plain]-> "type\n1" model.Type
+network.rmi.server.Client                               -[#008200,dashed]-^  ClientInterface
+network.rpc.server.Client                               -[#008200,dashed]-^  ClientInterface
+network.rmi.server.Client                               -[#008200,dashed]-^  ClientService
+network.rmi.server.Client                              "1" *-[#595959,plain]-> "stub\n1" ClientService
+network.rpc.server.Client                              "1" *-[#595959,plain]-> "statusHandler\n1" ClientStatusHandler
+network.rmi.server.Client                              "1" *-[#595959,plain]-> "statusHandler\n1" ClientStatusHandler
+network.rmi.server.Client                              "1" *-[#595959,plain]-> "serverEvents\n*" ServerEvent
+network.rmi.server.ClientManager                       "1" *-[#595959,plain]-> "clients\n*" network.rmi.server.Client
+network.rpc.server.ClientManager                       "1" *-[#595959,plain]-> "unidentifiedClients\n*" network.rpc.server.Client
+network.rpc.server.ClientManager                       "1" *-[#595959,plain]-> "IdentifiedClients\n*" network.rpc.server.Client
+network.rpc.server.ClientManager                        -[#008200,dashed]-^  ClientManagerInterface
+network.rmi.server.ClientManager                        -[#008200,dashed]-^  ClientManagerInterface
+network.rmi.server.ClientManager                        -[#008200,dashed]-^  LoginService
+network.rmi.server.ClientManager                       "1" *-[#595959,plain]-> "stub\n1" LoginService
+ClientStatusHandler                 "1" *-[#595959,plain]-> "status\n1" ClientStatus
+CommonObjective                      -[#000082,plain]-^  Objective
+ConnectionModeOptions                -[#008200,dashed]-^  OptionsInterface
+CreateLobbyController               "1" *-[#595959,plain]-> "state\n1" ClientStatus
+EndController                       "1" *-[#595959,plain]-> "scoreBoard\n1" ScoreBoard
+Function                            "1" *-[#595959,plain]-> "service\n1" Service
+Game                                "1" *-[#595959,plain]-> "commonObjectives\n*" CommonObjective
+Game                                "1" *-[#595959,plain]-> "players\n*" Player
+Game                                "1" *-[#595959,plain]-> "playerIterator\n1" PlayerIterator
+Game                                "1" *-[#595959,plain]-> "tabletop\n1" TableTop
+GameController                      "1" *-[#595959,plain]-> "clientManager\n1" ClientManagerInterface
+GameController                      "1" *-[#595959,plain]-> "db\n1" DataBase
+GameController                      "1" *-[#595959,plain]-> "game\n1" Game
+GameController                      "1" *-[#595959,plain]-> "lobby\n1" Lobby
+GameController                      "1" *-[#595959,plain]-> "currentPlayer\n1" Player
+GameData                            "1" *-[#595959,plain]-> "myPersonalObjective\n1" PersonalObjective
+GameData                            "1" *-[#595959,plain]-> "scoreBoard\n1" ScoreBoard
+GameData                            "1" *-[#595959,plain]-> "shelves\n*" Shelf
+GameInfo                            "1" *-[#595959,plain]-> "lobby\n1" Lobby
+GameViewController                  "1" *-[#595959,plain]-> "state\n1" ClientStatus
+GameViewController                  "1" *-[#595959,plain]-> "gameData\n1" GameData
+GameViewController                  "1" *-[#595959,plain]-> "lobby\n1" Lobby
+GameViewController                  "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+GlobalClientManager                  -[#008200,dashed]-^  ClientManagerInterface
+GlobalClientManager                 "1" *-[#595959,plain]-> "rmiClientManager\n1" ClientManagerInterface
+GlobalClientManager                 "1" *-[#595959,plain]-> "rpcClientManager\n1" ClientManagerInterface
+InGameOptions                        -[#008200,dashed]-^  OptionsInterface
+InLobbyOptions                       -[#008200,dashed]-^  OptionsInterface
+LobbyController                     "1" *-[#595959,plain]-> "clientManager\n1" ClientManagerInterface
+LobbyController                     "1" *-[#595959,plain]-> "db\n1" DataBase
+LobbyController                     "1" *-[#595959,plain]-> "games\n*" GameController
+LobbyController                     "1" *-[#595959,plain]-> "lobbies\n*" Lobby
+LobbyViewController                 "1" *-[#595959,plain]-> "state\n1" ClientStatus
+LobbyViewController                 "1" *-[#595959,plain]-> "gameInfo\n1" GameInfo
+LobbyViewController                 "1" *-[#595959,plain]-> "lobby\n1" Lobby
+LobbyViewController                 "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+LoginController                     "1" *-[#595959,plain]-> "state\n1" ClientStatus
+LoginController                     "1" *-[#595959,plain]-> "gameInfo\n1" GameInfo
+LoginController                     "1" *-[#595959,plain]-> "lobby\n1" Lobby
+LoginController                     "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+MainMenuController                  "1" *-[#595959,plain]-> "state\n1" ClientStatus
+network.rpc.client.NetworkManager                      "1" *-[#595959,plain]-> "callQueue\n*" Function
+network.rmi.client.NetworkManager                      "1" *-[#595959,plain]-> "loginService\n1" LoginService
+network.rmi.client.NetworkManager                       -[#008200,dashed]-^  NetworkManagerInterface
+network.rpc.client.NetworkManager                       -[#008200,dashed]-^  NetworkManagerInterface
+network.rmi.client.NetworkManager                      "1" *-[#595959,plain]-> "serverInfo\n1" network.Server
+network.rpc.client.NetworkManager                      "1" *-[#595959,plain]-> "server\n1" network.Server
+network.rmi.client.NetworkManager                      "1" *-[#595959,plain]-> "eventQueue\n*" ServerEvent
+network.rpc.client.NetworkManager                      "1" *-[#595959,plain]-> "eventQueue\n*" ServerEvent
+NonBlockingIO                       "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+PersonalObjective                   "1" *-[#595959,plain]-> "cellsCheck\n*" Cell
+PersonalObjective                    -[#000082,plain]-^  Objective
+Player                              "1" *-[#595959,plain]-> "cockades\n*" Cockade
+Player                              "1" *-[#595959,plain]-> "personalObjective\n1" PersonalObjective
+Player                              "1" *-[#595959,plain]-> "shelf\n1" Shelf
+PlayerIterator                      "1" *-[#595959,plain]-> "game\n1" Game
+SaveState                           "1" *-[#595959,plain]-> "tabletop\n1" SaveTableTop
+SaveTableTop                        "1" *-[#595959,plain]-> "grid\n*" Card
+ScoreBoard                          "1" *-[#595959,plain]-> "scores\n*" Score
+ScoreBoard                          "1" *-[#595959,plain]-> "victoryType\n1" VictoryType
+SelectLobbyOptions                   -[#008200,dashed]-^  OptionsInterface
+ServerEvent                         "1" *-[#595959,plain]-> "type\n1" network.Type
+ShelvesController                   "1" *-[#595959,plain]-> "shelves\n*" Shelf
+TableTop                            "1" *-[#595959,plain]-> "deck\n1" CardsDeck
+model.Type                                 +-[#820000,plain]-  Card
+network.Type                                 +-[#820000,plain]-  ServerEvent
+view.cli.Utils                               "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+view.gui.Utils                               "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+view.cli.Utils                               "1" *-[#595959,plain]-> "IO\n1" NonBlockingIO
+VictoryType                          +-[#820000,plain]-  ScoreBoard
+@enduml
