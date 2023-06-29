@@ -103,18 +103,18 @@ public class LobbyControllerTest {
     @Test(expected = PlayerAlreadyInLobbyException.class)
     public void testPlayerAlreadyInLobby() throws LobbyNotFoundException, PlayerAlreadyInLobbyException, LobbyFullException, LobbyAlreadyExistsException {
         LobbyController lobbyController = LobbyController.getInstance();
-        lobbyController.createLobby("lobby6", "player6");
-        lobbyController.joinLobby("lobby6", "player6");
+        lobbyController.createLobby("lobby11", "player11");
+        lobbyController.joinLobby("lobby11", "player11");
     }
 
     @Test(expected = LobbyFullException.class)
     public void testLobbyFullException() throws LobbyNotFoundException, PlayerAlreadyInLobbyException, LobbyFullException, LobbyAlreadyExistsException {
         LobbyController lobbyController = LobbyController.getInstance();
-        lobbyController.createLobby("lobby7", "player7_1");
-        lobbyController.joinLobby("lobby7", "player7_2");
-        lobbyController.joinLobby("lobby7", "player7_3");
-        lobbyController.joinLobby("lobby7", "player7_4");
-        lobbyController.joinLobby("lobby7", "player7_5");
+        lobbyController.createLobby("lobby12", "player12_1");
+        lobbyController.joinLobby("lobby12", "player12_2");
+        lobbyController.joinLobby("lobby12", "player12_3");
+        lobbyController.joinLobby("lobby12", "player12_4");
+        lobbyController.joinLobby("lobby12", "player12_5");
     }
 
 }

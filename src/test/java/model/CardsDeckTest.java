@@ -27,4 +27,16 @@ public class CardsDeckTest {
         assertEquals(0, deck.size());
         assertEquals(Optional.empty(), deck.draw());
     }
+
+    @Test
+    public void TestCard() {
+        Card card1 = new Card(Card.Type.Plant, 0);
+        Card card2 = new Card(Card.Type.Plant);
+        Card card3 = new Card(Card.Type.Plant, 1);
+        assertEquals(card1, card2);
+        assertEquals(card2, card3);
+        assertEquals(card1, card3);
+        assertEquals(card1, card2.getType());
+        assertEquals(card1.getImageIndex(), 0);
+    }
 }

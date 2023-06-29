@@ -26,7 +26,12 @@ public class CommonObjectiveTest {
 
         commonObjectives = CommonObjective.generateCommonObjectives(4);
         assertEquals(2, commonObjectives.size());
+    }
 
+    @Test
+    public void testGetValue() {
+        CommonObjective objective = CommonObjective.generateAllCommonObjectives(2).get(0);
+        assertEquals(objective.getValue(), 8);
     }
 
     /**
@@ -38,9 +43,9 @@ public class CommonObjectiveTest {
     public void testEquals() {
         ArrayList<CommonObjective> commonObjectives = CommonObjective.generateCommonObjectives(2);
 
-        assertTrue(commonObjectives.get(0).equals(commonObjectives.get(0)));
-        assertFalse(commonObjectives.get(0).equals(commonObjectives.get(1)));
-        assertFalse(commonObjectives.get(0).equals("Foo"));
+        assertEquals(commonObjectives.get(0), commonObjectives.get(0));
+        assertNotEquals(commonObjectives.get(0), commonObjectives.get(1));
+        assertNotEquals("Foo", commonObjectives.get(0));
     }
 
     /**
