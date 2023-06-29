@@ -22,7 +22,10 @@
 | Chat | :white_check_mark:  |
 
 ## Compilation
+Before building the application, you must place the copyrighted images regarding the game UI in the `src/main/resources/img`.
+After that you can build the project running the following commands:
 ```
+mvn clean verify  # Optional, to launch tests
 mvn clean
 mvn compile assembly:single -Pserver
 mvn compile assembly:single -Pclient
@@ -31,7 +34,7 @@ The created jars are:
  - `target/MyShelfie.jar` for client
  - `target/MyShelfie-server.jar` for server
 
-Precompiled jars can be found [here](deliverables/jar)
+Precompiled jars can be found [here](deliverables/final/jar)
 
 ## Execution
 The project has been tested on Java19.
@@ -49,4 +52,4 @@ Socket connection uses the 8000 port, while 8001 port and 10000 port and above a
 [JavaDoc](docs)
 
 ## UML
-[UML](delivarables/uml)
+[UML](delivarables/final/uml)
