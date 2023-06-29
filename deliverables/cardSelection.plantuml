@@ -1,5 +1,0 @@
-@startuml
-Client -> Server : Selection Request
-note over Server : Check if move is valid
-Server -> Client : Send ack response
-@enduml
