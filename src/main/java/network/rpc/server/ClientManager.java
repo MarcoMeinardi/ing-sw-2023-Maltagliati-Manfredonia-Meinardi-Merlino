@@ -18,6 +18,9 @@ import java.util.logging.Logger;
 
 import static network.Server.SERVER_NAME;
 
+/**
+ * Class to manage the clients connected to the server via rmi.
+ */
 public class ClientManager extends Thread implements ClientManagerInterface{
     final private LinkedList<Client> unidentifiedClients = new LinkedList<>();
     final private HashMap<String, Client> identifiedClients = new HashMap<>();
@@ -33,6 +36,11 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         ClientManager.port = port;
     }
 
+    /**
+     * Method to get the instance of the class.
+     * @return the instance of the class.
+     * @throws Exception if an error occours during the creation of the instance.
+     */
     public static ClientManagerInterface getInstance() throws Exception {
         synchronized (instanceLock){
             if(instance == null){
@@ -48,6 +56,12 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         this.acceptConnectionsThread = new Thread(this::acceptConnections);
     }
 
+    /**
+     * Client call handler to handle the login of a client.
+     * @param call the call to handle.
+     * @param client the client that made the call.
+     * @return the result of the call.
+     */
     private Result<Serializable> registerService(Call<Serializable> call, ClientInterface client) {
         if(call.service() != Service.Login) {
             return Result.err(new ClientNotIdentifiedException(), call.id());
@@ -74,6 +88,10 @@ public class ClientManager extends Thread implements ClientManagerInterface{
             return Result.err(e, call.id());
         }
     }
+
+    /**
+     *
+     */
     private void acceptConnections(){
         while(instance != null){
             try{
@@ -184,12 +202,22 @@ public class ClientManager extends Thread implements ClientManagerInterface{
         }
     }
 
+    /**
+     * Check if the client with the given username is connected and is a socket client.
+     * @param username the username of the client
+     * @return true if the client is connected and is a socket client, false otherwise.
+     */
     public boolean isClientConnected(String username){
         synchronized (identifiedClients) {
             return identifiedClients.containsKey(username) && identifiedClients.get(username).getStatus() != ClientStatus.Disconnected;
         }
     }
 
+    /**
+     * Check if the given username is already taken by another client.
+     * @param username the username to check
+     * @return true if the username is already taken by a socket client, false otherwise.
+     */
     public boolean isUsernameTaken(String username){
         synchronized (identifiedClients) {
             return identifiedClients.containsKey(username);
