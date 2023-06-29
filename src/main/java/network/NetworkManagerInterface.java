@@ -116,6 +116,12 @@ public interface NetworkManagerInterface {
      * @throws Exception if the network manager is not connected to the server
      */
     public Function<CardSelect, Boolean> cardSelect(CardSelect selected) throws Exception;
+
+    /**
+     * Exit and save the game
+     * @return the remote function handler for this call
+     * @throws Exception if the network manager is not connected to the server
+     */
     public Function<Boolean, Boolean> exitGame() throws Exception;
 
     /**
