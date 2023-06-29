@@ -1,22 +1,28 @@
 package view.gui;
 
+import controller.IdentityTheftException;
+import controller.MessageTooLongException;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 
 import model.Card;
 import network.NetworkManagerInterface;
 import network.Result;
 import network.Server;
+import network.errors.ClientNotFoundException;
+import network.errors.WrongParametersException;
 import network.parameters.Message;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.logging.Logger;
 
 public class Utils {
     public static final int CHAT_HEIGHT = 5;
+
+    private static final Logger logger = Logger.getLogger(Utils.class.getName());
 
     /**
      * Method that associates the card passed as parameter to it's corresponding image.
@@ -26,12 +32,12 @@ public class Utils {
      */
     public static String cardToImageName(Card card) {
         switch (card.getType()) {
-            case Gatto   -> { return String.format("/img/item tiles/Gatti1.%d.png", card.getImageIndex()); }
-            case Libro   -> { return String.format("/img/item tiles/Libri1.%d.png", card.getImageIndex()); }
-            case Cornice -> { return String.format("/img/item tiles/Cornici1.%d.png", card.getImageIndex()); }
-            case Gioco   -> { return String.format("/img/item tiles/Giochi1.%d.png", card.getImageIndex()); }
-            case Pianta  -> { return String.format("/img/item tiles/Piante1.%d.png", card.getImageIndex()); }
-            case Trofeo  -> { return String.format("/img/item tiles/Trofei1.%d.png", card.getImageIndex()); }
+            case Cat -> { return String.format("/img/item tiles/Gatti1.%d.png", card.getImageIndex()); }
+            case Book -> { return String.format("/img/item tiles/Libri1.%d.png", card.getImageIndex()); }
+            case Frame -> { return String.format("/img/item tiles/Cornici1.%d.png", card.getImageIndex()); }
+            case Game -> { return String.format("/img/item tiles/Giochi1.%d.png", card.getImageIndex()); }
+            case Plant -> { return String.format("/img/item tiles/Piante1.%d.png", card.getImageIndex()); }
+            case Trophy -> { return String.format("/img/item tiles/Trofei1.%d.png", card.getImageIndex()); }
             default -> throw new RuntimeException("Invalid card type");
         }
     }
@@ -48,20 +54,6 @@ public class Utils {
      */
     public static void changeLabel(Label label, String text) {
         Platform.runLater(() -> label.setText(text));
-    }
-
-    /**
-     * Method that takes a `String` and a `Text` parameters.
-     * The method uses `Platform.runLater` to update the label with the new text value.
-     * `Platform.runLater` is used to ensure that the update is executed on the JavaFX application thread,
-     * which is necessary for updating UI components.
-     *
-     * @param textLabel the `Text` JavaFX component to change
-     * @param text the new text to display on the label
-     * @author Ludovico
-     */
-    public static void changeLabel(Text textLabel, String text) {
-        Platform.runLater(() -> textLabel.setText(text));
     }
 
     /**
@@ -139,26 +131,9 @@ public class Utils {
 
         //check message integrity and return if not valid
         if (messageText.isEmpty()) {
-            System.out.println("[ERROR] Empty message");
             chat.getItems().add("[ERROR] Empty message");
             if (chat.getItems().size() != CHAT_HEIGHT) {
                 chat.scrollTo(chat.getItems().size()-1);
-            }
-            return;
-        }
-        if (messageText.length() > 100) {
-            System.out.println("[ERROR] Message too long");
-            chat.getItems().add("[ERROR] Message too long");
-            if (chat.getItems().size() != CHAT_HEIGHT) {
-                chat.scrollTo(chat.getItems().size() - 1);
-            }
-            return;
-        }
-        if (messageText.startsWith(".") || messageText.startsWith("?")) {
-            System.out.println("[ERROR] Commands not supported, use /help for more info");
-            chat.getItems().add("[ERROR] Commands not supported. Use /help for more info");
-            if (chat.getItems().size() != CHAT_HEIGHT) {
-                chat.scrollTo(chat.getItems().size() - 1);
             }
             return;
         }
@@ -173,36 +148,46 @@ public class Utils {
         }
 
         // Try to send it to the server and add it to chat
-        try{
-            if(players.getSelectionModel().getSelectedItem() != null && !players.getSelectionModel().getSelectedItem().toString().equals("")){
-                Result result = networkManager.chat(new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString())).waitResult();
-                if (result.isErr()) {
-                    System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-                    chat.getItems().add("[ERROR] We could not send your message, please try again later");
-                    if (chat.getItems().size() != CHAT_HEIGHT) {
-                        chat.scrollTo(chat.getItems().size() - 1);
-                    }
-                    return;
-                }
-                Message message = new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString());
-                players.getSelectionModel().clearSelection();
-                addMessageToChat(username, message, chat);
-                return;
+        try {
+            boolean singleReceiver = players.getSelectionModel().getSelectedItem() != null && !players.getSelectionModel().getSelectedItem().toString().equals("");
+            Result result;
+            if (singleReceiver) {
+                result = networkManager.chat(new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString())).waitResult();
+            } else {
+                result = networkManager.chat(new Message(username, messageText)).waitResult();
             }
-            Result result = networkManager.chat(new Message(username, messageText)).waitResult();
             if (result.isErr()) {
-                System.out.println("[ERROR] " + result.getException().orElse("Cannot send message"));
-                chat.getItems().add("[ERROR] We could not send your message, please try again later");
+                Exception e = (Exception)result.getException().get();
+                if (e instanceof WrongParametersException) {
+                    chat.getItems().add("[ERROR] " + e.getMessage());
+                } else if (e instanceof MessageTooLongException) {
+                    chat.getItems().add("[ERROR] Message is too long");
+                } else if (e instanceof IdentityTheftException) {
+                    chat.getItems().add("[ERROR] Identity theft is not a joke, Bob!");
+                } else if (e instanceof ClientNotFoundException) {
+                    chat.getItems().add("[ERROR] The player has disconnected");
+                } else {
+                    chat.getItems().add("[ERROR] Send message failed" + (e.getMessage() != null ? " " + e.getMessage() : ""));
+                }
+                logger.info(result.getException().isPresent() ? result.getException().get().toString() : "Send message failed");
                 if (chat.getItems().size() != CHAT_HEIGHT) {
                     chat.scrollTo(chat.getItems().size() - 1);
                 }
-                return;
+            } else {
+                Message message;
+                if (players.getSelectionModel().getSelectedItem() != null) {
+                    message = new Message(username, messageText, players.getSelectionModel().getSelectedItem().toString());
+                } else {
+                    message = new Message(username, messageText);
+                }
+                if (singleReceiver) {
+                    players.getSelectionModel().clearSelection();
+                }
+                addMessageToChat(username, message, chat);
             }
-            Message message = new Message(username, messageText);
-            addMessageToChat(username, message, chat);
         } catch (Exception e) {
-            System.out.println("[ERROR] " + e.getMessage());
-            changeLabel(messageLabel, "Couldn't send the message");
+            logger.warning("Send message failed " + e + " " + e.getMessage());
+            messageLabel.setText("Couldn't send the message");
         }
     }
 }

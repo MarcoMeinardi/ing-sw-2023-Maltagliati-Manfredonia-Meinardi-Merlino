@@ -34,6 +34,8 @@ public class Client extends Thread implements ClientInterface {
 	 * @param socket Socket of the client.
 	 * @param handler Function to handle the calls received from the client.
 	 * @throws Exception If an error occurs.
+	 *
+	 * @author Lorenzo
 	 */
 	public Client(Socket socket, BiFunction<Call<Serializable>,ClientInterface,Result<Serializable>> handler) throws Exception {
 		this.socket = socket;
@@ -43,16 +45,40 @@ public class Client extends Thread implements ClientInterface {
 		this.statusHandler = new ClientStatusHandler();
 	}
 
+	/**
+	 * Method that returns the status of the client.
+	 * @return The status of the client.
+	 *
+	 * @author Lorenzo
+	 */
 	@Override
 	public ClientStatus getStatus() {
 		return statusHandler.getStatus();
 	}
 
+	/**
+	 * Method that sets the status of the client by invoking the setStatus method of the statusHandler object with the
+	 * provided ClientStatus object.
+	 * The statusHandler is responsible for managing and handling the client status.
+	 *
+	 * @param status The ClientStatus object representing the status to be set for the client.
+	 *
+	 * @author Lorenzo
+	 */
 	@Override
 	public void setStatus(ClientStatus status) {
 		statusHandler.setStatus(status);
 	}
 
+	/**
+	 * Method that sets the last status of the client by invoking the setStatus method of the statusHandler object with the
+	 * provided ClientStatus object.
+	 * The statusHandler is responsible for managing and handling the client status.
+	 *
+	 * @param status The ClientStatus object representing the status to be set for the client.
+	 *
+	 * @author Marco
+	 */
 	@Override
 	public void setLastValidStatus(ClientStatus status) {
 		statusHandler.setLastValidStatus(status);
@@ -67,6 +93,16 @@ public class Client extends Thread implements ClientInterface {
 		setStatus(old_client.statusHandler.getLastValidStatus());
 	}
 
+	/**
+	 * Method that sends a server event to the server by serializing the provided ServerEvent object and writing it to
+	 * the outgoing message stream.
+	 * The server event represents an event or message sent from the client to the server.
+	 *
+	 * @param message The ServerEvent object representing the server event to be sent.
+	 * @param <T> The type parameter representing the serializable data type associated with the server event.
+	 *
+	 * @author Lorenzo
+	 */
 	@Override
 	public <T extends Serializable> void sendEvent(ServerEvent<T> message){
 		synchronized (this.outcomingMessages){
@@ -86,6 +122,8 @@ public class Client extends Thread implements ClientInterface {
 	 * @param message The message to send.
 	 * @param <T> The type of the message.
 	 * @throws DisconnectedClientException If the client is disconnected.
+	 *
+	 * @author Lorenzo
 	 */
 	private <T extends Serializable> void send(Result<T> message) throws DisconnectedClientException {
 		if(getStatus() == ClientStatus.Disconnected){
@@ -108,6 +146,8 @@ public class Client extends Thread implements ClientInterface {
 	 * @return The call received.
 	 * @param <T> The type call parameters.
 	 * @throws DisconnectedClientException If the client is disconnected.
+	 *
+	 * @author Lorenzo
 	 */
 	private <T extends Serializable> Call<T> receive() throws DisconnectedClientException{
 		if(getStatus() == ClientStatus.Disconnected){
@@ -129,6 +169,8 @@ public class Client extends Thread implements ClientInterface {
 
 	/**
 	 * disconnect the client and close the socket.
+	 *
+	 * @author Lorenzo
 	 */
 	public void disconnect(){
 		setStatus(ClientStatus.Disconnected);
@@ -141,11 +183,30 @@ public class Client extends Thread implements ClientInterface {
 		}
 	}
 
+	/**
+	 * Method that checks if the client is in a disconnected state by comparing the current status of the client with
+	 * the ClientStatus.Disconnected value.
+	 * It returns a boolean indicating whether the client is disconnected or not.
+	 * @return A boolean indicating whether the client is disconnected or not.
+	 *
+	 * @author Lorenzo
+	 */
 	@Override
 	public boolean isDisconnected(){
 		return getStatus() == ClientStatus.Disconnected;
 	}
 
+	/**
+	 * Method that checks the ping status of the client.
+	 * If the client is already disconnected, it returns false.
+	 * Otherwise, it synchronizes on the lastMessageTimeLock to ensure thread safety.
+	 * It compares the last message time with the current time plus a timeout period.
+	 * If the last message time is earlier than the current time plus the timeout, it disconnects the client and returns false.
+	 * Otherwise, it returns true indicating that the ping is successful.
+	 *
+	 * @author Marco
+	 *
+	 */
 	@Override
 	public boolean checkPing() {
 		if(getStatus() == ClientStatus.Disconnected){
@@ -160,6 +221,18 @@ public class Client extends Thread implements ClientInterface {
 		return true;
 	}
 
+	/**
+	 * Method that represents the main execution loop of the client.
+	 * It continuously runs while the client's status is not set to ClientStatus.Disconnected.
+	 * The receive method is called to receive a Call object from the server.
+	 * The lastMessageTime is updated to the current time, synchronized on the lastMessageTimeLock for thread safety.
+	 * If the received call's service is Service.Ping, a response with a Result indicating a successful ping is sent back.
+	 * Otherwise, the received call is passed to the handler function along with the client instance to process it.
+	 * The resulting Result object is sent back to the server.
+	 * If a DisconnectedClientException is caught during the execution, a warning message is logged.
+	 *
+	 * @author Lorenzo
+	 */
 	@Override
 	public void run() {
 		while (getStatus() != ClientStatus.Disconnected) {
@@ -180,6 +253,12 @@ public class Client extends Thread implements ClientInterface {
 		}
 	}
 
+	/**
+	 * Set the handler function of the client.
+	 * @param handler The handler function to set.
+	 *
+	 * @author Lorenzo
+	 * */
 	@Override
 	public void setCallHandler(BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> handler){
 		synchronized (this.handlerLock) {
@@ -191,6 +270,8 @@ public class Client extends Thread implements ClientInterface {
 	 * Set the username of the client.
 	 * @param username The username to set.
 	 * @throws ClientAlreadyIdentifiedException If the client is already connected and identified.
+	 *
+	 * @author Riccardo
 	 */
 	protected void setUsername(String username) throws ClientAlreadyIdentifiedException {
 		if(this.username != null){
@@ -199,6 +280,13 @@ public class Client extends Thread implements ClientInterface {
 		this.username = username;
 	}
 
+	/**
+	 * Get the username of the client.
+	 * @return The username of the client.
+	 * @throws ClientNotIdentifiedException
+	 *
+	 * @author Riccardo
+	 */
 	@Override
 	public String getUsername() throws ClientNotIdentifiedException {
 		if(this.username == null){
@@ -207,6 +295,12 @@ public class Client extends Thread implements ClientInterface {
 		return this.username;
 	}
 
+	/**
+	 * Get the last message time of the client.
+	 * @return The last message time of the client.
+	 *
+	 * @author Lorenzo
+	 */
 	@Override
 	public LocalDateTime getLastMessageTime(){
 		synchronized (lastMessageTimeLock){
@@ -214,6 +308,14 @@ public class Client extends Thread implements ClientInterface {
 		}
 	}
 
+	/**
+	 * Method that retrieves the call handler function responsible for handling incoming calls from the server.
+	 * The call handler function is a BiFunction that takes a Call object and a ClientInterface as input and returns a Result object.
+	 * The call handler function is synchronized on the handlerLock object to ensure thread safety.
+	 * @return handler
+	 *
+	 * @author Lorenzo
+	 */
 	@Override
 	public BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> getCallHandler() {
 		synchronized (this.handlerLock) {
@@ -221,6 +323,11 @@ public class Client extends Thread implements ClientInterface {
 		}
 	}
 
+	/**
+	 * Get the status of the client.
+	 *
+	 * @author Lorenzo
+	 */
 	@Override
 	public void recoverStatus(){
 		statusHandler.setStatus(statusHandler.getLastValidStatus());

@@ -12,25 +12,39 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Class to represent a game.
+ * It contains the tabletop, the players, the common objectives and the turn of the player.
+ * Call the constructor with an `ArrayList` containing the names of the players,
+ * or a save state (`SaveState`).
+ */
 public class Game implements Iterable<Player> {
 
-    private TableTop tabletop;
-    private ArrayList<Player> players;
-    private ArrayList<CommonObjective> commonObjectives;
+    private final TableTop tabletop;
+    private final ArrayList<Player> players;
+    private final ArrayList<CommonObjective> commonObjectives;
     private PlayerIterator playerIterator;
     private Optional<Integer> iteratorIndex = Optional.empty();
 
-    public Game(ArrayList<String> playersNames) {
-        this.tabletop = new TableTop(playersNames.size());
-        PersonalObjective[] personalObjective = PersonalObjective.generatePersonalObjectives(playersNames.size());
+    /**
+     * Constructor for the `Game` class
+     * @param playerNames the list of players' names from which to construct the game.
+     */
+    public Game(ArrayList<String> playerNames) {
+        this.tabletop = new TableTop(playerNames.size());
+        PersonalObjective[] personalObjective = PersonalObjective.generatePersonalObjectives(playerNames.size());
         this.players = new ArrayList<>();
-        for (int i = 0; i < playersNames.size(); i++) {
-            this.players.add(new Player(playersNames.get(i), personalObjective[i]));
+        for (int i = 0; i < playerNames.size(); i++) {
+            this.players.add(new Player(playerNames.get(i), personalObjective[i]));
         }
         Collections.shuffle(this.players);
         this.commonObjectives = CommonObjective.generateCommonObjectives(players.size());
     }
 
+    /**
+     * Constructor for the `Game` class
+     * @param saveState a `SaveState` object representing the saved state of the game.
+     */
     public Game(SaveState saveState) {
         this.tabletop = new TableTop(saveState.tabletop(), saveState.players().size());
         this.players = saveState.players().stream().map(Player::new).collect(Collectors.toCollection(ArrayList::new));
@@ -38,6 +52,12 @@ public class Game implements Iterable<Player> {
         this.iteratorIndex = Optional.of(saveState.playerIteratorIndex());
     }
 
+    /**
+     * Return the iterator that indicates whose turn it is
+     * `iteratorIndex` should be empty if we are starting a new game,
+     * and contain the saved value in the case of a loaded game.
+     * @return the player iterator
+     */
     @Override
     public Iterator<Player> iterator() {
         if (iteratorIndex.isEmpty()) {
@@ -104,7 +124,10 @@ public class Game implements Iterable<Player> {
         return finalResult;
     }
 
-
+    /**
+     * Get a serializable object representing the actual game state
+     * @return a serializable object representing the actual game state.
+     */
     private SaveState getSaveState() {
         SaveTableTop tableTop = this.tabletop.getSaveTableTop();
         ArrayList<SavePlayer> savePlayers = new ArrayList<>();
@@ -117,6 +140,11 @@ public class Game implements Iterable<Player> {
         return new SaveState(tableTop, savePlayers, saveCommonObjectives, index);
     }
 
+    /**
+     * Save the game state to a file
+     * @param file the file to save the game state to
+     * @throws IOException if an I/O error occurs while writing stream header
+     */
     public void saveGame(File file) throws IOException {
         SaveState saveState = getSaveState();
         FileOutputStream outputFile = new FileOutputStream(file);
@@ -126,6 +154,14 @@ public class Game implements Iterable<Player> {
         outputFile.close();
     }
 
+    /**
+     * Load a game state from a file
+     * @param file the `File` object containing the path of the save file.
+     * @return the loaded game
+     * @throws IOException if an I/O error occurs while reading stream header
+     * @throws ClassNotFoundException if the class of the serialized loaded object cannot be found
+     * (probably due to a different version of the game or a wrong file path)
+     */
     public static Game loadGame(File file) throws IOException, ClassNotFoundException {
         FileInputStream inputFile = new FileInputStream(file);
         ObjectInputStream objectInputStream = new ObjectInputStream(inputFile);

@@ -1,14 +1,19 @@
 package model;
 
-import java.io.Serializable;
 import java.util.Optional;
 
+/**
+ * Class that holds information about the tabletop.
+ * It contains the grid of cards and the deck of cards.
+ * You can construct it from the number of players, for a new game,
+ * or from a saved object representing the tabletop.
+ */
 public class TableTop {
 	public static final int SIZE = 9;
 	public static final int MAX_PLAYERS = 6;
 
-    private CardsDeck deck;
-	private Optional<Card>[][] table;
+	private final CardsDeck deck;
+	private final Optional<Card>[][] table;
 
 	private final int nPlayers;
 
@@ -59,6 +64,11 @@ public class TableTop {
 		fillTable();
 	}
 
+	/**
+	 * Creates a new TableTop object from a saved tabletop.
+	 * @param tableTop the `SaveTableTop` object to load from.
+	 * @param nPlayers the number of players in the game.
+	 */
 	public TableTop(SaveTableTop tableTop, int nPlayers) {
 		table = new Optional[SIZE][SIZE];
 		for (int y = 0; y < SIZE; y++){
@@ -137,7 +147,7 @@ public class TableTop {
 	}
 
 	/**
-     * Picks a card from the table and returns it.
+	 * Picks a card from the table and returns it.
 	 * @author Ludovico, Marco
 	 *
 	 * @param y The vertical index of the specified position.
@@ -145,7 +155,6 @@ public class TableTop {
 	 * @return The card at the specified position.
 	 * @throws InvalidMoveException If the specified position is already empty or not valid.
 	 */
-
 	public Card pickCard(int y, int x) throws InvalidMoveException {
 		Optional<Card> card = getCard(y, x);
 		if (card.isEmpty()) {
@@ -155,10 +164,21 @@ public class TableTop {
 		return card.get();
 	}
 
+	/**
+	 * Getter for the `deck` field.
+	 * @return the `deck` field.
+	 */
 	public CardsDeck getDeck() {
 		return deck;
 	}
 
+	/**
+	 * Return the card at the given coordinates.
+	 * @param y the y coordinate.
+	 * @param x the x coordinate.
+	 * @return the card at the given coordinates (might be empty).
+	 * @throws InvalidMoveException if the coordinates are outside the tabletop.
+	 */
 	public Optional<Card> getCard(int y, int x) throws InvalidMoveException {
 		if (y < 0 || x < 0 || y >= SIZE || x >= SIZE) {
 			throw new InvalidMoveException("Invalid position");
@@ -169,7 +189,7 @@ public class TableTop {
 	/**
 	 * Returns a serializable copy of the table
 	 * Note: this method must only be used to send the table over network,
-	 * DON'T use it in any other case and once received convert it immediately
+	 * DON'T use it in any other case and once received, convert it immediately
 	 * to it's `Optional` form
 	 *
 	 * @return a serializable copy of the table
@@ -187,11 +207,12 @@ public class TableTop {
 		return result;
 	}
 
+	/**
+	 * Return a serializable copy of the tabletop
+	 * @return a serializable copy of the tabletop
+	 */
 	public SaveTableTop getSaveTableTop() {
 		return new SaveTableTop(getSerializable(), deck);
-	}
-	public Optional<Card>[][] getTable() {
-		return table;
 	}
 }
 

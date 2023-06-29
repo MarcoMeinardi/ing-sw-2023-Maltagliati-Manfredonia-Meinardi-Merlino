@@ -1,6 +1,8 @@
 package view.gui;
 
 import controller.lobby.Lobby;
+import controller.lobby.LobbyFullException;
+import controller.lobby.LobbyNotFoundException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,13 +22,13 @@ import network.ServerEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import static view.gui.LoginController.networkManager;
 
 /**
  * MainMenuController is the class that manages the main menu scene.
  **/
-
 public class MainMenuController implements Initializable {
     private static final int WIDTH = 1140;
     private static final int HEIGHT = 760;
@@ -41,14 +43,12 @@ public class MainMenuController implements Initializable {
     private Thread serverThread;
     private ClientStatus state;
 
+    private static final Logger logger = Logger.getLogger(MainMenuController.class.getName());
 
     /**
-     * Dummy constructor
-     *
+     * Empty constructor required for JavaFX
      */
-
-    public void MainMenuController() {
-    }
+    public void MainMenuController() {}
 
     /**
      * Method initialize is used to initialize the main menu scene.
@@ -66,7 +66,7 @@ public class MainMenuController implements Initializable {
      * @author Ludovico
      */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
-        Utils.changeLabel(nameUser, LoginController.username);
+        nameUser.setText(LoginController.username);
         askNetForLobbies();
         state = ClientStatus.InLobbySearch;
         serverThread = new Thread(() -> {
@@ -117,31 +117,30 @@ public class MainMenuController implements Initializable {
             if (result.isOk()) {
                 ArrayList<Lobby> lobbies = result.unwrap();
                 if (lobbies.isEmpty()) {
-                    Utils.changeLabel(noFound, "No lobbies found");
+                    noFound.setText("No lobbies found");
                 } else {
                     for (Lobby lobby : result.unwrap()) {
                         listView.getItems().add(lobby.getName());
                     }
                 }
             } else {
-                System.out.println("[ERROR] " + result.getException());
+                noFound.setText("Cannot get lobbies");
+                logger.warning(result.getException().isPresent() ? result.getException().get().toString() : "List lobby failed");
             }
         } catch (Exception e) {
-            Utils.changeLabel(noFound, "Error when asking server for lobbies");
-            throw new RuntimeException(e);
+            noFound.setText("Error when asking server for lobbies");
+            logger.warning("Get lobby failed " + e + " " + e.getMessage());
         }
     }
 
     /**
      * Method switchToCreateLobby is used to switch to the "create lobby" scene.
-     * It is called when the user clicks on the create lobby button.
+     * It is called when the user clicks on the "create lobby" button.
      *
-     * @param actionEvent
-     * the click of the button create lobby by the user
+     * @param actionEvent the click of the button create lobby by the user
      *
      * @author Ludovico
      */
-
     @FXML
     private void switchToCreateLobby(javafx.event.ActionEvent actionEvent ) {
 
@@ -154,7 +153,7 @@ public class MainMenuController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            Utils.changeLabel(noFound, "Error loading the page");
+            noFound.setText("Error loading the page");
             e.printStackTrace();
         }
 
@@ -176,23 +175,33 @@ public class MainMenuController implements Initializable {
 
         String lobbyName = listView.getSelectionModel().getSelectedItem();
         if(lobbyName == null) {
-            System.out.println("[ERROR] No lobby selected");
-            Utils.changeLabel(noFound, "No lobby selected");
+            noFound.setText("No lobby selected");
             return;
         }
 
         try {
-            Result 	result = networkManager.lobbyJoin(lobbyName).waitResult();
+            Result result = networkManager.lobbyJoin(lobbyName).waitResult();
             if (result.isOk()) {
-                LoginController.lobby = ((Result<Lobby>)result).unwrap();
+                LoginController.lobby = ((Result<Lobby>) result).unwrap();
                 LoginController.state = ClientStatus.InLobby;
-                System.out.println(LoginController.username + " joined: " + LoginController.lobby.getName());
             } else {
-                Utils.changeLabel(noFound, "Login failed");
-                System.out.println("[ERROR] " + result.getException().orElse("Login failed"));
+                Exception e = (Exception)result.getException().get();
+                if (e instanceof LobbyFullException) {
+                    noFound.setText("Lobby is full");
+                } else if (e instanceof LobbyNotFoundException) {
+                    noFound.setText("Lobby not found");
+                } else {
+                    noFound.setText("Join lobby failed" + (e.getMessage() != null ? " " + e.getMessage() : ""));
+                }
+                logger.info(result.getException().isPresent() ? result.getException().get().toString() : "Join lobby failed");
                 return;
             }
             serverThread.interrupt();
+        } catch (Exception e) {
+            noFound.setText("Cannot join lobby");
+            logger.warning("Join lobby failed" + e + " " + e.getMessage());
+        }
+        try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/Lobby.fxml"));
             stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root, WIDTH, HEIGHT);
@@ -200,13 +209,9 @@ public class MainMenuController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
+            noFound.setText("Could not load the lobby scene");
             e.printStackTrace();
-            Utils.changeLabel(noFound, "Could not load the lobby scene");
-        } catch (Exception e) {
-            Utils.changeLabel(noFound, "Could not join the lobby");
-            System.out.println("[ERROR] " + e.getMessage());
         }
-
     }
 
     /**
@@ -216,7 +221,6 @@ public class MainMenuController implements Initializable {
      * sets the new scene to the stage, and displays the stage.
      *
      */
-
     private void returnToLoginMessage(){
         try {
             serverThread.interrupt();
@@ -227,13 +231,13 @@ public class MainMenuController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            Utils.changeLabel(noFound, "Could not load the final message scene");
-            throw new RuntimeException(e);
+            noFound.setText("Could not load the final message scene");
+            e.printStackTrace();
         }
     }
 
     /**
-     * method that handles events received from the server.
+     * Method that handles events received from the server.
      * It first checks if there is an event available, and if not, it returns.
      * If there is an event, it switches on the type of the event and performs the appropriate action.
      * - ServerDisconnect: notifies the players that the server has been disconnected sending them to a scene explaining the situation
@@ -247,14 +251,11 @@ public class MainMenuController implements Initializable {
         }
         switch (event.get().getType()) {
             case ServerDisconnect -> {
-                System.out.println("[WARNING] Server disconnected");
-                Platform.runLater(() -> returnToLoginMessage());
+                logger.info("Server disconnected");
+                Platform.runLater(this::returnToLoginMessage);
             }
-            case Join -> {
-                System.out.println("[INFO] you joined the lobby");
-            }
+            case Join -> {}
             default -> throw new RuntimeException("Unhandled event");
         }
     }
-
 }

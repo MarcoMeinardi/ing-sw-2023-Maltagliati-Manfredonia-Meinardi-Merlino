@@ -35,18 +35,6 @@ public class ServerEventTest extends TestCase {
         assertEquals(event.getData(), "test");
     }
 
-    public void testPause() {
-        ServerEvent event = ServerEvent.Pause("test");
-        assertEquals(event.getType(), ServerEvent.Type.Pause);
-        assertEquals(event.getData(), "test");
-    }
-
-    public void testResume() {
-        ServerEvent event = ServerEvent.Resume("test");
-        assertEquals(event.getType(), ServerEvent.Type.Resume);
-        assertEquals(event.getData(), "test");
-    }
-
     public void testStart() {
         ServerEvent event = ServerEvent.Start();
         assertEquals(event.getType(), ServerEvent.Type.Start);

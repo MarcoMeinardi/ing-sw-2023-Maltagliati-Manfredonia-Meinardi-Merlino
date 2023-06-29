@@ -12,6 +12,7 @@ import model.CommonObjective;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +29,8 @@ public class CommonObjController implements Initializable {
     private Label secObj;
     @FXML
     private Label errorLabel;
+
+    private static final Logger logger = Logger.getLogger(CommonObjController.class.getName());
 
     /**
      * Method called to load the scene with the two common objectives of the game.
@@ -68,10 +71,10 @@ public class CommonObjController implements Initializable {
                 imageView.setFitWidth(240);
                 imageView.setFitHeight(155);
                 if (commonObjectives.indexOf(commonObjective) == 0) {
-                    Utils.changeLabel(firstObj, commonObjective);
+                    firstObj.setText(commonObjective);
                     imageView.setX(30);
                 } else {
-                    Utils.changeLabel(secObj, commonObjective);
+                    secObj.setText(commonObjective);
                     imageView.setX(330);
                 }
                 imageView.setY(60);
@@ -80,7 +83,8 @@ public class CommonObjController implements Initializable {
 
         }
         catch (Exception e) {
-            Utils.changeLabel(errorLabel, "Couldn't find objectives");
+            errorLabel.setText("Couldn't find objectives");
+            logger.warning(e + " " + e.getMessage());
         }
     }
 

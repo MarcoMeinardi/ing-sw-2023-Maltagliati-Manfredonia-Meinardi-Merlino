@@ -19,7 +19,6 @@ import java.util.ResourceBundle;
  * Controller class for the shelves scene showing the four shelves of the players.
  *
  */
-
 public class ShelvesController implements Initializable {
 
     private static final int shelfCardSize = 24;
@@ -98,23 +97,23 @@ public class ShelvesController implements Initializable {
         int shelfOffSetY = 0;
         int shelfOffSetX = 0;
 
-        switch (playerIndex){
-            case 0:
+        switch (playerIndex) {
+            case 0 -> {
                 shelfOffSetY = 228;
                 shelfOffSetX = 126;
-                break;
-            case 1:
+            }
+            case 1 -> {
                 shelfOffSetY = 228;
                 shelfOffSetX = 526;
-                break;
-            case 2:
+            }
+            case 2 -> {
                 shelfOffSetY = 588;
                 shelfOffSetX = 126;
-                break;
-            case 3:
+            }
+            case 3 -> {
                 shelfOffSetY = 588;
                 shelfOffSetX = 526;
-                break;
+            }
         }
 
         for (int y = 0; y < shelfRows; y++) {
@@ -128,16 +127,16 @@ public class ShelvesController implements Initializable {
 
         for(int i = 0; i < playersNames.size(); i++){
             if(i == 0){
-                Utils.changeLabel(player, playersNames.get(i));
+                player.setText(playersNames.get(i));
             }
             if(i == 1){
-                Utils.changeLabel(player2, playersNames.get(i));
+                player2.setText(playersNames.get(i));
             }
             if(i == 2){
-                Utils.changeLabel(player3, playersNames.get(i));
+                player3.setText(playersNames.get(i));
             }
             if(i == 3){
-                Utils.changeLabel(player4, playersNames.get(i));
+                player4.setText(playersNames.get(i));
             }
         }
 
@@ -174,7 +173,7 @@ public class ShelvesController implements Initializable {
      *
      * @author Ludovico
      */
-    private void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY){
+    private void putImageOnScene(String imageName, int y, int x, int height, int width, int offsetX, int offsetY, int stepX, int stepY) {
         String imagePath = getClass().getResource(imageName).toExternalForm();
         Image image = new Image(imagePath);
         ImageView imageView = new ImageView(image);
@@ -184,6 +183,4 @@ public class ShelvesController implements Initializable {
         imageView.setY(offsetY - stepY*y);
         pane.getChildren().add(imageView);
     }
-
-
 }

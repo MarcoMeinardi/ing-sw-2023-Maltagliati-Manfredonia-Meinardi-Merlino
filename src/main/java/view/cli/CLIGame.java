@@ -159,12 +159,12 @@ public class CLIGame {
 	 */
 	private String cardToChar(Card card) {
 		switch (card.getType()) {
-			case Gatto   -> { return "C"; }
-			case Libro   -> { return "B"; }
-			case Gioco   -> { return "G"; }
-			case Cornice -> { return "F"; }
-			case Trofeo  -> { return "T"; }
-			case Pianta  -> { return "P"; }
+			case Cat -> { return "C"; }
+			case Book -> { return "B"; }
+			case Game -> { return "G"; }
+			case Frame -> { return "F"; }
+			case Trophy -> { return "T"; }
+			case Plant -> { return "P"; }
 			default -> throw new RuntimeException("Invalid card");
 		}
 	}
@@ -200,10 +200,10 @@ public class CLIGame {
 	 * @author Marco
 	 */
 	private String getCorner(int y, int x) {
-		boolean here = y >= 0 && x < TableTop.SIZE && TableTop.PLAYER_NUMBER_MASK[y][x] <= nPlayers;
-		boolean left = y >= 0 && x > 0 && TableTop.PLAYER_NUMBER_MASK[y][x - 1] <= nPlayers;
-		boolean up = y < TableTop.SIZE - 1 && x < TableTop.SIZE && TableTop.PLAYER_NUMBER_MASK[y + 1][x] <= nPlayers;
-		boolean upLeft = y < TableTop.SIZE - 1 && x > 0 && TableTop.PLAYER_NUMBER_MASK[y + 1][x - 1] <= nPlayers;
+		boolean here = y < TableTop.SIZE && x < TableTop.SIZE && TableTop.PLAYER_NUMBER_MASK[y][x] <= nPlayers;
+		boolean left = y < TableTop.SIZE && x > 0 && TableTop.PLAYER_NUMBER_MASK[y][x - 1] <= nPlayers;
+		boolean up = y > 0 && x < TableTop.SIZE && TableTop.PLAYER_NUMBER_MASK[y - 1][x] <= nPlayers;
+		boolean upLeft = y > 0 && x > 0 && TableTop.PLAYER_NUMBER_MASK[y - 1][x - 1] <= nPlayers;
 
 		if (here) {
 			if (left) {
@@ -262,29 +262,29 @@ public class CLIGame {
 	 * @author Marco
 	 */
 	public void printTableTop() {
-		int firstRow = nPlayers == 2 ? TableTop.SIZE - 2 : TableTop.SIZE - 1;
-		int lastRow = nPlayers == 2 ? 1 : 0;
+		int firstRow = nPlayers == 2 ? 1 : 0;
+		int lastRow = nPlayers == 2 ? TableTop.SIZE - 2 : TableTop.SIZE - 1;
 		int firstColumn = nPlayers == 2 ? 1 : 0;
 		int lastColumn = nPlayers == 2 ? TableTop.SIZE - 2 : TableTop.SIZE - 1;
 		int offset = nPlayers == 2 ? 1 : 0;
 
 		System.out.println();
-		for (int y = firstRow; y >= lastRow - 1; y--) {
+		for (int y = firstRow; y <= lastRow + 1; y++) {
 			System.out.print("  ");
 			for (int x = firstColumn; x <= lastColumn + 1; x++) {
 				System.out.print(getCorner(y, x));
 				if (x == lastColumn + 1) break;
 
-				if ((x < TableTop.SIZE && y >= 0 && TableTop.PLAYER_NUMBER_MASK[y][x] <= nPlayers) || (y < TableTop.SIZE - 1 && TableTop.PLAYER_NUMBER_MASK[y + 1][x] <= nPlayers)) {
+				if (x < TableTop.SIZE && ((y > 0 && TableTop.PLAYER_NUMBER_MASK[y - 1][x] <= nPlayers) || (y < TableTop.SIZE && TableTop.PLAYER_NUMBER_MASK[y][x] <= nPlayers))) {
 					System.out.print("───");
 				} else {
 					System.out.print("   ");
 				}
 			}
 			System.out.println();
-			if (y == lastRow - 1) break;
+			if (y == lastRow + 1) break;
 
-			System.out.format("%d ", y + 1 - offset);
+			System.out.format("%d ", TableTop.SIZE - (y + offset));
 			for (int x = firstColumn; x <= lastColumn; x++) {
 				if (TableTop.PLAYER_NUMBER_MASK[y][x] <= nPlayers || (x > 0 && TableTop.PLAYER_NUMBER_MASK[y][x - 1] <= nPlayers)) {
 					System.out.print("│");

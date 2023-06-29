@@ -36,7 +36,7 @@ public class GameTest {
 
 		for (int y = 0; y < Shelf.ROWS; y++) {
 			for (int x = 0; x < Shelf.COLUMNS; x++) {
-				game.getPlayers().get(0).getShelf().insert(x, new ArrayList<>(Arrays.asList(new Card(Card.Type.Pianta, 0))));
+				game.getPlayers().get(0).getShelf().insert(x, new ArrayList<>(Arrays.asList(new Card(Card.Type.Plant, 0))));
 			}
 		}
 

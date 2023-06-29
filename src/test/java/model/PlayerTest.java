@@ -7,8 +7,8 @@ import org.junit.Test;
 
 public class PlayerTest {
 
-    @Test
-    public void testConstructor() {
+	@Test
+	public void testConstructor() {
 		PersonalObjective obj = PersonalObjective.generateAllPersonalObjectives().get(0);
 		Player p = new Player("p", obj);
 
@@ -19,8 +19,8 @@ public class PlayerTest {
 		assertEquals(p.getPersonalObjective(), obj);
 	}
 
-    @Test
-    public void testAddCockade() {
+	@Test
+	public void testAddCockade() {
 		PersonalObjective obj = PersonalObjective.generateAllPersonalObjectives().get(0);
 		Player p = new Player("p", obj);
 

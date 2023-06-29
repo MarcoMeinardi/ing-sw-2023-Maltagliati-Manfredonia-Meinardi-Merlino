@@ -1,5 +1,6 @@
 package view.gui;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,24 +16,29 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.Cockade;
+import model.PersonalObjective;
 import model.Score;
 import model.ScoreBoard;
+import network.ServerEvent;
 
 
 import java.io.IOException;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static view.gui.LoginController.networkManager;
 
 /**
  * This class is the controller for the End.fxml file.
  * It is responsible for the end screen of the game.
  *
  */
-
 public class EndController implements Initializable {
     private static final int WIDTH = 1140;
     private static final int HEIGHT = 760;
@@ -66,6 +72,10 @@ public class EndController implements Initializable {
     private ImageView cockadeImage4;
     private Stage stage;
     private Scene scene;
+    private Thread serverThread;
+
+
+    private static final Logger logger = Logger.getLogger(EndController.class.getName());
 
     /**
      * This method is called when the End.fxml file is loaded.
@@ -78,12 +88,26 @@ public class EndController implements Initializable {
      *
      * @author Ludovico
      */
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.scoreBoard = GameViewController.gameData.getScoreBoard();
         this.username = GameViewController.gameData.getMe();
         showScoreBoard();
+        serverThread = new Thread(() -> {
+            while (true) {
+                synchronized (networkManager) {
+                    try {
+                        while (!networkManager.hasEvent()) {
+                            networkManager.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                }
+                handleEvent();
+            }
+        });
+        serverThread.start();
     }
 
     /**
@@ -91,11 +115,10 @@ public class EndController implements Initializable {
      *
      * @author Ludovico
      */
-
     private void showScoreBoard() {
         int position = 1;
         String your_title = "Why is my life like this";
-        ArrayList<Cockade> playerCockades = new ArrayList<>();
+        ArrayList<Cockade> playerCockades;
 
         if(scoreBoard.size() == 2){
             messageLabel3.setVisible(false);
@@ -113,40 +136,39 @@ public class EndController implements Initializable {
 
         for (Score score : scoreBoard) {
             if(position == 1){
-                Utils.changeLabel(messageLabel1, " [" + position + "] " + score.username() + ": " + score.score() +" points");
+                messageLabel1.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
-                for(Cockade cockade : playerCockades){
-                    cockadesList1.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                for (Cockade cockade : playerCockades) {
+                    addCockadeToList(cockadesList1, cockade);
                 }
             }
             else if(position == 2){
-                Utils.changeLabel(messageLabel2, " [" + position + "] " + score.username() + ": " + score.score() +" points");
+                messageLabel2.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
-                for(Cockade cockade : playerCockades){
-                    cockadesList2.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                for (Cockade cockade : playerCockades) {
+                    addCockadeToList(cockadesList2, cockade);
                 }
             }
             else if(position == 3){
-                Utils.changeLabel(messageLabel3, " [" + position + "] " + score.username() + ": " + score.score() +" points");
+                messageLabel3.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
                 for(Cockade cockade : playerCockades){
-                    cockadesList3.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                    addCockadeToList(cockadesList3, cockade);
                 }
             }
             else if(position == 4){
-                Utils.changeLabel(messageLabel4, " [" + position + "] " + score.username() + ": " + score.score() +" points");
+                messageLabel4.setText(" [" + position + "] " + score.username() + ": " + score.score() +" points");
                 playerCockades = scoreBoard.getCockades(score.username());
                 for(Cockade cockade : playerCockades){
-                    cockadesList4.getItems().add(cockade.name() + " giving points: "+ cockade.points());
+                    addCockadeToList(cockadesList4, cockade);
                 }
             }
             if (score.username().equals(username)) {
                 your_title = score.title();
             }
-            System.out.println("Your final grade: "+your_title);
-            Utils.changeLabel(titleLabel, "Your final grade: "+your_title);
             position++;
         }
+        titleLabel.setText("Your final grade: " + your_title);
 
         addChangeOfImage(cockadesList1, 1);
         addChangeOfImage(cockadesList2, 2);
@@ -155,11 +177,16 @@ public class EndController implements Initializable {
 
     }
 
+    private void addCockadeToList(ListView cockadeList, Cockade cockade) {
+        String text = String.format("%s giving points: %d", cockade.name().indexOf(PersonalObjective.MARKER) == 0 ? "Personal objective" : cockade.name(), cockade.points());
+        cockadeList.getItems().add(text);
+    }
+
     private void addChangeOfImage(ListView cockadesList, int player){
         ObservableList<String> items = cockadesList.getItems();
 
         cockadesList.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> handleCockadeSelection(player, newValue.toString())
+            (observable, oldValue, newValue) -> handleCockadeSelection(player, newValue.toString())
         );
 
     }
@@ -176,7 +203,6 @@ public class EndController implements Initializable {
      *
      * @author Ludovico
      */
-
     private void handleCockadeSelection(int player, String selectedCockade){
         Pattern pattern = Pattern.compile("\\d+");
 
@@ -190,12 +216,11 @@ public class EndController implements Initializable {
             return;
         }
 
-        if((lastNumber.contains("2") ||
-                lastNumber.contains("4") ||
-                    lastNumber.contains("6") ||
-                        lastNumber.contains("8") ||
-                            (lastNumber.contains("1") && selectedCockade.contains("finish"))) &&
-                                !lastNumber.contains("12")){
+        if (
+            (lastNumber.contains("2") || lastNumber.contains("4") || lastNumber.contains("6") || lastNumber.contains("8") ||
+            (lastNumber.contains("1") && selectedCockade.contains("finish"))) &&
+            !lastNumber.contains("12")
+        ) {
 
             if (lastNumber.equals("1")){
                 if(player == 1){
@@ -254,10 +279,10 @@ public class EndController implements Initializable {
      *
      * @throws IOException
      */
-
     @FXML
-    private void goToLobbies(ActionEvent actionEvent) throws IOException {
+    private void goToLobbies(ActionEvent actionEvent) {
         try {
+            serverThread.interrupt();
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
             stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root, WIDTH, HEIGHT);
@@ -265,9 +290,53 @@ public class EndController implements Initializable {
             stage.setScene(scene);
             stage.show();
         }
-        catch (IOException e){
+        catch (IOException e) {
+            titleLabel.setText("Error loading the main menu");
             e.printStackTrace();
-            Utils.changeLabel(titleLabel, "Error loading the main menu");
+        }
+    }
+
+    /**
+     * This method is responsible for printing the last view of the program if the server stopped.
+     * It interrupts the server thread,
+     * loads the MessageReturnToLogin.fxml file using FXMLLoader,
+     * sets the new scene to the stage, and displays the stage.
+     *
+     */
+    private void returnToLoginMessage(){
+        try {
+            serverThread.interrupt();
+            Parent newRoot = FXMLLoader.load(getClass().getResource("/fxml/MessageReturnToLogin.fxml"));
+            stage = (Stage) (titleLabel.getScene().getWindow());
+            scene = new Scene(newRoot, WIDTH, HEIGHT);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            titleLabel.setText("Could not load the final message scene");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Method that handles events received from the server.
+     * It first checks if there is an event available, and if not, it returns.
+     * If there is an event, it switches on the type of the event and performs the appropriate action.
+     * - ServerDisconnect: notifies the players that the server has been disconnected sending them to a scene explaining the situation
+     *
+     * @author Ludovico
+     */
+    private void handleEvent() {
+        Optional<ServerEvent> event = networkManager.getEvent();
+        if (event.isEmpty()) {
+            return; // No event
+        }
+        switch (event.get().getType()) {
+            case ServerDisconnect -> {
+                logger.info("Server disconnected");
+                Platform.runLater(this::returnToLoginMessage);
+            }
+            default -> throw new RuntimeException("Unhandled event");
         }
     }
 

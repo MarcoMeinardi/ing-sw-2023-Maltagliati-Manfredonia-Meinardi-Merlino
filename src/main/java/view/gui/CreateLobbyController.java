@@ -21,13 +21,13 @@ import network.parameters.LobbyCreateInfo;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import static view.gui.LoginController.networkManager;
 
 /**
  * CreateLobbyController is the class that manages the "create lobby" scene.
  **/
-
 public class CreateLobbyController implements Initializable {
     private static final int WIDTH = 1140;
     private static final int HEIGHT = 760;
@@ -44,14 +44,12 @@ public class CreateLobbyController implements Initializable {
     private Thread serverThread;
     private ClientStatus state;
 
+    private static final Logger logger = Logger.getLogger(CreateLobbyController.class.getName());
+
     /**
-     * dummy constructor
-     *
+     * Empty constructor required for JavaFX
     **/
-
-    public CreateLobbyController() {
-    }
-
+    public CreateLobbyController() {}
 
     /**
      * Method initialize is used to initialize the "create lobby" scene.
@@ -65,7 +63,7 @@ public class CreateLobbyController implements Initializable {
      * */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         btnSelect.setDefaultButton(true);
-        Utils.changeLabel(nameUser, LoginController.username);
+        nameUser.setText(LoginController.username);
         state = ClientStatus.InLobbySearch;
         serverThread = new Thread(() -> {
             while (state != ClientStatus.Disconnected) {
@@ -104,8 +102,7 @@ public class CreateLobbyController implements Initializable {
 
         String lobbyName = nameLobby.getText();
         if(lobbyName.isEmpty()) {
-            System.out.println("[ERROR] Lobby name is empty");
-            Utils.changeLabel(messageDisplay, "Lobby name is empty");
+            messageDisplay.setText("Lobby name is empty");
             return;
         }
 
@@ -113,10 +110,9 @@ public class CreateLobbyController implements Initializable {
         if (result.isOk()) {
             LoginController.lobby = ((Result<Lobby>) result).unwrap();
             LoginController.state = ClientStatus.InLobby;
-            System.out.println("Lobby created: " + LoginController.lobby.getName());
         } else {
-            Utils.changeLabel(messageDisplay, "Lobby name already exists");
-            System.out.println("[ERROR] " + result.getException());
+            messageDisplay.setText("Lobby name already exists");
+            logger.info(result.getException().isPresent() ? result.getException().get().toString() : "Create lobby failed");
             return;
         }
 
@@ -129,8 +125,8 @@ public class CreateLobbyController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
+            messageDisplay.setText("Couldn't create lobby");
             e.printStackTrace();
-            Utils.changeLabel(messageDisplay, "Couldn't create lobby");
         }
 
     }
@@ -142,7 +138,6 @@ public class CreateLobbyController implements Initializable {
      * sets the new scene to the stage, and displays the stage.
      *
      */
-
     private void returnToLoginMessage(){
         try {
             serverThread.interrupt();
@@ -153,13 +148,13 @@ public class CreateLobbyController implements Initializable {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            Utils.changeLabel(messageDisplay, "Couldn't take you to login");
-            throw new RuntimeException(e);
+            messageDisplay.setText("Couldn't take you to login");
+            e.printStackTrace();
         }
     }
 
     /**
-     * method that handles events received from the server.
+     * Method that handles events received from the server.
      * It first checks if there is an event available, and if not, it returns.
      * If there is an event, it switches on the type of the event and performs the appropriate action.
      * - ServerDisconnect: notifies the players that the server has been disconnected sending them to a scene explaining the situation
@@ -173,12 +168,10 @@ public class CreateLobbyController implements Initializable {
         }
         switch (event.get().getType()) {
             case ServerDisconnect -> {
-                System.out.println("[WARNING] Server disconnected");
+                logger.info("Server disconnected");
                 Platform.runLater(this::returnToLoginMessage);
             }
-            case Join -> {
-                System.out.println("[INFO] you joined the lobby");
-            }
+            case Join -> {}
             default -> throw new RuntimeException("Unhandled event");
         }
     }

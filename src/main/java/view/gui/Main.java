@@ -7,8 +7,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class Main extends Application {
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
+
     private URL getResource(String name){
         URL resource = getClass().getResource(name);
         if(resource == null){
