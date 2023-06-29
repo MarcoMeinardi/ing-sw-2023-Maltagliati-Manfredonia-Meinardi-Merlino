@@ -7,6 +7,11 @@ import network.GlobalClientManager;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Class to construct a serializable scoreboard
+ * Contruct it by giving the `Game` object from which to build
+ * the scoreboard, and send it over network to the clients
+ */
 public class ScoreBoard implements Serializable, Iterable<Score> {
     private enum VictoryType{
         LANDSLIDE,
