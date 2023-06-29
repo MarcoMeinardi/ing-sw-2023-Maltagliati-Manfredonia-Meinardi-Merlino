@@ -52,4 +52,4 @@ Socket connection uses the 8000 port, while 8001 port and 10000 port and above a
 [JavaDoc](docs)
 
 ## UML
-[UML](delivarables/final/uml)
+[UML](deliverables/final/uml)
