@@ -23,6 +23,9 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.logging.Logger;
 
+/**
+ * Class the handles the server-client communications, server-side
+ */
 public class NetworkManager implements NetworkManagerInterface {
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private static NetworkManager instance = null;

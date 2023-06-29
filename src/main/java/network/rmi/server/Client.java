@@ -53,30 +53,58 @@ public class Client implements ClientService, ClientInterface {
         registry.rebind(username, stub);
     }
 
+    /**
+     * Getter for the client's status
+     * @return the client status
+     */
     @Override
     public ClientStatus getStatus() {
         return statusHandler.getStatus();
     }
 
+    /**
+     * Setter for the client's status
+     * @param status the `ClientStatus` to be set to
+     */
     @Override
     public void setStatus(ClientStatus status) {
         logger.info("Setting status of " + username + " to " + status.toString());
         statusHandler.setStatus(status);
     }
+
+    /**
+     * Setter for the client's last valid status
+     * used only for disconnected clients
+     * @param status the `ClientStatus` to be set to
+     */
     @Override
     public void setLastValidStatus(ClientStatus status) {
         logger.info("Setting last valid status of " + username + " to " + status.toString());
         statusHandler.setLastValidStatus(status);
     }
+
+    /**
+     * Add an event to the queue of messages to be sent
+     * @param message the message to send
+     */
     @Override
     public <T extends Serializable> void sendEvent(ServerEvent<T> message){
         serverEvents.add(message);
     }
+
+    /**
+     * Check if a client is disconnected
+     * @return if the client is disconnected
+     */
     @Override
     public boolean isDisconnected() {
         return statusHandler.getStatus() == ClientStatus.Disconnected;
     }
 
+    /**
+     * Setter for the client's call handler
+     * @param handler the function to be set as the new handler
+     */
     @Override
     public void setCallHandler(BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> handler) {
         synchronized (handlerLock){
@@ -84,6 +112,11 @@ public class Client implements ClientService, ClientInterface {
         }
     }
 
+    /**
+     * Getter for the client's username
+     * @return the client username
+     * @throws ClientNotIdentifiedException if the client exists, but has not logged in yet
+     */
     @Override
     public String getUsername() throws ClientNotIdentifiedException {
         if(username == null){
@@ -92,6 +125,10 @@ public class Client implements ClientService, ClientInterface {
         return username;
     }
 
+    /**
+     * Getter for the `lastMessageTime` field
+     * @return the `lastMessageTime` field
+     */
     @Override
     public LocalDateTime getLastMessageTime() {
         synchronized (messageTimeLock){
@@ -99,6 +136,10 @@ public class Client implements ClientService, ClientInterface {
         }
     }
 
+    /**
+     * Getter for the call handler
+     * @return the `callHandler` field
+     */
     @Override
     public BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>> getCallHandler() {
         synchronized (handlerLock){
@@ -106,6 +147,11 @@ public class Client implements ClientService, ClientInterface {
         }
     }
 
+    /**
+     * Call the client handler with the given parameters
+     * @param call the handler funciton parameters
+     * @return a `Result` object containing the result of the handler call
+     */
     @Override
     public Result requestService(Call call) {
         if(statusHandler.getStatus() == ClientStatus.Disconnected){
@@ -119,6 +165,10 @@ public class Client implements ClientService, ClientInterface {
         }
     }
 
+    /**
+     * Ask if there are any events in the queue
+     * @return true if there are any events in the `serverEvents` queue
+     */
     @Override
     public ServerEvent pollEvent() {
         synchronized (messageTimeLock){
@@ -129,6 +179,10 @@ public class Client implements ClientService, ClientInterface {
         }
     }
 
+    /**
+     * Check if the event queue is empty
+     * @return true if the event queue is empty
+     */
     @Override
     public Boolean hasEvent() throws RemoteException {
         synchronized (serverEvents){
@@ -136,6 +190,10 @@ public class Client implements ClientService, ClientInterface {
         }
     }
 
+    /**
+     * Check if the client has been unreachable for more than `TIMEOUT` seconds
+     * @return true if the client is definitely unreachable
+     */
     @Override
     public boolean checkPing(){
         if(statusHandler.getStatus() == ClientStatus.Disconnected){
@@ -158,6 +216,9 @@ public class Client implements ClientService, ClientInterface {
         }
     }
 
+    /**
+     * Set the current client status to the last valid one
+     */
     @Override
     public void recoverStatus(){
         statusHandler.setStatus(statusHandler.getLastValidStatus());

@@ -64,11 +64,20 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
             return instance;
         }
     }
+
+    /**
+     * Check if a client is connected
+     * @return true if the client is present and his status is not 'Disconnected`
+     */
     @Override
     public boolean isClientConnected(String username) {
         return clients.containsKey(username) && !clients.get(username).isDisconnected();
     }
 
+    /**
+     * Get the client witht the given username
+     * @return an optional containing the requested client or empty if not found
+     */
     @Override
     public Optional<ClientInterface> getClient(String username) {
         Optional<ClientInterface> client = Optional.empty();
@@ -78,6 +87,9 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
         return client;
     }
 
+    /**
+     * Wait for the object thread to finish
+     */
     @Override
     public void waitAndClose() {
         try{
@@ -87,6 +99,13 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
         }
     }
 
+    /**
+     * Handle the login request
+     * @param info the login parameters
+     * @param callId the UUID of the call
+     * @return the result of the call as a `Result` object
+     * @throws Exception
+     */
     @Override
     public Result<Serializable> login(Login info, UUID callId) throws Exception {
         String username = info.username();
@@ -123,6 +142,10 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
         return Result.empty(callId);
     }
 
+    /**
+     * Object thread run implementation
+     * Check in a loop if a client is definitely unreachable, in that case, disconnect him
+     */
     @Override
     public void run(){
         boolean running;
@@ -147,6 +170,11 @@ public class ClientManager extends Thread implements ClientManagerInterface, Log
         }
     }
 
+    /**
+     * Check if a given username is already used
+     * @param username the wanted username
+     * @return true if the username is already taken
+     */
     @Override
     public boolean isUsernameTaken(String username) {
         synchronized (clients){

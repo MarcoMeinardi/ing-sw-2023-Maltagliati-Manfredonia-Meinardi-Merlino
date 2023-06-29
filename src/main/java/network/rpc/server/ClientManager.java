@@ -18,6 +18,9 @@ import java.util.logging.Logger;
 
 import static network.Server.SERVER_NAME;
 
+/**
+ * Class that handles the networking part for the client towards the server, server-side
+ */
 public class ClientManager extends Thread implements ClientManagerInterface{
     final private LinkedList<Client> unidentifiedClients = new LinkedList<>();
     final private HashMap<String, Client> identifiedClients = new HashMap<>();

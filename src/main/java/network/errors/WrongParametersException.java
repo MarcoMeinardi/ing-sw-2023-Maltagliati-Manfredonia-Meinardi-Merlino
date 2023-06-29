@@ -1,6 +1,9 @@
 package network.errors;
 
 
+/**
+ * Exception thrown when the parameters of a method are not the expected ones
+ */
 public class WrongParametersException extends Exception{
 
     /**

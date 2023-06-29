@@ -3,6 +3,9 @@ package network;
 
 import java.util.Optional;
 
+/**
+ * Singleton class that holds the client manager for both RMI and RPC
+ */
 public class GlobalClientManager implements ClientManagerInterface{
     private static GlobalClientManager instance = null;
     private final ClientManagerInterface rmiClientManager;
