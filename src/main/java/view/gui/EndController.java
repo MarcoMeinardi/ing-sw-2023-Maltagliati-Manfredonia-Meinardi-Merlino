@@ -253,16 +253,16 @@ public class EndController implements Initializable {
         }
         else{
             if(player == 1){
-                cockadeImage1.setImage(new Image("/img/scoring tokens/transparent.png"));
+                cockadeImage1.setVisible(false);
             }
             else if(player == 2){
-                cockadeImage2.setImage(new Image("/img/scoring tokens/transparent.png"));
+                cockadeImage2.setVisible(false);
             }
             else if(player == 3){
-                cockadeImage3.setImage(new Image("/img/scoring tokens/transparent.png"));
+                cockadeImage3.setVisible(false);
             }
             else if(player == 4){
-                cockadeImage4.setImage(new Image("/img/scoring tokens/transparent.png"));
+                cockadeImage4.setVisible(false);
             }
         }
     }
