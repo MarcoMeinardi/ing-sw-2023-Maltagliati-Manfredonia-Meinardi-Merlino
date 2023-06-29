@@ -1,0 +1,1457 @@
+@startuml
+skinparam linetype ortho
+
+
+package controller {
+    package game{
+        class GameController {
+            + GameController(File, Lobby):
+            + GameController(Lobby):
+            - logger: Logger
+            - someoneCompleted: boolean
+            - saveFile: File
+            - pauseCounter: int
+            - lobby: Lobby
+            - DISCONNECTION_CHECK_INTERVAL: long
+            - currentPlayer: Player
+            - clientManager: ClientManagerInterface
+            - playerDisconnected: ArrayList<Boolean>
+            - db: DataBase
+            - isPaused: boolean
+            - playerIterator: Iterator<Player>
+            - game: Game
+            - SOLE_SURVIVOR_TIMER: long
+            - disconnectionChecker: Thread
+            - checkDisconnections(): void
+            - checkRefillTable(): boolean
+            - doMove(Player, ArrayList<Point>, int): void
+            - saveGame(): void
+            - addPersonalCockade(Player): void
+            + handleGame(Call, ClientInterface): Result
+            + exitGame(boolean): void
+            - addFirstToFinish(Player): void
+            - nextNotDisconnected(): Optional<Player>
+            - refillTable(): void
+            + getPlayers(): ArrayList<Player>
+            - completePlayerTurn(Player): boolean
+            + getGame(): Game
+            - addCommonCockade(Player, ArrayList<Cockade>, ArrayList<Integer>): void
+            + globalUpdate(ServerEvent): void
+            + getPlayer(String): Player
+            - deleteSave(): void
+            + getGameInfo(Player): GameInfo
+        }
+        class GamePausedException {
+            + GamePausedException():
+        }
+        class NotYourTurnException {
+            + NotYourTurnException():
+        }
+    }
+    package lobby{
+
+        class Lobby {
+            + Lobby(String, String):
+            - name: String
+            - players: ArrayList<String>
+            + removePlayer(String): void
+            + getName(): String
+            + getPlayers(): ArrayList<String>
+            + isHost(String): boolean
+            + getNumberOfPlayers(): int
+            + addPlayer(String): void
+        }
+        class LobbyAlreadyExistsException {
+            + LobbyAlreadyExistsException():
+        }
+        class LobbyController {
+            - LobbyController():
+            - db: DataBase
+            - lobbies: HashMap<String, Lobby>
+            - instance: LobbyController
+            - clientManager: ClientManagerInterface
+            - SAVESTATES_DIRECTORY: String
+            - SAVESTATES_PREFIX: String
+            - games: ArrayList<GameController>
+            + exitGame(GameController): void
+            + getInstance(): LobbyController
+            + searchGame(String): Optional<GameController>
+            + getLobbies(): ArrayList<Lobby>
+            + findPlayerLobby(String): Lobby
+            + createLobby(String, String): Lobby
+            - loadGame(Lobby): void
+            + startGame(Lobby): void
+            - globalUpdate(Lobby, ServerEvent): void
+            + leaveLobby(String): void
+            + joinLobby(String, String): Lobby
+            + run(): void
+            + handleInLobby(Call<Serializable>, ClientInterface): Result<Serializable>
+            + endGame(GameController): void
+            + handleLobbySearch(Call<Serializable>, ClientInterface): Result<Serializable>
+        }
+        class LobbyFullException {
+            + LobbyFullException():
+        }
+        class LobbyNotFoundException {
+            + LobbyNotFoundException():
+        }
+        class NotEnoughPlayersException {
+            + NotEnoughPlayersException():
+        }
+        class PlayerAlreadyInLobbyException {
+            + PlayerAlreadyInLobbyException():
+        }
+        class PlayerNotInLobbyException {
+            + PlayerNotInLobbyException():
+        }
+    }
+    class DataBase {
+        - DataBase():
+        - instance: DataBase
+        - DB_NAME: String
+        - loadDb(): DataBase
+        + write(): void
+        + getInstance(): DataBase
+    }
+
+    class GameNotFoundException {
+        + GameNotFoundException():
+    }
+
+    class IdentityTheftException {
+        + IdentityTheftException():
+    }
+    class MessageTooLongException {
+        + MessageTooLongException():
+    }
+    class NotHostException {
+        + NotHostException():
+    }
+}
+
+package model{
+    class Card {
+        + Card(Type):
+        + Card(Type, int):
+        - imageIndex: int
+        - type: Type
+        + equals(Object): boolean
+        + getImageIndex(): int
+        + getType(): Type
+    }
+    class CardsDeck {
+        + CardsDeck():
+        + TOTAL_CARDS: int
+        + CARDS_PER_TYPE: int
+        + IMAGES_PER_TYPE: int
+        - cards: Stack<Card>
+        + draw(): Optional<Card>
+        + size(): int
+    }
+    entity Cell << record >> {
+        + Cell(int, int, Type):
+        - x: int
+        - card: Type
+        - y: int
+        + x(): int
+        + card(): Type
+        + y(): int
+    }
+    entity Cockade << record >> {
+        + Cockade(String, int):
+        - points: int
+        - name: String
+        + points(): int
+        + name(): String
+    }
+    class CommonObjective {
+        + CommonObjective(SaveCommonObjective, int):
+        + CommonObjective(String, int, Function<Shelf, Boolean>):
+        - checkCompleted: Function<Shelf, Boolean>
+        - cornersX: int[]
+        - value: int
+        - pointDecrement: int
+        - INITIAL_VALUE: int
+        - cornersY: int[]
+        - POINT_DECREMENT_2_PLAYERS: int
+        - squareDx: int[]
+        - squareDy: int[]
+        - POINT_DECREMENT: int
+        + N_COMMON_OBJECTIVES: int
+        - completedBy: HashSet<String>
+        - equalCorners(Shelf): Boolean
+        - eightEquals(Shelf): Boolean
+        - fourGroupsOfFourCards(Shelf): Boolean
+        - twoColumnsOfSixDifferentCards(Shelf): Boolean
+        - groupsOfAtLeastNCards(Shelf, int): int
+        + generateCommonObjectives(int): ArrayList<CommonObjective>
+        - sixGroupsOfTwoCards(Shelf): Boolean
+        + twoSquareGroups(Shelf): Boolean
+        - fourRowsOfAtMostThreeDifferentCards(Shelf): Boolean
+        - stairsShape(Shelf): Boolean
+        - twoRowsWithFiveDifferentCards(Shelf): Boolean
+        + generateAllCommonObjectives(int): ArrayList<CommonObjective>
+        - fiveCardsInDiagonal(Shelf): Boolean
+        + getValue(): int
+        + getSavable(): SaveCommonObjective
+        + isCompleted(Shelf, String): Optional<Cockade>
+        - equalsX(Shelf): Boolean
+        - threeColumnsOfAtMostThreeDifferentCards(Shelf): Boolean
+    }
+    class Game {
+        + Game(ArrayList<String>):
+        + Game(SaveState):
+        - tabletop: TableTop
+        - commonObjectives: ArrayList<CommonObjective>
+        - iteratorIndex: Optional<Integer>
+        - players: ArrayList<Player>
+        - playerIterator: PlayerIterator
+        + iterator(): Iterator<Player>
+        + getPlayers(): ArrayList<Player>
+        + finalRanks(): ArrayList<Player>
+        + loadGame(File): Game
+        + getTabletop(): TableTop
+        - getSaveState(): SaveState
+        + getCommonObjectives(): ArrayList<CommonObjective>
+        + saveGame(File): void
+    }
+    class InvalidMoveException {
+        + InvalidMoveException(String):
+    }
+    class Objective {
+        + Objective(String):
+        # name: String
+        + equals(Object): boolean
+        + getName(): String
+    }
+    class PersonalObjective {
+        + PersonalObjective(String, Cell[]):
+        + PersonalObjective(String):
+        - points: int[]
+        + MARKER: String
+        - cellsCheck: Cell[]
+        + getCellsCheck(): Cell[]
+        + isCompleted(Shelf): Optional<Cockade>
+        + generateAllPersonalObjectives(): ArrayList<PersonalObjective>
+        + generatePersonalObjectives(int): PersonalObjective[]
+    }
+    class Player {
+        + Player(String, PersonalObjective):
+        + Player(SavePlayer):
+        - points: int
+        - personalObjective: PersonalObjective
+        - name: String
+        - shelf: Shelf
+        - cockades: ArrayList<Cockade>
+        + getShelf(): Shelf
+        + getPersonalObjective(): PersonalObjective
+        + equals(Object): boolean
+        + addCockade(Cockade): void
+        + getCockades(): ArrayList<Cockade>
+        + getName(): String
+        + getPoints(): int
+        + getSavePlayer(): SavePlayer
+    }
+    class PlayerIterator {
+        + PlayerIterator(Game):
+        + PlayerIterator(Game, int):
+        - index: int
+        - maxIndex: int
+        - game: Game
+        + getIndex(): int
+        + hasNext(): boolean
+        + next(): Player
+    }
+    entity Point << record >> {
+        + Point(int, int):
+        - x: int
+        - y: int
+        + x(): int
+        + distance(Point): int
+        + y(): int
+    }
+    entity SaveCommonObjective << record >> {
+        + SaveCommonObjective(String, int, HashSet<String>):
+        - name: String
+        - points: int
+        - completedBy: HashSet<String>
+        + points(): int
+        + completedBy(): HashSet<String>
+        + name(): String
+    }
+    entity SavePlayer << record >> {
+        + SavePlayer(String, String, Card[][], ArrayList<Cockade>, int):
+        - personalObjective: String
+        - cockades: ArrayList<Cockade>
+        - name: String
+        - shelf: Card[][]
+        - points: int
+        + cockades(): ArrayList<Cockade>
+        + points(): int
+        + shelf(): Card[][]
+        + name(): String
+        + personalObjective(): String
+    }
+    entity SaveState << record >> {
+        + SaveState(SaveTableTop, ArrayList<SavePlayer>, ArrayList<SaveCommonObjective>, int):
+        - commonObjectives: ArrayList<SaveCommonObjective>
+        - tabletop: SaveTableTop
+        - players: ArrayList<SavePlayer>
+        - playerIteratorIndex: int
+        + commonObjectives(): ArrayList<SaveCommonObjective>
+        + playerIteratorIndex(): int
+        + tabletop(): SaveTableTop
+        + players(): ArrayList<SavePlayer>
+    }
+    entity SaveTableTop << record >> {
+        + SaveTableTop(Card[][], CardsDeck):
+        - grid: Card[][]
+        - deck: CardsDeck
+        + deck(): CardsDeck
+        + grid(): Card[][]
+    }
+    entity Score << record >> {
+        + Score(String, int, String):
+        - username: String
+        - score: int
+        - title: String
+        + score(): int
+        + title(): String
+        + username(): String
+        + compareTo(Score): int
+    }
+    class ScoreBoard {
+        + ScoreBoard(Game):
+        - winner: String
+        - soleSurvivor: String
+        - mostGames: String
+        - victoryType: VictoryType
+        - mostTrophies: String
+        - mostPlants: String
+        - mostCats: String
+        - mostBooks: String
+        - mostFrames: String
+        - cockades: Map<String, ArrayList<Cockade>>
+        - scores: ArrayList<Score>
+        + getCockades(String): ArrayList<Cockade>
+        + iterator(): Iterator<Score>
+        - createScore(Player): Score
+        + size(): int
+        - findSoleSurvivor(ArrayList<Player>): String?
+        - findVictoryType(ArrayList<Player>): VictoryType
+    }
+    class Shelf {
+        + Shelf(Optional<Card>[][]):
+        + Shelf(Card[][]):
+        + Shelf():
+        - slots: Optional<Card>[][]
+        + COLUMNS: int
+        - groupPoints: int[]
+        + ROWS: int
+        - dy: int[]
+        - dx: int[]
+        + getGroupSize(int, int, Type, boolean[][]): int
+        + insertTest(int, int, Card): void
+        + getFinishCockade(): Optional<Cockade>
+        + getCard(int, int): Optional<Card>
+        + getGroupsCockades(): ArrayList<Cockade>
+        + isFull(): boolean
+        + insert(int, ArrayList<Card>): void
+        + countCard(Type): int
+        - getHighest(int): int
+        + getShelf(): Optional<Card>[][]
+        + getSerializable(): Card[][]
+    }
+    class TableTop {
+        + TableTop(SaveTableTop, int):
+        + TableTop(int):
+        - table: Optional<Card>[][]
+        - dy: int[]
+        + PLAYER_NUMBER_MASK: int[][]
+        - nPlayers: int
+        - deck: CardsDeck
+        - dx: int[]
+        + MAX_PLAYERS: int
+        + SIZE: int
+        + isUsed(int, int): boolean
+        + getDeck(): CardsDeck
+        + getSaveTableTop(): SaveTableTop
+        + isPickable(int, int): boolean
+        + needRefill(): boolean
+        + pickCard(int, int): Card
+        + getSerializable(): Card[][]
+        + getCard(int, int): Optional<Card>
+        + fillTable(): void
+    }
+    enum Type << enumeration >> {
+        + Type():
+        + Plant:
+        + Cat:
+        + Book:
+        + Game:
+        + Frame:
+        + Trophy:
+        + values(): Type[]
+        + valueOf(String): Type
+    }
+    enum VictoryType << enumeration >> {
+        + VictoryType():
+        + LANDSLIDE:
+        + BALANCED:
+        + TOO_CLOSE:
+        + valueOf(String): VictoryType
+        + values(): VictoryType[]
+    }
+}
+package view{
+    package gui{
+        class CommonObjController {
+            + CommonObjController():
+            - errorLabel: Label
+            - pane: AnchorPane
+            - firstObj: Label
+            - logger: Logger
+            - secObj: Label
+            + initialize(URL, ResourceBundle): void
+        }
+        class CreateLobbyController {
+            + CreateLobbyController():
+            - serverThread: Thread
+            - state: ClientStatus
+            - WIDTH: int
+            - scene: Scene
+            - logger: Logger
+            - messageDisplay: Label
+            - stage: Stage
+            - btnSelect: Button
+            - HEIGHT: int
+            - nameUser: Text
+            - nameLobby: TextField
+            - handleEvent(): void
+            + initialize(URL, ResourceBundle): void
+            - returnToLoginMessage(): void
+            - createLobby(ActionEvent): void
+        }
+        class EndController {
+            + EndController():
+            - logger: Logger
+            - cockadesList2: ListView
+            - cockadeImage3: ImageView
+            - stage: Stage
+            - WIDTH: int
+            - messageLabel1: Label
+            - serverThread: Thread
+            - messageLabel3: Label
+            - cockadeImage4: ImageView
+            - messageLabel2: Label
+            - titleLabel: Label
+            - cockadesList1: ListView
+            - HEIGHT: int
+            - cockadesList4: ListView
+            - cockadeImage2: ImageView
+            - scoreBoard: ScoreBoard
+            - cockadesList3: ListView
+            - username: String
+            - messageLabel4: Label
+            - scene: Scene
+            - cockadeImage1: ImageView
+            - returnToLoginMessage(): void
+            - addCockadeToList(ListView, Cockade): void
+            - addChangeOfImage(ListView, int): void
+            - goToLobbies(ActionEvent): void
+            + initialize(URL, ResourceBundle): void
+            - showScoreBoard(): void
+            - handleEvent(): void
+            - handleCockadeSelection(int, String): void
+        }
+        class GameData {
+            + GameData(GameInfo, String):
+            - me: String
+            - commonObjectivesPoints: ArrayList<Integer>
+            - myShelf: Shelf
+            - shelves: ArrayList<Shelf>
+            - commonObjectives: ArrayList<String>
+            - nPlayers: int
+            - myPersonalObjective: PersonalObjective
+            - currentPlayer: String
+            - scoreBoard: ScoreBoard
+            - playersNames: ArrayList<String>
+            - tableTop: Optional[][]
+            - updateTableTop(Card[][]): void
+            + getCommonObjectives(): ArrayList<String>
+            + getMe(): String
+            + getShelves(): ArrayList<Shelf>
+            + getTableTop(): Optional[][]
+            + setScoreBoard(ScoreBoard): void
+            + getPlayersNames(): ArrayList<String>
+            + getMyPersonalObjective(): PersonalObjective
+            + getScoreBoard(): ScoreBoard
+            + update(Update): void
+            + getMyShelf(): Shelf
+            + getCurrentPlayer(): String
+        }
+        class GameViewController {
+            + GameViewController():
+            - logger: Logger
+            - cardOffSet: int
+            - printPersonalObjectivesButton: Button
+            + gameData: GameData
+            - imageToIndices: Map<ImageView, int[]>
+            - noSureButton: RadioButton
+            - endGame: Button
+            - shelfOffSetY: int
+            - sureChoiceButton: Button
+            - cardSize: int
+            - stage: Stage
+            - sureLabel: Label
+            - shelfCardSize: int
+            - columnInput: TextField
+            - HEIGHT: int
+            + networkManager: NetworkManagerInterface
+            - yourTurn: boolean
+            - POPUP_WIDTH: int
+            + sendMessageButton: Button
+            + state: ClientStatus
+            - messageInput: TextField
+            - messageLabel: Label
+            - shelfCardStepX: int
+            - cardStep: int
+            - shelfColumns: int
+            - selectedImages: List<ImageView>
+            - SIZE: int
+            - shelfRows: int
+            - serverThread: Thread
+            - scene: Scene
+            - WIDTH: int
+            - shelfCardStepY: int
+            - players: ListView
+            - username: String
+            - chat: ListView
+            - yesSureButton: RadioButton
+            - printAllShelvesButton: Button
+            - SHELVES_POPUP_WIDTH: int
+            - SHELVES_POPUP_HEIGHT: int
+            - printCommonObjectivesButton: Button
+            - POPUP_HEIGHT: int
+            - isPaused: boolean
+            - shelfOffSetX: int
+            + lobby: Lobby
+            - pane: AnchorPane
+            - printEnd(): void
+            + initialize(URL, ResourceBundle): void
+            - endTheGame(ActionEvent): void
+            - putImageOnScene(String, int, int, int, int, int, int, int, int, boolean): void
+            - startLobby(): void
+            - tryMove(ActionEvent): void
+            + getGameData(): GameData
+            - handleCardSelection(ImageView): void
+            - printAllShelvesObjectivesButton(ActionEvent): void
+            - printPersonalObjectivesButton(ActionEvent): void
+            - afterStopConfirmFail(): void
+            - goToMessage(): void
+            - returnToLoginMessage(): void
+            - handleEvent(): void
+            - fillShelf(Shelf): void
+            - submitChoice(ActionEvent): void
+            - sendMessage(ActionEvent): void
+            - fillScene(Optional<Card>[][]): void
+            - removeImages(boolean): void
+            - printCommonObjectivesButton(ActionEvent): void
+        }
+        class LobbyViewController {
+            + LobbyViewController():
+            - HEIGHT: int
+            - quitLobby: Button
+            + lobby: Lobby
+            - scene: Scene
+            - loadButton: Button
+            - serverThread: Thread
+            ~ username: String
+            - players: ListView
+            - startButton: Button
+            + networkManager: NetworkManagerInterface
+            + state: ClientStatus
+            - stage: Stage
+            - messageInput: TextField
+            - WIDTH: int
+            - alreadyShowedHostMessage: boolean
+            + gameInfo: GameInfo
+            - chat: ListView
+            - logger: Logger
+            - descriptorLabel: Label
+            - sendMessageButton: Button
+            - startGame(ActionEvent): void
+            - returnToLoginMessage(): void
+            - startLobby(): void
+            - switchToGame(): void
+            - loadGame(ActionEvent): void
+            - handleEvent(): void
+            - sendMessage(ActionEvent): void
+            + initialize(URL, ResourceBundle): void
+            - updateLobby(): void
+            - quitLobby(ActionEvent): void
+            - showStart(): void
+        }
+        class LoginController {
+            + LoginController():
+            + port: int
+            + lobby: Lobby
+            - logger: Logger
+            - WIDTH: int
+            - stage: Stage
+            + state: ClientStatus
+            + username: String
+            + networkManager: NetworkManagerInterface
+            - RMIButton: RadioButton
+            + gameInfo: GameInfo
+            - loginButton: Button
+            - scene: Scene
+            + ip: String
+            - errorLabel: Label
+            - selectedIp: TextField
+            - HEIGHT: int
+            - namePlayer: TextField
+            + initialize(URL, ResourceBundle): void
+            - switchToGame(): void
+            - switchToMainMenu(ActionEvent): void
+        }
+        class Main {
+            + Main():
+            - btnPlay1: boolean
+            - logger: Logger
+            - getResource(String): URL
+            + main(String[]): void
+            + start(Stage): void
+        }
+        class MainMenuController {
+            + MainMenuController():
+            - WIDTH: int
+            - state: ClientStatus
+            - noFound: Label
+            - scene: Scene
+            - stage: Stage
+            - HEIGHT: int
+            - nameUser: Text
+            - logger: Logger
+            - serverThread: Thread
+            - listView: ListView<String>
+            + MainMenuController(): void
+            + initialize(URL, ResourceBundle): void
+            - handleEvent(): void
+            - askNetForLobbies(): void
+            - joinLobby(ActionEvent): void
+            - returnToLoginMessage(): void
+            - switchToCreateLobby(ActionEvent): void
+            - refreshLobbies(ActionEvent): void
+        }
+        class LoginController {
+            + LoginController():
+            + port: int
+            + lobby: Lobby
+            - logger: Logger
+            - WIDTH: int
+            - stage: Stage
+            + state: ClientStatus
+            + username: String
+            + networkManager: NetworkManagerInterface
+            - RMIButton: RadioButton
+            + gameInfo: GameInfo
+            - loginButton: Button
+            - scene: Scene
+            + ip: String
+            - errorLabel: Label
+            - selectedIp: TextField
+            - HEIGHT: int
+            - namePlayer: TextField
+            + initialize(URL, ResourceBundle): void
+            - switchToGame(): void
+            - switchToMainMenu(ActionEvent): void
+        }
+        class MessageReturnToLoginController {
+            + MessageReturnToLoginController():
+            - stage: Stage
+            - scene: Scene
+            - HEIGHT: int
+            - WIDTH: int
+            - messageLabel: Label
+            - backToLogin(ActionEvent): void
+        }
+        class MessageStoppedGameController {
+            + MessageStoppedGameController():
+            - scene: Scene
+            - stage: Stage
+            - HEIGHT: int
+            - WIDTH: int
+            - messageLabel: Label
+            - backToLobbies(ActionEvent): void
+            + initialize(URL, ResourceBundle): void
+        }
+        class MessageStoppedGameController {
+            + MessageStoppedGameController():
+        }
+        class PersonalObjController {
+            + PersonalObjController():
+            - objImage: ImageView
+            + initialize(URL, ResourceBundle): void
+        }
+        class ShelvesController {
+            + ShelvesController():
+            - shelves: ArrayList<Shelf>
+            - shelfCardSize: int
+            - pane: AnchorPane
+            - player2: Label
+            - shelfColumns: int
+            - player3: Label
+            - shelf4: ImageView
+            - shelfCardStepX: int
+            - shelfCardStepY: int
+            - player: Label
+            - shelf3: ImageView
+            - playersNames: ArrayList<String>
+            - player4: Label
+            - shelfRows: int
+            + initialize(URL, ResourceBundle): void
+            - putImageOnScene(String, int, int, int, int, int, int, int, int): void
+            - fillShelf(Shelf, int): void
+        }
+        class Utils {
+            + Utils():
+            - logger: Logger
+            + CHAT_HEIGHT: int
+            + changeLabel(Label, String): void
+            + addMessageToChat(String, Message, ListView): void
+            + sendMessage(String, NetworkManagerInterface, TextField, ListView, ListView, Label): void
+            + cardToImageName(Card): String
+        }
+    }
+    package cli{
+        class CLI{
+            - CLI():
+            - isHost: boolean
+            - needQuit: boolean
+            - lobby: Lobby
+            - instance: CLI
+            - IO: Utils
+            - isPaused: boolean
+            + networkManager: NetworkManagerInterface
+            - game: CLIGame
+            - logger: Logger
+            - doPrint: boolean
+            - yourTurn: boolean
+            - port: int
+            - ip: String
+            - gameStarted: boolean
+            - state: ClientStatus
+            - username: String
+            - connect(): ClientStatus
+            - askIpAndMethod(): void
+            - inLobby(): ClientStatus
+            - stringToPoint(String): Point
+            - inGame(): ClientStatus
+            - handleEvent(): ClientStatus
+            + run(): void
+            + getInstance(): CLI
+            - sendMessage(): void
+            - handleStopGame(): ClientStatus
+            - printWelcome(): void
+            - handlePickCard(): ClientStatus
+            - checkCanStartGame(): boolean
+            - waitGlobalUpdate(): ClientStatus
+            - printEndGame(ScoreBoard): void
+            - searchLobby(): ClientStatus
+            - login(): ClientStatus
+        }
+        class CLIGame {
+            + CLIGame(GameInfo, String):
+            ~ nPlayers: int
+            ~ commonObjectivesPoints: ArrayList<Integer>
+            ~ tableTop: Optional<Card>[][]
+            ~ me: String
+            ~ players: ArrayList<String>
+            ~ commonObjectives: ArrayList<String>
+            ~ personalObjective: PersonalObjective
+            ~ shelves: ArrayList<Shelf>
+            ~ myShelf: Shelf
+            - getCorner(int, int): String
+            - updateTableTop(Card[][]): void
+            - printShelf(Shelf): void
+            + printAllShelves(): void
+            + printTableTop(): void
+            - cardToChar(Card): String
+            + getNumberOfPlayers(): int
+            + printCommonObjectives(): void
+            + printYourShelf(): void
+            + update(Update): void
+            + printPersonalObjective(): void
+        }
+        enum ConnectionModeOptions << enumeration >> {
+            + ConnectionModeOptions():
+            + SOCKET:
+            + RMI:
+            - needHost: boolean
+            - needTurn: boolean
+            + needHost(): boolean
+            + needTurn(): boolean
+            + values(): ConnectionModeOptions[]
+            + valueOf(String): ConnectionModeOptions
+        }
+        enum InGameOptions << enumeration >> {
+            - InGameOptions(boolean, boolean):
+            - InGameOptions(boolean):
+            - InGameOptions():
+            + SEND_MESSAGE:
+            + SHOW_ALL_SHELVES:
+            + SHOW_PERSONAL_OBJECTIVE:
+            + SHOW_TABLETOP:
+            - needTurn: boolean
+            + SHOW_COMMON_OBJECTIVES:
+            - needHost: boolean
+            + SHOW_YOUR_SHELF:
+            + PICK_CARDS:
+            + STOP_GAME:
+            + values(): InGameOptions[]
+            + valueOf(String): InGameOptions
+            + needHost(): boolean
+            + needTurn(): boolean
+        }
+        enum InLobbyOptions << enumeration >> {
+            - InLobbyOptions():
+            - InLobbyOptions(boolean):
+            - needHost: boolean
+            + LEAVE_LOBBY:
+            - needTurn: boolean
+            + START_GAME:
+            + LOAD_GAME:
+            + SEND_MESSAGE:
+            + LIST_PLAYERS:
+            + needHost(): boolean
+            + values(): InLobbyOptions[]
+            + valueOf(String): InLobbyOptions
+            + needTurn(): boolean
+        }
+        class NonBlockingIO {
+            - NonBlockingIO():
+            - isAskingLock: Object
+            - scanner: Scanner
+            - isAvailableLock: Object
+            - isAvailable: boolean
+            - networkManager: NetworkManagerInterface
+            - isAsking: boolean
+            - result: String
+            - instance: NonBlockingIO
+            + ask(): void
+            + run(): void
+            + getResult(): String
+            + setNetworkManager(NetworkManagerInterface): void
+            + isAvailable(): boolean
+            + getInstance(): NonBlockingIO
+        }
+        interface OptionsInterface << interface >> {
+            + needHost(): boolean
+            + needTurn(): boolean
+        }
+        enum SelectLobbyOptions << enumeration >> {
+            + SelectLobbyOptions():
+            + LIST_LOBBIES:
+            + QUIT:
+            + CREATE_LOBBY:
+            - needTurn: boolean
+            - needHost: boolean
+            + JOIN_LOBBY:
+            + needTurn(): boolean
+            + valueOf(String): SelectLobbyOptions
+            + values(): SelectLobbyOptions[]
+            + needHost(): boolean
+        }
+        class Utils {
+            + Utils():
+            - networkManager: NetworkManagerInterface
+            - IO: NonBlockingIO
+            + askOptionOrEvent(Class<E>, boolean, boolean, boolean): Optional<E>
+            + askStringOrEvent(): Optional<String>
+            + askInt(String): int
+            - enumToOption(E): String
+            + askOption(Class<E>, boolean, boolean): E
+            + askInt(): int
+            + askOption(Class<E>): E
+            + askStringOrEvent(String): Optional<String>
+            + askString(String): String
+            + askIntOrEvent(String): Optional<Integer>
+            + setNetworkManager(NetworkManagerInterface): void
+            + askIntOrEvent(): Optional<Integer>
+            + askString(): String
+        }
+    }
+}
+package network{
+    entity Call<P> << record >> {
+        + Call(P, Service, UUID):
+        - params: P
+        - service: Service
+        - id: UUID
+        + params(): P
+        + service(): Service
+        + id(): UUID
+    }
+    interface ClientInterface << interface >>{
+        + checkPing(): boolean
+        + getStatus(): ClientStatus
+        + getLastMessageTime(): LocalDateTime
+        + sendEvent(ServerEvent<T>): void
+        + setCallHandler(BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>>): void
+        + getCallHandler(): BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>>
+        + setLastValidStatus(ClientStatus): void
+        + isDisconnected(): boolean
+        + recoverStatus(): void
+        + setStatus(ClientStatus): void
+        + getUsername(): String
+    }
+    interface ClientManagerInterface << interface >>{
+        + isUsernameTaken(String): boolean
+        + getInstance(): ClientManagerInterface
+        + isClientConnected(String): boolean
+        + getClient(String): Optional<ClientInterface>
+        + waitAndClose(): void
+    }
+    enum ClientStatus << enumeration >> {
+        + ClientStatus():
+        + InLobbySearch:
+        + Idle:
+        + Disconnected:
+        + InLobby:
+        + InGame:
+        + valueOf(String): ClientStatus
+        + values(): ClientStatus[]
+    }
+    class ClientStatusHandler {
+        + ClientStatusHandler():
+        ~ lastValidStatus: ClientStatus
+        ~ lastValidStatusLock: Object
+        ~ statusLock: Object
+        ~ status: ClientStatus
+        + getStatus(): ClientStatus
+        + setLastValidStatus(ClientStatus): void
+        + setStatus(ClientStatus): void
+        + getLastValidStatus(): ClientStatus
+    }
+    class Function<P, R> {
+        + Function(P, Service):
+        - params: P
+        - resultLock: Object
+        - result: Optional<Result<R>>
+        - service: Service
+        - id: UUID
+        + getCall(): Call<P>
+        + waitResult(long): Result<R>
+        + setResult(Result<R>): void
+        + getParams(): P
+        + call(ObjectOutputStream): Function
+        + waitResult(): Result<R>
+        + id(): UUID
+        + checkResult(): Optional<Result<R>>
+    }
+    class GlobalClientManager {
+        - GlobalClientManager():
+        - rmiClientManager: ClientManagerInterface
+        - rpcClientManager: ClientManagerInterface
+        - instance: GlobalClientManager
+        + getInstance(): ClientManagerInterface
+        + isUsernameTaken(String): boolean
+        + getClient(String): Optional<ClientInterface>
+        + waitAndClose(): void
+        + isClientConnected(String): boolean
+    }
+    interface NetworkManagerInterface << interface >> {
+        + lobbyList(): Function<Boolean, ArrayList<Lobby>>
+        + reconnect(): void
+        + lobbyLeave(): Function<Boolean, Boolean>
+        + chat(Message): Function<Message, Boolean>
+        + gameStart(): Function<Boolean, Boolean>
+        + connect(Server): void
+        + getInstance(): NetworkManagerInterface
+        + isConnected(): boolean
+        + updateLobby(): Function<Boolean, Lobby>
+        + lobbyCreate(LobbyCreateInfo): Function<LobbyCreateInfo, Lobby>
+        + lobbyJoin(String): Function<String, Lobby>
+        + exitGame(): Function<Boolean, Boolean>
+        + gameLoad(): Function<Boolean, Boolean>
+        + cardSelect(CardSelect): Function<CardSelect, Boolean>
+        + getEvent(): Optional<ServerEvent>
+        + disconnect(): void
+        + join(): void
+        + login(Login): Function<Login, Serializable>
+        + hasEvent(): boolean
+    }
+    class Result<T> {
+        - Result(Exception, T, UUID):
+        - value: T
+        - exception: Exception
+        - id: UUID
+        + unwrap(): T
+        + get(): Optional<T>
+        + equals(Object): boolean
+        + unwrapOrElseThrow(Exception): T
+        + serverPush(ServerEvent): Result<Serializable>
+        + isOk(): boolean
+        + ok(T, UUID): Result<T>
+        + empty(UUID): Result<Serializable>
+        + isEvent(): boolean
+        + err(Exception, UUID): Result<T>
+        + unwrapOrElse(T): T
+        + getException(): Optional<Exception>
+        + isErr(): boolean
+        + id(): UUID
+    }
+    entity Server << record >> {
+        + Server(String, int):
+        - ip: String
+        - port: int
+        + SERVER_NAME: String
+        + ip(): String
+        + port(): int
+    }
+    class ServerEvent<T> {
+        + ServerEvent(Type, T):
+        - type: Type
+        - data: T
+        + ServerDisconnect(): ServerEvent
+        + getData(): T
+        + Error(Exception): ServerEvent
+        + ExitGame(): ServerEvent
+        + Join(String): ServerEvent
+        + Start(GameInfo): ServerEvent
+        + Start(): ServerEvent
+        + NewMessage(Message): ServerEvent
+        + Leave(String): ServerEvent
+        + getType(): Type
+        + Update(Update): ServerEvent
+        + End(ScoreBoard): ServerEvent
+        + LobbyUpdate(ArrayList<String>): ServerEvent
+    }
+    enum Service << enumeration >> {
+        + Service():
+        + Ping:
+        + ExitGame:
+        + LobbyLeave:
+        + LobbyList:
+        + LobbyCreate:
+        + GameChatSend:
+        + GameStart:
+        + LobbyUpdate:
+        + GameLoad:
+        + Login:
+        + CardSelect:
+        + LobbyJoin:
+        + valueOf(String): Service
+        + values(): Service[]
+    }
+    enum Type << enumeration >> {
+        + Type():
+        + ExitGame:
+        + Join:
+        + ServerDisconnect:
+        + End:
+        + Leave:
+        + Start:
+        + Update:
+        + NewMessage:
+        + Error:
+        + LobbyUpdate:
+        + valueOf(String): Type
+        + values(): Type[]
+    }
+    class WrongServiceException {
+        + WrongServiceException():
+    }
+    package errors{
+        class ClientAlreadyConnectedException {
+            + ClientAlreadyConnectedException():
+        }
+        class ClientAlreadyIdentifiedException {
+            + ClientAlreadyIdentifiedException():
+        }
+        class ClientConnectedButNotFoundException {
+            + ClientConnectedButNotFoundException():
+        }
+        class ClientNeverConnectedException {
+            + ClientNeverConnectedException():
+        }
+        class ClientNotFoundException {
+            + ClientNotFoundException():
+        }
+        class ClientNotIdentifiedException {
+            + ClientNotIdentifiedException():
+        }
+        class DisconnectedClientException {
+            + DisconnectedClientException():
+        }
+        class InvalidUsernameException {
+            + InvalidUsernameException():
+        }
+        class ServerDisconnectedException {
+            + ServerDisconnectedException():
+        }
+        class WrongParametersException {
+            + WrongParametersException(String, String, String):
+        }
+    }
+    package parameters{
+        entity CardSelect << record >> {
+            + CardSelect(int, ArrayList<Point>):
+            - column: int
+            - selectedCards: ArrayList<Point>
+            + selectedCards(): ArrayList<Point>
+            + column(): int
+        }
+        entity GameInfo << record >> {
+            + GameInfo(Lobby, Card[][], ArrayList<String>, ArrayList<Card[][]>, ArrayList<String>, ArrayList<Integer>, String, String):
+            - commonObjectivesPoints: ArrayList<Integer>
+            - tableTop: Card[][]
+            - personalObjective: String
+            - shelves: ArrayList<Card[][]>
+            - commonObjectives: ArrayList<String>
+            - lobby: Lobby
+            - players: ArrayList<String>
+            - currentPlayer: String
+            + tableTop(): Card[][]
+            + commonObjectives(): ArrayList<String>
+            + currentPlayer(): String
+            + shelves(): ArrayList<Card[][]>
+            + players(): ArrayList<String>
+            + personalObjective(): String
+            + commonObjectivesPoints(): ArrayList<Integer>
+            + lobby(): Lobby
+        }
+        entity LobbyCreateInfo << record >> {
+            + LobbyCreateInfo(String):
+            - name: String
+            + name(): String
+        }
+        entity Login << record >> {
+            + Login(String):
+            - username: String
+            + username(): String
+        }
+        class Message {
+            + Message(String, String, String):
+            + Message(String, String):
+            - idReceiver: String
+            - : String
+            - idSender: String
+            + idSender(): String
+            + idReceiver(): Optional<String>
+            + message(): String
+        }
+        entity Update << record >> {
+            + Update(String, Card[][], Card[][], String, ArrayList<Cockade>, ArrayList<Integer>):
+            - completedObjectives: ArrayList<Cockade>
+            - idPlayer: String
+            - shelf: Card[][]
+            - tableTop: Card[][]
+            - nextPlayer: String
+            - newCommonObjectivesScores: ArrayList<Integer>
+            + completedObjectives(): ArrayList<Cockade>
+            + tableTop(): Card[][]
+            + shelf(): Card[][]
+            + idPlayer(): String
+            + nextPlayer(): String
+            + newCommonObjectivesScores(): ArrayList<Integer>
+        }
+    }
+    package rpc{
+        package client{
+            class NetworkManager {
+                - NetworkManager():
+                - socketTimeout: int
+                - connectedLock: Object
+                - in: ObjectInputStream
+                - checkPingThread: Thread
+                - out: ObjectOutputStream
+                - instance: NetworkManager
+                - PING_TIMEOUT: int
+                - connected: Boolean
+                - lastPing: Function<LocalDateTime, Boolean>
+                - socket: Socket
+                - logger: Logger
+                - server: Server
+                - eventQueue: Queue<ServerEvent>
+                - callQueue: HashMap<UUID, Function>
+                - mainThread: Thread
+                + hasEvent(): boolean
+                + getEvent(): Optional<ServerEvent>
+                + connect(Server): void
+                - setConnected(boolean): void
+                + disconnect(): void
+                + exitGame(): Function<Boolean, Boolean>
+                + getInstance(): NetworkManager
+                + lobbyJoin(String): Function<String, Lobby>
+                + login(Login): Function<Login, Serializable>
+                + run(): void
+                + lobbyLeave(): Function<Boolean, Boolean>
+                + reconnect(): void
+                + lobbyCreate(LobbyCreateInfo): Function<LobbyCreateInfo, Lobby>
+                - receive(): Result<Serializable>
+                - checkPing(): void
+                + updateLobby(): Function<Boolean, Lobby>
+                + chat(Message): Function<Message, Boolean>
+                - testConnection(): void
+                + lobbyList(): Function<Boolean, ArrayList<Lobby>>
+                + isConnected(): boolean
+                + cardSelect(CardSelect): Function<CardSelect, Boolean>
+                + gameStart(): Function<Boolean, Boolean>
+                + gameLoad(): Function<Boolean, Boolean>
+                + join(): void
+            }
+        }
+        package server{
+
+            class Client {
+                + Client(Socket, BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>>):
+                # TIMEOUT: int
+                - statusHandler: ClientStatusHandler
+                - lastMessageTime: LocalDateTime
+                - outcomingMessages: ObjectOutputStream
+                - handlerLock: Object
+                - username: String
+                - socket: Socket
+                - lastMessageTimeLock: Object
+                - incomingMessages: ObjectInputStream
+                - handler: BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>>
+                + run(): void
+                + from(Client): void
+                + getStatus(): ClientStatus
+                - send(Result<T>): void
+                + getUsername(): String
+                # setUsername(String): void
+                + sendEvent(ServerEvent<T>): void
+                + isDisconnected(): boolean
+                - receive(): Call<T>
+                + getCallHandler(): BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>>
+                + recoverStatus(): void
+                + setStatus(ClientStatus): void
+                + setCallHandler(BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>>): void
+                + setLastValidStatus(ClientStatus): void
+                + disconnect(): void
+                + checkPing(): boolean
+                + getLastMessageTime(): LocalDateTime
+            }
+            class ClientManager{
+                - ClientManager(int):
+                - socket: ServerSocket
+                - port: int
+                - instanceLock: Object
+                - instance: ClientManager
+                - identifiedClients: HashMap<String, Client>
+                - acceptConnectionsThread: Thread
+                - unidentifiedClients: LinkedList<Client>
+                + waitAndClose(): void
+                + isUsernameTaken(String): boolean
+                + run(): void
+                - registerService(Call<Serializable>, ClientInterface): Result<Serializable>
+                + setPort(int): void
+                + getClient(String): Optional<ClientInterface>
+                + getInstance(): ClientManagerInterface
+                - addUnidentifiedClient(Client): void
+                - addIdentifiedClient(String, Client): boolean
+                - acceptConnections(): void
+                + isClientConnected(String): boolean
+            }
+        }
+    }
+    package rmi{
+        interface ClientService << interface >> {
+            + pollEvent(): ServerEvent
+            + requestService(Call): Result
+            + hasEvent(): Boolean
+        }
+        interface LoginService << interface >> {
+            + login(Login, UUID): Result<Serializable>
+        }
+        package client{
+            class NetworkManager {
+                + NetworkManager():
+                - connected: boolean
+                - clientService: Optional<ClientService>
+                - loginService: LoginService
+                - pingTime: LocalDateTime
+                - lastMessageLock: Object
+                - serverInfo: Server
+                - logger: Logger
+                - connectedLock: Object
+                - registry: Registry
+                - instance: NetworkManager
+                - PING_TIMEOUT: int
+                - mainThread: Thread
+                - eventQueue: Queue<ServerEvent>
+                + hasEvent(): boolean
+                + isConnected(): boolean
+                + run(): void
+                + reconnect(): void
+                + chat(Message): Function<Message, Boolean>
+                + lobbyLeave(): Function<Boolean, Boolean>
+                + updateLobby(): Function<Boolean, Lobby>
+                + join(): void
+                - setLastMessage(): void
+                - getElapsedTimeSinceLastMessage(): long
+                - handleService(Function): Function
+                + exitGame(): Function<Boolean, Boolean>
+                + getEvent(): Optional<ServerEvent>
+                + login(Login): Function<Login, Serializable>
+                + getInstance(): NetworkManagerInterface
+                + disconnect(): void
+                - setConnected(boolean): void
+                + connect(Server): void
+                + lobbyJoin(String): Function<String, Lobby>
+                + cardSelect(CardSelect): Function<CardSelect, Boolean>
+                + lobbyList(): Function<Boolean, ArrayList<Lobby>>
+                + gameStart(): Function<Boolean, Boolean>
+                + lobbyCreate(LobbyCreateInfo): Function<LobbyCreateInfo, Lobby>
+                + gameLoad(): Function<Boolean, Boolean>
+            }
+        }
+        package server{
+            class Client {
+                + Client(String, Registry, int):
+                ~ username: String
+                ~ callHandler: BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>>
+                - format: DateTimeFormatter
+                ~ messageTimeLock: Object
+                + TIMEOUT: int
+                ~ handlerLock: Object
+                ~ lastMessageTime: LocalDateTime
+                ~ statusHandler: ClientStatusHandler
+                - lastMessageTimeLock: Object
+                ~ stub: ClientService
+                - serverEvents: Queue<ServerEvent>
+                - logger: Logger
+                + getStatus(): ClientStatus
+                + recoverStatus(): void
+                + setLastValidStatus(ClientStatus): void
+                + getUsername(): String
+                + setStatus(ClientStatus): void
+                + setCallHandler(BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>>): void
+                + hasEvent(): Boolean
+                + getCallHandler(): BiFunction<Call<Serializable>, ClientInterface, Result<Serializable>>
+                + getLastMessageTime(): LocalDateTime
+                + sendEvent(ServerEvent<T>): void
+                + isDisconnected(): boolean
+                # clearEventQueue(): void
+                + checkPing(): boolean
+                + pollEvent(): ServerEvent
+                + requestService(Call): Result
+            }
+            class ClientManager{
+                - ClientManager():
+                - registry: Registry
+                - instanceLock: Object
+                ~ clients: HashMap<String, Client>
+                - availablePortLock: Object
+                - instance: ClientManager
+                - stub: LoginService
+                + port: int
+                - availablePort: int
+                - logger: Logger
+                + isClientConnected(String): boolean
+                + isUsernameTaken(String): boolean
+                + getInstance(): ClientManagerInterface
+                + waitAndClose(): void
+                + login(Login, UUID): Result<Serializable>
+                + getClient(String): Optional<ClientInterface>
+                + run(): void
+            }
+        }
+    }
+}
+CLI                                 "1" *-[#595959,plain]-> "game\n1" CLIGame
+CLI                                 "1" *-[#595959,plain]-> "state\n1" ClientStatus
+CLI                                 "1" *-[#595959,plain]-> "lobby\n1" Lobby
+CLI                                 "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+CLI                                 "1" *-[#595959,plain]-> "IO\n1" view.cli.Utils
+CLIGame                             "1" *-[#595959,plain]-> "personalObjective\n1" PersonalObjective
+CLIGame                             "1" *-[#595959,plain]-> "shelves\n*" Shelf
+Card                                "1" *-[#595959,plain]-> "type\n1" model.Type
+network.rmi.server.Client                               -[#008200,dashed]-^  ClientInterface
+network.rpc.server.Client                               -[#008200,dashed]-^  ClientInterface
+network.rmi.server.Client                               -[#008200,dashed]-^  ClientService
+network.rmi.server.Client                              "1" *-[#595959,plain]-> "stub\n1" ClientService
+network.rpc.server.Client                              "1" *-[#595959,plain]-> "statusHandler\n1" ClientStatusHandler
+network.rmi.server.Client                              "1" *-[#595959,plain]-> "statusHandler\n1" ClientStatusHandler
+network.rmi.server.Client                              "1" *-[#595959,plain]-> "serverEvents\n*" ServerEvent
+network.rmi.server.ClientManager                       "1" *-[#595959,plain]-> "clients\n*" network.rmi.server.Client
+network.rpc.server.ClientManager                       "1" *-[#595959,plain]-> "unidentifiedClients\n*" network.rpc.server.Client
+network.rpc.server.ClientManager                       "1" *-[#595959,plain]-> "IdentifiedClients\n*" network.rpc.server.Client
+network.rpc.server.ClientManager                        -[#008200,dashed]-^  ClientManagerInterface
+network.rmi.server.ClientManager                        -[#008200,dashed]-^  ClientManagerInterface
+network.rmi.server.ClientManager                        -[#008200,dashed]-^  LoginService
+network.rmi.server.ClientManager                       "1" *-[#595959,plain]-> "stub\n1" LoginService
+ClientStatusHandler                 "1" *-[#595959,plain]-> "status\n1" ClientStatus
+CommonObjective                      -[#000082,plain]-^  Objective
+ConnectionModeOptions                -[#008200,dashed]-^  OptionsInterface
+CreateLobbyController               "1" *-[#595959,plain]-> "state\n1" ClientStatus
+EndController                       "1" *-[#595959,plain]-> "scoreBoard\n1" ScoreBoard
+Function                            "1" *-[#595959,plain]-> "service\n1" Service
+Game                                "1" *-[#595959,plain]-> "commonObjectives\n*" CommonObjective
+Game                                "1" *-[#595959,plain]-> "players\n*" Player
+Game                                "1" *-[#595959,plain]-> "playerIterator\n1" PlayerIterator
+Game                                "1" *-[#595959,plain]-> "tabletop\n1" TableTop
+GameController                      "1" *-[#595959,plain]-> "clientManager\n1" ClientManagerInterface
+GameController                      "1" *-[#595959,plain]-> "db\n1" DataBase
+GameController                      "1" *-[#595959,plain]-> "game\n1" Game
+GameController                      "1" *-[#595959,plain]-> "lobby\n1" Lobby
+GameController                      "1" *-[#595959,plain]-> "currentPlayer\n1" Player
+GameData                            "1" *-[#595959,plain]-> "myPersonalObjective\n1" PersonalObjective
+GameData                            "1" *-[#595959,plain]-> "scoreBoard\n1" ScoreBoard
+GameData                            "1" *-[#595959,plain]-> "shelves\n*" Shelf
+GameInfo                            "1" *-[#595959,plain]-> "lobby\n1" Lobby
+GameViewController                  "1" *-[#595959,plain]-> "state\n1" ClientStatus
+GameViewController                  "1" *-[#595959,plain]-> "gameData\n1" GameData
+GameViewController                  "1" *-[#595959,plain]-> "lobby\n1" Lobby
+GameViewController                  "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+GlobalClientManager                  -[#008200,dashed]-^  ClientManagerInterface
+GlobalClientManager                 "1" *-[#595959,plain]-> "rmiClientManager\n1" ClientManagerInterface
+GlobalClientManager                 "1" *-[#595959,plain]-> "rpcClientManager\n1" ClientManagerInterface
+InGameOptions                        -[#008200,dashed]-^  OptionsInterface
+InLobbyOptions                       -[#008200,dashed]-^  OptionsInterface
+LobbyController                     "1" *-[#595959,plain]-> "clientManager\n1" ClientManagerInterface
+LobbyController                     "1" *-[#595959,plain]-> "db\n1" DataBase
+LobbyController                     "1" *-[#595959,plain]-> "games\n*" GameController
+LobbyController                     "1" *-[#595959,plain]-> "lobbies\n*" Lobby
+LobbyViewController                 "1" *-[#595959,plain]-> "state\n1" ClientStatus
+LobbyViewController                 "1" *-[#595959,plain]-> "gameInfo\n1" GameInfo
+LobbyViewController                 "1" *-[#595959,plain]-> "lobby\n1" Lobby
+LobbyViewController                 "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+LoginController                     "1" *-[#595959,plain]-> "state\n1" ClientStatus
+LoginController                     "1" *-[#595959,plain]-> "gameInfo\n1" GameInfo
+LoginController                     "1" *-[#595959,plain]-> "lobby\n1" Lobby
+LoginController                     "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+MainMenuController                  "1" *-[#595959,plain]-> "state\n1" ClientStatus
+network.rpc.client.NetworkManager                      "1" *-[#595959,plain]-> "callQueue\n*" Function
+network.rmi.client.NetworkManager                      "1" *-[#595959,plain]-> "loginService\n1" LoginService
+network.rmi.client.NetworkManager                       -[#008200,dashed]-^  NetworkManagerInterface
+network.rpc.client.NetworkManager                       -[#008200,dashed]-^  NetworkManagerInterface
+network.rmi.client.NetworkManager                      "1" *-[#595959,plain]-> "serverInfo\n1" network.Server
+network.rpc.client.NetworkManager                      "1" *-[#595959,plain]-> "server\n1" network.Server
+network.rmi.client.NetworkManager                      "1" *-[#595959,plain]-> "eventQueue\n*" ServerEvent
+network.rpc.client.NetworkManager                      "1" *-[#595959,plain]-> "eventQueue\n*" ServerEvent
+NonBlockingIO                       "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+PersonalObjective                   "1" *-[#595959,plain]-> "cellsCheck\n*" Cell
+PersonalObjective                    -[#000082,plain]-^  Objective
+Player                              "1" *-[#595959,plain]-> "cockades\n*" Cockade
+Player                              "1" *-[#595959,plain]-> "personalObjective\n1" PersonalObjective
+Player                              "1" *-[#595959,plain]-> "shelf\n1" Shelf
+PlayerIterator                      "1" *-[#595959,plain]-> "game\n1" Game
+SaveState                           "1" *-[#595959,plain]-> "tabletop\n1" SaveTableTop
+SaveTableTop                        "1" *-[#595959,plain]-> "grid\n*" Card
+ScoreBoard                          "1" *-[#595959,plain]-> "scores\n*" Score
+ScoreBoard                          "1" *-[#595959,plain]-> "victoryType\n1" VictoryType
+SelectLobbyOptions                   -[#008200,dashed]-^  OptionsInterface
+ServerEvent                         "1" *-[#595959,plain]-> "type\n1" network.Type
+ShelvesController                   "1" *-[#595959,plain]-> "shelves\n*" Shelf
+TableTop                            "1" *-[#595959,plain]-> "deck\n1" CardsDeck
+model.Type                                 +-[#820000,plain]-  Card
+network.Type                                 +-[#820000,plain]-  ServerEvent
+view.cli.Utils                               "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+view.gui.Utils                               "1" *-[#595959,plain]-> "networkManager\n1" NetworkManagerInterface
+view.cli.Utils                               "1" *-[#595959,plain]-> "IO\n1" NonBlockingIO
+VictoryType                          +-[#820000,plain]-  ScoreBoard
+@enduml
