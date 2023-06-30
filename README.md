@@ -36,6 +36,9 @@ The created jars are:
 
 Precompiled jars can be found [here](deliverables/final/jar)
 
+We have two client jars, one for Linux and one for Windows, since JavaFX requires native libraries that must be platform-dependent.
+We don't own a Mac machine, so we cannot ensure that the Linux version also works on MacOS, we strongly suggest to build your own client.
+
 ## Execution
 The project has been tested on Java19.
 
